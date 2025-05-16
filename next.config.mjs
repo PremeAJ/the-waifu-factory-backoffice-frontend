@@ -1,3 +1,17 @@
-const nextConfig = { reactStrictMode: false, images: { unoptimized: true } };
+import withPWA from 'next-pwa';
 
-export default nextConfig;
+const withPWACfg = withPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: false,
+});
+
+const nextConfig = {
+  reactStrictMode: false,
+  images: {
+    unoptimized: true,
+  },
+};
+
+export default withPWACfg(nextConfig);
