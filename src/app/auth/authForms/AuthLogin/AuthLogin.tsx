@@ -1,0 +1,143 @@
+"use client";
+import React, { useContext } from "react";
+import {
+  Box,
+  Typography,
+  FormGroup,
+  FormControlLabel,
+  Button,
+  Stack,
+  Divider,
+} from "@mui/material";
+import Link from "next/link";
+import { loginType } from "@/app/(DashboardLayout)/types/auth/auth";
+import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
+import AuthSocialButtons from "../AuthSocialButtons";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { emailValidator, passwordValidator } from "@/utils/validator/yup";
+import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
+import { AuthContext } from "@/app/context/AuthContext";
+
+interface FormValues {
+  email: string;
+  password: string;
+}
+
+const schema = yup
+  .object({
+    email: emailValidator,
+    password: passwordValidator,
+  })
+  .required();
+
+const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
+  const { handleSubmit, control, setError } = useForm<FormValues>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: yupResolver(schema),
+  });
+
+  const { signInWithEmail } = useContext(AuthContext);
+
+  const onSubmit = async (data: FormValues) => {
+    const { error } = await signInWithEmail(data.email, data.password);
+    if (error) {
+      setError("email", { message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
+      setError("password", { message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
+    } else {
+      window.location.href = "/";
+    }
+  };
+
+  return (
+    <>
+      {title ? (
+        <Typography fontWeight="700" variant="h3" mb={1}>
+          {title}
+        </Typography>
+      ) : null}
+
+      {subtext}
+
+      <AuthSocialButtons title="Sign in with" />
+      <Box mt={3}>
+        <Divider>
+          <Typography
+            component="span"
+            color="textSecondary"
+            variant="h6"
+            fontWeight="400"
+            position="relative"
+            px={2}
+          >
+            or sign in with
+          </Typography>
+        </Divider>
+      </Box>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack>
+          <Box>
+            <BaseTextField
+              name="email"
+              control={control}
+              label="Email"
+              placeholder="กรุณากรอกอีเมล"
+            />
+          </Box>
+          <Box>
+            <BaseTextField
+              name="password"
+              control={control}
+              label="Password"
+              type="password"
+              placeholder="กรุณากรอกรหัสผ่าน"
+            />
+          </Box>
+          <Stack
+            justifyContent="space-between"
+            direction="row"
+            alignItems="center"
+            my={2}
+          >
+            <FormGroup>
+              <FormControlLabel
+                control={<CustomCheckbox defaultChecked />}
+                label="Remember this Device"
+              />
+            </FormGroup>
+            <Typography
+              component={Link}
+              href="/auth/auth1/forgot-password"
+              fontWeight="500"
+              sx={{
+                textDecoration: "none",
+                color: "primary.main",
+              }}
+            >
+              Forgot Password ?
+            </Typography>
+          </Stack>
+        </Stack>
+        <Box>
+          <Button
+            color="primary"
+            variant="contained"
+            size="large"
+            fullWidth
+            type="submit"
+          >
+            Sign In
+          </Button>
+        </Box>
+      </form>
+      {subtitle}
+    </>
+  );
+};
+
+export default AuthLogin;

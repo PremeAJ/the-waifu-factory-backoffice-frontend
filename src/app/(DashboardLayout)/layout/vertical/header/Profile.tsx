@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useContext, useState } from "react";
+import Link from "next/link";
 import {
   Box,
   Menu,
@@ -8,21 +8,26 @@ import {
   Divider,
   Button,
   IconButton,
-} from '@mui/material';
-import * as dropdownData from './data';
+} from "@mui/material";
+import * as dropdownData from "./data";
 
-import { IconMail } from '@tabler/icons-react';
-import { Stack } from '@mui/system';
-import Image from 'next/image';
-
+import { IconMail } from "@tabler/icons-react";
+import { Stack } from "@mui/system";
+import Image from "next/image";
+import { AuthContext } from "@/app/context/AuthContext";
 
 const Profile = () => {
+  const { signOut } = useContext(AuthContext);
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
   const handleClose2 = () => {
     setAnchorEl2(null);
+  };
+   const handleLogout = async () => {
+    await signOut();
+    window.location.href = "/auth/auth1/login";
   };
 
   return (
@@ -33,15 +38,15 @@ const Profile = () => {
         aria-controls="msgs-menu"
         aria-haspopup="true"
         sx={{
-          ...(typeof anchorEl2 === 'object' && {
-            color: 'primary.main',
+          ...(typeof anchorEl2 === "object" && {
+            color: "primary.main",
           }),
         }}
         onClick={handleClick2}
       >
         <Avatar
           src={"/images/profile/user-1.jpg"}
-          alt={'ProfileImg'}
+          alt={"ProfileImg"}
           sx={{
             width: 35,
             height: 35,
@@ -57,20 +62,28 @@ const Profile = () => {
         keepMounted
         open={Boolean(anchorEl2)}
         onClose={handleClose2}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
         sx={{
-          '& .MuiMenu-paper': {
-            width: '360px',
+          "& .MuiMenu-paper": {
+            width: "360px",
             p: 4,
           },
         }}
       >
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
-          <Avatar src={"/images/profile/user-1.jpg"} alt={"ProfileImg"} sx={{ width: 95, height: 95 }} />
+          <Avatar
+            src={"/images/profile/user-1.jpg"}
+            alt={"ProfileImg"}
+            sx={{ width: 95, height: 95 }}
+          />
           <Box>
-            <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
+            <Typography
+              variant="subtitle2"
+              color="textPrimary"
+              fontWeight={600}
+            >
               Mathew Anderson
             </Typography>
             <Typography variant="subtitle2" color="textSecondary">
@@ -100,7 +113,8 @@ const Profile = () => {
                     bgcolor="primary.light"
                     display="flex"
                     alignItems="center"
-                    justifyContent="center" flexShrink="0"
+                    justifyContent="center"
+                    flexShrink="0"
                   >
                     <Avatar
                       src={profile.icon}
@@ -120,7 +134,7 @@ const Profile = () => {
                       className="text-hover"
                       noWrap
                       sx={{
-                        width: '240px',
+                        width: "240px",
                       }}
                     >
                       {profile.title}
@@ -129,7 +143,7 @@ const Profile = () => {
                       color="textSecondary"
                       variant="subtitle2"
                       sx={{
-                        width: '240px',
+                        width: "240px",
                       }}
                       noWrap
                     >
@@ -142,7 +156,13 @@ const Profile = () => {
           </Box>
         ))}
         <Box mt={2}>
-          <Box bgcolor="primary.light" p={3} mb={3} overflow="hidden" position="relative">
+          <Box
+            bgcolor="primary.light"
+            p={3}
+            mb={3}
+            overflow="hidden"
+            position="relative"
+          >
             <Box display="flex" justifyContent="space-between">
               <Box>
                 <Typography variant="h5" mb={2}>
@@ -153,10 +173,24 @@ const Profile = () => {
                   Upgrade
                 </Button>
               </Box>
-              <Image src={"/images/backgrounds/unlimited-bg.png"} width={150} height={183} style={{ height: 'auto', width: 'auto' }} alt="unlimited" className="signup-bg" />
+              <Image
+                src={"/images/backgrounds/unlimited-bg.png"}
+                width={150}
+                height={183}
+                style={{ height: "auto", width: "auto" }}
+                alt="unlimited"
+                className="signup-bg"
+              />
             </Box>
           </Box>
-          <Button href="/auth/auth1/login" variant="outlined" color="primary" component={Link} fullWidth>
+          <Button
+            // href="/auth/auth1/login"
+            variant="outlined"
+            color="primary"
+            // component={Link}
+            fullWidth
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         </Box>

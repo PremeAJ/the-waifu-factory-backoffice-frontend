@@ -1,5 +1,3 @@
-
-
 "use client";
 import React, { useContext } from "react";
 import { ThemeProvider } from "@mui/material/styles";
@@ -9,6 +7,7 @@ import { ThemeSettings } from "@/utils/theme/Theme";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import "@/utils/i18n";
 import { CustomizerContext } from '@/app/context/customizerContext';
+import { AuthProvider } from "@/app/context/AuthContext"; // <-- เพิ่มบรรทัดนี้
 
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
@@ -16,16 +15,16 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
     const { activeDir } = useContext(CustomizerContext);
 
     return (
-        <>
-            <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-                <ThemeProvider theme={theme}>
-                    <RTL direction={activeDir}>
-                        <CssBaseline />
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+            <ThemeProvider theme={theme}>
+                <RTL direction={activeDir}>
+                    <CssBaseline />
+                    <AuthProvider>
                         {children}
-                    </RTL>
-                </ThemeProvider>
-            </AppRouterCacheProvider>
-        </>
+                    </AuthProvider>
+                </RTL>
+            </ThemeProvider>
+        </AppRouterCacheProvider>
     );
 };
 
