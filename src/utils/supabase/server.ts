@@ -36,29 +36,10 @@ export async function createClient() {
 }
 
 export async function ssrSignInWithEmail(payload: signInPayload) {
-  try {
-    const supabase = await createClient();
-    return await supabase.auth.signInWithPassword(payload);
-  } catch (error: any) {
-    // ส่ง error object กลับ client
-    return { error: { message: error.message || "Unknown error" } };
-  }
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithPassword(payload);
+  return { data, error }
 }
-
-// export async function test(email: string, password: string) {
-//   const supabase = await createClient();
-//   return supabase.auth.signUp({
-//     email,
-//     password,
-//     options: {
-//       data: {
-//         firstname: "john",
-//         lastname: "doe",
-//         age: 25,
-//       },
-//     },
-//   });
-// }
 
 export async function ssrSignUpWithEmail(payload: signInPayload) {
   const supabase = await createClient();
@@ -89,6 +70,7 @@ export const ssrGetSession = async () => {
   const supabase = await createClient();
   return supabase.auth.getSession();
 };
+
 
 const removeCookies = async () => {
   const cookieStore = await cookies();
