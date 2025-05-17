@@ -18,6 +18,7 @@ import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, passwordSchema } from "@/utils/validator/yup";
+import { signInWithEmail } from "@/utils/supabase/client";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -27,7 +28,7 @@ const validationSchema = yup.object({
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const {
     signOut,
-    signInWithEmail,
+    // signInWithEmail,
     isLoading: authIsLoading,
   } = useContext(AuthContext);
   const formik = useFormik({
