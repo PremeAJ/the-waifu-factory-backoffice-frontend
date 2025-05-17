@@ -919,7 +919,7 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "Error",
     icon: IconAlertCircle,
-    href: "/auth/error",
+    href: "/auth/error/404",
   },
   {
     id: uniqueId(),

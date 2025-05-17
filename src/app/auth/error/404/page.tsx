@@ -2,7 +2,7 @@ import { Box, Container, Typography, Button } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
-const Error = () => (
+const Error404 = () => (
   <Box
     display="flex"
     flexDirection="column"
@@ -37,4 +37,4 @@ const Error = () => (
   </Box>
 );
 
-export default Error;
+export default Error404;
