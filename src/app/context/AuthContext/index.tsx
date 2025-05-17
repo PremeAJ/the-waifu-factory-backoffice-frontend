@@ -39,7 +39,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(data.session);
       setIsLoading(false);
     });
-    // ไม่มี supabase.auth.onAuthStateChange อีกต่อไป
   }, []);
 
   const signInWithEmail = async (payload: signInPayload) => {
