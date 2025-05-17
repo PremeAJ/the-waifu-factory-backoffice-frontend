@@ -1,13 +1,22 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
 
-export default async function ServerAuthGuard({ children }: { children: React.ReactNode }) {
-  const cookieStore = cookies();
-  const hasAuthCookie = (await cookieStore).getAll().some((c) =>
-    c.name.startsWith("sb-") && c.name.endsWith("-auth-token")
-  );
-  if (!hasAuthCookie) {
-    redirect("/auth/auth1/login");
-  }
+export default function AuthGuard({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const { getSession } = useContext(AuthContext);
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data, error } = await getSession();
+      if (!data.session || error) {
+        router.replace("/auth/auth1/login");
+      }
+    };
+    checkSession();
+  }, [router]);
   return <>{children}</>;
 }

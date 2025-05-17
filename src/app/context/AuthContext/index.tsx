@@ -9,20 +9,20 @@ import React, {
 import { Session, User } from "@supabase/supabase-js";
 import {
   signInPayload,
+  ssrGetSession,
   ssrRefreshSession,
   ssrSignInWithEmail,
   ssrSignOut,
   ssrSignUpWithEmail,
-} from "./action";
+} from "@/utils/supabase/server";
 
 type AuthContextType = {
-  session: Session | null;
-  user: User | null;
   isLoading: boolean;
   signInWithEmail: (payload: signInPayload) => Promise<any>;
   signUpWithEmail: (payload: signInPayload) => Promise<any>;
   signOut: () => Promise<any>;
   refreshSession: () => Promise<void>;
+  getSession: () => Promise<any>;
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -30,13 +30,11 @@ export const AuthContext = createContext<AuthContextType>(
 );
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
     ssrRefreshSession().then(({ data }) => {
-      setSession(data.session);
       setIsLoading(false);
     });
   }, []);
@@ -44,7 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signInWithEmail = async (payload: signInPayload) => {
     setIsLoading(true);
     const response = await ssrSignInWithEmail(payload);
-    setSession(response.data?.session ?? null);
     setIsLoading(false);
     return response;
   };
@@ -52,7 +49,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signUpWithEmail = async (payload: signInPayload) => {
     setIsLoading(true);
     const response = await ssrSignUpWithEmail(payload);
-    setSession(response.data?.session ?? null);
     setIsLoading(false);
     return response;
   };
@@ -60,7 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     setIsLoading(true);
     const response = await ssrSignOut();
-    setSession(null);
     setIsLoading(false);
     return response;
   };
@@ -68,20 +63,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const refreshSession = async () => {
     setIsLoading(true);
     const { data } = await ssrRefreshSession();
-    setSession(data.session);
     setIsLoading(false);
   };
+
+  const getSession = async () => {
+    setIsLoading(true);
+    const response = await ssrGetSession();
+    setIsLoading(false);
+    return response;
+  };
+
 
   return (
     <AuthContext.Provider
       value={{
-        session,
-        user: session?.user ?? null,
         isLoading,
         signInWithEmail,
         signUpWithEmail,
         signOut,
         refreshSession,
+        getSession
       }}
     >
       {children}

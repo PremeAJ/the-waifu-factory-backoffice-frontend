@@ -1,6 +1,7 @@
 "use server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+// import { redirect } from "next/navigation";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -66,12 +67,31 @@ export async function ssrSignOut() {
 
 export const ssrRefreshSession = async () => {
   const supabase = await createClient();
-  return supabase.auth.getSession();
+  try {
+    return await supabase.auth.getSession();
+  } catch (error) {
+    await removeCookies();
+    return { data: { session: null }, error };
+  }
 };
 
 export const ssrGetUser = async () => {
   const supabase = await createClient();
   return supabase.auth.getUser();
+};
+
+export const ssrGetSession = async () => {
+  const supabase = await createClient();
+  return supabase.auth.getSession();
+};
+
+const removeCookies = async () => {
+  const cookieStore = await cookies();
+  cookieStore.getAll().forEach((c) => {
+    if (c.name.startsWith("sb-")) {
+      cookieStore.delete(c.name);
+    }
+  });
 };
 
 export type signInPayload = {

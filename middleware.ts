@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ssrRefreshSession } from "./src/app/context/AuthContext/action";
+import { ssrRefreshSession } from "./src/utils/supabase/server";
 
 export async function middleware(req: NextRequest) {
   // เรียก refresh session จาก action.ts
