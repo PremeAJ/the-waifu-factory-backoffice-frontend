@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -25,7 +25,7 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
-  const { signInWithEmail, isLoading:authIsLoading } = useContext(AuthContext);
+  const { signOut, signInWithEmail, isLoading:authIsLoading } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -43,6 +43,10 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
       }
     },
   });
+
+  useEffect(() => {
+    signOut();
+  },[])
 
   return (
     <>
