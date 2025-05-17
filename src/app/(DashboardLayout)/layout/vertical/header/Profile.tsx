@@ -17,7 +17,7 @@ import Image from "next/image";
 import { AuthContext } from "@/app/context/AuthContext";
 
 const Profile = () => {
-  const { signOut } = useContext(AuthContext);
+  const { signOut, isLoading:authIsLoading } = useContext(AuthContext);
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
@@ -26,6 +26,7 @@ const Profile = () => {
     setAnchorEl2(null);
   };
    const handleLogout = async () => {
+    
     await signOut();
     window.location.href = "/auth/auth1/login";
   };
@@ -190,6 +191,7 @@ const Profile = () => {
             // component={Link}
             fullWidth
             onClick={handleLogout}
+            loading={authIsLoading}
           >
             Logout
           </Button>

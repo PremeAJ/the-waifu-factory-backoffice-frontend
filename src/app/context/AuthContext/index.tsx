@@ -15,6 +15,7 @@ import {
   ssrSignOut,
   ssrSignUpWithEmail,
 } from "./action";
+import { set } from "lodash";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -24,6 +25,7 @@ export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
 type AuthContextType = {
   session: Session | null;
   user: User | null;
+  isLoading: boolean;
   signInWithEmail: (payload: signInPayload) => Promise<any>;
   signUpWithEmail: (payload: signInPayload) => Promise<any>;
   signOut: () => Promise<any>;
@@ -36,9 +38,14 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    ssrRefreshSession().then(({ data }) => setSession(data.session));
+    setIsLoading(true);
+    ssrRefreshSession().then(({ data }) => {
+      setSession(data.session);
+      setIsLoading(false);
+    });
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
@@ -49,21 +56,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const signInWithEmail = async (payload:signInPayload) => {
-    return ssrSignInWithEmail(payload);
+  const signInWithEmail = async (payload: signInPayload) => {
+    setIsLoading(true);
+    const response = await ssrSignInWithEmail(payload);
+    setIsLoading(false);
+    return response;
   };
 
-  const signUpWithEmail = async (payload:signInPayload) => {
-    return ssrSignUpWithEmail(payload);
+  const signUpWithEmail = async (payload: signInPayload) => {
+    setIsLoading(true);
+    const response = await ssrSignUpWithEmail(payload);
+    setIsLoading(false);
+    return response;
   };
 
   const signOut = async () => {
-    return ssrSignOut();
+    setIsLoading(true);
+    const response = await ssrSignOut();
+    setIsLoading(false);
+    return response;
   };
 
   const refreshSession = async () => {
+    setIsLoading(true);
     const { data } = await ssrRefreshSession();
     setSession(data.session);
+    setIsLoading(false);
   };
 
   return (
@@ -71,6 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         session,
         user: session?.user ?? null,
+        isLoading,
         signInWithEmail,
         signUpWithEmail,
         signOut,

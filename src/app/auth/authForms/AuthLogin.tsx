@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import { loginType } from "@/app/(DashboardLayout)/types/auth/auth";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
-import AuthSocialButtons from "../AuthSocialButtons";
+import AuthSocialButtons from "./AuthSocialButtons";
 import * as yup from "yup";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
@@ -25,8 +25,7 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
-  const [loading, setLoading] = useState(false);
-  const { signInWithEmail } = useContext(AuthContext);
+  const { signInWithEmail, isLoading:authIsLoading } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -35,9 +34,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
-      setLoading(true);
       const { error } = await signInWithEmail(data);
-      setLoading(false);
       if (error) {
         formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
         formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
@@ -124,7 +121,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             size="large"
             fullWidth
             type="submit"
-            loading={loading}
+            loading={authIsLoading}
           >
             Sign In
           </Button>
