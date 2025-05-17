@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signInWithEmail = async (payload: signInPayload) => {
     setIsLoading(true);
     const response = await ssrSignInWithEmail(payload);
-    console.log("🚀 ~ signInWithEmail ~ response:", response)
     setIsLoading(false);
     return response;
   };

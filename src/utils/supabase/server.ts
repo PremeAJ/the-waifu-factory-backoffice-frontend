@@ -38,8 +38,7 @@ export async function createClient() {
 export async function ssrSignInWithEmail(payload: signInPayload) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword(payload);
-  console.log("🚀 ~ ssrSignInWithEmail ~ error:", error)
-  return { data, error }
+  return { data, error: error?.code };
 }
 
 export async function ssrSignUpWithEmail(payload: signInPayload) {
@@ -71,7 +70,6 @@ export const ssrGetSession = async () => {
   const supabase = await createClient();
   return supabase.auth.getSession();
 };
-
 
 const removeCookies = async () => {
   const cookieStore = await cookies();

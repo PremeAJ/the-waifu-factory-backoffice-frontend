@@ -18,7 +18,6 @@ import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, passwordSchema } from "@/utils/validator/yup";
-import { signInWithEmail } from "@/utils/supabase/client";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -28,7 +27,7 @@ const validationSchema = yup.object({
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const {
     signOut,
-    // signInWithEmail,
+    signInWithEmail,
     isLoading: authIsLoading,
   } = useContext(AuthContext);
   const formik = useFormik({
@@ -40,22 +39,19 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
     validationSchema: validationSchema,
     onSubmit: async (data) => {
       const { error } = await signInWithEmail(data);
-      console.log("🚀 ~ onSubmit: ~ error:", error)
       if (error) {
-        switch (error.message) {
-          case "Invalid login credentials":
+        switch (error) {
+          case "invalid_credentials":
             formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
             formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
             break;
-          case "Request rate limit reached":
+          case "over_request_rate_limit":
             alert(
               "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)"
             );
             break;
-          case "User is banned":
-            alert(
-              "บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ"
-            );
+          case "user_banned":
+            alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
             break;
           default:
             break;
