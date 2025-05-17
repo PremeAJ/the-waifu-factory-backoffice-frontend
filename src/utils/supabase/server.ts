@@ -36,10 +36,13 @@ export async function createClient() {
 }
 
 export async function ssrSignInWithEmail(payload: signInPayload) {
-  const supabase = await createClient();
-  const res = await supabase.auth.signInWithPassword(payload);
-  console.log("🚀 ~ ssrSignInWithEmail ~ res:", res)
-  return res;
+  try {
+    const supabase = await createClient();
+    return await supabase.auth.signInWithPassword(payload);
+  } catch (error: any) {
+    // ส่ง error object กลับ client
+    return { error: { message: error.message || "Unknown error" } };
+  }
 }
 
 // export async function test(email: string, password: string) {
