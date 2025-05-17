@@ -39,6 +39,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
     validationSchema: validationSchema,
     onSubmit: async (data) => {
       const { error } = await signInWithEmail(data);
+      console.log("🚀 ~ onSubmit: ~ error:", error)
       if (error) {
         switch (error.message) {
           case "Invalid login credentials":

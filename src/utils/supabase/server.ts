@@ -38,6 +38,7 @@ export async function createClient() {
 export async function ssrSignInWithEmail(payload: signInPayload) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword(payload);
+  console.log("🚀 ~ ssrSignInWithEmail ~ error:", error)
   return { data, error }
 }
 
