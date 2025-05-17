@@ -4,11 +4,33 @@ export const emailValidator = yup
   .string()
   .email("รูปแบบอีเมลไม่ถูกต้อง")
   .required("กรุณากรอกอีเมล");
-export const passwordValidator = yup
+export const passwordSchema = yup
   .string()
-  .required("กรุณากรอกรหัสผ่าน")
-  .min(6, "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร")
-  .matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/,
-    "รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ ตัวเลข และอักษรพิเศษ"
-  );
+  .required("Password is required")
+  .test("password-rules", "", function (value) {
+    const errors = [];
+
+    if (!value) return this.createError({ message: "กรุณากรอกรหัสผ่าน" });
+
+    if (value.length < 6) {
+      errors.push("ต้องมีความยาวอย่างน้อย 6 ตัวอักษร");
+    }
+    if (!/[a-z]/.test(value)) {
+      errors.push("ต้องมีตัวอักษรพิมพ์เล็กอย่างน้อย 1 ตัว");
+    }
+    if (!/[A-Z]/.test(value)) {
+      errors.push("ต้องมีตัวอักษรพิมพ์ใหญ่อย่างน้อย 1 ตัว");
+    }
+    if (!/\d/.test(value)) {
+      errors.push("ต้องมีตัวเลขอย่างน้อย 1 ตัว");
+    }
+    if (!/[^a-zA-Z0-9]/.test(value)) {
+      errors.push("ต้องมีอักขระพิเศษอย่างน้อย 1 ตัว");
+    }
+
+    return errors.length > 0
+      ? this.createError({ message: errors.join("\n") })
+      : true;
+  });
+
+  

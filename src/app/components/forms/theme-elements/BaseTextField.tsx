@@ -2,14 +2,13 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { TextField, TextFieldProps } from "@mui/material";
-import { Controller, Control, FieldValues } from "react-hook-form";
 import CustomFormLabel from "./CustomFormLabel";
 
 interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   name: string;
-  control: Control<any>;
   label?: string;
   placeholder?: string;
+  formik: any
 }
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -28,29 +27,40 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 
 const BaseTextField = ({
   name,
-  control,
   label,
   placeholder,
+  formik,
   ...rest
-}: CustomTextFieldProps) => (
-  <Controller
-    name={name}
-    control={control}
-    render={({ field, fieldState }) => (
-      <>
-        <CustomFormLabel htmlFor={name}>{label}</CustomFormLabel>
-        <StyledTextField
-          fullWidth
-          variant="outlined"
-          {...field}
-          placeholder={placeholder}
-          error={!!fieldState.error}
-          helperText={fieldState.error?.message}
-          {...rest}
-        />
-      </>
-    )}
-  />
-);
+}: CustomTextFieldProps) => {
+  let helperText = null;
+  if (formik?.touched[name] && formik?.errors[name]) {
+    if (typeof formik.errors[name] === "string" && formik.errors[name].includes("\n")) {
+      helperText = formik.errors[name].split("\n").map((msg: string, idx: number) => (
+        <span key={idx} style={{ display: "block" }}>{msg}</span>
+      ));
+    } else {
+      helperText = formik.errors[name];
+    }
+  }
+
+  return (
+    <>
+      <CustomFormLabel htmlFor={name}>{label}</CustomFormLabel>
+      <StyledTextField
+        fullWidth
+        variant="outlined"
+        id={name}
+        name={name}
+        value={formik?.values[name]}
+        onChange={formik?.handleChange}
+        onBlur={formik?.handleBlur}
+        placeholder={placeholder}
+        error={formik?.touched[name] && Boolean(formik.errors[name])}
+        helperText={helperText}
+        {...rest}
+      />
+    </>
+  );
+};
 
 export default BaseTextField;

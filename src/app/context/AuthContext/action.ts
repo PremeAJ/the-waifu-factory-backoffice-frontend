@@ -1,6 +1,5 @@
 "use server";
 import { createServerClient } from "@supabase/ssr";
-import { last } from "lodash";
 import { cookies } from "next/headers";
 
 export async function createClient() {
@@ -30,29 +29,29 @@ export async function createClient() {
   );
 }
 
-export async function ssrSignInWithEmail(email: string, password: string) {
+export async function ssrSignInWithEmail(payload:signInPayload) {
   const supabase = await createClient();
-  return supabase.auth.signInWithPassword({ email, password });
+  return supabase.auth.signInWithPassword(payload);
 }
 
-export async function test(email: string, password: string) {
-  const supabase = await createClient();
-  return supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        firstname: "john",
-        lastname: "doe",
-        age: 25,
-      },
-    },
-  });
-}
+// export async function test(email: string, password: string) {
+//   const supabase = await createClient();
+//   return supabase.auth.signUp({
+//     email,
+//     password,
+//     options: {
+//       data: {
+//         firstname: "john",
+//         lastname: "doe",
+//         age: 25,
+//       },
+//     },
+//   });
+// }
 
-export async function ssrSignUpWithEmail(email: string, password: string) {
+export async function ssrSignUpWithEmail(payload:signInPayload) {
   const supabase = await createClient();
-  return supabase.auth.signInWithPassword({ email, password });
+  return supabase.auth.signInWithPassword(payload);
 }
 
 export async function ssrSignOut() {
@@ -68,4 +67,9 @@ export const ssrRefreshSession = async () => {
 export const ssrGetUser = async () => {
   const supabase = await createClient();
   return supabase.auth.getUser();
+};
+
+export type signInPayload = {
+  email: string;
+  password: string;
 };

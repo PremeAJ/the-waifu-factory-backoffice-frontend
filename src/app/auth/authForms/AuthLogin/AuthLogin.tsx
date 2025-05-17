@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Typography,
@@ -13,45 +13,39 @@ import Link from "next/link";
 import { loginType } from "@/app/(DashboardLayout)/types/auth/auth";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
 import AuthSocialButtons from "../AuthSocialButtons";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { emailValidator, passwordValidator } from "@/utils/validator/yup";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
+import { useFormik } from "formik";
+import { emailValidator, passwordSchema } from "@/utils/validator/yup";
 
-interface FormValues {
-  email: string;
-  password: string;
-}
-
-const schema = yup
-  .object({
-    email: emailValidator,
-    password: passwordValidator,
-  })
-  .required();
+const validationSchema = yup.object({
+  email: emailValidator,
+  password: passwordSchema,
+});
 
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
-  const { handleSubmit, control, setError } = useForm<FormValues>({
-    defaultValues: {
+  const [loading, setLoading] = useState(false);
+  const { signInWithEmail } = useContext(AuthContext);
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
       email: "",
       password: "",
     },
-    resolver: yupResolver(schema),
+    validationSchema: validationSchema,
+    onSubmit: async (data) => {
+      setLoading(true);
+      const { error } = await signInWithEmail(data);
+      setLoading(false);
+      if (error) {
+        formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      } else {
+        window.location.href = "/";
+      }
+    },
   });
-
-  const { signInWithEmail } = useContext(AuthContext);
-
-  const onSubmit = async (data: FormValues) => {
-    const { error } = await signInWithEmail(data.email, data.password);
-    if (error) {
-      setError("email", { message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
-      setError("password", { message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
-    } else {
-      window.location.href = "/";
-    }
-  };
 
   return (
     <>
@@ -79,12 +73,12 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
         </Divider>
       </Box>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={formik.handleSubmit}>
         <Stack>
           <Box>
             <BaseTextField
               name="email"
-              control={control}
+              formik={formik}
               label="Email"
               placeholder="กรุณากรอกอีเมล"
             />
@@ -92,7 +86,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           <Box>
             <BaseTextField
               name="password"
-              control={control}
+              formik={formik}
               label="Password"
               type="password"
               placeholder="กรุณากรอกรหัสผ่าน"
@@ -130,6 +124,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             size="large"
             fullWidth
             type="submit"
+            loading={loading}
           >
             Sign In
           </Button>

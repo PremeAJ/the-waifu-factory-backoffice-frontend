@@ -9,6 +9,7 @@ import React, {
 import { createBrowserClient } from "@supabase/ssr";
 import { Session, User } from "@supabase/supabase-js";
 import {
+  signInPayload,
   ssrRefreshSession,
   ssrSignInWithEmail,
   ssrSignOut,
@@ -18,18 +19,16 @@ import {
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-// ใช้ createBrowserClient จาก @supabase/ssr
 export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
 
 type AuthContextType = {
   session: Session | null;
   user: User | null;
-  signInWithEmail: (email: string, password: string) => Promise<any>;
-  signUpWithEmail: (email: string, password: string) => Promise<any>;
+  signInWithEmail: (payload: signInPayload) => Promise<any>;
+  signUpWithEmail: (payload: signInPayload) => Promise<any>;
   signOut: () => Promise<any>;
   refreshSession: () => Promise<void>;
 };
-
 
 export const AuthContext = createContext<AuthContextType>(
   {} as AuthContextType
@@ -50,12 +49,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const signInWithEmail = async (email: string, password: string) => {
-    return ssrSignInWithEmail(email, password);
+  const signInWithEmail = async (payload:signInPayload) => {
+    return ssrSignInWithEmail(payload);
   };
 
-  const signUpWithEmail = async (email: string, password: string) => {
-    return ssrSignUpWithEmail(email, password);
+  const signUpWithEmail = async (payload:signInPayload) => {
+    return ssrSignUpWithEmail(payload);
   };
 
   const signOut = async () => {
