@@ -39,22 +39,22 @@ export default function RootLayout({
          <link
           rel="apple-touch-startup-image"
           media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
-          href="https://rukminim1.flixcart.com/www/1290/2792/promos/21/07/2024/dc4cedcb-4f40-4188-8655-52496286257d.jpg?q=100"
+          href="https://jfszjpf71nrflfzq.public.blob.vercel-storage.com/sprash_screen-PN9NLIb1WDDU7JgYf81ZoRbaNicCFd.png"
         />
         <link
           rel="apple-touch-startup-image"
           media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
-          href="https://rukminim1.flixcart.com/www/1179/2556/promos/19/07/2024/b7db38ec-bce9-47af-bc79-bc952ba0918d.png?q=100"
+          href="https://jfszjpf71nrflfzq.public.blob.vercel-storage.com/sprash_screen-PN9NLIb1WDDU7JgYf81ZoRbaNicCFd.png"
         />
         <link
           rel="apple-touch-startup-image"
           media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
-          href="https://rukminim1.flixcart.com/www/1170/2532/promos/18/07/2024/2ee2c044-13f0-4473-8200-9605f9afbd4d.png?q=100"
+          href="https://jfszjpf71nrflfzq.public.blob.vercel-storage.com/sprash_screen-PN9NLIb1WDDU7JgYf81ZoRbaNicCFd.png"
         />
         <link
           rel="apple-touch-startup-image"
           media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
-          href="https://rukminim1.flixcart.com/www/1284/2778/promos/21/07/2024/b2b12164-277f-4fbe-9afe-a86bdac6cd14.png?q=100"
+          href="https://jfszjpf71nrflfzq.public.blob.vercel-storage.com/sprash_screen-PN9NLIb1WDDU7JgYf81ZoRbaNicCFd.png"
         />
         {/* <link
           rel="apple-touch-startup-image"
