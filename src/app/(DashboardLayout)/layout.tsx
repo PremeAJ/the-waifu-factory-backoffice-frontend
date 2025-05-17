@@ -32,10 +32,6 @@ const PageWrapper = styled("div")(() => ({
   backgroundColor: "transparent",
 }));
 
-interface Props {
-  children: React.ReactNode;
-}
-
 export default function RootLayout({
   children,
 }: {
@@ -45,7 +41,6 @@ export default function RootLayout({
     useContext(CustomizerContext);
   const theme = useTheme();
   const MiniSidebarWidth = config.miniSidebarWidth;
-  console.log("2B");
 
   return (
     <AuthGuard>

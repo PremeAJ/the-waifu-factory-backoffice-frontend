@@ -25,7 +25,11 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
-  const { signOut, signInWithEmail, isLoading:authIsLoading } = useContext(AuthContext);
+  const {
+    signOut,
+    signInWithEmail,
+    isLoading: authIsLoading,
+  } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -36,8 +40,24 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
     onSubmit: async (data) => {
       const { error } = await signInWithEmail(data);
       if (error) {
-        formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-        formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        switch (error.message) {
+          case "Invalid login credentials":
+            formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+            formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+            break;
+          case "Request rate limit reached":
+            alert(
+              "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)"
+            );
+            break;
+          case "User is banned":
+            alert(
+              "บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ"
+            );
+            break;
+          default:
+            break;
+        }
       } else {
         window.location.href = "/";
       }
@@ -46,7 +66,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
 
   useEffect(() => {
     signOut();
-  },[])
+  }, []);
 
   return (
     <>

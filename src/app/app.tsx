@@ -12,6 +12,13 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
+  if (process.env.NODE_ENV === "production") {
+    // ปิด log ทุกชนิด
+    console.log = () => {};
+    console.warn = () => {};
+    console.error = () => {};
+    console.info = () => {};
+  }
   const theme = ThemeSettings();
   const { activeDir } = useContext(CustomizerContext);
 

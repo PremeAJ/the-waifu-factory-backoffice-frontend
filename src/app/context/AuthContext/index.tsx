@@ -6,7 +6,6 @@ import React, {
   useContext,
   ReactNode,
 } from "react";
-import { Session, User } from "@supabase/supabase-js";
 import {
   signInPayload,
   ssrGetSession,

@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { signInPayload } from './server';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -7,8 +8,8 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
 // ฟังก์ชันสำหรับ sign in ด้วย email/password
-export async function signInWithEmail(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+export async function signInWithEmail(payload:signInPayload) {
+  const { data, error } = await supabase.auth.signInWithPassword(payload);
   return { data, error };
 }
 

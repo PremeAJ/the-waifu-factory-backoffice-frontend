@@ -85,6 +85,7 @@ export const ssrGetSession = async () => {
   return supabase.auth.getSession();
 };
 
+
 const removeCookies = async () => {
   const cookieStore = await cookies();
   cookieStore.getAll().forEach((c) => {
