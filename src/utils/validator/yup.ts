@@ -6,7 +6,7 @@ export const emailValidator = yup
   .required("กรุณากรอกอีเมล");
 export const passwordSchema = yup
   .string()
-  .required("Password is required")
+  .required("กรุณากรอกรหัสผ่าน")
   .test("password-rules", "", function (value) {
     const errors = [];
 

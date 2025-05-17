@@ -132,7 +132,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 color: "primary.main",
               }}
             >
-              Forgot Password ?
+              ลืมรหัสผ่าน ?
             </Typography>
           </Stack>
         </Stack>

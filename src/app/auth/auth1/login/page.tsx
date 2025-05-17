@@ -16,6 +16,7 @@ export default function Login() {
       >
         <Grid
           sx={{
+            display: {xs: "none", lg: "block"},
             position: "relative",
             "&:before": {
               content: '""',
