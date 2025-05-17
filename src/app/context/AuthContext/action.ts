@@ -16,7 +16,12 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, {
+                ...options,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+              })
             );
           } catch {
             // The `setAll` method was called from a Server Component.
@@ -29,7 +34,7 @@ export async function createClient() {
   );
 }
 
-export async function ssrSignInWithEmail(payload:signInPayload) {
+export async function ssrSignInWithEmail(payload: signInPayload) {
   const supabase = await createClient();
   return supabase.auth.signInWithPassword(payload);
 }
@@ -49,7 +54,7 @@ export async function ssrSignInWithEmail(payload:signInPayload) {
 //   });
 // }
 
-export async function ssrSignUpWithEmail(payload:signInPayload) {
+export async function ssrSignUpWithEmail(payload: signInPayload) {
   const supabase = await createClient();
   return supabase.auth.signInWithPassword(payload);
 }
