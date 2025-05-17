@@ -3,7 +3,8 @@ import MyApp from "./app";
 import NextTopLoader from "nextjs-toploader";
 import "./global.css";
 import { CustomizerContextProvider } from "./context/customizerContext";
-
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 export const metadata = {
   title: "Modernize Main Demo",
   description: "Modernize Main kit",
@@ -35,7 +36,11 @@ export default function RootLayout({
       <body>
         <NextTopLoader color="#5D87FF" />
         <CustomizerContextProvider>
-          <MyApp>{children}</MyApp>
+          <MyApp>
+            {children}
+            <Analytics />
+            <SpeedInsights />
+          </MyApp>
         </CustomizerContextProvider>
       </body>
     </html>
