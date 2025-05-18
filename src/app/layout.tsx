@@ -18,6 +18,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <Header />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
       </head>
       <body>
         <NextTopLoader color="#5D87FF" />
