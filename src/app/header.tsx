@@ -7,10 +7,6 @@ export default function Header() {
       <meta name="theme-color" content="#ea9e3b" />
       <link rel="icon" href="/PWA/icons/icon-192x192.png" />
       <link rel="manifest" href="/PWA/manifest.json" />
-      <meta
-        name="keywords"
-        content="MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM"
-      />
       <meta name="robots" content="index, follow" />
       <meta name="apple-mobile-web-app-capable" content="yes"></meta>
       <link rel="apple-touch-icon" href="/PWA/icons/icon-192x192.png" />
