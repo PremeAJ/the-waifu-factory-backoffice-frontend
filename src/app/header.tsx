@@ -7,7 +7,7 @@ export default function Header() {
       <title>Meow Som</title>
       <meta
         name="viewport"
-        content="width=device-width,minimum-scale=1,user-scalable=no"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
       />
       <meta name="theme-color" content="#ea9e3b" />
       <link rel="icon" href="/PWA/icons/icon-192x192.png" />
