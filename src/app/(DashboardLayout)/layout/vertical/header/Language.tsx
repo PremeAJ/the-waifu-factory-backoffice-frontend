@@ -84,7 +84,10 @@ const Language = () => {
           <MenuItem
             key={index}
             sx={{ py: 2, px: 3 }}
-            onClick={() => setIsLanguage(option.value)}
+            onClick={() => {
+              setIsLanguage(option.value);
+              setAnchorEl(null);
+            }}
           >
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
