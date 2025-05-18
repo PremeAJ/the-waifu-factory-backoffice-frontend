@@ -4,9 +4,16 @@ import NextTopLoader from "nextjs-toploader";
 import "./global.css";
 import { CustomizerContextProvider } from "./context/customizerContext";
 import Header from "./header";
-export const metadata = {
-  title: "Modernize Main Demo",
-  description: "Modernize Main kit",
+import { Metadata, Viewport } from "next";
+export const metadata: Metadata = {
+  title: "Meow Som",
+  description: "แดชบอร์ดจัดการระบบ POS สำหรับร้านค้า MeowSom",
+};
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  userScalable: false,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
