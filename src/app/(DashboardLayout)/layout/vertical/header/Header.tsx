@@ -85,7 +85,7 @@ const Header = () => {
             {/* End Ecommerce Dropdown */}
             {/* ------------------------------------------- */}
 
-            <IconButton size="large" color="inherit">
+            {/* <IconButton size="large" color="inherit">
               {activeMode === "light" ? (
                 <IconMoon
                   size="21"
@@ -99,7 +99,7 @@ const Header = () => {
                   onClick={() => setActiveMode("light")}
                 />
               )}
-            </IconButton>
+            </IconButton> */}
 
             <Notifications />
             {/* ------------------------------------------- */}
