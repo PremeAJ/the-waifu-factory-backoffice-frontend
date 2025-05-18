@@ -18,6 +18,8 @@ import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, passwordSchema } from "@/utils/validator/yup";
+import { useTranslation } from "react-i18next";
+import Language from "@/app/(DashboardLayout)/layout/vertical/header/Language";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -25,6 +27,7 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
+  const { t } = useTranslation();
   const {
     signOut,
     signInWithEmail,
@@ -69,8 +72,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   return (
     <>
       {title ? (
-        <Typography fontWeight="700" variant="h3" mb={1}>
-          {title}
+        <Typography fontWeight="700" variant="h3" mb={1} justifyContent="space-between" display="flex">
+          {title} <Language />
         </Typography>
       ) : null}
 
@@ -132,7 +135,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 color: "primary.main",
               }}
             >
-              ลืมรหัสผ่าน ?
+              {t("Login.ForgotPassword")} ?
             </Typography>
           </Stack>
         </Stack>

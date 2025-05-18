@@ -1,34 +1,37 @@
-import React, { useContext, useEffect } from 'react';
-import { Avatar, IconButton, Menu, MenuItem, Typography } from '@mui/material';
-import { CustomizerContext } from '@/app/context/customizerContext';
+import React, { useContext, useEffect } from "react";
+import { Avatar, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { CustomizerContext } from "@/app/context/customizerContext";
 
-import { Stack } from '@mui/system';
-import { useTranslation } from 'react-i18next';
-
-
+import { Stack } from "@mui/system";
+import { useTranslation } from "react-i18next";
 
 const Languages = [
   {
-    flagname: 'English (UK)',
+    flagname: "ภาษาไทย (TH)",
+    icon: "/images/flag/icon-flag-th.svg",
+    value: "th",
+  },
+  {
+    flagname: "English (UK)",
     icon: "/images/flag/icon-flag-en.svg",
-    value: 'en',
+    value: "en",
   },
-  {
-    flagname: '中国人 (Chinese)',
-    icon: "/images/flag/icon-flag-cn.svg",
-    value: 'ch',
-  },
-  {
-    flagname: 'français (French)',
-    icon: "/images/flag/icon-flag-fr.svg",
-    value: 'fr',
-  },
+  // {
+  //   flagname: "中国人 (Chinese)",
+  //   icon: "/images/flag/icon-flag-cn.svg",
+  //   value: "ch",
+  // },
+  // {
+  //   flagname: "français (French)",
+  //   icon: "/images/flag/icon-flag-fr.svg",
+  //   value: "fr",
+  // },
 
-  {
-    flagname: 'عربي (Arabic)',
-    icon: "/images/flag/icon-flag-sa.svg",
-    value: 'ar',
-  },
+  // {
+  //   flagname: "عربي (Arabic)",
+  //   icon: "/images/flag/icon-flag-sa.svg",
+  //   value: "ar",
+  // },
 ];
 
 const Language = () => {
@@ -48,20 +51,23 @@ const Language = () => {
   };
   useEffect(() => {
     i18n.changeLanguage(isLanguage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLanguage]); // ✅ trigger ทุกครั้งที่ isLanguage เปลี่ยน
 
   return (
     <>
       <IconButton
         aria-label="more"
         id="long-button"
-        aria-controls={open ? 'long-menu' : undefined}
-        aria-expanded={open ? 'true' : undefined}
+        aria-controls={open ? "long-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <Avatar src={currentLang.icon} alt={currentLang.value} sx={{ width: 20, height: 20 }} />
+        <Avatar
+          src={currentLang.icon}
+          alt={currentLang.value}
+          sx={{ width: 20, height: 20 }}
+        />
       </IconButton>
       <Menu
         id="long-menu"
@@ -69,8 +75,8 @@ const Language = () => {
         open={open}
         onClose={handleClose}
         sx={{
-          '& .MuiMenu-paper': {
-            width: '200px',
+          "& .MuiMenu-paper": {
+            width: "200px",
           },
         }}
       >
@@ -81,7 +87,11 @@ const Language = () => {
             onClick={() => setIsLanguage(option.value)}
           >
             <Stack direction="row" spacing={1} alignItems="center">
-              <Avatar src={option.icon} alt={option.icon} sx={{ width: 20, height: 20 }} />
+              <Avatar
+                src={option.icon}
+                alt={option.icon}
+                sx={{ width: 20, height: 20 }}
+              />
               <Typography> {option.flagname}</Typography>
             </Stack>
           </MenuItem>
