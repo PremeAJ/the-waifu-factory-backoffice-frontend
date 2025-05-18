@@ -1,7 +1,15 @@
 {
-  "Login": {
-    "ForgotPassword": "ลืมรหัสผ่าน"
+  "LoginForm": {
+    "ForgotPassword": "ลืมรหัสผ่าน",
+    "RememberThisDevice": "จำอุปกรณ์เครื่องนี้"
   },
+  "Form": {
+    "Validator": {
+      "PleaseEnterYour": "กรุณากรอก "
+    }
+  },
+  "email": "อีเมล",
+  "password": "รหัสผ่าน",
   "Modern": "Modern",
   "eCommerce": "eCommerce",
   "Contacts": "Contacts",

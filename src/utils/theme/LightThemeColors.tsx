@@ -88,9 +88,9 @@ const LightThemeColors = [
     name: 'ORANGE_THEME',
     palette: {
       primary: {
-        main: '#FA896B',
+        main: '#eb9e37',
         light: '#FBF2EF',
-        dark: '#F48162',
+        dark: '#c15d0b',
         contrastText: '#ffffff',
       },
       secondary: {

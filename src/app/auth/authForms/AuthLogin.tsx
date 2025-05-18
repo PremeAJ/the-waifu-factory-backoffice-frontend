@@ -102,7 +102,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
               name="email"
               formik={formik}
               label="Email"
-              placeholder="กรุณากรอกอีเมล"
+              placeholder={`${t('Form.Validator.PleaseEnterYour')}${t('email')}`}
             />
           </Box>
           <Box>
@@ -111,7 +111,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
               formik={formik}
               label="Password"
               type="password"
-              placeholder="กรุณากรอกรหัสผ่าน"
+              placeholder={`${t('Form.Validator.PleaseEnterYour')}${t('password')}`}
             />
           </Box>
           <Stack
@@ -123,7 +123,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             <FormGroup>
               <FormControlLabel
                 control={<CustomCheckbox defaultChecked />}
-                label="Remember this Device"
+                label={t('LoginForm.RememberThisDevice')}
               />
             </FormGroup>
             <Typography
@@ -135,7 +135,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 color: "primary.main",
               }}
             >
-              {t("Login.ForgotPassword")} ?
+              {t("LoginForm.ForgotPassword")} ?
             </Typography>
           </Stack>
         </Stack>

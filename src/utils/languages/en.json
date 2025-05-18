@@ -1,7 +1,15 @@
 {
-  "Login": {
-    "ForgotPassword": "forgot password"
+  "LoginForm": {
+    "ForgotPassword": "forgot password",
+    "RememberThisDevice":"Remember this Device"
   },
+  "Form": {
+    "Validator": {
+      "PleaseEnterYour": "Please enter your "
+    }
+  },
+  "email": "email",
+  "password": "password",
   "Modern": "Modern",
   "eCommerce": "eCommerce",
   "Contacts": "Contacts",

@@ -73,10 +73,10 @@ export default function Register() {
           }}>
           <Box p={4}>
             <AuthRegister
-              title="Welcome to Modernize"
+              title="Welcome to MeowSom"
               subtext={
                 <Typography variant="subtitle1" color="textSecondary" mb={1}>
-                  Your Admin Dashboard
+                  {/* Your Admin Dashboard */}
                 </Typography>
               }
               subtitle={

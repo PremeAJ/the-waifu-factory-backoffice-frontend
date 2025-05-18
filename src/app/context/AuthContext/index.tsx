@@ -9,6 +9,7 @@ import React, {
 import {
   signInPayload,
   ssrGetSession,
+  ssrGetUser,
   ssrRefreshSession,
   ssrSignInWithEmail,
   ssrSignOut,
@@ -22,6 +23,7 @@ type AuthContextType = {
   signOut: () => Promise<any>;
   refreshSession: () => Promise<void>;
   getSession: () => Promise<any>;
+  getUser:() => Promise<any>;
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -72,6 +74,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
+   const getUser = async () => {
+    setIsLoading(true);
+    const response = await ssrGetUser();
+    setIsLoading(false);
+    return response;
+  };
+
+
 
   return (
     <AuthContext.Provider
@@ -81,7 +91,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         signUpWithEmail,
         signOut,
         refreshSession,
-        getSession
+        getSession,
+        getUser
       }}
     >
       {children}

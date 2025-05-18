@@ -93,7 +93,7 @@ const DarkThemeColors = [
     name: 'ORANGE_THEME',
     palette: {
       primary: {
-        main: '#FA896B',
+        main: '#eb9e37',
         light: '#402E32',
         dark: '#F48162',
         contrastText: '#ffffff',
