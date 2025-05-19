@@ -106,6 +106,40 @@ const DarkThemeColors = [
       },
     },
   },
+  {
+    name: 'GRASS_THEME',
+    palette: {
+      primary: {
+        main: '#4CAF50',        // สีเขียวหลัก (สด)
+        light: '#C8E6C9',       // สีเขียวอ่อน
+        dark: '#388E3C',        // สีเขียวเข้ม
+        contrastText: '#ffffff',
+      },
+      secondary: {
+        main: '#8BC34A',        // เขียวอ่อนสด
+        light: '#F1F8E9',
+        dark: '#689F38',
+        contrastText: '#ffffff',
+      },
+    },
+  },
+  {
+    name: 'PINK_THEME',
+    palette: {
+      primary: {
+        main: '#d81b60',        // ชมพูเข้ม
+        light: '#ff8fb5',       // ชมพูสด
+        dark: '#880e4f',        // ชมพูแดงเข้ม
+        contrastText: '#ffffff',
+      },
+      secondary: {
+        main: '#ad1457',        // ชมพูม่วงเข้ม
+        light: '#ff5598',
+        dark: '#78002e',
+        contrastText: '#ffffff',
+      },
+    },
+  }
 ];
 
 export { DarkThemeColors };

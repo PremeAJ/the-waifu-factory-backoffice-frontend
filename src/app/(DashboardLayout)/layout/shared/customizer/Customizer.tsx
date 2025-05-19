@@ -75,8 +75,8 @@ const Customizer: FC = () => {
   const thColors: colors[] = [
     {
       id: 1,
-      bgColor: "#5D87FF",
-      disp: "BLUE_THEME",
+      bgColor: "#eb9e37",
+      disp: "ORANGE_THEME",
     },
     {
       id: 2,
@@ -100,8 +100,18 @@ const Customizer: FC = () => {
     },
     {
       id: 6,
-      bgColor: "#FA896B",
-      disp: "ORANGE_THEME",
+      bgColor: "#5D87FF",
+      disp: "BLUE_THEME",
+    },
+    {
+      id: 7,
+      bgColor: "#4CAF50",
+      disp: "GRASS_THEME",
+    },
+    {
+      id: 8,
+      bgColor: "#f48fb1",
+      disp: "PINK_THEME",
     },
   ];
 
@@ -225,7 +235,7 @@ const Customizer: FC = () => {
             </Typography>
             <Grid container spacing={2}>
               {thColors.map((thcolor) => (
-                <Grid key={thcolor.id} size={4}>
+                <Grid key={thcolor.id} size={4} onClick={() => setActiveTheme(thcolor.disp)}>
                   <StyledBox onClick={() => addAttributeToBody(thcolor.disp)}>
                     <Tooltip title={`${thcolor.disp}`} placement="top">
                       <Box
@@ -240,7 +250,6 @@ const Customizer: FC = () => {
                           color: "white",
                         }}
                         aria-label={`${thcolor.bgColor}`}
-                        onClick={() => setActiveTheme(thcolor.disp)}
                       >
                         {activeTheme === thcolor.disp ? (
                           <IconCheck width={13} />

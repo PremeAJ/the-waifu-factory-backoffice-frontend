@@ -101,6 +101,40 @@ const LightThemeColors = [
       },
     },
   },
+  {
+    name: 'GRASS_THEME',
+    palette: {
+      primary: {
+        main: '#4CAF50',        // สีเขียวหลัก (สด)
+        light: '#C8E6C9',       // สีเขียวอ่อน
+        dark: '#388E3C',        // สีเขียวเข้ม
+        contrastText: '#ffffff',
+      },
+      secondary: {
+        main: '#8BC34A',        // เขียวอ่อนสด
+        light: '#F1F8E9',
+        dark: '#689F38',
+        contrastText: '#ffffff',
+      },
+    },
+  },
+  {
+    name: 'PINK_THEME',
+    palette: {
+      primary: {
+        main: '#f48fb1',
+        light: '#fce4ec',
+        dark: '#ec407a',
+        contrastText: '#ffffff',
+      },
+      secondary: {
+        main: '#ffccbc',
+        light: '#fff8f6',
+        dark: '#ffab91',
+        contrastText: '#4a148c',
+      },
+    },
+  }
 ];
 
 export { LightThemeColors };
