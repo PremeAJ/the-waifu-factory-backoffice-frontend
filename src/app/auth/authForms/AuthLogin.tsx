@@ -123,7 +123,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             <FormGroup>
               <FormControlLabel
                 control={<CustomCheckbox defaultChecked />}
-                label={t('LoginForm.RememberThisDevice')}
+                label={t('LoginPage.RememberThisDevice')}
               />
             </FormGroup>
             <Typography
@@ -135,7 +135,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 color: "primary.main",
               }}
             >
-              {t("LoginForm.ForgotPassword")} ?
+              {t("LoginPage.ForgotPassword")} ?
             </Typography>
           </Stack>
         </Stack>
@@ -148,7 +148,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             type="submit"
             loading={authIsLoading}
           >
-            Sign In
+            {t('LoginPage.SignIn')}
           </Button>
         </Box>
       </form>

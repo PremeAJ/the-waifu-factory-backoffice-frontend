@@ -1,10 +1,13 @@
+"use client"
 import React from "react";
 import "./global.css";
+import { ThemeSettings } from "@/utils/theme/Theme";
 
 export default function Header() {
+  const theme = ThemeSettings();
   return (
     <>
-      <meta name="theme-color" content="#ea9e3b" />
+      <meta name="theme-color" content={theme.palette.primary.main} />
       <link rel="icon" href="/PWA/icons/icon-192x192.png" />
       <link rel="manifest" href="/PWA/manifest.json" />
       <meta name="robots" content="index, follow" />

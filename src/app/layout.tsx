@@ -8,7 +8,7 @@ import { Metadata, Viewport } from "next";
 export const metadata: Metadata = {
   title: "Meow Som",
   description: "แดชบอร์ดจัดการระบบ POS สำหรับร้านค้า MeowSom",
-  keywords:"MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
+  keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
 };
 
 export const viewport: Viewport = {
@@ -24,16 +24,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <Header />
-      </head>
-      <body>
-        <NextTopLoader color="#5D87FF" />
-        <CustomizerContextProvider>
+    <CustomizerContextProvider>
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          <Header />
+        </head>
+        <body>
+          <NextTopLoader color="#5D87FF" />
           <MyApp>{children}</MyApp>
-        </CustomizerContextProvider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </CustomizerContextProvider>
   );
 }
