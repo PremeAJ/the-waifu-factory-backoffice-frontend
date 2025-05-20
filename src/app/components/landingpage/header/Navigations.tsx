@@ -7,8 +7,8 @@ import { Grid } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import { IconChevronDown } from '@tabler/icons-react';
-import AppLinks from '@/app/dashboard/layout/vertical/header/AppLinks';
-import QuickLinks from '@/app/dashboard/layout/vertical/header/QuickLinks';
+import AppLinks from '@/app/dashboard/(Layout)/layout/vertical/header/AppLinks';
+import QuickLinks from '@/app/dashboard/(Layout)/layout/vertical/header/QuickLinks';
 import DemosDD from './DemosDD';
 import { useTranslation } from 'react-i18next';
 

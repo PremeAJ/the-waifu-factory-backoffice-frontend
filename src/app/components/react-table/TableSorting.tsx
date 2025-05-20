@@ -24,7 +24,7 @@ import DownloadCard from "@/app/components/shared/DownloadCard";
 import {
   basicsTableData,
   BasicsTableDataType,
-} from "@/app/dashboard/react-tables/filter/FilterTableData";
+} from "@/app/dashboard/(Layout)/react-tables/filter/FilterTableData";
 
 import {
   flexRender,

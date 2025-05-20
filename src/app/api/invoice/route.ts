@@ -1,4 +1,4 @@
-import { InvoiceList } from "@/app/dashboard/types/apps/invoice";
+import { InvoiceList } from "@/app/dashboard/(Layout)/types/apps/invoice";
 import { NextResponse } from "next/server";
 
 let invoceLists: InvoiceList[] = [

@@ -10,11 +10,11 @@ import { Theme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { styled } from '@mui/material/styles';
-import Logo from "@/app/dashboard/layout/shared/logo/Logo";
+import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import Navigations from "./Navigations";
 import MobileSidebar from "./MobileSidebar";
 import { IconMenu2 } from "@tabler/icons-react";
-import Language from "@/app/dashboard/layout/vertical/header/Language";
+import Language from "@/app/dashboard/(Layout)/layout/vertical/header/Language";
 
 const LpHeader = () => {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({

@@ -18,7 +18,7 @@ import { ChatContext } from "@/app/context/ChatContext/index";
 
 import Scrollbar from "../../custom-scroll/Scrollbar";
 
-import { ChatsType } from '../../../dashboard/types/apps/chat';
+import { ChatsType } from '../../../dashboard/(Layout)/types/apps/chat';
 import { last } from "lodash";
 import { formatDistanceToNowStrict } from "date-fns";
 import { IconChevronDown, IconSearch } from "@tabler/icons-react";

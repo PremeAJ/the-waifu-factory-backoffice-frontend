@@ -22,7 +22,7 @@ import { IconBasket, IconMenu2 } from "@tabler/icons-react";
 import AlertCart from "../productCart/AlertCart";
 import emptyCart from "/public/images/products/empty-shopping-cart.svg";
 import BlankCard from "../../../shared/BlankCard";
-import { ProductType } from "../../../../dashboard/types/apps/eCommerce";
+import { ProductType } from "../../../../dashboard/(Layout)/types/apps/eCommerce";
 import Image from "next/image";
 import { SnackbarCloseReason } from "@mui/material";
 
