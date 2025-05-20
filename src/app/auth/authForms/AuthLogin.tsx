@@ -10,7 +10,7 @@ import {
   Divider,
 } from "@mui/material";
 import Link from "next/link";
-import { loginType } from "@/app/(DashboardLayout)/types/auth/auth";
+import { loginType } from "@/app/(DashboardLayout)/dashboard/types/auth/auth";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
 import AuthSocialButtons from "./AuthSocialButtons";
 import * as yup from "yup";
@@ -19,7 +19,7 @@ import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, passwordSchema } from "@/utils/validator/yup";
 import { useTranslation } from "react-i18next";
-import Language from "@/app/(DashboardLayout)/layout/vertical/header/Language";
+import Language from "@/app/(DashboardLayout)/dashboard/layout/vertical/header/Language";
 
 const validationSchema = yup.object({
   email: emailValidator,

@@ -16,7 +16,7 @@ import {
 import { IconEye, IconMessage2, IconPoint } from '@tabler/icons-react';
 
 import BlankCard from '../../shared/BlankCard';
-import { BlogPostType } from '../../../(DashboardLayout)/types/apps/blog';
+import { BlogPostType } from '../../../(DashboardLayout)/dashboard/types/apps/blog';
 
 interface Btype {
   post: BlogPostType;

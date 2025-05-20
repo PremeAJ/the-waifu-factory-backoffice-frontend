@@ -4,7 +4,7 @@ import EmailListItem from "./EmailListItem";
 
 
 import Scrollbar from "../../../components/custom-scroll/Scrollbar";
-import { EmailType } from '../../../(DashboardLayout)/types/apps/email';
+import { EmailType } from '../../../(DashboardLayout)/dashboard/types/apps/email';
 import { EmailContext } from "@/app/context/EmailContext";
 
 interface Props {
