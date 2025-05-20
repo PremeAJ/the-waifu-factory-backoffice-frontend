@@ -66,7 +66,6 @@ const LpHeader = () => {
               <Navigations />
             </Stack>
           ) : null}
-          {/* เพิ่ม Box สำหรับจัด Language ไปขวาสุด */}
           <Box ml={2} display="flex" alignItems="center">
             <Language />
           </Box>

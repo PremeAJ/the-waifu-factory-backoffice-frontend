@@ -16,6 +16,9 @@
       "PleaseEnterYour": "Please enter your "
     }
   },
+  "Navigation": {
+    "Pricing": "Pricing"
+  },
   "email": "email",
   "password": "password",
   "Modern": "Modern",

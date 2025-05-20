@@ -116,7 +116,7 @@ const Navigations = () => {
                     position: 'absolute',
                     left: '0',
                     right: '0',
-                    top: '55px',
+                top: '55px',
                     maxWidth: '1200px',
                     width: '100%'
                 }}
@@ -124,6 +124,9 @@ const Navigations = () => {
                 <DemosDD />
             </Paper>
         )}
+         <StyledButton color="inherit" variant="text" href="/pricing">
+            ราคา
+        </StyledButton>
         <StyledButton color="inherit" variant="text" href="/">
             รู้จักเรา
         </StyledButton>

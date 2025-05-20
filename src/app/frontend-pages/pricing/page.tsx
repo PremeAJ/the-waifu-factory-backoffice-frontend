@@ -10,7 +10,6 @@ import ScrollToTop from '../../components/frontend-pages/shared/scroll-to-top';
 const PricingPage = () => {
     return (
         <PageContainer title="Pricing" description="this is Pricing">
-
             <HeaderAlert />
             <HpHeader />
             <Banner />

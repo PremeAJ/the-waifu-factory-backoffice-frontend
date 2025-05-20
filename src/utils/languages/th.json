@@ -16,6 +16,9 @@
       "PleaseEnterYour": "กรุณากรอก "
     }
   },
+  "Navigation":{
+    "Pricing":"ราคา"
+  },
   "email": "อีเมล",
   "password": "รหัสผ่าน",
   "Modern": "Modern",
