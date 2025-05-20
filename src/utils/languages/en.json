@@ -1,5 +1,9 @@
 {
   "Page": {
+    "Main": {
+      "TryFreeDemo": "Try Free Demo",
+      "Login": "Login"
+    },
     "Login": {
       "ForgotPassword": "forgot password",
       "RememberThisDevice": "Remember this Device",

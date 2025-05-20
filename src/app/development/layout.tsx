@@ -1,12 +1,98 @@
 "use client";
-import React from "react";
-import Error404 from "../auth/error/404/page";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import { styled, useTheme } from "@mui/material/styles";
+import React, { useContext, useEffect } from "react";
+import Header from "./layout/vertical/header/Header";
+import Sidebar from "./layout/vertical/sidebar/Sidebar";
+import Customizer from "./layout/shared/customizer/Customizer";
+import Navigation from "./layout/horizontal/navbar/Navigation";
+import HorizontalHeader from "./layout/horizontal/header/Header";
+import { CustomizerContext } from "@/app/context/customizerContext";
+import config from "@/app/context/config";
+import Loading from "../loading";
+import { useRouter } from "next/navigation"; // ← แก้ตรงนี้
+import { supabase } from "@/utils/supabase/client";
+import { AuthContext } from "../context/AuthContext";
+import DevGuard from "./DevGuard";
+
+const MainWrapper = styled("div")(() => ({
+  display: "flex",
+  minHeight: "100vh",
+  width: "100%",
+}));
+
+const PageWrapper = styled("div")(() => ({
+  display: "flex",
+  flexGrow: 1,
+  paddingBottom: "60px",
+  flexDirection: "column",
+  zIndex: 1,
+  width: "100%",
+  backgroundColor: "transparent",
+}));
 
 export default function RootLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    const isDevelopment = process.env.NODE_ENV === "development";
-    return (isDevelopment && children || <Error404 />);
+  const { activeLayout, isLayout, activeMode, isCollapse } =
+    useContext(CustomizerContext);
+  const theme = useTheme();
+
+  return (
+    <DevGuard>
+      <MainWrapper
+        className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}
+      >
+        <title>Modernize NextJs</title>
+        {/* ------------------------------------------- */}
+        {/* Sidebar */}
+        {/* ------------------------------------------- */}
+        {activeLayout === "horizontal" ? "" : <Sidebar />}
+        {/* ------------------------------------------- */}
+        {/* Main Wrapper */}
+        {/* ------------------------------------------- */}
+        <PageWrapper
+          className="page-wrapper"
+          sx={{
+            ...(isCollapse === "mini-sidebar" && {
+              [theme.breakpoints.up("lg")]: {
+                ml: `87px`,
+              },
+            }),
+          }}
+        >
+          {/* ------------------------------------------- */}
+          {/* Header */}
+          {/* ------------------------------------------- */}
+          {activeLayout === "horizontal" ? <HorizontalHeader /> : <Header />}
+          {/* PageContent */}
+          {activeLayout === "horizontal" ? <Navigation /> : ""}
+          <Container
+            sx={{
+              pt: "30px",
+              maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
+            }}
+          >
+            {/* ------------------------------------------- */}
+            {/* PageContent */}
+            {/* ------------------------------------------- */}
+{process.env.NODE_ENV}
+            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>
+              {/* <Outlet /> */}
+              {children}
+              {/* <Index /> */}
+            </Box>
+
+            {/* ------------------------------------------- */}
+            {/* End Page */}
+            {/* ------------------------------------------- */}
+          </Container>
+          <Customizer />
+        </PageWrapper>
+      </MainWrapper>
+    </DevGuard>
+  );
 }

@@ -14,6 +14,7 @@ import Logo from "@/app/dashboard/layout/shared/logo/Logo";
 import Navigations from "./Navigations";
 import MobileSidebar from "./MobileSidebar";
 import { IconMenu2 } from "@tabler/icons-react";
+import Language from "@/app/dashboard/layout/vertical/header/Language";
 
 const LpHeader = () => {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
@@ -65,6 +66,10 @@ const LpHeader = () => {
               <Navigations />
             </Stack>
           ) : null}
+          {/* เพิ่ม Box สำหรับจัด Language ไปขวาสุด */}
+          <Box ml={2} display="flex" alignItems="center">
+            <Language />
+          </Box>
         </ToolbarStyled>
       </Container>
       <Drawer

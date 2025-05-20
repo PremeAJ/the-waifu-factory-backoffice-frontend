@@ -1,5 +1,9 @@
 {
   "Page": {
+    "Main":{
+      "TryFreeDemo": "ทดลองใช้งานฟรี",
+      "Login":"เข้าสู่ระบบ"
+    },
     "Login": {
       "ForgotPassword": "ลืมรหัสผ่าน",
       "RememberThisDevice": "จำอุปกรณ์เครื่องนี้",

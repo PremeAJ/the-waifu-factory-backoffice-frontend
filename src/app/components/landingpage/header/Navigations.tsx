@@ -10,9 +10,10 @@ import { IconChevronDown } from '@tabler/icons-react';
 import AppLinks from '@/app/dashboard/layout/vertical/header/AppLinks';
 import QuickLinks from '@/app/dashboard/layout/vertical/header/QuickLinks';
 import DemosDD from './DemosDD';
+import { useTranslation } from 'react-i18next';
 
 const Navigations = () => {
-
+    const { t } = useTranslation();
     const StyledButton = styled(Button)(({ theme }) => ({
         fontSize: '16px',
         color: theme.palette.text.secondary
@@ -44,34 +45,9 @@ const Navigations = () => {
 
 
     return (<>
-        <StyledButton
-            color="inherit"
-            variant="text"
-            aria-expanded={open ? 'true' : undefined}
-            sx={{
-                color: open ? 'primary.main' : (theme) => theme.palette.text.secondary,
-            }}
-            onMouseEnter={handleOpen} onMouseLeave={handleClose}
-            endIcon={<IconChevronDown size="15" style={{ marginLeft: '-5px', marginTop: '2px' }} />}
-        >
-            Demos
+        <StyledButton color="inherit" variant="text" href="/">
+            หน้าแรก
         </StyledButton>
-        {open && (
-            <Paper
-                onMouseEnter={handleOpen}
-                onMouseLeave={handleClose}
-                sx={{
-                    position: 'absolute',
-                    left: '0',
-                    right: '0',
-                    top: '55px',
-                    maxWidth: '1200px',
-                    width: '100%'
-                }}
-            >
-                <DemosDD />
-            </Paper>
-        )}
         <Box>
             <StyledButton
                 color="inherit"
@@ -82,7 +58,7 @@ const Navigations = () => {
                 }}
                 endIcon={<IconChevronDown size="15" style={{ marginLeft: '-5px', marginTop: '2px' }} />}
             >
-                Pages
+                ผลิตภัณฑ์ของเรา
             </StyledButton>
             {open2 && (
                 <Paper
@@ -120,14 +96,39 @@ const Navigations = () => {
                 </Paper>
             )}
         </Box>
-        <StyledButton color="inherit" variant="text" href="https://adminmart.github.io/premium-documentation/nextjs/modernize/index.html">
-            Documentation
+        <StyledButton
+            color="inherit"
+            variant="text"
+            aria-expanded={open ? 'true' : undefined}
+            sx={{
+                color: open ? 'primary.main' : (theme) => theme.palette.text.secondary,
+            }}
+            onMouseEnter={handleOpen} onMouseLeave={handleClose}
+            endIcon={<IconChevronDown size="15" style={{ marginLeft: '-5px', marginTop: '2px' }} />}
+        >
+            Demos
         </StyledButton>
-        <StyledButton color="inherit" variant="text" href="https://adminmart.com/support">
-            Support
+        {open && (
+            <Paper
+                onMouseEnter={handleOpen}
+                onMouseLeave={handleClose}
+                sx={{
+                    position: 'absolute',
+                    left: '0',
+                    right: '0',
+                    top: '55px',
+                    maxWidth: '1200px',
+                    width: '100%'
+                }}
+            >
+                <DemosDD />
+            </Paper>
+        )}
+        <StyledButton color="inherit" variant="text" href="/">
+            รู้จักเรา
         </StyledButton>
-        <Button color="primary" variant="contained" href="/auth/auth1/login">
-            Login
+        <Button color="primary" variant="contained" href="/auth/auth1/login" sx={{ minWidth: '91px' }}>
+            {t('Page.Main.Login')}
         </Button>
     </>);
 };

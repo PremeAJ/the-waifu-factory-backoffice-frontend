@@ -6,8 +6,8 @@ import { CustomizerContextProvider } from "./context/customizerContext";
 import Header from "./header";
 import { Metadata, Viewport } from "next";
 export const metadata: Metadata = {
-  title: "Meow Som",
-  description: "แดชบอร์ดจัดการระบบ POS สำหรับร้านค้า MeowSom",
+  // title: "Meow Som",
+  // description: "แดชบอร์ดจัดการระบบ POS สำหรับร้านค้า MeowSom",
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
 };
 
