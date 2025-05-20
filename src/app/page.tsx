@@ -15,7 +15,7 @@ import Testimonial from '@/app/components/landingpage/testimonial/Testimonial';
 
 export default function Landingpage() {
   return (
-    <PageContainer title="Landingpage" description="this is Landingpage">
+    <PageContainer title="Home" description="Meow Som Home">
       <LpHeader />
       <Banner />
       <DemoSlider />

@@ -5,6 +5,11 @@ import english from '../utils/languages/en.json';
 import french from '../utils/languages/fr.json';
 import arabic from '../utils/languages/ar.json';
 import chinese from '../utils/languages/ch.json';
+import Cookie from 'js-cookie';
+import { get } from 'lodash';
+import config from '@/app/context/config';
+import { useContext } from 'react';
+import { CustomizerContext } from '@/app/context/customizerContext';
 
 const resources = {
   th: {
@@ -24,13 +29,17 @@ const resources = {
   },
 };
 
+export const getLanguage = () => {
+  return Cookie.get('language') || config.isLanguage || 'th';
+}
+
 i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
+  .use(initReactI18next) 
   .init({
     resources,
-    lng: 'en',
+    lng: getLanguage(),
     interpolation: {
-      escapeValue: false, // react already safes from xss
+      escapeValue: false,
     },
   });
 

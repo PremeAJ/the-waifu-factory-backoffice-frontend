@@ -51,7 +51,7 @@ const Language = () => {
   };
   useEffect(() => {
     i18n.changeLanguage(isLanguage);
-  }, [isLanguage]); // ✅ trigger ทุกครั้งที่ isLanguage เปลี่ยน
+  }, [isLanguage]);
 
   return (
     <>
@@ -85,7 +85,7 @@ const Language = () => {
             key={index}
             sx={{ py: 2, px: 3 }}
             onClick={() => {
-              setIsLanguage(option.value);
+              setIsLanguage(option.value);   // เปลี่ยน context
               setAnchorEl(null);
             }}
           >

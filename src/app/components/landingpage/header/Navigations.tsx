@@ -130,7 +130,7 @@ const Navigations = () => {
         <StyledButton color="inherit" variant="text" href="/">
             รู้จักเรา
         </StyledButton>
-        <Button color="primary" variant="contained" href="/auth/auth1/login" sx={{ minWidth: '91px' }}>
+        <Button color="primary" variant="contained" href="/login" sx={{ minWidth: '91px' }}>
             {t('Page.Main.Login')}
         </Button>
     </>);
