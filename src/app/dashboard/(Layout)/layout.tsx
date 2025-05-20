@@ -10,10 +10,6 @@ import Navigation from "./layout/horizontal/navbar/Navigation";
 import HorizontalHeader from "./layout/horizontal/header/Header";
 import { CustomizerContext } from "@/app/context/customizerContext";
 import config from "@/app/context/config";
-import Loading from "../loading";
-import { useRouter } from "next/navigation"; // ← แก้ตรงนี้
-import { supabase } from "@/utils/supabase/client";
-import { AuthContext } from "../context/AuthContext";
 import AuthGuard from "./authGuard";
 
 const MainWrapper = styled("div")(() => ({
