@@ -7,8 +7,8 @@ import { Grid } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import { IconChevronDown } from '@tabler/icons-react';
-import AppLinks from '@/app/(DashboardLayout)/dashboard/layout/vertical/header/AppLinks';
-import QuickLinks from '@/app/(DashboardLayout)/dashboard/layout/vertical/header/QuickLinks';
+import AppLinks from '@/app/dashboard/layout/vertical/header/AppLinks';
+import QuickLinks from '@/app/dashboard/layout/vertical/header/QuickLinks';
 import DemosDD from './DemosDD';
 
 const Navigations = () => {

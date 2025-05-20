@@ -1,4 +1,4 @@
-import type { ContactType } from "@/app/(DashboardLayout)/dashboard/types/apps/contact";
+import type { ContactType } from "@/app/dashboard/types/apps/contact";
 import { Chance } from "chance";
 import { NextResponse } from "next/server";
 

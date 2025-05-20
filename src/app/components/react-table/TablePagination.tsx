@@ -24,7 +24,7 @@ import DownloadCard from "@/app/components/shared/DownloadCard";
 import {
   basicsTableData,
   PaginationDataType,
-} from "@/app/(DashboardLayout)/dashboard/react-tables/pagination/PaginationData";
+} from "@/app/dashboard/react-tables/pagination/PaginationData";
 
 import {
   flexRender,

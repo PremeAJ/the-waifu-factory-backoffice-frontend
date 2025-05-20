@@ -1,9 +1,11 @@
 {
-  "LoginPage": {
-    "ForgotPassword": "forgot password",
-    "RememberThisDevice": "Remember this Device",
-    "DontHaveAccount": "Don't have an account",
-    "SignIn": "Sign In"
+  "Page": {
+    "Login": {
+      "ForgotPassword": "forgot password",
+      "RememberThisDevice": "Remember this Device",
+      "DontHaveAccount": "Don't have an account",
+      "SignIn": "Sign In"
+    }
   },
   "Form": {
     "Validator": {

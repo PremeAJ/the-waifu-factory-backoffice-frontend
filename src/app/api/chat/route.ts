@@ -2,7 +2,7 @@ import { Chance } from "chance";
 import type {
   ChatsType,
   MessageType,
-} from "@/app/(DashboardLayout)/dashboard/types/apps/chat";
+} from "@/app/dashboard/types/apps/chat";
 import { sub } from "date-fns";
 import { uniqueId } from "lodash";
 import { NextResponse } from "next/server";

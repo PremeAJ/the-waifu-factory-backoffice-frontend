@@ -14,7 +14,7 @@ import BlankCard from "../../../../components/shared/BlankCard";
 import { UserDataContext } from "@/app/context/UserDataContext/index";
 import { IconDotsVertical, IconSearch } from "@tabler/icons-react";
 import { format } from "date-fns";
-import { GallaryType } from "../../../../(DashboardLayout)/dashboard/types/apps/users";
+import { GallaryType } from "../../../../dashboard/types/apps/users";
 
 import FsLightbox from "fslightbox-react";
 

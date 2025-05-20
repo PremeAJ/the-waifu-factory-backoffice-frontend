@@ -10,7 +10,7 @@ import {
   Divider,
 } from "@mui/material";
 import Link from "next/link";
-import { loginType } from "@/app/(DashboardLayout)/dashboard/types/auth/auth";
+import { loginType } from "@/app/dashboard/types/auth/auth";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
 import AuthSocialButtons from "./AuthSocialButtons";
 import * as yup from "yup";
@@ -19,7 +19,7 @@ import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, passwordSchema } from "@/utils/validator/yup";
 import { useTranslation } from "react-i18next";
-import Language from "@/app/(DashboardLayout)/dashboard/layout/vertical/header/Language";
+import Language from "@/app/dashboard/layout/vertical/header/Language";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -123,7 +123,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             <FormGroup>
               <FormControlLabel
                 control={<CustomCheckbox defaultChecked />}
-                label={t('LoginPage.RememberThisDevice')}
+                label={t('Page.Login.RememberThisDevice')}
               />
             </FormGroup>
             <Typography
@@ -135,7 +135,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 color: "primary.main",
               }}
             >
-              {t("LoginPage.ForgotPassword")} ?
+              {t("Page.Login.ForgotPassword")} ?
             </Typography>
           </Stack>
         </Stack>
@@ -148,7 +148,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             type="submit"
             loading={authIsLoading}
           >
-            {t('LoginPage.SignIn')}
+            {t('Page.Login.SignIn')}
           </Button>
         </Box>
       </form>

@@ -1,11 +1,11 @@
 import { Chance } from "chance";
-import { PostType } from "@/app/(DashboardLayout)/dashboard/types/apps/userProfile";
+import { PostType } from "@/app/dashboard/types/apps/userProfile";
 import { uniqueId } from "lodash";
 import { sub } from "date-fns";
 import {
   GallaryType,
   userType,
-} from "@/app/(DashboardLayout)/dashboard/types/apps/users";
+} from "@/app/dashboard/types/apps/users";
 
 const chance = new Chance();
 

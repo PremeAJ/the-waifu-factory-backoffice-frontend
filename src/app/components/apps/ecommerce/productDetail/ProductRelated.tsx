@@ -12,7 +12,7 @@ import {
 
 import Link from "next/link";
 import BlankCard from "../../../shared/BlankCard";
-import { ProductType } from "../../../../(DashboardLayout)/dashboard/types/apps/eCommerce";
+import { ProductType } from "../../../../dashboard/types/apps/eCommerce";
 import Image from "next/image";
 import { ProductContext } from "@/app/context/Ecommercecontext/index";
 
