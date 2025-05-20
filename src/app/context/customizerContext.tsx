@@ -2,6 +2,7 @@
 import { createContext, useState, ReactNode, useEffect } from 'react';
 import config from './config'
 import React from "react";
+import Cookies from 'js-cookie';
 
 // Define the shape of the context state
 interface CustomizerContextState {
@@ -36,6 +37,10 @@ interface CustomizerContextProps {
 }
 // Create the provider component
 export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ children }) => {
+  useEffect(() => {
+    const lang = Cookies.get('lang') ?? config.isLanguage;
+    setIsLanguage(lang)
+  },[])
 
   const [activeDir, setActiveDir] = useState<string>(config.activeDir);
   const [activeMode, setActiveMode] = useState<string>(config.activeMode);
