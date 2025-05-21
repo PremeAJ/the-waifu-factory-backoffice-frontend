@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Grid, Box, Stack, Typography } from "@mui/material";
 import PageContainer from "@/app/components/container/PageContainer";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
-import AuthLogin from "../../authForms/AuthLogin";
 import Image from "next/image";
+import AuthLogin from "@/app/auth/login/AuthLogin";
 
 export default function Login() {
   return (
@@ -76,34 +76,34 @@ export default function Login() {
           }}>
           <Box p={4}>
             <AuthLogin
-              title="Welcome to MeowSom"
-              subtext={
-                <Typography variant="subtitle1" color="textSecondary" mb={1}>
-                  {/* Your Admin Dashboard */}
-                </Typography>
-              }
-              subtitle={
-                <Stack direction="row" spacing={1} mt={3}>
-                  <Typography
-                    color="textSecondary"
-                    variant="h6"
-                    fontWeight="500"
-                  >
-                    New to Modernize?
-                  </Typography>
-                  <Typography
-                    component={Link}
-                    href="/auth/auth1/register"
-                    fontWeight="500"
-                    sx={{
-                      textDecoration: "none",
-                      color: "primary.main",
-                    }}
-                  >
-                    Create an account
-                  </Typography>
-                </Stack>
-              }
+              // title="Welcome to MeowSom"
+              // subtext={
+              //   <Typography variant="subtitle1" color="textSecondary" mb={1}>
+              //     {/* Your Admin Dashboard */}
+              //   </Typography>
+              // }
+              // subtitle={
+              //   <Stack direction="row" spacing={1} mt={3}>
+              //     <Typography
+              //       color="textSecondary"
+              //       variant="h6"
+              //       fontWeight="500"
+              //     >
+              //       New to Modernize?
+              //     </Typography>
+              //     <Typography
+              //       component={Link}
+              //       href="/auth/auth1/register"
+              //       fontWeight="500"
+              //       sx={{
+              //         textDecoration: "none",
+              //         color: "primary.main",
+              //       }}
+              //     >
+              //       Create an account
+              //     </Typography>
+              //   </Stack>
+              // }
             />
           </Box>
         </Grid>

@@ -8,7 +8,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   name: string;
   label?: string;
   placeholder?: string;
-  formik: any
+  formik?: any
 }
 
 const StyledTextField = styled(TextField)(({ theme }) => ({

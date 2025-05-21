@@ -1,5 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
+import Turnstile from "react-turnstile";
 import {
   Box,
   Typography,
@@ -28,6 +29,10 @@ const validationSchema = yup.object({
 
 const AuthLogin = () => {
   const { t } = useTranslation();
+  const [captchaToken, setCaptchaToken] = useState("");
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+  console.log("🚀 ~ AuthLogin ~ siteKey:", siteKey)
+  console.log("🚀 ~ AuthLogin ~ captchaToken:", captchaToken)
   const {
     signOut,
     signInWithEmail,
@@ -42,7 +47,11 @@ const AuthLogin = () => {
     onSubmit: async (data) => {
       const { error } = await signInWithEmail(data);
       if (error) {
+        console.log("🚀 ~ onSubmit: ~ error:", error)
         switch (error) {
+          case "email_not_confirmed":
+            alert("กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ");
+            break;
           case "invalid_credentials":
             formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
             formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
@@ -71,9 +80,8 @@ const AuthLogin = () => {
   return (
     <>
       <Typography fontWeight="700" variant="h3" mb={1} justifyContent="space-between" display="flex">
-        {t('Page.Login.WelcomeToMeowSom')} <Language/>
+        {t('Page.Login.WelcomeToMeowSom')} <Language />
       </Typography>
-
       <form onSubmit={formik.handleSubmit}>
         <Stack>
           <Box>
@@ -107,7 +115,7 @@ const AuthLogin = () => {
             </FormGroup>
             <Typography
               component={Link}
-              href="/auth/auth1/forgot-password"
+              href="/auth/forgot-password"
               fontWeight="500"
               sx={{
                 textDecoration: "none",
@@ -119,6 +127,10 @@ const AuthLogin = () => {
           </Stack>
         </Stack>
         <Box>
+          <Turnstile
+            sitekey={siteKey}
+            onSuccess={setCaptchaToken}
+          />
           <Button
             color="primary"
             variant="contained"

@@ -14,9 +14,11 @@ export default function Register() {
         spacing={0}
         justifyContent="center"
         sx={{ overflowX: "hidden" }}
+        height={"100vh"}
       >
         <Grid
           sx={{
+            display: { xs: "none", lg: "block" },
             position: "relative",
             "&:before": {
               content: '""',
@@ -69,17 +71,11 @@ export default function Register() {
             xs: 12,
             sm: 12,
             lg: 5,
-            xl: 4
-          }}>
+            xl: 4,
+          }}
+        >
           <Box p={4}>
-            <AuthRegister
-              title="Welcome to MeowSom"
-              subtext={
-                <Typography variant="subtitle1" color="textSecondary" mb={1}>
-                  {/* Your Admin Dashboard */}
-                </Typography>
-              }
-            />
+            <AuthRegister />
           </Box>
         </Grid>
       </Grid>

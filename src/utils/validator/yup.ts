@@ -33,4 +33,11 @@ export const passwordSchema = yup
       : true;
   });
 
-  
+export const confirmPasswordSchema = yup
+  .string()
+  .oneOf([yup.ref("password")], "รหัสผ่านไม่ตรงกัน")
+  .required("กรุณายืนยันรหัสผ่าน")
+
+export const nameSchema = yup.string().required("กรุณากรอก ชื่อ")
+
+export const lastNameSchema = yup.string().required("กรุณากรอก นามสกุล")

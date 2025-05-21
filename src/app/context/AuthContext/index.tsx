@@ -15,11 +15,12 @@ import {
   ssrSignOut,
   ssrSignUpWithEmail,
 } from "@/utils/supabase/server";
+import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 
 type AuthContextType = {
   isLoading: boolean;
   signInWithEmail: (payload: signInPayload) => Promise<any>;
-  signUpWithEmail: (payload: signInPayload) => Promise<any>;
+  signUpWithEmail: (payload: SignUpWithPasswordCredentials) => Promise<any>;
   signOut: () => Promise<any>;
   refreshSession: () => Promise<void>;
   getSession: () => Promise<any>;
@@ -32,7 +33,6 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     setIsLoading(true);
     ssrRefreshSession().then(({ data }) => {
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
-  const signUpWithEmail = async (payload: signInPayload) => {
+  const signUpWithEmail = async (payload: SignUpWithPasswordCredentials) => {
     setIsLoading(true);
     const response = await ssrSignUpWithEmail(payload);
     setIsLoading(false);

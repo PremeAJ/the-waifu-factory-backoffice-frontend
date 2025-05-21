@@ -1,22 +1,25 @@
-import Link from "next/link";
-import { Grid, Box, Typography, Stack } from "@mui/material";
-import PageContainer from "@/app/components/container/PageContainer";
+import { Grid, Box, Typography } from "@mui/material";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
-
+import PageContainer from "@/app/components/container/PageContainer";
 import Image from "next/image";
-import AuthRegister from "@/app/auth/register/AuthRegister";
+import AuthForgotPassword from "@/app/auth/forgot-password/AuthForgotPassword";
 
-export default function Register() {
+export default function ForgotPassword() {
   return (
-    (<PageContainer title="Register Page" description="this is Sample page">
+    (<PageContainer
+      title="Forgot Password Page"
+      description="this is Sample page"
+    >
       <Grid
+        height={"100vh"}
         container
-        spacing={0}
         justifyContent="center"
+        spacing={0}
         sx={{ overflowX: "hidden" }}
       >
         <Grid
           sx={{
+            display: { xs: "none", lg: "block" },
             position: "relative",
             "&:before": {
               content: '""',
@@ -32,8 +35,8 @@ export default function Register() {
           size={{
             xs: 12,
             sm: 12,
-            lg: 7,
-            xl: 8
+            lg: 8,
+            xl: 9
           }}>
           <Box position="relative">
             <Box px={3}>
@@ -52,10 +55,13 @@ export default function Register() {
             >
               <Image
                 src={"/images/backgrounds/login-bg.svg"}
-                alt="bg" width={500} height={500}
+                alt="bg"
+                width={500}
+                height={500}
                 style={{
                   width: "100%",
-                  maxWidth: "500px", maxHeight: '500px',
+                  maxWidth: "500px",
+                  maxHeight: "500px",
                 }}
               />
             </Box>
@@ -68,40 +74,27 @@ export default function Register() {
           size={{
             xs: 12,
             sm: 12,
-            lg: 5,
-            xl: 4
+            lg: 4,
+            xl: 3
           }}>
           <Box p={4}>
-            <AuthRegister
-              // title="Welcome to MeowSom"
-              // subtext={
-              //   <Typography variant="subtitle1" color="textSecondary" mb={1}>
-              //     {/* Your Admin Dashboard */}
-              //   </Typography>
-              // }
-              // subtitle={
-              //   <Stack direction="row" spacing={1} mt={3}>
-              //     <Typography color="textSecondary" variant="h6" fontWeight="400">
-              //       Already have an Account?
-              //     </Typography>
-              //     <Typography
-              //       component={Link}
-              //       href="/auth/auth1/login"
-              //       fontWeight="500"
-              //       sx={{
-              //         textDecoration: "none",
-              //         color: "primary.main",
-              //       }}
-              //     >
-              //       Sign In
-              //     </Typography>
-              //   </Stack>
-              // }
-            />
+            <Typography variant="h4" fontWeight="700">
+              Forgot your password?
+            </Typography>
+
+            <Typography
+              color="textSecondary"
+              variant="subtitle2"
+              fontWeight="400"
+              mt={2}
+            >
+              Please enter the email address associated with your account and We
+              will email you a link to reset your password.
+            </Typography>
+            <AuthForgotPassword />
           </Box>
         </Grid>
       </Grid>
     </PageContainer>)
   );
-};
-
+}

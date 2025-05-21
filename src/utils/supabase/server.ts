@@ -1,5 +1,6 @@
 "use server";
 import { createServerClient } from "@supabase/ssr";
+import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 // import { redirect } from "next/navigation";
 
@@ -41,9 +42,12 @@ export async function ssrSignInWithEmail(payload: signInPayload) {
   return { data, error: error?.code };
 }
 
-export async function ssrSignUpWithEmail(payload: signInPayload) {
+export async function ssrSignUpWithEmail(payload: SignUpWithPasswordCredentials) {
   const supabase = await createClient();
-  return supabase.auth.signInWithPassword(payload);
+  const { data, error } = await supabase.auth.signUp(payload);
+  console.log("🚀 ~ ssrSignUpWithEmail ~ error:", error)
+  console.log("🚀 ~ ssrSignUpWithEmail ~ data:", data)
+  return { data, error: error?.code };
 }
 
 export async function ssrSignOut() {

@@ -4,7 +4,7 @@ import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 // components
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import PageContainer from "@/app/components/container/PageContainer";
-import AuthLogin from "../../authForms/AuthLogin";
+import AuthLogin from "@/app/auth/login/AuthLogin";
 
 export default function Login2() {
   return (
@@ -48,33 +48,33 @@ export default function Login2() {
                 <Logo />
               </Box>
               <AuthLogin
-                subtitle={
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    justifyContent="center"
-                    mt={3}
-                  >
-                    <Typography
-                      color="textSecondary"
-                      variant="h6"
-                      fontWeight="500"
-                    >
-                      New to Modernize?
-                    </Typography>
-                    <Typography
-                      component={Link}
-                      href="/auth/auth2/register"
-                      fontWeight="500"
-                      sx={{
-                        textDecoration: "none",
-                        color: "primary.main",
-                      }}
-                    >
-                      Create an account
-                    </Typography>
-                  </Stack>
-                }
+                // subtitle={
+                //   <Stack
+                //     direction="row"
+                //     spacing={1}
+                //     justifyContent="center"
+                //     mt={3}
+                //   >
+                //     <Typography
+                //       color="textSecondary"
+                //       variant="h6"
+                //       fontWeight="500"
+                //     >
+                //       New to Modernize?
+                //     </Typography>
+                //     <Typography
+                //       component={Link}
+                //       href="/auth/auth2/register"
+                //       fontWeight="500"
+                //       sx={{
+                //         textDecoration: "none",
+                //         color: "primary.main",
+                //       }}
+                //     >
+                //       Create an account
+                //     </Typography>
+                //   </Stack>
+                // }
               />
             </Card>
           </Grid>

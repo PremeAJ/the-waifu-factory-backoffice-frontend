@@ -1,2 +1,14 @@
 {
+    "highlight-matching-tag.styles": {
+        "opening": {
+            "name": {
+                "highlight": "red"
+            }
+        },
+        "closing": {
+            "name": {
+                "highlight": "red"
+            }
+        }
+    }
 }
