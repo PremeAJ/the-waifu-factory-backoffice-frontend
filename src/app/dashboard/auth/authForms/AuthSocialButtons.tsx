@@ -2,7 +2,7 @@
 import CustomSocialButton from "@/app/components/forms/theme-elements/CustomSocialButton";
 import { Stack } from "@mui/system";
 import { Avatar, Box } from "@mui/material";
-import { signInType } from "@/app/dashboard/(Layout)/types/auth/auth";
+import { signInType } from "@/utils/types/auth/auth";
 
 const AuthSocialButtons = ({ title }: signInType) => (
   <>
@@ -29,7 +29,7 @@ const AuthSocialButtons = ({ title }: signInType) => (
         </Box>{" "}
         Google
       </CustomSocialButton>
-      <CustomSocialButton>
+      {/* <CustomSocialButton>
         <Avatar
           src={"/images/svgs/facebook-icon.svg"}
           alt={"icon2"}
@@ -50,7 +50,7 @@ const AuthSocialButtons = ({ title }: signInType) => (
           {title}{" "}
         </Box>{" "}
         FB
-      </CustomSocialButton>
+      </CustomSocialButton> */}
     </Stack>
   </>
 );

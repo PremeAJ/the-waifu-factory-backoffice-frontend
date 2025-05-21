@@ -10,7 +10,7 @@ import Notifications from "./Notification";
 import Profile from "./Profile";
 import Cart from "./Cart";
 import Search from "./Search";
-import Language from "./Language";
+import Language from "../../../../../components/shared/Language/Language";
 import { CustomizerContext } from '@/app/context/customizerContext';
 import Navigation from "./Navigation";
 import MobileRightSidebar from "./MobileRightSidebar";

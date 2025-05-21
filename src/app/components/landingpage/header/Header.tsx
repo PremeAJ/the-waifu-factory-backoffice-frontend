@@ -14,7 +14,7 @@ import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import Navigations from "./Navigations";
 import MobileSidebar from "./MobileSidebar";
 import { IconMenu2 } from "@tabler/icons-react";
-import Language from "@/app/dashboard/(Layout)/layout/vertical/header/Language";
+import Language from "@/app/components/shared/Language/Language";
 
 const LpHeader = () => {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({

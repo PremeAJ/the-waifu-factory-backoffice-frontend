@@ -1,14 +1,16 @@
 {
   "Page": {
-    "Main":{
+    "Main": {
       "TryFreeDemo": "ทดลองใช้งานฟรี",
-      "Login":"เข้าสู่ระบบ"
+      "Login": "เข้าสู่ระบบ"
     },
     "Login": {
       "ForgotPassword": "ลืมรหัสผ่าน",
       "RememberThisDevice": "จำอุปกรณ์เครื่องนี้",
       "DontHaveAccount": "ยังไม่มีบัญชี",
-      "SignIn": "เข้าสู่ระบบ"
+      "CreateAnAccount": "สร้างบัญชีผู้ใช้",
+      "SignIn": "เข้าสู่ระบบ",
+      "WelcomeToMeowSom": "ยินดีต้อนรับสู่ เหมียวส้ม"
     }
   },
   "Form": {
@@ -16,8 +18,8 @@
       "PleaseEnterYour": "กรุณากรอก "
     }
   },
-  "Navigation":{
-    "Pricing":"ราคา"
+  "Navigation": {
+    "Pricing": "ราคา"
   },
   "email": "อีเมล",
   "password": "รหัสผ่าน",

@@ -10,23 +10,23 @@ import {
   Divider,
 } from "@mui/material";
 import Link from "next/link";
-import { loginType } from "@/app/dashboard/(Layout)/types/auth/auth";
+import { loginType } from "@/utils/types/auth/auth";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
-import AuthSocialButtons from "./AuthSocialButtons";
+import AuthSocialButtons from "../authForms/AuthSocialButtons";
 import * as yup from "yup";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, passwordSchema } from "@/utils/validator/yup";
 import { useTranslation } from "react-i18next";
-import Language from "@/app/dashboard/(Layout)/layout/vertical/header/Language";
+import Language from "@/app/components/shared/Language/Language";
 
 const validationSchema = yup.object({
   email: emailValidator,
   password: passwordSchema,
 });
 
-const LoginForm = ({ title }: loginType) => {
+const AuthLogin = () => {
   const { t } = useTranslation();
   const {
     signOut,
@@ -35,7 +35,6 @@ const LoginForm = ({ title }: loginType) => {
   } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
-      firstName: "",
       email: "",
       password: "",
     },
@@ -71,26 +70,9 @@ const LoginForm = ({ title }: loginType) => {
 
   return (
     <>
-      {title ? (
-        <Typography fontWeight="700" variant="h3" mb={1} justifyContent="space-between" display="flex">
-          {title} <Language />
-        </Typography>
-      ) : null}
-      <AuthSocialButtons title="Sign in with" />
-      <Box mt={3}>
-        <Divider>
-          <Typography
-            component="span"
-            color="textSecondary"
-            variant="h6"
-            fontWeight="400"
-            position="relative"
-            px={2}
-          >
-            or sign in with
-          </Typography>
-        </Divider>
-      </Box>
+      <Typography fontWeight="700" variant="h3" mb={1} justifyContent="space-between" display="flex">
+        {t('Page.Login.WelcomeToMeowSom')} <Language/>
+      </Typography>
 
       <form onSubmit={formik.handleSubmit}>
         <Stack>
@@ -159,18 +141,33 @@ const LoginForm = ({ title }: loginType) => {
         </Typography>
         <Typography
           component={Link}
-          href="/auth/auth1/register"
+          href="/auth/register"
           fontWeight="500"
           sx={{
             textDecoration: "none",
             color: "primary.main",
           }}
         >
-          Create an account
+          {t('Page.Login.CreateAnAccount')}
         </Typography>
       </Stack>
+      <Box mt={3}>
+        <Divider>
+          <Typography
+            component="span"
+            color="textSecondary"
+            variant="h6"
+            fontWeight="400"
+            position="relative"
+            px={2}
+          >
+            or sign in with
+          </Typography>
+        </Divider>
+      </Box>
+      <AuthSocialButtons title="Sign in with" />
     </>
   );
 };
 
-export default LoginForm;
+export default AuthLogin;

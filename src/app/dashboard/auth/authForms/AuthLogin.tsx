@@ -10,23 +10,21 @@ import {
   Divider,
 } from "@mui/material";
 import Link from "next/link";
-import { loginType } from "@/app/dashboard/(Layout)/types/auth/auth";
+import { loginType } from "@/utils/types/auth/auth";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
-import AuthSocialButtons from "./AuthSocialButtons";
 import * as yup from "yup";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, passwordSchema } from "@/utils/validator/yup";
 import { useTranslation } from "react-i18next";
-import Language from "@/app/dashboard/(Layout)/layout/vertical/header/Language";
+import AuthSocialButtons from "./AuthSocialButtons";
 
 const validationSchema = yup.object({
   email: emailValidator,
   password: passwordSchema,
 });
-
-const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
+const AuthLogin = () => {
   const { t } = useTranslation();
   const {
     signOut,
@@ -71,30 +69,6 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
 
   return (
     <>
-      {title ? (
-        <Typography fontWeight="700" variant="h3" mb={1} justifyContent="space-between" display="flex">
-          {title} <Language />
-        </Typography>
-      ) : null}
-
-      {subtext}
-
-      <AuthSocialButtons title="Sign in with" />
-      <Box mt={3}>
-        <Divider>
-          <Typography
-            component="span"
-            color="textSecondary"
-            variant="h6"
-            fontWeight="400"
-            position="relative"
-            px={2}
-          >
-            or sign in with
-          </Typography>
-        </Divider>
-      </Box>
-
       <form onSubmit={formik.handleSubmit}>
         <Stack>
           <Box>
@@ -128,7 +102,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             </FormGroup>
             <Typography
               component={Link}
-              href="/auth/auth1/forgot-password"
+              href="/auth/forgot-password"
               fontWeight="500"
               sx={{
                 textDecoration: "none",
@@ -152,7 +126,22 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           </Button>
         </Box>
       </form>
-      {subtitle}
+
+      <Box mt={3}>
+        <Divider>
+          <Typography
+            component="span"
+            color="textSecondary"
+            variant="h6"
+            fontWeight="400"
+            position="relative"
+            px={2}
+          >
+            or sign in with
+          </Typography>
+        </Divider>
+      </Box>
+      <AuthSocialButtons title="Sign in with" />
     </>
   );
 };

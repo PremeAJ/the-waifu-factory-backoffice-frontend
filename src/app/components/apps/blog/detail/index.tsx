@@ -30,7 +30,7 @@ import BlogComment from "./BlogComment";
 import { uniqueId } from "lodash";
 import BlankCard from "../../../shared/BlankCard";
 
-import type { BlogType } from "../../../../dashboard/(Layout)/types/apps/blog";
+import type { BlogType } from "../../../../../utils/types/apps/blog";
 import { BlogContext } from "@/app/context/BlogContext";
 
 

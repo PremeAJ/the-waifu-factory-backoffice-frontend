@@ -61,7 +61,7 @@ import {
   IconPageBreak,
 } from "@tabler/icons-react";
 import { ElementType } from "react-spring";
-import { NavGroup } from "@/app/dashboard/(Layout)/types/layout/sidebar";
+import { NavGroup } from "@/utils/types/layout/sidebar";
 
 const Menuitems: NavGroup[] = [
   {

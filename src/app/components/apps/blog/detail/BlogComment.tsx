@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, Avatar, Box, Typography, Tooltip, Fab, TextField, Button } from '@mui/material';
 import { IconArrowBackUp, IconCircle } from '@tabler/icons-react';
-import { BlogType, BlogPostType } from '../../../../dashboard/(Layout)/types/apps/blog';
+import { BlogType, BlogPostType } from '../../../../../utils/types/apps/blog';
 
 
 type BlogCommentProps = {

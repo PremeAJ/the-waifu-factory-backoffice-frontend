@@ -4,7 +4,7 @@ import List from '@mui/material/List';
 
 import Scrollbar from "../../../components/custom-scroll/Scrollbar";
 import ContactListItem from "./ContactListItem";
-import type { ContactType } from '../../../dashboard/(Layout)/types/apps/contact';
+import type { ContactType } from '../../../../utils/types/apps/contact';
 import { ContactContext } from "@/app/context/Conatactcontext";
 
 type Props = {

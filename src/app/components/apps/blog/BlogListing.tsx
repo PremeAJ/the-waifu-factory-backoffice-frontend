@@ -4,7 +4,7 @@ import { Grid, Pagination } from '@mui/material';
 import BlogCard from './BlogCard';
 import { orderBy } from 'lodash';
 import BlogFeaturedCard from './BlogFeaturedCard';
-import { BlogPostType } from '../../../dashboard/(Layout)/types/apps/blog';
+import { BlogPostType } from '../../../../utils/types/apps/blog';
 import { BlogContext } from "@/app/context/BlogContext/index";
 
 const BlogListing = () => {

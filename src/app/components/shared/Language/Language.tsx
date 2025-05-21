@@ -1,3 +1,4 @@
+"use client"
 import React, { useContext, useEffect } from "react";
 import { Avatar, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { CustomizerContext } from "@/app/context/customizerContext";

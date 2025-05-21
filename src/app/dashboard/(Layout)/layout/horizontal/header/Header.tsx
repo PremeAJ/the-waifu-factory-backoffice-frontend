@@ -13,7 +13,7 @@ import Notifications from "../../vertical/header/Notification";
 import Cart from "../../vertical/header/Cart";
 import Profile from "../../vertical/header/Profile";
 import Search from "../../vertical/header/Search";
-import Language from "../../vertical/header/Language";
+import Language from "../../../../../components/shared/Language/Language";
 import Navigation from "../../vertical/header/Navigation";
 import Logo from "../../shared/logo/Logo";
 import config from "@/app/context/config";

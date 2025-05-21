@@ -21,7 +21,7 @@ import {
   IconBrandTwitter,
   IconSearch,
 } from '@tabler/icons-react';
-import { userType } from '../../../../dashboard/(Layout)/types/apps/users';
+import { userType } from '../../../../../utils/types/apps/users';
 
 const SocialIcons = [
   {

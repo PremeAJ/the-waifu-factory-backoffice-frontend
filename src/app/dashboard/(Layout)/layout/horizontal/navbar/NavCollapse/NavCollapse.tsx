@@ -15,7 +15,7 @@ import NavItem from '../NavItem/NavItem';
 
 // plugins
 import { IconChevronDown } from '@tabler/icons-react';
-import { NavCollapseProps, NavGroup } from '@/app/dashboard/(Layout)/types/layout/sidebar';
+import { NavCollapseProps, NavGroup } from '@/utils/types/layout/sidebar';
 
 
 

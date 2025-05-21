@@ -1,10 +1,11 @@
-import Link from "next/link";
-import { Grid, Box, Card, Stack, Typography } from "@mui/material";
+
+import { Grid, Box, Card } from "@mui/material";
 
 // components
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import PageContainer from "@/app/components/container/PageContainer";
-import AuthLogin from "./AuthLogin";
+import AuthLogin from "../authForms/AuthLogin";
+import { ServerLanguage } from "@/app/components/shared/Language/ServerLanguage";
 
 export default function Login2() {
   return (
@@ -54,12 +55,21 @@ export default function Login2() {
                 justifyContent: "center",
               }}
             >
-              <Box display="flex" alignItems="center" justifyContent="center">
-                <Logo />
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ width: "100%", mb: 2 }}
+              >
+                <Box sx={{ flex: 1 }} />
+                <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                  <Logo />
+                </Box>
+                <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+                  <ServerLanguage />
+                </Box>
               </Box>
-              <AuthLogin
-              
-              />
+              <AuthLogin />
             </Card>
           </Grid>
         </Grid>

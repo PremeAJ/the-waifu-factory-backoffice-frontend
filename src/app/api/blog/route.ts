@@ -5,7 +5,7 @@ import { uniqueId } from "lodash";
 import {
   BlogPostType,
   BlogType,
-} from "@/app/dashboard/(Layout)/types/apps/blog";
+} from "@/utils/types/apps/blog";
 import { NextResponse } from "next/server";
 
 const chance = new Chance();
