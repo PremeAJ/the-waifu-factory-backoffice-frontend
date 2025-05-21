@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Turnstile from "react-turnstile";
 import {
   Box,
@@ -11,28 +11,26 @@ import {
   Divider,
 } from "@mui/material";
 import Link from "next/link";
-import { loginType } from "@/utils/types/auth/auth";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
 import AuthSocialButtons from "../authForms/AuthSocialButtons";
 import * as yup from "yup";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
-import { emailValidator, passwordSchema } from "@/utils/validator/yup";
+import { emailValidator, requiredPasswordSchema } from "@/utils/validator/yup";
 import { useTranslation } from "react-i18next";
 import Language from "@/app/components/shared/Language/Language";
+import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
 
 const validationSchema = yup.object({
   email: emailValidator,
-  password: passwordSchema,
+  password: requiredPasswordSchema,
 });
 
 const AuthLogin = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-  console.log("🚀 ~ AuthLogin ~ siteKey:", siteKey)
-  console.log("🚀 ~ AuthLogin ~ captchaToken:", captchaToken)
   const {
     signOut,
     signInWithEmail,
@@ -45,9 +43,16 @@ const AuthLogin = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
-      const { error } = await signInWithEmail(data);
+      const userData: SignInWithPasswordCredentials = {
+        email: data.email,
+        password: data.password,
+        options: {
+          captchaToken: captchaToken,
+        },
+      }
+      const { error } = await signInWithEmail(userData);
       if (error) {
-        console.log("🚀 ~ onSubmit: ~ error:", error)
+        setCaptchaToken("");
         switch (error) {
           case "email_not_confirmed":
             alert("กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ");
@@ -64,7 +69,12 @@ const AuthLogin = () => {
           case "user_banned":
             alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
             break;
+          case "captcha_failed":
+          case "unexpected_failure":
+            alert("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า");
+            break;
           default:
+            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
             break;
         }
       } else {
@@ -127,10 +137,16 @@ const AuthLogin = () => {
           </Stack>
         </Stack>
         <Box>
-          <Turnstile
-            sitekey={siteKey}
-            onSuccess={setCaptchaToken}
-          />
+          {formik.isValid && formik.dirty && (
+            <Turnstile
+              sitekey={siteKey}
+              theme="light"
+              action="login"
+              size="flexible"
+              onSuccess={setCaptchaToken}
+              language={i18n.language}
+            />
+          )}
           <Button
             color="primary"
             variant="contained"

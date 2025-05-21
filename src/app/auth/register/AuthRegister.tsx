@@ -9,10 +9,11 @@ import { confirmPasswordSchema, emailValidator, lastNameSchema, nameSchema, pass
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { AuthContext } from "@/app/context/AuthContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import Language from "@/app/components/shared/Language/Language";
 import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
+import Turnstile from "react-turnstile";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -23,7 +24,9 @@ const validationSchema = yup.object({
 })
 
 const AuthRegister = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [captchaToken, setCaptchaToken] = useState("");
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const { signUpWithEmail } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
@@ -43,10 +46,10 @@ const AuthRegister = () => {
           data: {
             full_name: '' + firstName + ' ' + lastName,
           },
+          captchaToken: captchaToken,
         }
       }
-      const { error } = await signUpWithEmail(userData);
-      console.log("🚀 ~ onSubmit: ~ error:", error)
+      const { data: data2, error } = await signUpWithEmail(userData);
       if (error) {
         switch (error) {
           case "invalid_credentials":
@@ -61,11 +64,16 @@ const AuthRegister = () => {
           case "user_banned":
             alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
             break;
+          case "captcha_failed":
+          case "unexpected_failure":
+            alert("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า");
+            break;
           default:
+            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
             break;
         }
       } else {
-        // window.location.href = "/";
+        window.location.href = "/auth/login";
       }
     },
   });
@@ -117,14 +125,22 @@ const AuthRegister = () => {
               type="password"
             />
           </Stack>
+          {formik.isValid && formik.dirty && (
+            <Turnstile
+              sitekey={siteKey}
+              theme="light"
+              action="register"
+              size="flexible"
+              onSuccess={setCaptchaToken}
+              language={i18n.language}
+            />
+          )}
           <Button
             color="primary"
             variant="contained"
             size="large"
             fullWidth
             type="submit"
-          // component={Link}
-          // href="/auth/auth1/login"
           >
             Sign Up
           </Button>

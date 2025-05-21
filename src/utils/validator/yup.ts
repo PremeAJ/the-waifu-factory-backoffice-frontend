@@ -4,6 +4,8 @@ export const emailValidator = yup
   .string()
   .email("รูปแบบอีเมลไม่ถูกต้อง")
   .required("กรุณากรอกอีเมล");
+export const requiredPasswordSchema = yup
+  .string().required("กรุณากรอกรหัสผ่าน")
 export const passwordSchema = yup
   .string()
   .required("กรุณากรอกรหัสผ่าน")
