@@ -87,6 +87,7 @@ export async function ssrForgotPassword(payload: ResetPasswordForEmailType) {
     payload.email,
     payload.options
   );
+  console.log("🚀 ~ ssrForgotPassword ~ payload:", payload)
   return { data, error: error?.code };
 }
 
