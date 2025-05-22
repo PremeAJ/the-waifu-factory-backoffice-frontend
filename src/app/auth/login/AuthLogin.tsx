@@ -89,7 +89,7 @@ const AuthLogin = () => {
 
   useEffect(() => {
     signOut();
-  }, []);
+  }, [signOut]); // Add signOut to dependencies
 
   useEffect(() => {
     if (!(formik.isValid && formik.dirty)) {

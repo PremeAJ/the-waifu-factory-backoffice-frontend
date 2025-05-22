@@ -46,7 +46,7 @@ export default function ResetPassword() {
     };
 
     verifyToken();
-  }, [token_hash, type]);
+  }, [token_hash, type, verifyOtp]);
   return (
     isValid && (
       <PageContainer

@@ -31,10 +31,11 @@ const ProfileSkeleton = () => (
 
 const Profile = () => {
   const { signOut, isLoading: authIsLoading, user } = useContext(AuthContext);
+  const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
+
   if (authIsLoading) {
     return <ProfileSkeleton />;
   }
-  const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
