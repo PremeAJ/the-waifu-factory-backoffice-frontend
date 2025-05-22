@@ -131,7 +131,6 @@ export async function ssrForgotPassword(payload: ResetPasswordForEmailType) {
     payload.options
   );
   
-  console.log("🚀 ~ ssrForgotPassword ~ payload:", payload)
   if (error) {
     await logError({
       errorCode: error.code,
@@ -163,6 +162,14 @@ export async function ssrResetPassword(payload: ResetPasswordType) {
 export async function ssrExchangeCodeForSession(code: string) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+   if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "updateUser: Password",
+    });
+  }
+  console.log("🚀 ~ ssrExchangeCodeForSession ~ data:", data)
   return { data, error: error?.code };
 }
 
