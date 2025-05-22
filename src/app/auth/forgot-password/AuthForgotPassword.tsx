@@ -57,7 +57,6 @@ export default function AuthForgotPassword() {
         const payload: ResetPasswordForEmailType = {
           email: data.email,
           options: {
-            redirectTo: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/reset-password`,
             captchaToken: captchaToken,
           },
         };

@@ -82,6 +82,7 @@ export const ssrGetSession = async () => {
 
 export async function ssrForgotPassword(payload: ResetPasswordForEmailType) {
   const supabase = await createClient();
+  payload.options.redirectTo = `${process.env.NEXT_PUBLIC_DOMAIN}/auth/reset-password`;
   const { data, error } = await supabase.auth.resetPasswordForEmail(
     payload.email,
     payload.options
@@ -94,16 +95,16 @@ export async function ssrResetPassword(payload: ResetPasswordType) {
   const { data, error } = await supabase.auth.updateUser({
     password: payload.newPassword,
   });
-  console.log("🚀 ~ ssrResetPassword ~ data:", data)
-  console.log("🚀 ~ ssrResetPassword ~ error:", error)
+  console.log("🚀 ~ ssrResetPassword ~ data:", data);
+  console.log("🚀 ~ ssrResetPassword ~ error:", error);
   return { data, error: error?.code };
 }
 
-export async function ssrExchangeCodeForSession(code:string) {
+export async function ssrExchangeCodeForSession(code: string) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-  console.log("🚀 ~ ssrExchangeCodeForSession ~ error:", error)
-  console.log("🚀 ~ ssrExchangeCodeForSession ~ data:", data)
+  console.log("🚀 ~ ssrExchangeCodeForSession ~ error:", error);
+  console.log("🚀 ~ ssrExchangeCodeForSession ~ data:", data);
   return { data, error: error?.code };
 }
 
