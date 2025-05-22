@@ -1,7 +1,13 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { TextField, TextFieldProps } from "@mui/material";
+import {
+  TextField,
+  TextFieldProps,
+  IconButton,
+  InputAdornment
+} from "@mui/material";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import CustomFormLabel from "./CustomFormLabel";
 
 interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
@@ -24,6 +30,18 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],
   },
+
+  // ปิดลูกตาของ browser
+  "& input[type=password]": {
+    // ปิด show password ของ Edge
+    "&::-ms-reveal": {
+      display: "none"
+    },
+    // ปิด show password ของ Chrome
+    "&::-ms-clear": {
+      display: "none"
+    }
+  },
 }));
 
 const BaseTextField = ({
@@ -32,8 +50,11 @@ const BaseTextField = ({
   placeholder,
   formik,
   startAdornment,
+  type,
   ...rest
 }: CustomTextFieldProps) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   let helperText = null;
   if (formik?.touched[name] && formik?.errors[name]) {
     if (
@@ -52,6 +73,29 @@ const BaseTextField = ({
     }
   }
 
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+  const getEndAdornment = () => {
+    if (type === "password") {
+      return (
+        <InputAdornment position="end">
+          <IconButton
+            aria-label="toggle password visibility"
+            onClick={handleClickShowPassword}
+            onMouseDown={handleMouseDownPassword}
+            edge="end"
+          >
+            {showPassword ? <IconEyeOff width={20} /> : <IconEye width={20} />}
+          </IconButton>
+        </InputAdornment>
+      );
+    }
+    return null;
+  };
+
   return (
     <>
       <CustomFormLabel htmlFor={name}>{label}</CustomFormLabel>
@@ -60,17 +104,19 @@ const BaseTextField = ({
         variant="outlined"
         id={name}
         name={name}
+        type={type === "password" ? (showPassword ? "text" : "password") : type}
         value={formik?.values[name]}
         onChange={formik?.handleChange}
         onBlur={formik?.handleBlur}
         placeholder={placeholder}
         error={formik?.touched[name] && Boolean(formik.errors[name])}
         helperText={helperText}
+        autoComplete={type === "password" ? "new-password" : undefined}
         slotProps={{
           input: {
-            ...rest.slotProps?.input,
             startAdornment: startAdornment,
-          },
+            endAdornment: getEndAdornment(),
+          }
         }}
         {...rest}
       />

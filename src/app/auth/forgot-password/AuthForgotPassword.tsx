@@ -16,12 +16,36 @@ const validationSchema = yup.object({
   email: emailValidator,
 });
 
+type ForgotPasswordStatus = 
+  | "idle"
+  | "success" 
+  | "user_not_found"
+  | "rate_limit"
+  | "invalid_email"
+  | "captcha_failed"
+  | "network_error"
+  | "unknown_error";
+  
+const getAlertMessage = (status: ForgotPasswordStatus): string => {
+  const messages: Record<ForgotPasswordStatus, string> = {
+    idle: "",
+    success: "ส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลของคุณแล้ว กรุณาตรวจสอบอีเมล",
+    user_not_found: "ไม่พบบัญชีผู้ใช้นี้ในระบบ",
+    rate_limit: "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง",
+    invalid_email: "อีเมลไม่ถูกต้อง",
+    captcha_failed: "การยืนยันตัวตนล้มเหลว กรุณาลองใหม่อีกครั้ง",
+    network_error: "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง",
+    unknown_error: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+  };
+  return messages[status];
+};
+
 export default function AuthForgotPassword() {
   const { t, i18n } = useTranslation();
   const { isLoading, forgotPassword } = useContext(AuthContext);
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState<ForgotPasswordStatus>("idle");
 
   const formik = useFormik({
     initialValues: {
@@ -29,22 +53,45 @@ export default function AuthForgotPassword() {
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
-      const payload: ResetPasswordForEmailType = {
-        email: data.email,
-        options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/reset-password`,
-          captchaToken: captchaToken,
-        },
-      };
-      const { error } = await forgotPassword(payload);
-      if (error) {
-        switch (error) {
-          default:
-            setStatus("failed");
-            break;
+      try {
+        const payload: ResetPasswordForEmailType = {
+          email: data.email,
+          options: {
+            redirectTo: `${process.env.NEXT_PUBLIC_DOMAIN}/auth/reset-password`,
+            captchaToken: captchaToken,
+          },
+        };
+
+        const { error } = await forgotPassword(payload);
+
+        if (error) {
+          switch (error) {
+            case "rate_limit":
+              setStatus("rate_limit");
+              break;
+            case "user_not_found":
+              setStatus("user_not_found");
+              break;
+            case "invalid_email":
+              setStatus("invalid_email");
+              break;
+            case "captcha_failed":
+              setStatus("captcha_failed");
+              setCaptchaToken("");
+              break;
+            default:
+              setStatus("unknown_error");
+          }
+          return;
         }
-      } else {
-        window.location.href = "/auth/login";
+
+        setStatus("success");
+        setTimeout(() => {
+          window.location.href = "/auth/login";
+        }, 2000);
+      } catch (err) {
+        console.error("Forgot password error:", err);
+        setStatus("network_error");
       }
     },
   });
@@ -54,13 +101,26 @@ export default function AuthForgotPassword() {
     }
   }, [formik.isValid, formik.dirty]);
 
+  const renderAlert = () => {
+    if (status === "idle") return null;
+
+    return (
+      <Alert
+        variant="filled"
+        severity={status === "success" ? "success" : "error"}
+      >
+        {getAlertMessage(status)}
+      </Alert>
+    );
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Stack mt={4} spacing={2}>
         <BaseTextField
           name="email"
           formik={formik}
-          label="Email Adddress"
+          label="Email Address"
           placeholder="กรุณากรอกอีเมลของคุณ"
           startAdornment={
             <InputAdornment position="start">
@@ -79,21 +139,17 @@ export default function AuthForgotPassword() {
           />
         )}
         <BaseButton
-          label="Forgot Password"
+          label="ส่งลิงก์รีเซ็ตรหัสผ่าน"
           loading={isLoading}
           type="submit"
           disabled={!captchaToken}
         />
         <BaseButton
-          label="Back to Login"
+          label="กลับไปหน้าเข้าสู่ระบบ"
           href="/auth/login"
           variant="outlined"
         />
-        {status === "failed" && (
-          <Alert variant="filled" severity="error">
-            เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง
-          </Alert>
-        )}
+        {renderAlert()}
       </Stack>
     </form>
   );

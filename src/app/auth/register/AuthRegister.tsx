@@ -1,5 +1,13 @@
 "use client";
-import { Box, Typography, Button, Divider, Stack, Grid } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Divider,
+  Stack,
+  Grid,
+  InputAdornment,
+} from "@mui/material";
 import Link from "next/link";
 import CustomTextField from "@/app/components/forms/theme-elements/CustomTextField";
 import { registerType } from "@/utils/types/auth/auth";
@@ -20,6 +28,7 @@ import { useFormik } from "formik";
 import Language from "@/app/components/shared/Language/Language";
 import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 import Turnstile from "react-turnstile";
+import { IconLock, IconMail } from "@tabler/icons-react";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -129,6 +138,11 @@ const AuthRegister = () => {
               formik={formik}
               label="Email Adddress"
               placeholder="กรุณากรอก อีเมล"
+              startAdornment={
+                <InputAdornment position="start">
+                  <IconMail width={20} />
+                </InputAdornment>
+              }
             />
             <BaseTextField
               name="password"
@@ -136,6 +150,11 @@ const AuthRegister = () => {
               label="Password"
               placeholder="กรุณากรอก รหัสผ่าน"
               type="password"
+              startAdornment={
+                <InputAdornment position="start">
+                  <IconLock width={20} />
+                </InputAdornment>
+              }
             />
             <BaseTextField
               name="confirmPassword"
@@ -143,6 +162,11 @@ const AuthRegister = () => {
               label="Confirm Password"
               placeholder="กรุณายืนยันรหัสผ่าน"
               type="password"
+              startAdornment={
+                <InputAdornment position="start">
+                  <IconLock width={20} />
+                </InputAdornment>
+              }
             />
           </Stack>
           {formik.isValid && formik.dirty && (
