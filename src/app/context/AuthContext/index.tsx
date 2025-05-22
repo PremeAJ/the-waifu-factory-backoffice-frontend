@@ -7,15 +7,22 @@ import React, {
   ReactNode,
 } from "react";
 import {
-  signInPayload,
+  ResetPasswordForEmailType,
+  ResetPasswordType,
+  ssrExchangeCodeForSession,
+  ssrForgotPassword,
   ssrGetSession,
   ssrGetUser,
   ssrRefreshSession,
+  ssrResetPassword,
   ssrSignInWithEmail,
   ssrSignOut,
   ssrSignUpWithEmail,
 } from "@/utils/supabase/server";
-import { SignInWithPasswordCredentials, SignUpWithPasswordCredentials } from "@supabase/supabase-js";
+import {
+  SignInWithPasswordCredentials,
+  SignUpWithPasswordCredentials,
+} from "@supabase/supabase-js";
 
 type AuthContextType = {
   isLoading: boolean;
@@ -24,7 +31,10 @@ type AuthContextType = {
   signOut: () => Promise<any>;
   refreshSession: () => Promise<void>;
   getSession: () => Promise<any>;
-  getUser:() => Promise<any>;
+  getUser: () => Promise<any>;
+  forgotPassword: (payload: ResetPasswordForEmailType) => Promise<any>;
+  resetPassword: (payload: ResetPasswordType) => Promise<any>;
+  exchangeCodeForSession: (code: string) => Promise<any>;
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -54,6 +64,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
+  const forgotPassword = async (payload: ResetPasswordForEmailType) => {
+    setIsLoading(true);
+    const response = await ssrForgotPassword(payload);
+    setIsLoading(false);
+    return response;
+  };
+
+    const resetPassword = async (payload: ResetPasswordType) => {
+    setIsLoading(true);
+    const response = await ssrResetPassword(payload);
+    setIsLoading(false);
+    return response;
+  };
+
   const signOut = async () => {
     setIsLoading(true);
     const response = await ssrSignOut();
@@ -67,6 +91,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   };
 
+  const exchangeCodeForSession = async (code: string) => {
+    setIsLoading(true);
+    const response = await ssrExchangeCodeForSession(code);
+    setIsLoading(false);
+    return response;
+  }
+
   const getSession = async () => {
     setIsLoading(true);
     const response = await ssrGetSession();
@@ -74,14 +105,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
-   const getUser = async () => {
+  const getUser = async () => {
     setIsLoading(true);
     const response = await ssrGetUser();
     setIsLoading(false);
     return response;
   };
-
-
 
   return (
     <AuthContext.Provider
@@ -92,7 +121,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         signOut,
         refreshSession,
         getSession,
-        getUser
+        getUser,
+        forgotPassword,
+        resetPassword,
+        exchangeCodeForSession
       }}
     >
       {children}

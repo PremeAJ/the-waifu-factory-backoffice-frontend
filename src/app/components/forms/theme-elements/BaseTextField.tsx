@@ -8,7 +8,8 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   name: string;
   label?: string;
   placeholder?: string;
-  formik?: any
+  formik?: any;
+  startAdornment?: React.ReactNode;
 }
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -30,14 +31,22 @@ const BaseTextField = ({
   label,
   placeholder,
   formik,
+  startAdornment,
   ...rest
 }: CustomTextFieldProps) => {
   let helperText = null;
   if (formik?.touched[name] && formik?.errors[name]) {
-    if (typeof formik.errors[name] === "string" && formik.errors[name].includes("\n")) {
-      helperText = formik.errors[name].split("\n").map((msg: string, idx: number) => (
-        <span key={idx} style={{ display: "block" }}>{msg}</span>
-      ));
+    if (
+      typeof formik.errors[name] === "string" &&
+      formik.errors[name].includes("\n")
+    ) {
+      helperText = formik.errors[name]
+        .split("\n")
+        .map((msg: string, idx: number) => (
+          <span key={idx} style={{ display: "block" }}>
+            {msg}
+          </span>
+        ));
     } else {
       helperText = formik.errors[name];
     }
@@ -57,6 +66,12 @@ const BaseTextField = ({
         placeholder={placeholder}
         error={formik?.touched[name] && Boolean(formik.errors[name])}
         helperText={helperText}
+        slotProps={{
+          input: {
+            ...rest.slotProps?.input,
+            startAdornment: startAdornment,
+          },
+        }}
         {...rest}
       />
     </>

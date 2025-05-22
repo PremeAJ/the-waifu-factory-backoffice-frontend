@@ -13,29 +13,27 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   if (process.env.NODE_ENV === "production") {
-    console.log = () => { };
-    console.warn = () => { };
-    console.error = () => { };
-    console.info = () => { };
+    console.log = () => {};
+    console.warn = () => {};
+    console.error = () => {};
+    console.info = () => {};
   }
   const theme = ThemeSettings();
   const { activeDir } = useContext(CustomizerContext);
 
   return (
-
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <ThemeProvider theme={theme}>
         <RTL direction={activeDir}>
           <CssBaseline />
           <AuthProvider>
-              <Analytics />
-              <SpeedInsights />
-              {children}
+            <Analytics />
+            <SpeedInsights />
+            {children}
           </AuthProvider>
         </RTL>
       </ThemeProvider>
     </AppRouterCacheProvider>
-
   );
 };
 

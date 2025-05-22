@@ -1,15 +1,21 @@
-'use client'
+"use client";
 import { Box, Typography, Button, Divider, Stack, Grid } from "@mui/material";
 import Link from "next/link";
 import CustomTextField from "@/app/components/forms/theme-elements/CustomTextField";
 import { registerType } from "@/utils/types/auth/auth";
 import AuthSocialButtons from "../authForms/AuthSocialButtons";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
-import { confirmPasswordSchema, emailValidator, lastNameSchema, nameSchema, passwordSchema } from "@/utils/validator/yup";
+import {
+  confirmPasswordSchema,
+  emailValidator,
+  lastNameSchema,
+  nameSchema,
+  passwordSchema,
+} from "@/utils/validator/yup";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { AuthContext } from "@/app/context/AuthContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import Language from "@/app/components/shared/Language/Language";
 import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
@@ -20,8 +26,8 @@ const validationSchema = yup.object({
   password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
   firstName: nameSchema,
-  lastName: lastNameSchema
-})
+  lastName: lastNameSchema,
+});
 
 const AuthRegister = () => {
   const { t, i18n } = useTranslation();
@@ -44,11 +50,11 @@ const AuthRegister = () => {
         password,
         options: {
           data: {
-            full_name: '' + firstName + ' ' + lastName,
+            full_name: "" + firstName + " " + lastName,
           },
           captchaToken: captchaToken,
-        }
-      }
+        },
+      };
       const { data: data2, error } = await signUpWithEmail(userData);
       if (error) {
         switch (error) {
@@ -66,7 +72,9 @@ const AuthRegister = () => {
             break;
           case "captcha_failed":
           case "unexpected_failure":
-            alert("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า");
+            alert(
+              "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า"
+            );
             break;
           default:
             alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
@@ -78,10 +86,22 @@ const AuthRegister = () => {
     },
   });
 
+  useEffect(() => {
+    if (!(formik.isValid && formik.dirty)) {
+      setCaptchaToken("");
+    }
+  }, [formik.isValid, formik.dirty]);
+
   return (
     <>
-      <Typography fontWeight="700" variant="h3" mb={1} justifyContent="space-between" display="flex">
-        Sign up to MeowSom  <Language />
+      <Typography
+        fontWeight="700"
+        variant="h3"
+        mb={1}
+        justifyContent="space-between"
+        display="flex"
+      >
+        Sign up to MeowSom <Language />
       </Typography>
       <Box>
         <form onSubmit={formik.handleSubmit}>
@@ -141,11 +161,12 @@ const AuthRegister = () => {
             size="large"
             fullWidth
             type="submit"
+            disabled={!captchaToken}
           >
             Sign Up
           </Button>
         </form>
-      </Box >
+      </Box>
       <Stack direction="row" spacing={1} mt={3}>
         <Typography color="textSecondary" variant="h6" fontWeight="400">
           Already have an Account?
@@ -178,7 +199,7 @@ const AuthRegister = () => {
       </Box>
       <AuthSocialButtons title="Sign up with" />
     </>
-  )
-}
+  );
+};
 
 export default AuthRegister;

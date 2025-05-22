@@ -77,7 +77,7 @@ export default function ForgotPassword() {
             lg: 4,
             xl: 3
           }}>
-          <Box p={4}>
+          <Box p={4} width={'100%'}>
             <Typography variant="h4" fontWeight="700">
               Forgot your password?
             </Typography>

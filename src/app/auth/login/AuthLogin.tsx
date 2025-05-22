@@ -9,6 +9,7 @@ import {
   Button,
   Stack,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 import Link from "next/link";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
@@ -21,6 +22,7 @@ import { emailValidator, requiredPasswordSchema } from "@/utils/validator/yup";
 import { useTranslation } from "react-i18next";
 import Language from "@/app/components/shared/Language/Language";
 import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
+import { IconLock, IconMail } from "@tabler/icons-react";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -49,7 +51,7 @@ const AuthLogin = () => {
         options: {
           captchaToken: captchaToken,
         },
-      }
+      };
       const { error } = await signInWithEmail(userData);
       if (error) {
         setCaptchaToken("");
@@ -71,7 +73,9 @@ const AuthLogin = () => {
             break;
           case "captcha_failed":
           case "unexpected_failure":
-            alert("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า");
+            alert(
+              "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า"
+            );
             break;
           default:
             alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
@@ -87,10 +91,22 @@ const AuthLogin = () => {
     signOut();
   }, []);
 
+  useEffect(() => {
+    if (!(formik.isValid && formik.dirty)) {
+      setCaptchaToken("");
+    }
+  }, [formik.isValid, formik.dirty]);
+
   return (
     <>
-      <Typography fontWeight="700" variant="h3" mb={1} justifyContent="space-between" display="flex">
-        {t('Page.Login.WelcomeToMeowSom')} <Language />
+      <Typography
+        fontWeight="700"
+        variant="h3"
+        mb={1}
+        justifyContent="space-between"
+        display="flex"
+      >
+        {t("Page.Login.WelcomeToMeowSom")} <Language />
       </Typography>
       <form onSubmit={formik.handleSubmit}>
         <Stack>
@@ -99,7 +115,14 @@ const AuthLogin = () => {
               name="email"
               formik={formik}
               label="Email"
-              placeholder={`${t('Form.Validator.PleaseEnterYour')}${t('email')}`}
+              placeholder={`${t("Form.Validator.PleaseEnterYour")}${t(
+                "email"
+              )}`}
+              startAdornment={
+                <InputAdornment position="start">
+                  <IconMail width={20} />
+                </InputAdornment>
+              }
             />
           </Box>
           <Box>
@@ -108,7 +131,14 @@ const AuthLogin = () => {
               formik={formik}
               label="Password"
               type="password"
-              placeholder={`${t('Form.Validator.PleaseEnterYour')}${t('password')}`}
+              placeholder={`${t("Form.Validator.PleaseEnterYour")}${t(
+                "password"
+              )}`}
+              startAdornment={
+                <InputAdornment position="start">
+                  <IconLock width={20} />
+                </InputAdornment>
+              }
             />
           </Box>
           <Stack
@@ -120,7 +150,7 @@ const AuthLogin = () => {
             <FormGroup>
               <FormControlLabel
                 control={<CustomCheckbox defaultChecked />}
-                label={t('Page.Login.RememberThisDevice')}
+                label={t("Page.Login.RememberThisDevice")}
               />
             </FormGroup>
             <Typography
@@ -154,18 +184,15 @@ const AuthLogin = () => {
             fullWidth
             type="submit"
             loading={authIsLoading}
+            disabled={!captchaToken}
           >
-            {t('Page.Login.SignIn')}
+            {t("Page.Login.SignIn")}
           </Button>
         </Box>
       </form>
       <Stack direction="row" spacing={1} mt={3}>
-        <Typography
-          color="textSecondary"
-          variant="h6"
-          fontWeight="500"
-        >
-          {t('Page.Login.DontHaveAccount')} ?
+        <Typography color="textSecondary" variant="h6" fontWeight="500">
+          {t("Page.Login.DontHaveAccount")} ?
         </Typography>
         <Typography
           component={Link}
@@ -176,7 +203,7 @@ const AuthLogin = () => {
             color: "primary.main",
           }}
         >
-          {t('Page.Login.CreateAnAccount')}
+          {t("Page.Login.CreateAnAccount")}
         </Typography>
       </Stack>
       <Box mt={3}>
