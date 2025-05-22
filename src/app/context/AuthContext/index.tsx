@@ -25,9 +25,11 @@ import {
   SignUpWithPasswordCredentials,
   VerifyOtpParams,
 } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 
 type AuthContextType = {
   isLoading: boolean;
+  user: User | null; // เพิ่ม user type
   signInWithEmail: (payload: SignInWithPasswordCredentials) => Promise<any>;
   signUpWithEmail: (payload: SignUpWithPasswordCredentials) => Promise<any>;
   signOut: () => Promise<any>;
@@ -46,9 +48,13 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null); // เพิ่ม user state
+
+  // เพิ่ม initial check user
   useEffect(() => {
     setIsLoading(true);
     ssrRefreshSession().then(({ data }) => {
+      setUser(data.session?.user ?? null);
       setIsLoading(false);
     });
   }, []);
@@ -56,6 +62,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signInWithEmail = async (payload: SignInWithPasswordCredentials) => {
     setIsLoading(true);
     const response = await ssrSignInWithEmail(payload);
+    if (!response.error) {
+      setUser(response.data.user);
+    }
     setIsLoading(false);
     return response;
   };
@@ -74,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
-    const resetPassword = async (payload: ResetPasswordType) => {
+  const resetPassword = async (payload: ResetPasswordType) => {
     setIsLoading(true);
     const response = await ssrResetPassword(payload);
     setIsLoading(false);
@@ -84,6 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     setIsLoading(true);
     const response = await ssrSignOut();
+    setUser(null);
     setIsLoading(false);
     return response;
   };
@@ -91,6 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const refreshSession = async () => {
     setIsLoading(true);
     const { data } = await ssrRefreshSession();
+    setUser(data.session?.user ?? null);
     setIsLoading(false);
   };
 
@@ -99,14 +110,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const response = await ssrExchangeCodeForSession(code);
     setIsLoading(false);
     return response;
-  }
+  };
 
-  const verifyOtp = async (payload:VerifyOtpParams ) => {
+  const verifyOtp = async (payload: VerifyOtpParams) => {
     setIsLoading(true);
     const response = await ssrVerifyOtp(payload);
     setIsLoading(false);
     return response;
-  }
+  };
 
   const getSession = async () => {
     setIsLoading(true);
@@ -126,6 +137,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         isLoading,
+        user, // เพิ่ม user ใน provider
         signInWithEmail,
         signUpWithEmail,
         signOut,
@@ -135,7 +147,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         forgotPassword,
         resetPassword,
         exchangeCodeForSession,
-        verifyOtp
+        verifyOtp,
       }}
     >
       {children}

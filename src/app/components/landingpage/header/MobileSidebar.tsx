@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Collapse from "@mui/material/Collapse";
@@ -9,12 +9,14 @@ import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import DemosDD from "./DemosDD";
 import AppLinks from "@/app/dashboard/(Layout)/layout/vertical/header/AppLinks";
 import QuickLinks from "@/app/dashboard/(Layout)/layout/vertical/header/QuickLinks";
+import { AuthContext } from "@/app/context/AuthContext";
 
 //!
 
 const MobileSidebar = () => {
   const [toggle, setToggle] = useState(false);
   const [toggle2, setToggle2] = useState(false);
+  const { user, isLoading } = useContext(AuthContext);
 
   return (
     <>
@@ -47,7 +49,7 @@ const MobileSidebar = () => {
             color="inherit"
             onClick={() => setToggle2(!toggle2)}
             endIcon={<IconChevronDown width={20} />}
-            sx={{   
+            sx={{
               justifyContent: "space-between",
             }}
           >
@@ -79,9 +81,11 @@ const MobileSidebar = () => {
           >
             Support
           </Button>
-          <Button color="primary" variant="contained" href="/auth/login">
-            Login
-          </Button>
+          {user && !isLoading ? null : (
+            <Button color="primary" variant="contained" href="/auth/login">
+              Login
+            </Button>
+          )}
         </Stack>
       </Box>
     </>

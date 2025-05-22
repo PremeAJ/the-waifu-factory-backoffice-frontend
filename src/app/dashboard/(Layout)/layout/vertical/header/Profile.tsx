@@ -8,6 +8,7 @@ import {
   Divider,
   Button,
   IconButton,
+  Skeleton,
 } from "@mui/material";
 import * as dropdownData from "./data";
 
@@ -16,8 +17,23 @@ import { Stack } from "@mui/system";
 import Image from "next/image";
 import { AuthContext } from "@/app/context/AuthContext";
 
+const ProfileSkeleton = () => (
+  <Box>
+    <IconButton
+      aria-label="profile loading"
+      color="inherit"
+      sx={{ padding: "5px" }}
+    >
+      <Skeleton variant="circular" width={35} height={35} animation="wave" />
+    </IconButton>
+  </Box>
+);
+
 const Profile = () => {
-  const { signOut, isLoading:authIsLoading } = useContext(AuthContext);
+  const { signOut, isLoading: authIsLoading, user } = useContext(AuthContext);
+  if (authIsLoading) {
+    return <ProfileSkeleton />;
+  }
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
@@ -25,13 +41,12 @@ const Profile = () => {
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
-   const handleLogout = async () => {
-    
+  const handleLogout = async () => {
     await signOut();
-    window.location.href = "/auth/auth1/login";
+    window.location.href = "/auth/login";
   };
 
-  return (
+  return user && !authIsLoading ? (
     <Box>
       <IconButton
         aria-label="show 11 new notifications"
@@ -98,7 +113,7 @@ const Profile = () => {
               gap={1}
             >
               <IconMail width={15} height={15} />
-              info@modernize.com
+              {user.email ?? "-"}
             </Typography>
           </Box>
         </Stack>
@@ -165,7 +180,7 @@ const Profile = () => {
             position="relative"
           >
             <Box display="flex" justifyContent="space-between">
-              <Box>
+              <Box sx={{ zIndex: 1 }}>
                 <Typography variant="h5" mb={2}>
                   Unlimited <br />
                   Access
@@ -178,7 +193,7 @@ const Profile = () => {
                 src={"/images/backgrounds/unlimited-bg.png"}
                 width={150}
                 height={183}
-                style={{ height: "auto", width: "auto" }}
+                style={{ height: "auto", width: "auto", zIndex: 0 }}
                 alt="unlimited"
                 className="signup-bg"
               />
@@ -198,7 +213,7 @@ const Profile = () => {
         </Box>
       </Menu>
     </Box>
-  );
+  ) : null;
 };
 
 export default Profile;

@@ -1,22 +1,25 @@
-'use client';
-import React from "react";
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
-import { Theme } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { styled } from '@mui/material/styles';
+"use client";
+import React, { useContext } from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import { Theme } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { styled } from "@mui/material/styles";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import Navigations from "./Navigations";
 import MobileSidebar from "./MobileSidebar";
 import { IconMenu2 } from "@tabler/icons-react";
 import Language from "@/app/components/shared/Language/Language";
+import Profile from "@/app/dashboard/(Layout)/layout/vertical/header/Profile";
+import { AuthContext } from "@/app/context/AuthContext";
 
 const LpHeader = () => {
+  const { isLoading, user } = useContext(AuthContext);
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     justifyContent: "center",
     [theme.breakpoints.up("lg")]: {
@@ -67,7 +70,8 @@ const LpHeader = () => {
             </Stack>
           ) : null}
           <Box ml={2} display="flex" alignItems="center">
-            <Language />
+            {/* <Language /> */}
+            <Profile />
           </Box>
         </ToolbarStyled>
       </Container>
@@ -83,7 +87,7 @@ const LpHeader = () => {
               border: "0 !important",
               boxShadow: (theme) => theme.shadows[8],
             },
-          }
+          },
         }}
       >
         <MobileSidebar />
