@@ -18,10 +18,12 @@ import {
   ssrSignInWithEmail,
   ssrSignOut,
   ssrSignUpWithEmail,
+  ssrVerifyOtp,
 } from "@/utils/supabase/server";
 import {
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
+  VerifyOtpParams,
 } from "@supabase/supabase-js";
 
 type AuthContextType = {
@@ -35,6 +37,7 @@ type AuthContextType = {
   forgotPassword: (payload: ResetPasswordForEmailType) => Promise<any>;
   resetPassword: (payload: ResetPasswordType) => Promise<any>;
   exchangeCodeForSession: (code: string) => Promise<any>;
+  verifyOtp: (payload: VerifyOtpParams) => Promise<any>;
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -98,6 +101,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   }
 
+  const verifyOtp = async (payload:VerifyOtpParams ) => {
+    setIsLoading(true);
+    const response = await ssrVerifyOtp(payload);
+    setIsLoading(false);
+    return response;
+  }
+
   const getSession = async () => {
     setIsLoading(true);
     const response = await ssrGetSession();
@@ -124,7 +134,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         getUser,
         forgotPassword,
         resetPassword,
-        exchangeCodeForSession
+        exchangeCodeForSession,
+        verifyOtp
       }}
     >
       {children}

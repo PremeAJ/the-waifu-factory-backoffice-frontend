@@ -3,6 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 import {
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
+  VerifyOtpParams,
 } from "@supabase/supabase-js";
 import { cookies, headers } from "next/headers";
 
@@ -127,12 +128,16 @@ export const ssrGetSession = async () => {
 
 export async function ssrForgotPassword(payload: ResetPasswordForEmailType) {
   const supabase = await createClient();
-  payload.options.redirectTo = `${process.env.NEXT_PUBLIC_DOMAIN}/auth/reset-password`;
+  const redirectUrl = new URL(
+    "/auth/reset-password",
+    process.env.NEXT_PUBLIC_DOMAIN!
+  );
+  payload.options.redirectTo = redirectUrl.toString();
   const { data, error } = await supabase.auth.resetPasswordForEmail(
     payload.email,
     payload.options
   );
-  
+
   if (error) {
     await logError({
       errorCode: error.code,
@@ -161,17 +166,32 @@ export async function ssrResetPassword(payload: ResetPasswordType) {
   return { data, error: error?.code };
 }
 
+export async function ssrVerifyOtp(payload: VerifyOtpParams) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.verifyOtp(payload);
+
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "verifyOtp",
+    });
+  }
+
+  return { data, error: error?.code };
+}
+
 export async function ssrExchangeCodeForSession(code: string) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-   if (error) {
+  if (error) {
     await logError({
       errorCode: error.code,
       ip: await getClientIP(),
       endpoint: "updateUser: Password",
     });
   }
-  console.log("🚀 ~ ssrExchangeCodeForSession ~ data:", data)
+  console.log("🚀 ~ ssrExchangeCodeForSession ~ data:", data);
   return { data, error: error?.code };
 }
 

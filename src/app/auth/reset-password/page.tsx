@@ -5,27 +5,48 @@ import PageContainer from "@/app/components/container/PageContainer";
 import Image from "next/image";
 import AuthResetPassword from "./AuthResetPassword";
 import { useContext, useEffect, useState } from "react";
-import { redirect, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { AuthContext } from "@/app/context/AuthContext";
 
 export default function ResetPassword() {
-  const { exchangeCodeForSession } = useContext(AuthContext);
-  const searchParams = useSearchParams();
-  const code = searchParams.get("code");
+  const { verifyOtp } = useContext(AuthContext);
+
   const [isValid, setIsValid] = useState(false);
+
+  const searchParams = useSearchParams();
+  const token_hash = searchParams.get("token_hash");
+  console.log("🚀 ~ ResetPassword ~ token_hash:", token_hash);
+  const type = searchParams.get("type");
+  console.log("🚀 ~ ResetPassword ~ type:", type);
+
   useEffect(() => {
-    if (!code) {
-      redirect("/auth/error/404");
+    if (!token_hash || type !== "recovery") {
+      window.location.href = "/auth/forgot-password";
+      return;
     }
-    const getSession = async () => {
-      const { error } = await exchangeCodeForSession(code);
-      if (error) {
-        redirect("/auth/error/404");
+
+    const verifyToken = async () => {
+      try {
+        const { error } = await verifyOtp({
+          token_hash,
+          type: "recovery",
+        });
+
+        if (error) {
+          console.error("Token verification failed:", error);
+          window.location.href = "/auth/forgot-password";
+          return;
+        }
+
+        setIsValid(true);
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        window.location.href = "/auth/forgot-password";
       }
-      setIsValid(true)
     };
-    getSession();
-  }, []);
+
+    verifyToken();
+  }, [token_hash, type]);
   return (
     isValid && (
       <PageContainer
@@ -101,7 +122,7 @@ export default function ResetPassword() {
               xl: 3,
             }}
           >
-            <Box p={4} width={'100%'}>
+            <Box p={4} width={"100%"}>
               <Typography variant="h4" fontWeight="700">
                 Reset Password
               </Typography>
