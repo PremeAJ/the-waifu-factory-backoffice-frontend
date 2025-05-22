@@ -130,7 +130,8 @@ export async function ssrForgotPassword(payload: ResetPasswordForEmailType) {
     payload.email,
     payload.options
   );
-
+  
+  console.log("🚀 ~ ssrForgotPassword ~ payload:", payload)
   if (error) {
     await logError({
       errorCode: error.code,
