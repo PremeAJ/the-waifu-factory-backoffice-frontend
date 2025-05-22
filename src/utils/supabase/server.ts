@@ -51,8 +51,10 @@ export async function createClient() {
               cookieStore.set(name, value, {
                 ...options,
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
+                secure: true,
+                sameSite: "none", // อนุญาตให้ใช้ cross-site
+                path: "/",
+                maxAge: 7 * 24 * 60 * 60,
               })
             );
           } catch {

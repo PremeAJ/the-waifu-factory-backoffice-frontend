@@ -20,7 +20,7 @@ type ForgotPasswordStatus =
   | "idle"
   | "success" 
   | "user_not_found"
-  | "rate_limit"
+  | "over_email_send_rate_limit"
   | "invalid_email"
   | "captcha_failed"
   | "network_error"
@@ -31,7 +31,7 @@ const getAlertMessage = (status: ForgotPasswordStatus): string => {
     idle: "",
     success: "ส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลของคุณแล้ว กรุณาตรวจสอบอีเมล",
     user_not_found: "ไม่พบบัญชีผู้ใช้นี้ในระบบ",
-    rate_limit: "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง",
+    over_email_send_rate_limit: "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง",
     invalid_email: "อีเมลไม่ถูกต้อง",
     captcha_failed: "การยืนยันตัวตนล้มเหลว กรุณาลองใหม่อีกครั้ง",
     network_error: "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง",
@@ -65,8 +65,8 @@ export default function AuthForgotPassword() {
 
         if (error) {
           switch (error) {
-            case "rate_limit":
-              setStatus("rate_limit");
+            case "over_email_send_rate_limit":
+              setStatus("over_email_send_rate_limit");
               break;
             case "user_not_found":
               setStatus("user_not_found");
