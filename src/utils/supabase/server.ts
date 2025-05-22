@@ -1,11 +1,38 @@
 "use server";
 import { createServerClient } from "@supabase/ssr";
 import {
-  GenerateRecoveryLinkParams,
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
 } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+
+export interface ErrorLogData {
+  errorCode?: string;
+  ip?: string;
+  endpoint?: string;
+  details?: any;
+}
+
+export const getClientIP = async () => {
+  const headersList = await headers();
+  return (
+    headersList.get("x-forwarded-for") ||
+    headersList.get("x-real-ip") ||
+    "unknown"
+  );
+};
+
+export const logError = async (data: ErrorLogData) => {
+  console.error(
+    JSON.stringify(
+      {
+        ...data,
+      },
+      null,
+      2
+    )
+  );
+};
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -44,6 +71,15 @@ export async function ssrSignInWithEmail(
 ) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword(payload);
+
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "signInWithPassword",
+    });
+  }
+
   return { data, error: error?.code };
 }
 
@@ -52,6 +88,13 @@ export async function ssrSignUpWithEmail(
 ) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp(payload);
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "signUp",
+    });
+  }
   return { data, error: error?.code };
 }
 
@@ -87,7 +130,15 @@ export async function ssrForgotPassword(payload: ResetPasswordForEmailType) {
     payload.email,
     payload.options
   );
-  console.log("🚀 ~ ssrForgotPassword ~ payload:", payload)
+
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "resetPasswordForEmail",
+    });
+  }
+
   return { data, error: error?.code };
 }
 
@@ -96,16 +147,21 @@ export async function ssrResetPassword(payload: ResetPasswordType) {
   const { data, error } = await supabase.auth.updateUser({
     password: payload.newPassword,
   });
-  console.log("🚀 ~ ssrResetPassword ~ data:", data);
-  console.log("🚀 ~ ssrResetPassword ~ error:", error);
+
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "updateUser: Password",
+    });
+  }
+
   return { data, error: error?.code };
 }
 
 export async function ssrExchangeCodeForSession(code: string) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-  console.log("🚀 ~ ssrExchangeCodeForSession ~ error:", error);
-  console.log("🚀 ~ ssrExchangeCodeForSession ~ data:", data);
   return { data, error: error?.code };
 }
 
