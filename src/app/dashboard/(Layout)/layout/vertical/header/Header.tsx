@@ -7,7 +7,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
 import Notifications from "./Notification";
-import Profile from "./Profile";
+import Profile from "../../../../../components/shared/Profile";
 import Cart from "./Cart";
 import Search from "./Search";
 import Language from "../../../../../components/shared/Language/Language";

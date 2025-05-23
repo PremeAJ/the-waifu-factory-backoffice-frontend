@@ -33,7 +33,6 @@ const AuthLogin = () => {
   const {
     signOut,
     signInWithEmail,
-    signInWithGoogle,
     isLoading: authIsLoading,
   } = useContext(AuthContext);
   const { t, i18n } = useTranslation();
@@ -83,7 +82,7 @@ const AuthLogin = () => {
             break;
         }
       } else {
-        window.location.href = "/";
+        window.location.href = "/auth/callback";
       }
     },
   });

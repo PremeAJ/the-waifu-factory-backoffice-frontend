@@ -11,7 +11,7 @@ import { CustomizerContext } from "@/app/context/customizerContext";
 import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
 import Notifications from "../../vertical/header/Notification";
 import Cart from "../../vertical/header/Cart";
-import Profile from "../../vertical/header/Profile";
+import Profile from "../../../../../components/shared/Profile";
 import Search from "../../vertical/header/Search";
 import Language from "../../../../../components/shared/Language/Language";
 import Navigation from "../../vertical/header/Navigation";

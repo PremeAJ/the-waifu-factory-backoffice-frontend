@@ -129,7 +129,8 @@ export default function Dashboard() {
             <TopPerformers />
           </Grid>
         </Grid>
-        <Welcome />
+        //!snackbar
+        {/* <Welcome /> */}
       </Box>
     </PageContainer>)
   );

@@ -11,7 +11,7 @@ import AppLinks from "@/app/dashboard/(Layout)/layout/vertical/header/AppLinks";
 import QuickLinks from "@/app/dashboard/(Layout)/layout/vertical/header/QuickLinks";
 import DemosDD from "./DemosDD";
 import { useTranslation } from "react-i18next";
-import Profile from "@/app/dashboard/(Layout)/layout/vertical/header/Profile";
+import Profile from "@/app/components/shared/Profile";
 import { AuthContext } from "@/app/context/AuthContext";
 
 const Navigations = () => {

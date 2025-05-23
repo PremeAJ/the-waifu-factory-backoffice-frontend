@@ -10,7 +10,7 @@ import {
   IconButton,
   Skeleton,
 } from "@mui/material";
-import * as dropdownData from "./data";
+import * as dropdownData from "../../dashboard/(Layout)/layout/vertical/header/data";
 
 import { IconMail } from "@tabler/icons-react";
 import { Stack } from "@mui/system";
@@ -174,7 +174,7 @@ const Profile = () => {
           </Box>
         ))}
         <Box mt={2}>
-          <Box
+          {/* <Box
             bgcolor="primary.light"
             p={3}
             mb={3}
@@ -200,7 +200,7 @@ const Profile = () => {
                 className="signup-bg"
               />
             </Box>
-          </Box>
+          </Box> */}
           <Button
             // href="/auth/auth1/login"
             variant="outlined"
