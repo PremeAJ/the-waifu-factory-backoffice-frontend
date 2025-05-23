@@ -7,12 +7,12 @@ import AuthLogin from "./AuthLogin";
 
 export default function Login() {
   return (
-    (<PageContainer title="Login Page" description="this is Sample page">
+    (<PageContainer title="Login Page" description="this is Sample page" >
       <Grid
         container
         spacing={0}
         justifyContent="center"
-        sx={{ height: "100vh" }}
+        sx={{ height: "100vh",overflowY: "hidden" }}
       >
         <Grid
           sx={{
