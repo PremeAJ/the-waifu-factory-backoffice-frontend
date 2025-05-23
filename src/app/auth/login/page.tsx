@@ -12,7 +12,7 @@ export default function Login() {
         container
         spacing={0}
         justifyContent="center"
-        sx={{ height: "100vh",overflowY: "hidden" }}
+        sx={{ height: "100vh",overflow: "hidden" }}
       >
         <Grid
           sx={{
