@@ -217,7 +217,7 @@ const AuthLogin = () => {
             position="relative"
             px={2}
           >
-            or sign in with
+            or
           </Typography>
         </Divider>
       </Box>

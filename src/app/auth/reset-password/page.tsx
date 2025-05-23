@@ -122,7 +122,7 @@ export default function ResetPassword() {
               xl: 3,
             }}
           >
-            <Box p={4} width={"100%"}>
+            <Box p={4} width={"100%"} maxWidth={500}>
               <Typography variant="h4" fontWeight="700">
                 Reset Password
               </Typography>

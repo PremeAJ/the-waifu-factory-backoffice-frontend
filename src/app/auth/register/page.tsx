@@ -74,7 +74,7 @@ export default function Register() {
             xl: 4,
           }}
         >
-          <Box p={4}>
+          <Box p={4} width={'100%'} maxWidth={500}>
             <AuthRegister />
           </Box>
         </Grid>

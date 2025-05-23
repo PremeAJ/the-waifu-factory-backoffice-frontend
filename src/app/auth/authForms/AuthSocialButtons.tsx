@@ -24,7 +24,7 @@ const AuthSocialButtons = ({ title }: signInType) => {
           />
           <Box
             sx={{
-              display: { xs: "none", sm: "flex" },
+              // display: { xs: "none", sm: "flex" },
               whiteSpace: "nowrap",
               mr: { sm: "3px" },
             }}
@@ -33,7 +33,7 @@ const AuthSocialButtons = ({ title }: signInType) => {
           </Box>{" "}
           Google
         </CustomSocialButton>
-        <CustomSocialButton>
+        {/* <CustomSocialButton>
           <Avatar
             src={"/images/svgs/facebook-icon.svg"}
             alt={"icon2"}
@@ -54,7 +54,7 @@ const AuthSocialButtons = ({ title }: signInType) => {
             {title}{" "}
           </Box>{" "}
           Facebook
-        </CustomSocialButton>
+        </CustomSocialButton> */}
       </Stack>
     </>
   );

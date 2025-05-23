@@ -217,7 +217,7 @@ const AuthRegister = () => {
             position="relative"
             px={2}
           >
-            or sign up with
+            or
           </Typography>
         </Divider>
       </Box>

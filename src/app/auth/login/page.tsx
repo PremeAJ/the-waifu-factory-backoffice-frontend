@@ -74,7 +74,7 @@ export default function Login() {
             lg: 5,
             xl: 4
           }}>
-          <Box p={4}>
+          <Box p={4} width={'100%'} maxWidth={500}>
             <AuthLogin />
           </Box>
         </Grid>
