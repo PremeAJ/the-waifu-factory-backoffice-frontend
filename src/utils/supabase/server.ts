@@ -7,6 +7,7 @@ import {
 } from "@supabase/supabase-js";
 import { cookies, headers } from "next/headers";
 
+// ---------- Types ----------
 export interface ErrorLogData {
   errorCode?: string;
   ip?: string;
@@ -14,16 +15,29 @@ export interface ErrorLogData {
   details?: any;
 }
 
-export const getClientIP = async () => {
+export interface ResetPasswordForEmailType {
+  email: string;
+  options: {
+    redirectTo?: string;
+    captchaToken?: string;
+  };
+}
+
+export interface ResetPasswordType {
+  newPassword: string;
+}
+
+// ---------- Utility Functions ----------
+export async function getClientIP() {
   const headersList = await headers();
   return (
     headersList.get("x-forwarded-for") ||
     headersList.get("x-real-ip") ||
     "unknown"
   );
-};
+}
 
-export const logError = async (data: ErrorLogData) => {
+export async function logError(data: ErrorLogData) {
   console.error(
     JSON.stringify(
       {
@@ -33,8 +47,18 @@ export const logError = async (data: ErrorLogData) => {
       2
     )
   );
-};
+}
 
+async function removeCookies() {
+  const cookieStore = await cookies();
+  cookieStore.getAll().forEach((c) => {
+    if (c.name.startsWith("sb-")) {
+      cookieStore.delete(c.name);
+    }
+  });
+}
+
+// ---------- Supabase Client ----------
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -53,7 +77,7 @@ export async function createClient() {
                 ...options,
                 httpOnly: true,
                 secure: true,
-                sameSite: "none", // อนุญาตให้ใช้ cross-site
+                sameSite: "none",
                 path: "/",
                 maxAge: 7 * 24 * 60 * 60,
               })
@@ -69,6 +93,9 @@ export async function createClient() {
   );
 }
 
+// ---------- Auth Functions ----------
+
+// Sign In/Sign Up/Sign Out
 export async function ssrSignInWithEmail(
   payload: SignInWithPasswordCredentials
 ) {
@@ -101,12 +128,58 @@ export async function ssrSignUpWithEmail(
   return { data, error: error?.code };
 }
 
+export async function ssrSignInWithGoogle() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: new URL(
+        "/auth/callback",
+        process.env.NEXT_PUBLIC_DOMAIN!
+      ).toString(),
+    },
+  });
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "signInWithGoogle",
+    });
+  }
+  return { data, error: error?.code };
+}
+
 export async function ssrSignOut() {
   const supabase = await createClient();
   return supabase.auth.signOut();
 }
 
-export const ssrRefreshSession = async () => {
+// Session/Token Management
+export async function ssrSetSession({
+  access_token,
+  refresh_token,
+}: {
+  access_token: string;
+  refresh_token: string;
+}) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  });
+
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "setSession",
+    });
+  }
+
+  return { data, error: error?.code };
+}
+
+export async function ssrRefreshSession() {
   const supabase = await createClient();
   try {
     return await supabase.auth.getSession();
@@ -114,18 +187,32 @@ export const ssrRefreshSession = async () => {
     await removeCookies();
     return { data: { session: null }, error };
   }
-};
+}
 
-export const ssrGetUser = async () => {
-  const supabase = await createClient();
-  return supabase.auth.getUser();
-};
-
-export const ssrGetSession = async () => {
+export async function ssrGetSession() {
   const supabase = await createClient();
   return supabase.auth.getSession();
-};
+}
 
+export async function ssrGetUser() {
+  const supabase = await createClient();
+  return supabase.auth.getUser();
+}
+
+export async function ssrExchangeCodeForSession(code: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "updateUser: Password",
+    });
+  }
+  return { data, error: error?.code };
+}
+
+// Password/OTP
 export async function ssrForgotPassword(payload: ResetPasswordForEmailType) {
   const supabase = await createClient();
   const redirectUrl = new URL(
@@ -179,39 +266,4 @@ export async function ssrVerifyOtp(payload: VerifyOtpParams) {
   }
 
   return { data, error: error?.code };
-}
-
-export async function ssrExchangeCodeForSession(code: string) {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) {
-    await logError({
-      errorCode: error.code,
-      ip: await getClientIP(),
-      endpoint: "updateUser: Password",
-    });
-  }
-  console.log("🚀 ~ ssrExchangeCodeForSession ~ data:", data);
-  return { data, error: error?.code };
-}
-
-const removeCookies = async () => {
-  const cookieStore = await cookies();
-  cookieStore.getAll().forEach((c) => {
-    if (c.name.startsWith("sb-")) {
-      cookieStore.delete(c.name);
-    }
-  });
-};
-
-export interface ResetPasswordForEmailType {
-  email: string;
-  options: {
-    redirectTo?: string;
-    captchaToken?: string;
-  };
-}
-
-export interface ResetPasswordType {
-  newPassword: string;
 }

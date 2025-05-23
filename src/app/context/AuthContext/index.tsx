@@ -1,11 +1,12 @@
 "use client";
 import React, {
   createContext,
-  useState,
-  useEffect,
-  useContext,
   ReactNode,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
+
 import {
   ResetPasswordForEmailType,
   ResetPasswordType,
@@ -16,16 +17,20 @@ import {
   ssrRefreshSession,
   ssrResetPassword,
   ssrSignInWithEmail,
+  ssrSignInWithGoogle,
   ssrSignOut,
   ssrSignUpWithEmail,
   ssrVerifyOtp,
+  ssrSetSession,
 } from "@/utils/supabase/server";
 import {
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
+  User,
   VerifyOtpParams,
 } from "@supabase/supabase-js";
-import { User } from "@supabase/supabase-js";
+import { csrSignInWithGoogle } from "@/utils/supabase/client";
+import { set } from "lodash";
 
 type AuthContextType = {
   isLoading: boolean;
@@ -40,6 +45,8 @@ type AuthContextType = {
   resetPassword: (payload: ResetPasswordType) => Promise<any>;
   exchangeCodeForSession: (code: string) => Promise<any>;
   verifyOtp: (payload: VerifyOtpParams) => Promise<any>;
+  signInWithGoogle: () => Promise<any>;
+  setSession: (tokens: { access_token: string; refresh_token: string }) => Promise<any>;
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -48,9 +55,8 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<User | null>(null); // เพิ่ม user state
+  const [user, setUser] = useState<User | null>(null);
 
-  // เพิ่ม initial check user
   useEffect(() => {
     setIsLoading(true);
     ssrRefreshSession().then(({ data }) => {
@@ -133,21 +139,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
+  const signInWithGoogle = async () => {
+    setIsLoading(true);
+    const response = await csrSignInWithGoogle();
+    setIsLoading(false);
+    return response;
+  };
+
+  const setSession = async ({
+    access_token,
+    refresh_token,
+  }: {
+    access_token: string;
+    refresh_token: string;
+  }) => {
+    setIsLoading(true);
+    const response = await ssrSetSession({ access_token, refresh_token });
+    setUser(response.data.session?.user ?? null);
+    setIsLoading(false);
+    return response;
+  };
+
   return (
     <AuthContext.Provider
       value={{
-        isLoading,
         user, // เพิ่ม user ใน provider
+        isLoading,
+        signOut,
+        getUser,
+        verifyOtp,
+        getSession,
+        resetPassword,
+        forgotPassword,
+        refreshSession,
         signInWithEmail,
         signUpWithEmail,
-        signOut,
-        refreshSession,
-        getSession,
-        getUser,
-        forgotPassword,
-        resetPassword,
+        signInWithGoogle,
         exchangeCodeForSession,
-        verifyOtp,
+        setSession,
       }}
     >
       {children}

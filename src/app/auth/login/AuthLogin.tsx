@@ -30,14 +30,15 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = () => {
-  const { t, i18n } = useTranslation();
-  const [captchaToken, setCaptchaToken] = useState("");
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const {
     signOut,
     signInWithEmail,
+    signInWithGoogle,
     isLoading: authIsLoading,
   } = useContext(AuthContext);
+  const { t, i18n } = useTranslation();
+  const [captchaToken, setCaptchaToken] = useState("");
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const formik = useFormik({
     initialValues: {
       email: "",
