@@ -13,7 +13,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       const { data, error } = await getUser();
       console.log("🚀 ~ checkSession ~ data:", data)
       if (!data || error) {
-        router.replace("/auth/auth1/login");
+        router.replace("/dashboard/auth/login");
       } else {
         setIsLogingIn(true);
       }
