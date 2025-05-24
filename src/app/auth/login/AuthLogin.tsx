@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import Language from "@/app/components/shared/Language/Language";
 import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
 import { IconLock, IconMail } from "@tabler/icons-react";
+import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -99,15 +100,6 @@ const AuthLogin = () => {
 
   return (
     <>
-      <Typography
-        fontWeight="700"
-        variant="h3"
-        mb={1}
-        justifyContent="space-between"
-        display="flex"
-      >
-        {t("Page.Login.WelcomeToMeowSom")} <Language />
-      </Typography>
       <form onSubmit={formik.handleSubmit}>
         <Stack>
           <Box>

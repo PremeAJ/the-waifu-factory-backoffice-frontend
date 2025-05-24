@@ -103,15 +103,6 @@ const AuthRegister = () => {
 
   return (
     <>
-      <Typography
-        fontWeight="700"
-        variant="h3"
-        mb={1}
-        justifyContent="space-between"
-        display="flex"
-      >
-        Sign up to MeowSom <Language />
-      </Typography>
       <Box>
         <form onSubmit={formik.handleSubmit}>
           <Stack mb={3}>

@@ -1,13 +1,13 @@
-
 import { Grid, Box, Stack, Typography } from "@mui/material";
 import PageContainer from "@/app/components/container/PageContainer";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import Image from "next/image";
 import AuthLogin from "./AuthLogin";
+import { ServerLanguage } from "@/app/components/shared/Language/ServerLanguage";
 
 export default function Login() {
   return (
-    (<PageContainer title="Login Page" description="this is Sample page" >
+    <PageContainer title="Login Page" description="this is Sample page">
       <Grid
         container
         spacing={0}
@@ -33,12 +33,13 @@ export default function Login() {
             xs: 12,
             sm: 12,
             lg: 7,
-            xl: 8
-          }}>
+            xl: 8,
+          }}
+        >
           <Box position="relative">
-            <Box px={3}>
+            {/* <Box px={3}>
               <Logo />
-            </Box>
+            </Box> */}
             <Box
               alignItems="center"
               justifyContent="center"
@@ -72,13 +73,30 @@ export default function Login() {
             xs: 12,
             sm: 12,
             lg: 5,
-            xl: 4
-          }}>
-          <Box p={4} width={'100%'} maxWidth={500}>
+            xl: 4,
+          }}
+        >
+          <Box p={4} width={"100%"} maxWidth={500}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{ width: "100%"}}
+            >
+              <Box sx={{ flex: 1 }} />
+              <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                <Logo />
+              </Box>
+              <Box
+                sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}
+              >
+                <ServerLanguage />
+              </Box>
+            </Box>
             <AuthLogin />
           </Box>
         </Grid>
       </Grid>
-    </PageContainer>)
+    </PageContainer>
   );
 }

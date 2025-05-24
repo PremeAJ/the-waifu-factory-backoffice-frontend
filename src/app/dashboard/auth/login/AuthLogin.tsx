@@ -20,10 +20,8 @@ import { AuthContext } from "@/app/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, requiredPasswordSchema } from "@/utils/validator/yup";
 import { useTranslation } from "react-i18next";
-import Language from "@/app/components/shared/Language/Language";
 import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
 import { IconLock, IconMail } from "@tabler/icons-react";
-import SwitchLanguage from "@/app/components/shared/Language/SwitchLanguage";
 
 const validationSchema = yup.object({
   email: emailValidator,

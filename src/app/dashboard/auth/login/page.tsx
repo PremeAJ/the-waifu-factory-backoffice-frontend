@@ -59,7 +59,7 @@ export default function Login2() {
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                sx={{ width: "100%", mb: 2 }}
+                sx={{ width: "100%"}}
               >
                 <Box sx={{ flex: 1 }} />
                 <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>

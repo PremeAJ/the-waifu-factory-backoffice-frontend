@@ -5,10 +5,11 @@ import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 
 import Image from "next/image";
 import AuthRegister from "./AuthRegister";
+import { ServerLanguage } from "@/app/components/shared/Language/ServerLanguage";
 
 export default function Register() {
   return (
-    (<PageContainer title="Register Page" description="this is Sample page">
+    <PageContainer title="Register Page" description="this is Sample page">
       <Grid
         container
         spacing={0}
@@ -35,8 +36,9 @@ export default function Register() {
             xs: 12,
             sm: 12,
             lg: 7,
-            xl: 8
-          }}>
+            xl: 8,
+          }}
+        >
           <Box position="relative">
             <Box px={3}>
               <Logo />
@@ -54,10 +56,13 @@ export default function Register() {
             >
               <Image
                 src={"/images/backgrounds/login-bg.svg"}
-                alt="bg" width={500} height={500}
+                alt="bg"
+                width={500}
+                height={500}
                 style={{
                   width: "100%",
-                  maxWidth: "500px", maxHeight: '500px',
+                  maxWidth: "500px",
+                  maxHeight: "500px",
                 }}
               />
             </Box>
@@ -74,12 +79,27 @@ export default function Register() {
             xl: 4,
           }}
         >
-          <Box p={4} width={'100%'} maxWidth={500}>
+          <Box p={4} width={"100%"} maxWidth={500}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{ width: "100%"}}
+            >
+              <Box sx={{ flex: 1 }} />
+              <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                <Logo />
+              </Box>
+              <Box
+                sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}
+              >
+                <ServerLanguage />
+              </Box>
+            </Box>
             <AuthRegister />
           </Box>
         </Grid>
       </Grid>
-    </PageContainer>)
+    </PageContainer>
   );
-};
-
+}

@@ -1,27 +1,30 @@
-'use client'
+"use client";
 import { CustomizerContext } from "@/app/context/customizerContext";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
-import config from '@/app/context/config'
+import config from "@/app/context/config";
 import Image from "next/image";
 import { useContext } from "react";
+import { usePathname } from "next/navigation";
 
 const Logo = () => {
-  const { isCollapse, isSidebarHover, activeDir, activeMode } = useContext(CustomizerContext);
-
+  const { isCollapse, isSidebarHover, activeDir, activeMode } =
+    useContext(CustomizerContext);
+  const path = usePathname();
+  const url = path.includes("dashboard") ? "/dashboard" : "/";
   const TopbarHeight = config.topbarHeight;
 
   const LinkStyled = styled(Link)(() => ({
     height: TopbarHeight,
 
-    width: isCollapse == "mini-sidebar" && !isSidebarHover ? '40px' : '180px',
+    width: isCollapse == "mini-sidebar" && !isSidebarHover ? "40px" : "180px",
     overflow: "hidden",
     display: "block",
   }));
 
   if (activeDir === "ltr") {
     return (
-      <LinkStyled href="/">
+      <LinkStyled href={url}>
         {activeMode === "dark" ? (
           <Image
             src="/images/logos/light-logo.svg"
@@ -44,7 +47,7 @@ const Logo = () => {
   }
 
   return (
-    <LinkStyled href="/">
+    <LinkStyled href={url}>
       {activeMode === "dark" ? (
         <Image
           src="/images/logos/dark-rtl-logo.svg"
