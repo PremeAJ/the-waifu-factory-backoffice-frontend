@@ -8,10 +8,14 @@ import { useContext } from "react";
 
 const AuthSocialButtons = ({ title }: signInType) => {
   const { signInWithGoogle, isLoading } = useContext(AuthContext);
+  const onClick = () => {
+    const redirectTo = `${window.location.origin}/auth/callback`;
+    signInWithGoogle(redirectTo);
+  };
   return (
     <>
       <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
-        <CustomSocialButton onClick={signInWithGoogle} loading={isLoading}>
+        <CustomSocialButton onClick={onClick} loading={isLoading}>
           <Avatar
             src={"/images/svgs/google-icon.svg"}
             alt={"icon1"}

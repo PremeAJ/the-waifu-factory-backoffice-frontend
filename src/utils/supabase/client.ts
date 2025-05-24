@@ -5,11 +5,12 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
-export const csrSignInWithGoogle = async () => {
+export const csrSignInWithGoogle = async (redirectTo:string) => {
   await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      // redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo,
       queryParams: {
         prompt: "select_account"
       }

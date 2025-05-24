@@ -73,7 +73,7 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "Modern",
     icon: IconAperture,
-    href: "/",
+    href: "/dashboard",
     chip: "New",
     chipColor: "secondary",
   },
@@ -81,7 +81,7 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "eCommerce",
     icon: IconShoppingCart,
-    href: "/dashboards/ecommerce",
+    href: "/dashboard/dashboards/ecommerce",
   },
   {
     id: uniqueId(),

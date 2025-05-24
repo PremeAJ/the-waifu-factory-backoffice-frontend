@@ -31,12 +31,14 @@ const ProfileSkeleton = () => (
 
 const Profile = () => {
   const { signOut, isLoading: authIsLoading, user } = useContext(AuthContext);
-  const avatar = user?.user_metadata?.avatar_url
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
-
   if (authIsLoading) {
     return <ProfileSkeleton />;
+  } else if (!user) {
+    return null;
   }
+  const { email } = user;
+  const { avatar_url: avatar } = user.user_metadata;
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -45,10 +47,11 @@ const Profile = () => {
   };
   const handleLogout = async () => {
     await signOut();
-    window.location.href = "/auth/login";
+    // window.location.href = "/auth/login";
+    window.location.reload();
   };
 
-  return user && !authIsLoading ? (
+  return (
     <Box>
       <IconButton
         aria-label="show 11 new notifications"
@@ -115,7 +118,7 @@ const Profile = () => {
               gap={1}
             >
               <IconMail width={15} height={15} />
-              {user.email ?? "-"}
+              {email ?? "-"}
             </Typography>
           </Box>
         </Stack>
@@ -215,7 +218,7 @@ const Profile = () => {
         </Box>
       </Menu>
     </Box>
-  ) : null;
+  );
 };
 
 export default Profile;

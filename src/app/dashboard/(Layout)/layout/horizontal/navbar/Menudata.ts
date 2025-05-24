@@ -36,7 +36,7 @@ export const Menuitems = [
         id: uniqueId(),
         title: "eCommerce",
         icon: IconPoint,
-        href: "/dashboards/ecommerce",
+        href: "/dashboard/dashboards/ecommerce",
       },
     ],
   },

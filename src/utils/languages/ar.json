@@ -1,27 +1,51 @@
 {
-    "Modern": "عصري",
-    "Ecommerce": "التجارة الإلكترونية",
-    "eCommerce": "التجارة الإلكترونية",
-    "Contacts": "جهات الاتصال",
-    "Blog": "مقالات",
-    "Posts": "المشاركات",
-    "Detail": "التفاصيل",
-    "Shop": "متجر",
-    "List": "قائمة",
-    "Checkout": "الدفع",
-    "Chats": "الدردشات",
-    "Users": "المستخدمون",
-    "Profile": "الملف الشخصي",
-    "Followers": "متابعون",
-    "Friends": "أصدقاء",
-    "Gallery": "صالة عرض",
-    "Notes": "ملاحظات",
-    "Calendar": "التقويم",
-    "Email": "بريد إلكتروني",
-    "Tickets": "تذاكر",
-    "Kanban": "كانبان",
-    "Invoice": "فاتورة",
-    "Details": "تفاصيل",
-    "Create": "يخلق",
-    "Edit": "يحرر"
+  "Page": {
+    "Main": {
+      "TryFreeDemo": "جرّب النسخة المجانية",
+      "Login": "تسجيل الدخول"
+    },
+    "Login": {
+      "ForgotPassword": "نسيت كلمة المرور",
+      "RememberThisDevice": "تذكر هذا الجهاز",
+      "DontHaveAccount": "ليس لديك حساب",
+      "CreateAnAccount": "إنشاء حساب",
+      "SignIn": "تسجيل الدخول",
+      "WelcomeToMeowSom": "مرحبًا بك في MeawSom"
+    }
+  },
+  "Form": {
+    "Validator": {
+      "PleaseEnterYour": "يرجى إدخال "
+    }
+  },
+  "Navigation": {
+    "Pricing": "الأسعار"
+  },
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "Modern": "مودرن",
+  "eCommerce": "التجارة الإلكترونية",
+  "Contacts": "جهات الاتصال",
+  "Blog": "مدونة",
+  "Posts": "المشاركات",
+  "Detail": "تفاصيل",
+  "Ecommerce": "التجارة الإلكترونية",
+  "Shop": "المتجر",
+  "List": "قائمة",
+  "Checkout": "الدفع",
+  "Chats": "الدردشات",
+  "Users": "المستخدمون",
+  "Profile": "الملف الشخصي",
+  "Followers": "المتابعون",
+  "Friends": "الأصدقاء",
+  "Gallery": "المعرض",
+  "Notes": "ملاحظات",
+  "Calendar": "التقويم",
+  "Email": "البريد الإلكتروني",
+  "Tickets": "تذاكر",
+  "Kanban": "كانبان",
+  "Invoice": "فاتورة",
+  "Details": "تفاصيل",
+  "Create": "إنشاء",
+  "Edit": "تعديل"
 }

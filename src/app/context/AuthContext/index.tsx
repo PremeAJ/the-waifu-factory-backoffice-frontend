@@ -31,6 +31,7 @@ import {
 } from "@supabase/supabase-js";
 import { csrSignInWithGoogle } from "@/utils/supabase/client";
 import { set } from "lodash";
+import { redirect } from "next/dist/server/api-utils";
 
 type AuthContextType = {
   isLoading: boolean;
@@ -45,7 +46,7 @@ type AuthContextType = {
   resetPassword: (payload: ResetPasswordType) => Promise<any>;
   exchangeCodeForSession: (code: string) => Promise<any>;
   verifyOtp: (payload: VerifyOtpParams) => Promise<any>;
-  signInWithGoogle: () => Promise<any>;
+  signInWithGoogle: (redirectTo:string) => Promise<any>;
   setSession: (tokens: { access_token: string; refresh_token: string }) => Promise<any>;
 };
 
@@ -139,9 +140,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (redirectTo:string) => {
     setIsLoading(true);
-    const response = await csrSignInWithGoogle();
+    const response = await csrSignInWithGoogle(redirectTo);
     setIsLoading(false);
     return response;
   };

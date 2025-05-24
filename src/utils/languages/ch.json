@@ -1,27 +1,51 @@
 {
-    "Modern": "現代的",
-    "Ecommerce": "电子商务",
-    "eCommerce": "电子商务",
-    "Contacts": "聯繫人",
-    "Blog": "博客",
-    "Posts": "帖子",
-    "Detail": "细节",
-    "Shop": "店铺",
-    "List": "列表",
-    "Checkout": "查看",
-    "Chats": "聊天記錄",
-    "Users": "用户",
-    "Profile": "轮廓",
-    "Followers": "追随者",
-    "Friends": "朋友们",
-    "Gallery": "画廊",
-    "Notes": "笔记",
-    "Calendar": "日历",
-    "Email": "电子邮件",
-    "Tickets": "门票",
-    "Kanban": "看板",
-    "Invoice": "發票",
-    "Details": "細節",
-    "Create": "創造",
-    "Edit": "編輯"
+  "Page": {
+    "Main": {
+      "TryFreeDemo": "免费试用",
+      "Login": "登录"
+    },
+    "Login": {
+      "ForgotPassword": "忘记密码",
+      "RememberThisDevice": "记住此设备",
+      "DontHaveAccount": "还没有账户",
+      "CreateAnAccount": "创建账户",
+      "SignIn": "登录",
+      "WelcomeToMeowSom": "欢迎来到 MeowSom"
+    }
+  },
+  "Form": {
+    "Validator": {
+      "PleaseEnterYour": "请输入 "
+    }
+  },
+  "Navigation": {
+    "Pricing": "价格"
+  },
+  "email": "邮箱",
+  "password": "密码",
+  "Modern": "现代",
+  "eCommerce": "电子商务",
+  "Contacts": "联系人",
+  "Blog": "博客",
+  "Posts": "帖子",
+  "Detail": "详情",
+  "Ecommerce": "电子商务",
+  "Shop": "商店",
+  "List": "列表",
+  "Checkout": "结账",
+  "Chats": "聊天",
+  "Users": "用户",
+  "Profile": "个人资料",
+  "Followers": "关注者",
+  "Friends": "朋友",
+  "Gallery": "画廊",
+  "Notes": "笔记",
+  "Calendar": "日历",
+  "Email": "电子邮件",
+  "Tickets": "工单",
+  "Kanban": "看板",
+  "Invoice": "发票",
+  "Details": "详细信息",
+  "Create": "创建",
+  "Edit": "编辑"
 }
