@@ -10,9 +10,3 @@ export interface userType {
   permissionId: string | null;
   companyId: string | null;
 }
-
-export type UserContextType = {
-  user: userType | null;
-  loading: boolean;
-  error: Error | null;
-};

@@ -4,21 +4,13 @@ import { useRouter } from "next/navigation";
 import { AuthContext } from "@/app/context/AuthContext";
 import { csrGetSession } from "@/utils/supabase/client";
 import Loading from "@/app/loading";
-
-// async function syncUser(userId: string) {
-//   // เรียก API backend ของคุณเพื่อเช็ค/สร้าง user
-//   await fetch("/api/user/sync", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ userId }),
-//   });
-// }
-
+import { UserContext } from "@/app/context/UserContext";
 
 export default function AuthCallback() {
   const router = useRouter();
   const { setSession, getSession } = useContext(AuthContext);
-
+  const {refreshUser} = useContext(UserContext);
+  
   useEffect(() => {
     csrGetSession().then(async ({ data }) => {
       if (data.session) {
@@ -30,9 +22,7 @@ export default function AuthCallback() {
             refresh_token,
           });
         }
-        // if (user?.id) {
-        //   await syncUser(user.id);
-        // }
+        refreshUser()
         setTimeout(() => {
           router.replace("/");
         }, 1000);

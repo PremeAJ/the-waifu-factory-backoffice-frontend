@@ -29,13 +29,13 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
       <ThemeProvider theme={theme}>
         <RTL direction={activeDir}>
           <CssBaseline />
-          <AuthProvider>
-            <UserProvider>
+          <UserProvider>
+            <AuthProvider>
               <Analytics />
               <SpeedInsights />
               {children}
-            </UserProvider>
-          </AuthProvider>
+            </AuthProvider>
+          </UserProvider>
         </RTL>
       </ThemeProvider>
     </AppRouterCacheProvider>

@@ -31,6 +31,7 @@ import {
 import { csrSignInWithGoogle } from "@/utils/supabase/client";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
+import { UserContext } from "../UserContext";
 
 type AuthContextType = {
   isLoading: boolean;
@@ -57,6 +58,7 @@ export const AuthContext = createContext<AuthContextType>(
 );
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const {setUser: setUserFromContext} = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -103,6 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     const response = await ssrSignOut();
     setUser(null);
+    setUserFromContext(null)
     setIsLoading(false);
     return response;
   };
