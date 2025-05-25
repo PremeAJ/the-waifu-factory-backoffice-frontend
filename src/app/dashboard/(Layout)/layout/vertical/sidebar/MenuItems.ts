@@ -326,13 +326,13 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "Pricing",
     icon: IconCurrencyDollar,
-    href: "/theme-pages/pricing",
+    href: "/dashboard/theme-pages/pricing",
   },
   {
     id: uniqueId(),
     title: "Account Setting",
     icon: IconUserCircle,
-    href: "/theme-pages/account-settings",
+    href: "/dashboard/theme-pages/account-settings",
   },
   {
     id: uniqueId(),

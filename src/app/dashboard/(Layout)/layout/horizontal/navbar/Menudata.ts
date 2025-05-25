@@ -286,13 +286,13 @@ export const Menuitems = [
         id: uniqueId(),
         title: "Pricing",
         icon: IconPoint,
-        href: "/theme-pages/pricing",
+        href: "/dashboard/theme-pages/pricing",
       },
       {
         id: uniqueId(),
         title: "Account Setting",
         icon: IconPoint,
-        href: "/theme-pages/account-settings",
+        href: "/dashboard/theme-pages/account-settings",
       },
       {
         id: uniqueId(),

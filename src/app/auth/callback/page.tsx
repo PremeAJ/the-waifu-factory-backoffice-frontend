@@ -22,7 +22,7 @@ export default function AuthCallback() {
   useEffect(() => {
     csrGetSession().then(async ({ data }) => {
       if (data.session) {
-        const { access_token, refresh_token, user } = data.session;
+        const { access_token, refresh_token } = data.session;
         const session = await getSession();
         if (!session.data.session) {
           await setSession({

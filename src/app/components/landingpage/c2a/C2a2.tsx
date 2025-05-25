@@ -1,13 +1,14 @@
-'use client';
-import React from "react";
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import { Grid } from '@mui/material';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
+"use client";
+import React, { use, useContext } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import { Grid } from "@mui/material";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 import Image from "next/image";
+import { AuthContext } from "@/app/context/AuthContext";
 
 const StyledButton = styled(Button)(({ theme }) => ({
   padding: "13px 34px",
@@ -30,8 +31,11 @@ const StyledButton2 = styled(Button)(({ theme }) => ({
 }));
 
 const C2a2 = () => {
+  const { user, isLoading } = useContext(AuthContext);
+
+  if (isLoading || user) return null;
   return (
-    (<Box>
+    <Box>
       <Box
         bgcolor="primary.main"
         sx={{
@@ -45,8 +49,9 @@ const C2a2 = () => {
               size={{
                 xs: 12,
                 sm: 12,
-                lg: 5
-              }}>
+                lg: 5,
+              }}
+            >
               <Typography
                 variant="h2"
                 color="background.paper"
@@ -77,8 +82,9 @@ const C2a2 = () => {
             <Grid
               size={{
                 xs: 12,
-                lg: 5
-              }}>
+                lg: 5,
+              }}
+            >
               <Box
                 sx={{
                   textAlign: {
@@ -87,13 +93,18 @@ const C2a2 = () => {
                   },
                 }}
               >
-                <Image src='/images/landingpage/background/c2a.png' alt="img" width="330" height={330} />
+                <Image
+                  src="/images/landingpage/background/c2a.png"
+                  alt="img"
+                  width="330"
+                  height={330}
+                />
               </Box>
             </Grid>
           </Grid>
         </Container>
       </Box>
-    </Box>)
+    </Box>
   );
 };
 

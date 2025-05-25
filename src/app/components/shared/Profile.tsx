@@ -16,6 +16,7 @@ import { IconMail } from "@tabler/icons-react";
 import { Stack } from "@mui/system";
 import Image from "next/image";
 import { AuthContext } from "@/app/context/AuthContext";
+import { UserContext } from "@/app/context/UserContext";
 
 const ProfileSkeleton = () => (
   <Box>
@@ -30,15 +31,15 @@ const ProfileSkeleton = () => (
 );
 
 const Profile = () => {
-  const { signOut, isLoading: authIsLoading, user } = useContext(AuthContext);
+  const { signOut, isLoading: authIsLoading } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
   if (authIsLoading) {
     return <ProfileSkeleton />;
   } else if (!user) {
     return null;
   }
-  const { email } = user;
-  const { avatar_url: avatar } = user.user_metadata;
+  const { email, avatarUrl, firstName, lastName } = user;
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -47,7 +48,6 @@ const Profile = () => {
   };
   const handleLogout = async () => {
     await signOut();
-    // window.location.href = "/auth/login";
     window.location.reload();
   };
 
@@ -66,7 +66,7 @@ const Profile = () => {
         onClick={handleClick2}
       >
         <Avatar
-          src={avatar ?? "/images/profile/user-1.jpg"}
+          src={avatarUrl ?? "/images/profile/user-1.jpg"}
           alt={"ProfileImg"}
           sx={{
             width: 35,
@@ -95,7 +95,7 @@ const Profile = () => {
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
           <Avatar
-            src={avatar ?? "/images/profile/user-1.jpg"}
+            src={avatarUrl ?? "/images/profile/user-1.jpg"}
             alt={"ProfileImg"}
             sx={{ width: 95, height: 95 }}
           />
@@ -105,7 +105,9 @@ const Profile = () => {
               color="textPrimary"
               fontWeight={600}
             >
-              Mathew Anderson
+              {firstName || lastName
+                ? `${firstName ?? ""} ${lastName ?? ""}`.trim()
+                : "-"}
             </Typography>
             <Typography variant="subtitle2" color="textSecondary">
               Designer
@@ -205,10 +207,8 @@ const Profile = () => {
             </Box>
           </Box> */}
           <Button
-            // href="/auth/auth1/login"
             variant="outlined"
             color="primary"
-            // component={Link}
             fullWidth
             onClick={handleLogout}
             loading={authIsLoading}

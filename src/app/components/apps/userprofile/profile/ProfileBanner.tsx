@@ -19,8 +19,8 @@ import {
 } from "@tabler/icons-react";
 import ProfileTab from "./ProfileTab";
 import BlankCard from "../../../shared/BlankCard";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/app/context/AuthContext";
+import { useContext } from "react";
+import { UserContext } from "@/app/context/UserContext";
 
 const ProfileBanner = () => {
   const ProfileImage = styled(Box)(() => ({
@@ -33,8 +33,8 @@ const ProfileBanner = () => {
     justifyContent: "center",
     margin: "0 auto",
   }));
-  // const { user } = useContext(AuthContext);
-
+  const { user } = useContext(UserContext);
+  const { firstName, lastName, avatarUrl } = user || {};
 
   return (
     <>
@@ -133,7 +133,7 @@ const ProfileBanner = () => {
               <Box>
                 <ProfileImage>
                   <Avatar
-                    src={"/images/profile/user-1.jpg"}
+                    src={avatarUrl || "/images/profile/user-1.jpg"}
                     alt="profileImage"
                     sx={{
                       borderRadius: "50%",
@@ -145,7 +145,7 @@ const ProfileBanner = () => {
                 </ProfileImage>
                 <Box mt={1}>
                   <Typography fontWeight={600} variant="h5">
-                    Mathew Anderson
+                    {firstName} {lastName}
                   </Typography>
                   <Typography
                     color="textSecondary"

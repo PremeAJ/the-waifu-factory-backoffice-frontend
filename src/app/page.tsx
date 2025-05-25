@@ -23,7 +23,7 @@ export default function Landingpage() {
       <OtherFramework />
       <Testimonial />
       <Features />
-      <C2a />
+      {/* <C2a /> */}
       <C2a2 />
       <Footer />
     </PageContainer>

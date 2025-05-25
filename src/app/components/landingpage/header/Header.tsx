@@ -17,9 +17,9 @@ import { IconMenu2 } from "@tabler/icons-react";
 import Language from "@/app/components/shared/Language/Language";
 import Profile from "@/app/components/shared/Profile";
 import { AuthContext } from "@/app/context/AuthContext";
+import { UserDataContext } from "@/app/context/UserDataContext";
 
 const LpHeader = () => {
-  const { isLoading, user } = useContext(AuthContext);
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     justifyContent: "center",
     [theme.breakpoints.up("lg")]: {

@@ -17,7 +17,6 @@ import {
   ssrRefreshSession,
   ssrResetPassword,
   ssrSignInWithEmail,
-  ssrSignInWithGoogle,
   ssrSignOut,
   ssrSignUpWithEmail,
   ssrVerifyOtp,
@@ -30,8 +29,8 @@ import {
   VerifyOtpParams,
 } from "@supabase/supabase-js";
 import { csrSignInWithGoogle } from "@/utils/supabase/client";
-import { set } from "lodash";
-import { redirect } from "next/dist/server/api-utils";
+import useSWR from "swr";
+import { getFetcher } from "@/app/api/globalFetcher";
 
 type AuthContextType = {
   isLoading: boolean;
@@ -46,8 +45,11 @@ type AuthContextType = {
   resetPassword: (payload: ResetPasswordType) => Promise<any>;
   exchangeCodeForSession: (code: string) => Promise<any>;
   verifyOtp: (payload: VerifyOtpParams) => Promise<any>;
-  signInWithGoogle: (redirectTo:string) => Promise<any>;
-  setSession: (tokens: { access_token: string; refresh_token: string }) => Promise<any>;
+  signInWithGoogle: (redirectTo: string) => Promise<any>;
+  setSession: (tokens: {
+    access_token: string;
+    refresh_token: string;
+  }) => Promise<any>;
 };
 
 export const AuthContext = createContext<AuthContextType>(
@@ -140,7 +142,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
-  const signInWithGoogle = async (redirectTo:string) => {
+  const signInWithGoogle = async (redirectTo: string) => {
     setIsLoading(true);
     const response = await csrSignInWithGoogle(redirectTo);
     setIsLoading(false);

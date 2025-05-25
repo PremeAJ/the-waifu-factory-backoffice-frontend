@@ -7,11 +7,14 @@ import { ThemeSettings } from "@/utils/theme/Theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import "@/utils/i18n";
 import { CustomizerContext } from "@/app/context/customizerContext";
-import { AuthProvider } from "@/app/context/AuthContext"; // <-- เพิ่มบรรทัดนี้
+import { AuthContext, AuthProvider } from "@/app/context/AuthContext"; // <-- เพิ่มบรรทัดนี้
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { UserContext, UserProvider } from "./context/UserContext";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
+  const { user, isLoading: isAuthLoading } = useContext(AuthContext);
+
   if (process.env.NODE_ENV === "production") {
     console.log = () => {};
     console.warn = () => {};
@@ -27,9 +30,11 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
         <RTL direction={activeDir}>
           <CssBaseline />
           <AuthProvider>
-            <Analytics />
-            <SpeedInsights />
-            {children}
+            <UserProvider>
+              <Analytics />
+              <SpeedInsights />
+              {children}
+            </UserProvider>
           </AuthProvider>
         </RTL>
       </ThemeProvider>
