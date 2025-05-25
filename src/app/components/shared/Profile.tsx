@@ -31,10 +31,10 @@ const ProfileSkeleton = () => (
 );
 
 const Profile = () => {
-  const { signOut, isLoading: authIsLoading } = useContext(AuthContext);
-  const { user } = useContext(UserContext);
+  const { signOut } = useContext(AuthContext);
+  const { user, loading } = useContext(UserContext);
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
-  if (authIsLoading) {
+  if (loading) {
     return <ProfileSkeleton />;
   } else if (!user) {
     return null;
@@ -211,7 +211,7 @@ const Profile = () => {
             color="primary"
             fullWidth
             onClick={handleLogout}
-            loading={authIsLoading}
+            loading={loading}
           >
             Logout
           </Button>

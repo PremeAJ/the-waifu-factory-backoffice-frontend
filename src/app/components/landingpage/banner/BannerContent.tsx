@@ -11,7 +11,7 @@ import { IconRocket } from "@tabler/icons-react";
 
 // third party
 import { motion } from "framer-motion";
-import { AuthContext } from "@/app/context/AuthContext";
+import { UserContext } from "@/app/context/UserContext";
 
 const StyledButton = styled(Button)(() => ({
   padding: "13px 48px",
@@ -19,7 +19,7 @@ const StyledButton = styled(Button)(() => ({
 }));
 
 const BannerContent = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
   return (

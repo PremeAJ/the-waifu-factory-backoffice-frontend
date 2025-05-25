@@ -10,13 +10,14 @@ import DemosDD from "./DemosDD";
 import AppLinks from "@/app/dashboard/(Layout)/layout/vertical/header/AppLinks";
 import QuickLinks from "@/app/dashboard/(Layout)/layout/vertical/header/QuickLinks";
 import { AuthContext } from "@/app/context/AuthContext";
+import { UserContext } from "@/app/context/UserContext";
 
 //!
 
 const MobileSidebar = () => {
   const [toggle, setToggle] = useState(false);
   const [toggle2, setToggle2] = useState(false);
-  const { user, isLoading } = useContext(AuthContext);
+  const { user, loading } = useContext(UserContext);
 
   return (
     <>
@@ -81,7 +82,7 @@ const MobileSidebar = () => {
           >
             Support
           </Button>
-          {user && !isLoading ? null : (
+          {user && !loading ? null : (
             <Button color="primary" variant="contained" href="/auth/login">
               Login
             </Button>

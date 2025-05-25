@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import { AuthContext } from "@/app/context/AuthContext";
+import { UserContext } from "@/app/context/UserContext";
 
 const StyledButton = styled(Button)(({ theme }) => ({
   padding: "13px 34px",
@@ -31,9 +32,9 @@ const StyledButton2 = styled(Button)(({ theme }) => ({
 }));
 
 const C2a2 = () => {
-  const { user, isLoading } = useContext(AuthContext);
+  const { user, loading } = useContext(UserContext);
 
-  if (isLoading || user) return null;
+  if (loading || user) return null;
   return (
     <Box>
       <Box

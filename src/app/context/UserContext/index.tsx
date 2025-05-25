@@ -51,7 +51,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [usersData, usersError]);
   const refreshUser = async () => {
-    setLoading(isUsersLoading)
     await userMutate(); // Refresh ข้อมูลผู้ใช้ใหม่
   };
   // ค่า value ที่จะส่งไปใน Context

@@ -11,12 +11,11 @@ import AppLinks from "@/app/dashboard/(Layout)/layout/vertical/header/AppLinks";
 import QuickLinks from "@/app/dashboard/(Layout)/layout/vertical/header/QuickLinks";
 import DemosDD from "./DemosDD";
 import { useTranslation } from "react-i18next";
-import Profile from "@/app/components/shared/Profile";
-import { AuthContext } from "@/app/context/AuthContext";
+import { UserContext } from "@/app/context/UserContext";
 
 const Navigations = () => {
   const { t } = useTranslation();
-  const { user, isLoading } = useContext(AuthContext);
+  const { user, loading } = useContext(UserContext);
   const StyledButton = styled(Button)(({ theme }) => ({
     fontSize: "16px",
     color: theme.palette.text.secondary,
@@ -150,7 +149,7 @@ const Navigations = () => {
       <StyledButton color="inherit" variant="text" href="/">
         รู้จักเรา
       </StyledButton>
-      {isLoading ? null : user ? (
+      {loading ? null : user ? (
         null
       ) : (
         <Button
