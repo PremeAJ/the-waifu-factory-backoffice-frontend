@@ -8,13 +8,13 @@ export async function GET(req: NextRequest, context: { params: Promise<{ path: s
   const supabase = await createClient();
   const { data } = await supabase.auth.getSession();
   const accessToken = data.session?.access_token || "";
-
   try {
     const options: RequestInit = {
       method: req.method,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
+        Origin: process.env.NEXT_PUBLIC_DOMAIN || "",
       },
       body:
         req.method !== "GET" && req.method !== "HEAD"
