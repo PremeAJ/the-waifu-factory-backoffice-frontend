@@ -9,7 +9,7 @@ import { UserContext } from "@/app/context/UserContext";
 export default function AuthCallback() {
   const router = useRouter();
   const { setSession, getSession } = useContext(AuthContext);
-  const {refreshUser} = useContext(UserContext);
+  const { refreshUser, syncUser } = useContext(UserContext);
 
   useEffect(() => {
     csrGetSession().then(async ({ data }) => {
@@ -22,7 +22,7 @@ export default function AuthCallback() {
             refresh_token,
           });
         }
-        refreshUser()
+        syncUser();
         setTimeout(() => {
           router.replace("/dashboard");
         }, 1000);

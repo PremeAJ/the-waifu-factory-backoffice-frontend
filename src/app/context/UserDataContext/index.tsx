@@ -93,8 +93,6 @@ export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({
     postsError,
     usersError,
   ]);
-    console.log("🚀 ~ useEffect ~ users:", users)
-    console.log("🚀 ~ useEffect ~ users:", users)
 
   // Function to add a new item to the gallery
   const addGalleryItem = (item: GallaryType) => {
@@ -140,13 +138,7 @@ export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({
   // Add reply to a comment
   const addReply = async (postId: string, commentId: string, reply: Reply) => {
     try {
-      await mutate(
-        postFetcher("/api/userprofile/add-replies", {
-          postId,
-          commentId,
-          reply,
-        })
-      );
+      await mutate( postFetcher("/api/userprofile/add-replies", { postId, commentId, reply, }) );
     } catch (error) {
       console.error("Error adding reply:", error);
     }

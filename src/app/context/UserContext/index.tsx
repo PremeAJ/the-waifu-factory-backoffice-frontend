@@ -1,13 +1,14 @@
 "use client";
 import React, { createContext, useState, useEffect } from "react";
-import useSWR from "swr";
-import { getFetcher } from "@/app/api/globalFetcher";
+import useSWR, { mutate } from "swr";
+import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { userType } from "./type";
 
 export type UserContextType = {
   user: userType | null;
   setUser: React.Dispatch<React.SetStateAction<userType | null>>; // เพิ่ม setUser
   refreshUser: () => {};
+  syncUser: () => {};
   loading: boolean;
   error: Error | null;
 };
@@ -40,10 +41,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     mutate: userMutate,
   } = useSWR("/api/users/me", getFetcher);
 
-  // Effect สำหรับจัดการข้อมูลที่ fetch มา
   useEffect(() => {
     if (usersData) {
-      setUser(usersData);
+      setUser(usersData?.data);
       setLoading(isUsersLoading);
     } else if (usersError) {
       setError(usersError);
@@ -51,13 +51,19 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [usersData, usersError]);
   const refreshUser = async () => {
-    await userMutate(); // Refresh ข้อมูลผู้ใช้ใหม่
+    await userMutate();
   };
-  // ค่า value ที่จะส่งไปใน Context
+  const syncUser = async () => {
+    try {
+      await userMutate(postFetcher("/api/users/sync",{}));
+    } catch (error:any) {
+    }
+  };
   const value: UserContextType = {
     user,
-    setUser, // เพิ่ม setUser เข้าไปใน Context
+    setUser,
     refreshUser,
+    syncUser,
     loading,
     error,
   };
