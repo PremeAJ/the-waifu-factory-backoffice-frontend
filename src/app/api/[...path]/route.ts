@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function handler(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {
+async function handleRequest(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { path } = await context.params; // ต้อง await ก่อนใช้งาน
   const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/${path.join("/")}`;
 
@@ -42,5 +42,11 @@ export async function handler(req: NextRequest, context: { params: Promise<{ pat
   }
 }
 
-// Export handler สำหรับทุก HTTP method
-export { handler as GET, handler as POST, handler as PUT, handler as DELETE, handler as PATCH, handler as OPTIONS, handler as HEAD };
+// Export handler สำหรับแต่ละ HTTP method
+export const GET = handleRequest;
+export const POST = handleRequest;
+export const PUT = handleRequest;
+export const DELETE = handleRequest;
+export const PATCH = handleRequest;
+export const OPTIONS = handleRequest;
+export const HEAD = handleRequest;
