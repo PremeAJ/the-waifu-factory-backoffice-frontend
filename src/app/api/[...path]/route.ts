@@ -27,18 +27,18 @@ export async function GET(req: NextRequest, context: { params: Promise<{ path: s
 
     if (response.ok) {
       console.log(
-        `\x1b[32m[API][${response.status}][${req.method}] ${backendUrl}\x1b[0m`
+        `[32m[API][${response.status}][${req.method}] ${backendUrl}`
       );
     } else {
       console.error(
-        `\x1b[31m[API][${response.status}][${req.method}] ${backendUrl}\x1b[0m`
+        `[31m[API][${response.status}][${req.method}] ${backendUrl}`
       );
     }
 
     return NextResponse.json(data, { status: response.status });
   } catch (error: any) {
     console.error(
-      `\x1b[31m[API][500][${req.method}] ${req.url} - ${error.message}\x1b[0m`
+      `[31m[API][500][${req.method}] ${req.url} - ${error.message}`
     );
     return NextResponse.json(
       { error: "Internal Server Error" },
