@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { IconStar, IconTrash } from '@tabler/icons-react';
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 
 
 type Props = {

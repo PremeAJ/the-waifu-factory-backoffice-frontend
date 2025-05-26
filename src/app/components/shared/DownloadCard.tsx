@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import { Card, CardHeader, Tooltip, Divider, IconButton } from "@mui/material";
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 import { IconDownload } from "@tabler/icons-react";
 
 const DownloadCard = ({ title, children, onDownload }: any) => {

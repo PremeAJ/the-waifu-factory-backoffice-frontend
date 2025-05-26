@@ -7,7 +7,7 @@ import { Theme } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
-import { CustomizerContext } from "@/app/context/customizerContext";
+import { CustomizerContext } from "@/app/context/setting/customizerContext";
 import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
 import Notifications from "../../vertical/header/Notification";
 import Cart from "../../vertical/header/Cart";
@@ -16,7 +16,7 @@ import Search from "../../vertical/header/Search";
 import Language from "../../../../../components/shared/Language/Language";
 import Navigation from "../../vertical/header/Navigation";
 import Logo from "../../shared/logo/Logo";
-import config from "@/app/context/config";
+import config from "@/app/context/setting/config";
 import { ProductProvider } from '@/app/context/Ecommercecontext/index'
 
 

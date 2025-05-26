@@ -3,7 +3,7 @@ import { Card } from '@mui/material';
 
 import React, { useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 
 
 type Props = {

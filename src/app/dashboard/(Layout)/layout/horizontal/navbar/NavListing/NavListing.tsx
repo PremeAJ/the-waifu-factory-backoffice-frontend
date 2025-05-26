@@ -6,7 +6,7 @@ import { Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NavItem from '../NavItem/NavItem';
 import NavCollapse from '../NavCollapse/NavCollapse';
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 import { useContext } from 'react';
 
 

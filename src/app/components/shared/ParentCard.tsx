@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Card, CardHeader, CardContent, Divider, Box } from "@mui/material";
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 
 
 type Props = {

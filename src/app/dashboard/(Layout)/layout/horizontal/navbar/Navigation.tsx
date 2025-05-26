@@ -6,9 +6,9 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import NavListing from './NavListing/NavListing';
 import Logo from '../../shared/logo/Logo';
 import SidebarItems from '../../vertical/sidebar/SidebarItems';
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 import { useContext } from 'react';
-import config from '@/app/context/config';
+import config from '@/app/context/setting/config';
 
 
 const Navigation = () => {

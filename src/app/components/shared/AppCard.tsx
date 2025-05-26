@@ -1,6 +1,6 @@
 'use client'
 import Card from '@mui/material/Card'
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 import { useContext } from 'react';
 
 type Props = {

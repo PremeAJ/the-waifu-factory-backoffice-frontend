@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 
 
-import { CustomizerContext } from "@/app/context/customizerContext";
+import { CustomizerContext } from "@/app/context/setting/customizerContext";
 
 import { usePathname } from "next/navigation";
 

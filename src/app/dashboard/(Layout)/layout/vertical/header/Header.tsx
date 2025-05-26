@@ -11,10 +11,10 @@ import Profile from "../../../../../components/shared/Profile";
 import Cart from "./Cart";
 import Search from "./Search";
 import Language from "../../../../../components/shared/Language/Language";
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 import Navigation from "./Navigation";
 import MobileRightSidebar from "./MobileRightSidebar";
-import config from '@/app/context/config'
+import config from '@/app/context/setting/config'
 import { useContext } from "react";
 import { ProductProvider } from '@/app/context/Ecommercecontext/index'
 

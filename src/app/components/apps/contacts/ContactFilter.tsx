@@ -15,7 +15,7 @@ import {
 } from "@tabler/icons-react";
 import ContactAdd from "./ContactAdd";
 import { ElementType, useContext, useEffect } from 'react';
-import { CustomizerContext } from '@/app/context/customizerContext';
+import { CustomizerContext } from '@/app/context/setting/customizerContext';
 import { usePathname } from 'next/navigation';
 import { mutate } from 'swr';
 

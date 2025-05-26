@@ -1,7 +1,7 @@
 'use client'
 import { useTheme } from '@mui/material/styles';
 import { Card, CardContent, Typography, Box, Stack } from '@mui/material';
-import { CustomizerContext } from "@/app/context/customizerContext";
+import { CustomizerContext } from "@/app/context/setting/customizerContext";
 
 import { IconGridDots } from '@tabler/icons-react';
 import { useContext } from 'react';

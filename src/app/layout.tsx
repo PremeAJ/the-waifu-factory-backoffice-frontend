@@ -2,7 +2,7 @@ import React from "react";
 import MyApp from "./app";
 import NextTopLoader from "nextjs-toploader";
 import "./global.css";
-import { CustomizerContextProvider } from "./context/customizerContext";
+import { CustomizerContextProvider } from "./context/setting/customizerContext";
 import Header from "./header";
 import { Metadata, Viewport } from "next";
 export const metadata: Metadata = {

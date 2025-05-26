@@ -1,7 +1,7 @@
 import { Box, Avatar, Typography, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 
 import { IconPower } from '@tabler/icons-react';
-import { CustomizerContext } from "@/app/context/customizerContext";
+import { CustomizerContext } from "@/app/context/setting/customizerContext";
 import Link from 'next/link';
 import { useContext } from 'react';
 

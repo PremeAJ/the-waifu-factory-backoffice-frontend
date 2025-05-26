@@ -1,7 +1,7 @@
 "use client"
 import React, { useContext, useEffect } from "react";
 import { Avatar, IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import { CustomizerContext } from "@/app/context/customizerContext";
+import { CustomizerContext } from "@/app/context/setting/customizerContext";
 
 import { Stack } from "@mui/system";
 import { useTranslation } from "react-i18next";
