@@ -1,140 +1,157 @@
 const LightThemeColors = [
   {
-    name: 'BLUE_THEME',
+    name: "BLUE_THEME",
     palette: {
       primary: {
-        main: '#5D87FF',
-        light: '#ECF2FF',
-        dark: '#4570EA',
-        contrastText: '#ffffff',
+        main: "#5D87FF",
+        light: "#ECF2FF",
+        dark: "#4570EA",
+        contrastText: "#ffffff",
       },
       secondary: {
-        main: '#49BEFF',
-        light: '#E8F7FF',
-        dark: '#23afdb',
-        contrastText: '#ffffff',
+        main: "#49BEFF",
+        light: "#E8F7FF",
+        dark: "#23afdb",
+        contrastText: "#ffffff",
       },
     },
   },
   {
-    name: 'AQUA_THEME',
+    name: "AQUA_THEME",
     palette: {
       primary: {
-        main: '#0074BA',
-        light: '#EFF9FF',
-        dark: '#006DAF',
-        contrastText: '#ffffff',
+        main: "#0074BA",
+        light: "#EFF9FF",
+        dark: "#006DAF",
+        contrastText: "#ffffff",
       },
       secondary: {
-        main: '#47D7BC',
-        light: '#EDFBF7',
-        dark: '#39C7AD',
-        contrastText: '#ffffff',
+        main: "#47D7BC",
+        light: "#EDFBF7",
+        dark: "#39C7AD",
+        contrastText: "#ffffff",
       },
     },
   },
   {
-    name: 'PURPLE_THEME',
+    name: "PURPLE_THEME",
     palette: {
       primary: {
-        main: '#763EBD',
-        light: '#F2ECF9',
-        dark: '#6E35B7',
-        contrastText: '#ffffff',
+        main: "#763EBD",
+        light: "#F2ECF9",
+        dark: "#6E35B7",
+        contrastText: "#ffffff",
       },
       secondary: {
-        main: '#95CFD5',
-        light: '#EDF8FA',
-        dark: '#8BC8CE',
-        contrastText: '#ffffff',
+        main: "#95CFD5",
+        light: "#EDF8FA",
+        dark: "#8BC8CE",
+        contrastText: "#ffffff",
       },
     },
   },
   {
-    name: 'GREEN_THEME',
+    name: "GREEN_THEME",
     palette: {
       primary: {
-        main: '#0A7EA4',
-        light: '#F4F9FB',
-        dark: '#06769A',
-        contrastText: '#ffffff',
+        main: "#0A7EA4",
+        light: "#F4F9FB",
+        dark: "#06769A",
+        contrastText: "#ffffff",
       },
       secondary: {
-        main: '#CCDA4E',
-        light: '#FAFBEF',
-        dark: '#C3D046',
-        contrastText: '#ffffff',
+        main: "#CCDA4E",
+        light: "#FAFBEF",
+        dark: "#C3D046",
+        contrastText: "#ffffff",
       },
     },
   },
   {
-    name: 'CYAN_THEME',
+    name: "CYAN_THEME",
     palette: {
       primary: {
-        main: '#01C0C8',
-        light: '#EBF9FA',
-        dark: '#00B9C0',
-        contrastText: '#ffffff',
+        main: "#01C0C8",
+        light: "#EBF9FA",
+        dark: "#00B9C0",
+        contrastText: "#ffffff",
       },
       secondary: {
-        main: '#FB9678',
-        light: '#FFF5F2',
-        dark: '#F48B6C',
-        contrastText: '#ffffff',
+        main: "#FB9678",
+        light: "#FFF5F2",
+        dark: "#F48B6C",
+        contrastText: "#ffffff",
       },
     },
   },
   {
-    name: 'ORANGE_THEME',
+    name: "ORANGE_THEME",
     palette: {
       primary: {
-        main: '#eb9e37',
-        light: '#FBF2EF',
-        dark: '#c15d0b',
-        contrastText: '#ffffff',
+        main: "#eb9e37",
+        light: "#FBF2EF",
+        dark: "#c15d0b",
+        contrastText: "#ffffff",
       },
       secondary: {
-        main: '#0074BA',
-        light: '#EFF9FF',
-        dark: '#006FB1',
-        contrastText: '#ffffff',
+        main: "#0074BA",
+        light: "#EFF9FF",
+        dark: "#006FB1",
+        contrastText: "#ffffff",
       },
     },
   },
   {
-    name: 'GRASS_THEME',
+    name: "GRASS_THEME",
     palette: {
       primary: {
-        main: '#4CAF50',        // สีเขียวหลัก (สด)
-        light: '#C8E6C9',       // สีเขียวอ่อน
-        dark: '#388E3C',        // สีเขียวเข้ม
-        contrastText: '#ffffff',
+        main: "#4CAF50", // สีเขียวหลัก (สด)
+        light: "#C8E6C9", // สีเขียวอ่อน
+        dark: "#388E3C", // สีเขียวเข้ม
+        contrastText: "#ffffff",
       },
       secondary: {
-        main: '#8BC34A',        // เขียวอ่อนสด
-        light: '#F1F8E9',
-        dark: '#689F38',
-        contrastText: '#ffffff',
+        main: "#8BC34A", // เขียวอ่อนสด
+        light: "#F1F8E9",
+        dark: "#689F38",
+        contrastText: "#ffffff",
       },
     },
   },
   {
-    name: 'PINK_THEME',
+    name: "PINK_THEME",
     palette: {
       primary: {
-        main: '#f48fb1',
-        light: '#fce4ec',
-        dark: '#ec407a',
-        contrastText: '#ffffff',
+        main: "#f48fb1",
+        light: "#fce4ec",
+        dark: "#ec407a",
+        contrastText: "#ffffff",
       },
       secondary: {
-        main: '#ffccbc',
-        light: '#fff8f6',
-        dark: '#ffab91',
-        contrastText: '#4a148c',
+        main: "#ffccbc",
+        light: "#fff8f6",
+        dark: "#ffab91",
+        contrastText: "#4a148c",
       },
     },
-  }
+  },
+  {
+    name: "MATCHA_THEME",
+    palette: {
+      primary: {
+        main: "#B7DD99", // เขียวมัทฉะ
+        light: "#EAF6E2", // เขียวอ่อนมัทฉะ
+        dark: "#8CBF5D", // เขียวเข้มมัทฉะ
+        contrastText: "#3E4C2C", // น้ำตาลเข้ม (อ่านง่าย)
+      },
+      secondary: {
+        main: "#F7E7CE", // ครีมมัทฉะ
+        light: "#FFF9F2",
+        dark: "#E6D3B3",
+        contrastText: "#3E4C2C",
+      },
+    },
+  },
 ];
 
 export { LightThemeColors };

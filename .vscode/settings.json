@@ -11,14 +11,7 @@
       }
     }
   },
-  "blockman.colors": [
-    "#f8bbd0", // Block 1
-    "#bbdefb", // Block 2
-    "#c8e6c9", // Block 3
-    "#fff9c4", // Block 4
-    "#ffe0b2", // Block 5
-    "#d1c4e9" // Block 6
-  ],
+  "blockman.colors": ["#f8bbd0", "#c8e6c9", "#fff9c4", "#ffe0b2", "#d1c4e9"],
   "blockman.activeBlockBackground": "#e3f2fd",
   "blockman.inactiveBlockBackground": "#f5f5f5",
   "prettier.printWidth": 120,
