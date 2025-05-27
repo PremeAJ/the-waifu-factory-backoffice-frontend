@@ -59,7 +59,7 @@ const currencies = [
 
 const AccountTab = () => {
   const { user } = useContext(UserContext);
-  const { firstName, lastName, avatarUrl, email } = user || {};
+  const { firstname, lastname, avatarUrl, email } = user || {};
   const [location, setLocation] = React.useState("india");
 
   const handleChange1 = (event: {
@@ -208,7 +208,7 @@ const AccountTab = () => {
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-name"
-                    value={`${firstName || ''} ${lastName || ''}`}
+                    value={`${firstname || ''} ${lastname || ''}`}
                     variant="outlined"
                     fullWidth
                   />

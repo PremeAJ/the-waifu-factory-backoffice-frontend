@@ -55,7 +55,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   const syncUser = async () => {
     try {
-      await userMutate(postFetcher("/api/users/sync",{}));
+      await userMutate(postFetcher("/api/users/ensure",{}));
     } catch (error:any) {
     }
   };

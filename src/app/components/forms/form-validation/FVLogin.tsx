@@ -11,12 +11,12 @@ import CustomFormLabel from '../theme-elements/CustomFormLabel';
 import CustomCheckbox from '../theme-elements/CustomCheckbox';
 
 const validationSchema = yup.object({
-  firstName: yup
+  firstname: yup
     .string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Firstname is Required'),
-  lastName: yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Lastname is Required'),
+  lastname: yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Lastname is Required'),
   email: yup.string().email('Enter a valid email').required('Email is required'),
   password: yup
     .string()
@@ -31,7 +31,7 @@ const validationSchema = yup.object({
 const FVRegister = () => {
   const formik = useFormik({
     initialValues: {
-      firstName: '',
+      firstname: '',
       email: '',
       password: '',
       changepassword: '',

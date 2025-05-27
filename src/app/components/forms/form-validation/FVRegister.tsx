@@ -10,12 +10,12 @@ import CustomFormLabel from '../theme-elements/CustomFormLabel';
 import CustomCheckbox from '../theme-elements/CustomCheckbox';
 
 const validationSchema = yup.object({
-  firstName: yup
+  firstname: yup
     .string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Firstname is Required'),
-  lastName: yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Lastname is Required'),
+  lastname: yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Lastname is Required'),
   email: yup.string().email('Enter a valid email').required('Email is required'),
   password: yup
     .string()
@@ -30,7 +30,7 @@ const validationSchema = yup.object({
 const FVRegister = () => {
   const formik = useFormik({
     initialValues: {
-      firstName: '',
+      firstname: '',
       email: '',
       password: '',
       changepassword: '',
@@ -48,12 +48,12 @@ const FVRegister = () => {
           <CustomFormLabel>Name</CustomFormLabel>
           <CustomTextField
             fullWidth
-            id="firstName"
-            name="firstName"
-            value={formik.values.firstName}
+            id="firstname"
+            name="firstname"
+            value={formik.values.firstname}
             onChange={formik.handleChange}
-            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-            helperText={formik.touched.firstName && formik.errors.firstName}
+            error={formik.touched.firstname && Boolean(formik.errors.firstname)}
+            helperText={formik.touched.firstname && formik.errors.firstname}
           />
         </Box>
         <Box>

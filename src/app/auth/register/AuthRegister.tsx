@@ -34,8 +34,8 @@ const validationSchema = yup.object({
   email: emailValidator,
   password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
-  firstName: nameSchema,
-  lastName: lastNameSchema,
+  firstname: nameSchema,
+  lastname: lastNameSchema,
 });
 
 const AuthRegister = () => {
@@ -48,18 +48,18 @@ const AuthRegister = () => {
       email: "",
       password: "",
       confirmPassword: "",
-      firstName: "",
-      lastName: "",
+      firstname: "",
+      lastname: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
-      const { email, password, firstName, lastName } = data;
+      const { email, password, firstname, lastname } = data;
       const userData: SignUpWithPasswordCredentials = {
         email,
         password,
         options: {
           data: {
-            full_name: "" + firstName + " " + lastName,
+            full_name: "" + firstname + " " + lastname,
           },
           captchaToken: captchaToken,
         },
@@ -109,7 +109,7 @@ const AuthRegister = () => {
             <Grid container columnSpacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <BaseTextField
-                  name="firstName"
+                  name="firstname"
                   formik={formik}
                   label="ชื่อ"
                   placeholder="กรุณากรอก ชื่อ"
@@ -117,7 +117,7 @@ const AuthRegister = () => {
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <BaseTextField
-                  name="lastName"
+                  name="lastname"
                   formik={formik}
                   label="นามสกุล"
                   placeholder="กรุณากรอก นามสกุล"

@@ -39,7 +39,7 @@ const Profile = () => {
   } else if (!user) {
     return null;
   }
-  const { email, avatarUrl, firstName, lastName } = user;
+  const { email, avatarUrl, firstname, lastname } = user;
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -105,8 +105,8 @@ const Profile = () => {
               color="textPrimary"
               fontWeight={600}
             >
-              {firstName || lastName
-                ? `${firstName ?? ""} ${lastName ?? ""}`.trim()
+              {firstname || lastname
+                ? `${firstname ?? ""} ${lastname ?? ""}`.trim()
                 : "-"}
             </Typography>
             <Typography variant="subtitle2" color="textSecondary">

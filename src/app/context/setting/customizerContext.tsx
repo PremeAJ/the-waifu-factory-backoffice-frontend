@@ -53,6 +53,21 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   const [isLanguage, setIsLanguage] = useState<string>(config.isLanguage);
   const [isSidebarHover, setIsSidebarHover] = useState<boolean>(false);
   const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
+
+  const configs = {
+    activeDir,
+    activeMode,
+    activeTheme,
+    activeLayout,
+    isCardShadow,
+    isLayout,
+    isBorderRadius,
+    isCollapse,
+    isLanguage,
+    isSidebarHover,
+    isMobileSidebar,
+  }
+  console.log("🚀 ~ configs:", configs)
   // Set attributes immediately
   useEffect(() => {
     document.documentElement.setAttribute("class", activeMode);
@@ -63,6 +78,8 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     document.documentElement.setAttribute("data-sidebar-type", isCollapse);
 
   }, [activeMode, activeDir, activeTheme, activeLayout, isLayout, isCollapse]);
+
+  
 
   return (
     <CustomizerContext.Provider
