@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Box, CardContent, Grid, Typography } from "@mui/material";
+import SkeletonTopCards from "../skeleton/TopCards";
 
 const topcards = [
   {
@@ -40,7 +41,9 @@ const topcards = [
     bgcolor: "info",
   },
 ];
-const TopCards = () => {
+const TopCards = ({ isLoading }: { isLoading?: boolean }) => {
+  if (isLoading) return <SkeletonTopCards />;
+
   return (
     <Grid container spacing={3}>
       {topcards.map((topcard, i) => (
@@ -54,25 +57,11 @@ const TopCards = () => {
         >
           <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
             <CardContent>
-              <Image
-                src={topcard.icon}
-                alt={"topcard.icon"}
-                width="50"
-                height="50"
-              />
-              <Typography
-                color={topcard.bgcolor + ".main"}
-                mt={1}
-                variant="subtitle1"
-                fontWeight={600}
-              >
+              <Image src={topcard.icon} alt={"topcard.icon"} width="50" height="50" />
+              <Typography color={topcard.bgcolor + ".main"} mt={1} variant="subtitle1" fontWeight={600}>
                 {topcard.title}
               </Typography>
-              <Typography
-                color={topcard.bgcolor + ".main"}
-                variant="h4"
-                fontWeight={600}
-              >
+              <Typography color={topcard.bgcolor + ".main"} variant="h4" fontWeight={600}>
                 {topcard.digits}
               </Typography>
             </CardContent>

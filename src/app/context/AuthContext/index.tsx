@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 import {
   ResetPasswordForEmailType,
@@ -47,18 +41,13 @@ type AuthContextType = {
   exchangeCodeForSession: (code: string) => Promise<any>;
   verifyOtp: (payload: VerifyOtpParams) => Promise<any>;
   signInWithGoogle: (redirectTo: string) => Promise<any>;
-  setSession: (tokens: {
-    access_token: string;
-    refresh_token: string;
-  }) => Promise<any>;
+  setSession: (tokens: { access_token: string; refresh_token: string }) => Promise<any>;
 };
 
-export const AuthContext = createContext<AuthContextType>(
-  {} as AuthContextType
-);
+export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const {setUser: setUserFromContext} = useContext(UserContext);
+  const { setUser: setUserFromContext } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -105,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     const response = await ssrSignOut();
     setUser(null);
-    setUserFromContext(null)
+    setUserFromContext(null);
     setIsLoading(false);
     return response;
   };
@@ -152,13 +141,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return response;
   };
 
-  const setSession = async ({
-    access_token,
-    refresh_token,
-  }: {
-    access_token: string;
-    refresh_token: string;
-  }) => {
+  const setSession = async ({ access_token, refresh_token }: { access_token: string; refresh_token: string }) => {
     setIsLoading(true);
     const response = await ssrSetSession({ access_token, refresh_token });
     setUser(response.data.session?.user ?? null);

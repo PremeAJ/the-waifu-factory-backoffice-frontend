@@ -1,26 +1,25 @@
-import Menuitems from './MenuItems';
+import Menuitems from "./MenuItems";
 import { usePathname } from "next/navigation";
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { CustomizerContext } from '@/app/context/setting/customizerContext';
-import NavItem from './NavItem';
-import NavCollapse from './NavCollapse';
-import NavGroup from './NavGroup/NavGroup';
-import { useContext } from 'react';
-
-
-
+import Box from "@mui/material/Box";
+import List from "@mui/material/List";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import NavItem from "./NavItem";
+import NavCollapse from "./NavCollapse";
+import NavGroup from "./NavGroup/NavGroup";
+import { useContext } from "react";
+import SidebarItemsSkeleton from "@/app/components/dashboards/skeleton/SidebarItemsSkeleton";
 
 const SidebarItems = () => {
   const pathname = usePathname();
   const pathDirect = pathname;
-  const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf('/'));
+  const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
   const { isSidebarHover, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { loading: isLoading } = useContext(CustomizerContext);
 
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
-  const hideMenu = lgUp ? isCollapse == "mini-sidebar" && !isSidebarHover : '';
-
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+  const hideMenu = lgUp ? isCollapse == "mini-sidebar" && !isSidebarHover : "";
+  if (isLoading) return <SidebarItemsSkeleton />;
   return (
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
@@ -47,7 +46,13 @@ const SidebarItems = () => {
             // {/********If Sub No Menu**********/}
           } else {
             return (
-              <NavItem item={item} key={item.id} pathDirect={pathDirect} hideMenu={hideMenu} onClick={() => setIsMobileSidebar(!isMobileSidebar)} />
+              <NavItem
+                item={item}
+                key={item.id}
+                pathDirect={pathDirect}
+                hideMenu={hideMenu}
+                onClick={() => setIsMobileSidebar(!isMobileSidebar)}
+              />
             );
           }
         })}

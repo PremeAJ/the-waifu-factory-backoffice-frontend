@@ -20,5 +20,7 @@
     "#d1c4e9" // Block 6
   ],
   "blockman.activeBlockBackground": "#e3f2fd",
-  "blockman.inactiveBlockBackground": "#f5f5f5"
+  "blockman.inactiveBlockBackground": "#f5f5f5",
+  "prettier.printWidth": 120,
+  "prettier.singleAttributePerLine": false
 }

@@ -1,18 +1,20 @@
-import NextLink from 'next/link';
-import { Stack, Typography, Avatar, Box, AvatarGroup } from '@mui/material';
-import { IconMessage2 } from '@tabler/icons-react';
-import DashboardCard from '../../shared/DashboardCard';
+import NextLink from "next/link";
+import { Stack, Typography, Avatar, Box, AvatarGroup } from "@mui/material";
+import { IconMessage2 } from "@tabler/icons-react";
+import DashboardCard from "../../shared/DashboardCard";
+import SkeletonSellingProducts from "../skeleton/SellingProducts";
 
+const Social = ({ isLoading }: { isLoading?: boolean }) => {
+  if (isLoading) return <SkeletonSellingProducts />;
 
-const Social = () => {
   return (
     <DashboardCard>
       <>
         <Stack direction="row" spacing={2}>
           <Avatar
             src={"/images/profile/user-3.jpg"}
-            alt={'ProfileImg'}
-            sx={{ borderRadius: '8px', width: 70, height: 70 }}
+            alt={"ProfileImg"}
+            sx={{ borderRadius: "8px", width: 70, height: 70 }}
           />
           <Box>
             <Typography variant="h5">Super awesome, Vue coming soon!</Typography>
@@ -37,12 +39,7 @@ const Social = () => {
               alignItems="center"
               justifyContent="center"
             >
-              <Typography
-                color="primary.main"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
+              <Typography color="primary.main" display="flex" alignItems="center" justifyContent="center">
                 <IconMessage2 width={22} />
               </Typography>
             </Box>

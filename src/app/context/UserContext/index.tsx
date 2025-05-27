@@ -14,9 +14,7 @@ export type UserContextType = {
 };
 
 // สร้าง Context
-export const UserContext = createContext<UserContextType>(
-  {} as UserContextType
-);
+export const UserContext = createContext<UserContextType>({} as UserContextType);
 
 // ค่าเริ่มต้น
 const initialConfig = {
@@ -25,9 +23,7 @@ const initialConfig = {
   error: null,
 };
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // State Management
   const [user, setUser] = useState<userType | null>(initialConfig.user);
   const [loading, setLoading] = useState<boolean>(initialConfig.loading);
@@ -55,9 +51,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   const syncUser = async () => {
     try {
-      await userMutate(postFetcher("/api/users/ensure",{}));
-    } catch (error:any) {
-    }
+      await userMutate(postFetcher("/api/users/ensure", {}));
+    } catch (error: any) {}
   };
   const value: UserContextType = {
     user,

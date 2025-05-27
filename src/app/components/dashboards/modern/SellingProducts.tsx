@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
+import SkeletonSellingProducts from "../skeleton/SellingProducts";
 
 const sells: any = [
   {
@@ -25,13 +26,15 @@ const sells: any = [
   },
 ];
 
-const SellingProducts = () => {
+const SellingProducts = ({ isLoading }: { isLoading?: boolean }) => {
   const theme = useTheme();
   const secondarylight = theme.palette.secondary.light;
   const primarylight = theme.palette.primary.light;
   const secondary = theme.palette.secondary.main;
   const primary = theme.palette.primary.main;
   const borderColor = theme.palette.divider;
+
+  if (isLoading) return <SkeletonSellingProducts />;
 
   return (
     <Paper

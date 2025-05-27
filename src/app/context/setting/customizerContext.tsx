@@ -1,8 +1,10 @@
-'use client'
-import { createContext, useState, ReactNode, useEffect } from 'react';
-import config from './config'
+"use client";
+import { createContext, useState, ReactNode, useEffect } from "react";
+import config from "./config";
 import React from "react";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+import useSWR from "swr";
+import { set } from "lodash";
 
 // Define the shape of the context state
 interface CustomizerContextState {
@@ -24,8 +26,10 @@ interface CustomizerContextState {
   setIsCollapse: (collapse: string) => void;
   isSidebarHover: boolean;
   setIsSidebarHover: (isHover: boolean) => void;
-  isMobileSidebar: boolean;  // Add this
-  setIsMobileSidebar: (isMobileSidebar: boolean) => void
+  isMobileSidebar: boolean; // Add this
+  setIsMobileSidebar: (isMobileSidebar: boolean) => void;
+  loading: boolean;
+  error: Error | null;
 }
 
 // Create the context with an initial value
@@ -36,11 +40,15 @@ interface CustomizerContextProps {
   children: ReactNode;
 }
 // Create the provider component
+const getFetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ children }) => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
-    const lang = Cookies.get('lang') ?? config.isLanguage;
-    setIsLanguage(lang)
-  },[])
+    const lang = Cookies.get("lang") ?? config.isLanguage;
+    setIsLanguage(lang);
+  }, []);
 
   const [activeDir, setActiveDir] = useState<string>(config.activeDir);
   const [activeMode, setActiveMode] = useState<string>(config.activeMode);
@@ -54,37 +62,50 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   const [isSidebarHover, setIsSidebarHover] = useState<boolean>(false);
   const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
 
-  const configs = {
-    activeDir,
-    activeMode,
-    activeTheme,
-    activeLayout,
-    isCardShadow,
-    isLayout,
-    isBorderRadius,
-    isCollapse,
-    isLanguage,
-    isSidebarHover,
-    isMobileSidebar,
-  }
-  console.log("🚀 ~ configs:", configs)
+  // Fetch appearance setting
+  const {
+    data: userAppearanceData,
+    isLoading: isAppearanceLoading,
+    error: appearanceError,
+    mutate: appearanceMutate,
+  } = useSWR("/api/user/setting/appearnce", getFetcher);
+
+  // เมื่อได้ข้อมูลจาก API ให้ set state ต่าง ๆ
+  useEffect(() => {
+    if (userAppearanceData) {
+      const appearanceData = userAppearanceData.data || {};
+      if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);
+      if (appearanceData.activeTheme) setActiveTheme(appearanceData.activeTheme);
+      if (appearanceData.activeLayout) setActiveLayout(appearanceData.activeLayout);
+      if (appearanceData.activeDir) setActiveDir(appearanceData.activeDir);
+      if (appearanceData.isCardShadow !== undefined) setIsCardShadow(appearanceData.isCardShadow);
+      if (appearanceData.isLayout) setIsLayout(appearanceData.isLayout);
+      if (appearanceData.isBorderRadius !== undefined) setIsBorderRadius(appearanceData.isBorderRadius);
+      if (appearanceData.isCollapse) setIsCollapse(appearanceData.isCollapse);
+      if (appearanceData.isLanguage) setIsLanguage(appearanceData.isLanguage);
+      if (appearanceData.isSidebarHover !== undefined) setIsSidebarHover(appearanceData.isSidebarHover);
+      if (appearanceData.isMobileSidebar !== undefined) setIsMobileSidebar(appearanceData.isMobileSidebar);
+      setLoading(isAppearanceLoading);
+      if (appearanceError) {
+        setError(appearanceError);
+        setLoading(isAppearanceLoading);
+      }
+    }
+  }, [userAppearanceData, isAppearanceLoading, appearanceError]);
+
   // Set attributes immediately
   useEffect(() => {
     document.documentElement.setAttribute("class", activeMode);
     document.documentElement.setAttribute("dir", activeDir);
-    document.documentElement.setAttribute('data-color-theme', activeTheme);
+    document.documentElement.setAttribute("data-color-theme", activeTheme);
     document.documentElement.setAttribute("data-layout", activeLayout);
     document.documentElement.setAttribute("data-boxed-layout", isLayout);
     document.documentElement.setAttribute("data-sidebar-type", isCollapse);
-
   }, [activeMode, activeDir, activeTheme, activeLayout, isLayout, isCollapse]);
-
-  
 
   return (
     <CustomizerContext.Provider
       value={{
-
         activeDir,
         setActiveDir,
         activeMode,
@@ -106,11 +127,12 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         isSidebarHover,
         setIsSidebarHover,
         isMobileSidebar,
-        setIsMobileSidebar
+        setIsMobileSidebar,
+        loading,
+        error,
       }}
     >
       {children}
     </CustomizerContext.Provider>
   );
 };
-

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import { useEffect, useState } from "react";
 
 import { Grid, Box } from "@mui/material";
@@ -16,13 +16,15 @@ import Social from "@/app/components/dashboards/modern/Social";
 import SellingProducts from "@/app/components/dashboards/modern/SellingProducts";
 import WeeklyStats from "@/app/components/dashboards/modern/WeeklyStats";
 import TopPerformers from "@/app/components/dashboards/modern/TopPerformers";
+import { CustomizerContext } from "@/app/context/setting/customizerContext";
 
 
 export default function Dashboard() {
   const [isLoading, setLoading] = useState(true);
+  const { loading } = useContext(CustomizerContext);
   useEffect(() => {
-    setLoading(false);
-  }, []);
+    setLoading(loading);
+  }, [loading]);
 
   return (
     (<PageContainer title="Dashboard" description="this is Dashboard">
@@ -99,7 +101,7 @@ export default function Dashboard() {
                 <Projects isLoading={isLoading} />
               </Grid>
               <Grid size={12}>
-                <Social />
+                <Social isLoading={isLoading}/>
               </Grid>
             </Grid>
           </Grid>
@@ -109,7 +111,7 @@ export default function Dashboard() {
               xs: 12,
               lg: 4
             }}>
-            <SellingProducts />
+            <SellingProducts isLoading={isLoading}/>
           </Grid>
           {/* column */}
           <Grid
