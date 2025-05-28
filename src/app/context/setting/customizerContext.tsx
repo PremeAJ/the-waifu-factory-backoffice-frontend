@@ -72,6 +72,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
 
   // เมื่อได้ข้อมูลจาก API ให้ set state ต่าง ๆ
   useEffect(() => {
+    console.log('sssssssssssssssssssssssssssssssssssss', userAppearanceData, isAppearanceLoading, appearanceError);
     if (userAppearanceData) {
       const appearanceData = userAppearanceData.data || {};
       if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);
