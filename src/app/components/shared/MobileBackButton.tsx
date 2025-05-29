@@ -17,20 +17,18 @@ const MobileBackButton = () => {
   const path = usePathname();
   const basePath = ['/','/dashboard']
   
-  useEffect(() => {
-    const check = () => {
-      const hasHistory = typeof window !== "undefined" && window.history.length > 1;
-      // เช็คเฉพาะว่าเป็น PWA mode และมี history
-      setShow(isStandalone() && hasHistory);
-      setCanGoBack(hasHistory);
-    };
+  // useEffect(() => {
+  //   const check = () => {
+  //     // เช็คเฉพาะว่าเป็น PWA mode และมี history
+  //     setShow(isStandalone());
+  //   };
     
-    check();
-    window.addEventListener("popstate", check);
-    return () => window.removeEventListener("popstate", check);
-  }, []); // ลบการพึ่งพา lgUp
+  //   check();
+  //   window.addEventListener("popstate", check);
+  //   return () => window.removeEventListener("popstate", check);
+  // }, []); 
 
-  if (!show || !canGoBack || basePath.includes(path)) return null;
+  if (!isStandalone()) return null;
 
   return (
     <Fab
