@@ -60,7 +60,6 @@ const FormWizardSteps = () => {
     })
   }
 
-  // eslint-disable-next-line consistent-return
   const handleSteps = (step: any) => {
     switch (step) {
       case 0:

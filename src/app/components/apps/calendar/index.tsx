@@ -144,7 +144,6 @@ const BigCalendar = () => {
   };
 
   const handleClose = () => {
-    // eslint-disable-line newline-before-return
     setOpen(false);
     setTitle("");
     setStart(dayjs());

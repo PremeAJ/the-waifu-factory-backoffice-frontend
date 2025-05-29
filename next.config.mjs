@@ -10,7 +10,7 @@ const withPWACfg = withPWA({
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    unoptimized: true,
+    unoptimized: false,
   },
 };
 
