@@ -152,7 +152,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
-        user, // เพิ่ม user ใน provider
+        user,
         isLoading,
         signOut,
         getUser,

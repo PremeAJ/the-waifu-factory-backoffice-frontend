@@ -5,6 +5,7 @@ import "./global.css";
 import { CustomizerContextProvider } from "./context/setting/customizerContext";
 import Header from "./header";
 import { Metadata, Viewport } from "next";
+import MobileBackButton from "./components/shared/MobileBackButton";
 export const metadata: Metadata = {
   // title: "Meow Som",
   // description: "แดชบอร์ดจัดการระบบ POS สำหรับร้านค้า MeowSom",
@@ -18,11 +19,7 @@ export const viewport: Viewport = {
   minimumScale: 1,
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <CustomizerContextProvider>
       <html lang="en" suppressHydrationWarning>

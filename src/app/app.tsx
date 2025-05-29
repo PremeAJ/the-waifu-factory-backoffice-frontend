@@ -11,9 +11,9 @@ import { AuthProvider } from "@/app/context/AuthContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { UserProvider } from "./context/UserContext";
+import MobileBackButton from "./components/shared/MobileBackButton";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
-
   if (process.env.NODE_ENV === "production") {
     console.log = () => {};
     console.warn = () => {};
@@ -30,6 +30,7 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
           <CssBaseline />
           <UserProvider>
             <AuthProvider>
+              <MobileBackButton />
               <Analytics />
               <SpeedInsights />
               {children}

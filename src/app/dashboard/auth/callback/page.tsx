@@ -3,8 +3,8 @@ import { useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/app/context/AuthContext";
 import { csrGetSession } from "@/utils/supabase/client";
-import Loading from "@/app/loading";
 import { UserContext } from "@/app/context/UserContext";
+import Loading from "@/app/components/shared/loading";
 
 export default function AuthCallback() {
   const router = useRouter();

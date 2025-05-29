@@ -105,13 +105,13 @@ const LightThemeColors = [
     name: "GRASS_THEME",
     palette: {
       primary: {
-        main: "#4CAF50", // สีเขียวหลัก (สด)
-        light: "#C8E6C9", // สีเขียวอ่อน
-        dark: "#388E3C", // สีเขียวเข้ม
+        main: "#4CAF50", 
+        light: "#C8E6C9",
+        dark: "#388E3C", 
         contrastText: "#ffffff",
       },
       secondary: {
-        main: "#8BC34A", // เขียวอ่อนสด
+        main: "#8BC34A",
         light: "#F1F8E9",
         dark: "#689F38",
         contrastText: "#ffffff",
@@ -139,13 +139,13 @@ const LightThemeColors = [
     name: "MATCHA_THEME",
     palette: {
       primary: {
-        main: "#B7DD99", // เขียวมัทฉะ
-        light: "#EAF6E2", // เขียวอ่อนมัทฉะ
-        dark: "#8CBF5D", // เขียวเข้มมัทฉะ
-        contrastText: "#3E4C2C", // น้ำตาลเข้ม (อ่านง่าย)
+        main: "#B7DD99",
+        light: "#EAF6E2", 
+        dark: "#8CBF5D", 
+        contrastText: "#3E4C2C", 
       },
       secondary: {
-        main: "#F7E7CE", // ครีมมัทฉะ
+        main: "#F7E7CE", 
         light: "#FFF9F2",
         dark: "#E6D3B3",
         contrastText: "#3E4C2C",

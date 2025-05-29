@@ -1,13 +1,16 @@
 "use client";
-import { createContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useState, ReactNode, useEffect, useContext } from "react";
 import config from "./config";
 import React from "react";
 import Cookies from "js-cookie";
 import useSWR from "swr";
 import { set } from "lodash";
+import { getFetcher, patchFetcher } from "@/app/api/globalFetcher";
+import { UserContext } from "../UserContext";
 
 // Define the shape of the context state
 interface CustomizerContextState {
+  updateAppearance: () => Promise<void>;
   activeDir: string;
   setActiveDir: (dir: string) => void;
   activeMode: string;
@@ -32,17 +35,14 @@ interface CustomizerContextState {
   error: Error | null;
 }
 
-// Create the context with an initial value
 export const CustomizerContext = createContext<CustomizerContextState | any>(undefined);
 
-// Define the type for the children prop
 interface CustomizerContextProps {
   children: ReactNode;
 }
-// Create the provider component
-const getFetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ children }) => {
+  const { user } = useContext(UserContext);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
@@ -62,17 +62,14 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   const [isSidebarHover, setIsSidebarHover] = useState<boolean>(false);
   const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
 
-  // Fetch appearance setting
   const {
     data: userAppearanceData,
     isLoading: isAppearanceLoading,
-    error: appearanceError,
+    error: appearanceError, 
     mutate: appearanceMutate,
   } = useSWR("/api/user/setting/appearnce", getFetcher);
 
-  // เมื่อได้ข้อมูลจาก API ให้ set state ต่าง ๆ
   useEffect(() => {
-    console.log('sssssssssssssssssssssssssssssssssssss', userAppearanceData, isAppearanceLoading, appearanceError);
     if (userAppearanceData) {
       const appearanceData = userAppearanceData.data || {};
       if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);
@@ -94,7 +91,6 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     }
   }, [userAppearanceData, isAppearanceLoading, appearanceError]);
 
-  // Set attributes immediately
   useEffect(() => {
     document.documentElement.setAttribute("class", activeMode);
     document.documentElement.setAttribute("dir", activeDir);
@@ -104,9 +100,46 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     document.documentElement.setAttribute("data-sidebar-type", isCollapse);
   }, [activeMode, activeDir, activeTheme, activeLayout, isLayout, isCollapse]);
 
+  type AppearancePayload = {
+    activeDir: string;
+    activeMode: string;
+    activeTheme: string;
+    activeLayout: string;
+    isCardShadow: boolean;
+    isLayout: string;
+    isBorderRadius: number;
+    isCollapse: string;
+    isLanguage: string;
+    isSidebarHover: boolean;
+    isMobileSidebar: boolean;
+  };
+
+  const updateAppearance = async (customPayload?: Partial<AppearancePayload>) => {
+    try {
+      const payload: AppearancePayload = {
+        activeDir,
+        activeMode,
+        activeTheme,
+        activeLayout,
+        isCardShadow,
+        isLayout,
+        isBorderRadius,
+        isCollapse,
+        isLanguage,
+        isSidebarHover,
+        isMobileSidebar,
+        ...customPayload,
+      };
+      await appearanceMutate(patchFetcher("/api/user/setting/appearnce", payload));
+    } catch (error) {
+      console.error("Error updating appearance:", error);
+    }
+  };
+
   return (
     <CustomizerContext.Provider
       value={{
+        updateAppearance,
         activeDir,
         setActiveDir,
         activeMode,
@@ -129,6 +162,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         setIsSidebarHover,
         isMobileSidebar,
         setIsMobileSidebar,
+
         loading,
         error,
       }}

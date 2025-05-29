@@ -1,6 +1,6 @@
+import Loading from "@/app/components/shared/loading";
 import { AuthContext } from "@/app/context/AuthContext";
 import { UserContext } from "@/app/context/UserContext";
-import Loading from "@/app/loading";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 

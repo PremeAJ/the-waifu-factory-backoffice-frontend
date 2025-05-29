@@ -28,21 +28,14 @@ const PageWrapper = styled("div")(() => ({
   backgroundColor: "transparent",
 }));
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { activeLayout, isLayout, activeMode, isCollapse } =
-    useContext(CustomizerContext);
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const { activeLayout, isLayout, activeMode, isCollapse } = useContext(CustomizerContext);
   const theme = useTheme();
   const MiniSidebarWidth = config.miniSidebarWidth;
 
   return (
     <AuthGuard>
-      <MainWrapper
-        className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}
-      >
+      <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
         <title>Modernize NextJs</title>
         {/* ------------------------------------------- */}
         {/* Sidebar */}
@@ -87,7 +80,7 @@ export default function RootLayout({
             {/* End Page */}
             {/* ------------------------------------------- */}
           </Container>
-          <Customizer />
+          {/* <Customizer /> */}
         </PageWrapper>
       </MainWrapper>
     </AuthGuard>

@@ -2,6 +2,7 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import PageContainer from "@/app/components/container/PageContainer";
 // components
@@ -22,128 +23,15 @@ import { CustomizerContext } from "@/app/context/setting/customizerContext";
 export default function Dashboard() {
   const [isLoading, setLoading] = useState(true);
   const { loading } = useContext(CustomizerContext);
+  const router = useRouter();
+
   useEffect(() => {
     setLoading(loading);
   }, [loading]);
 
-  return (
-    <PageContainer title="Dashboard" description="this is Dashboard">
-      <Box mt={3}>
-        <Grid container spacing={3}>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 12,
-            }}
-          >
-            <TopCards isLoading={isLoading}/>
-          </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 8,
-            }}
-          >
-            <RevenueUpdates isLoading={isLoading} />
-          </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4,
-            }}
-          >
-            <Grid container spacing={3}>
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6,
-                  lg: 12,
-                }}
-              >
-                <YearlyBreakup isLoading={isLoading} />
-              </Grid>
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6,
-                  lg: 12,
-                }}
-              >
-                <MonthlyEarnings isLoading={isLoading} />
-              </Grid>
-            </Grid>
-          </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4,
-            }}
-          >
-            <EmployeeSalary isLoading={isLoading} />
-          </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4,
-            }}
-          >
-            <Grid container spacing={3}>
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6,
-                }}
-              >
-                <Customers isLoading={isLoading} />
-              </Grid>
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6,
-                }}
-              >
-                <Projects isLoading={isLoading} />
-              </Grid>
-              <Grid size={12}>
-                <Social isLoading={isLoading} />
-              </Grid>
-            </Grid>
-          </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4,
-            }}
-          >
-            <SellingProducts isLoading={isLoading} />
-          </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 4,
-            }}
-          >
-            <WeeklyStats isLoading={isLoading} />
-          </Grid>
-          {/* column */}
-          <Grid
-            size={{
-              xs: 12,
-              lg: 8,
-            }}
-          >
-            <TopPerformers />
-          </Grid>
-        </Grid>
-        {/* <Welcome /> */}
-      </Box>
-    </PageContainer>
-  );
+  useEffect(() => {
+    router.replace("/setting/account/profile");
+  }, []);
+
+  return null
 }

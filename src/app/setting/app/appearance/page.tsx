@@ -3,9 +3,13 @@
 import * as React from "react";
 import PageContainer from "@/app/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import { Box, Typography, Divider, Stack, Button, Grid, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { useContext } from "react";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import { Typography, Divider } from "@mui/material";
+import Box from "@mui/material/Box";
+import ThemeColors from "./components/ThemeColors";
+import ThemeMode from "./components/ThemeMode";
+import BlankCard from "@/app/components/shared/BlankCard";
+import Border from "./components/Border";
+import Others from "./components/Others";
 
 const BCrumb = [
   {
@@ -18,64 +22,35 @@ const BCrumb = [
 ];
 
 const AppearanceSetting = () => {
-  // ดึง state และ set function จาก CustomizerContext
-  const {
-    activeTheme,
-    setActiveTheme,
-    activeMode,
-    setActiveMode,
-    activeLayout,
-    setActiveLayout,
-    // ...เพิ่ม state/setState อื่นๆ ตามที่ Customizer มี...
-  } = useContext(CustomizerContext);
+
 
   return (
     <PageContainer title="Appearance" description="this is setting appearance">
       <Breadcrumb title="Appearance" items={BCrumb} />
-      <Box mt={3}>
-        <Typography variant="h4" mb={2}>Appearance Settings</Typography>
-        <Divider sx={{ mb: 3 }} />
-
-        {/* ตัวอย่าง Theme Selector */}
-        <Typography variant="h6" mb={1}>Theme</Typography>
-        <ToggleButtonGroup
-          value={activeTheme}
-          exclusive
-          onChange={(_, value) => value && setActiveTheme(value)}
-          sx={{ mb: 3 }}
-        >
-          <ToggleButton value="BLUE_THEME">Blue</ToggleButton>
-          <ToggleButton value="AQUA_THEME">Aqua</ToggleButton>
-          <ToggleButton value="PURPLE_THEME">Purple</ToggleButton>
-          {/* เพิ่ม theme อื่นๆ */}
-        </ToggleButtonGroup>
-
-        {/* ตัวอย่าง Mode Selector */}
-        <Typography variant="h6" mb={1}>Mode</Typography>
-        <ToggleButtonGroup
-          value={activeMode}
-          exclusive
-          onChange={(_, value) => value && setActiveMode(value)}
-          sx={{ mb: 3 }}
-        >
-          <ToggleButton value="light">Light</ToggleButton>
-          <ToggleButton value="dark">Dark</ToggleButton>
-        </ToggleButtonGroup>
-
-        {/* ตัวอย่าง Layout Selector */}
-        <Typography variant="h6" mb={1}>Layout</Typography>
-        <ToggleButtonGroup
-          value={activeLayout}
-          exclusive
-          onChange={(_, value) => value && setActiveLayout(value)}
-          sx={{ mb: 3 }}
-        >
-          <ToggleButton value="vertical">Vertical</ToggleButton>
-          <ToggleButton value="horizontal">Horizontal</ToggleButton>
-        </ToggleButtonGroup>
-
-        {/* เพิ่ม section อื่นๆ ตามที่ Customizer มี */}
-      </Box>
+      <BlankCard>
+        <Box p={3} borderRadius={2}>
+          <Typography variant="h4" mb={2}>
+            Appearance Settings
+          </Typography>
+          <Divider sx={{ mb: 3 }} />
+          <Typography variant="h6" gutterBottom>
+            Theme Option
+          </Typography>
+          <ThemeMode />
+          <Typography variant="h6" gutterBottom mt={5}>
+            Theme Colors
+          </Typography>
+          <ThemeColors />
+          <Typography variant="h6" gutterBottom mt={5}>
+            Border
+          </Typography>
+          <Border />
+          <Typography variant="h6" gutterBottom mt={5}>
+            Others
+          </Typography>
+          <Others />
+        </Box>
+      </BlankCard>
     </PageContainer>
   );
 };
