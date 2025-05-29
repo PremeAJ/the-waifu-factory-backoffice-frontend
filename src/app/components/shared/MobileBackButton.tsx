@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Fab, useTheme, useMediaQuery } from "@mui/material";
+import { Fab, useTheme } from "@mui/material";
 import { IconArrowLeft } from "@tabler/icons-react";
 
+// เช็คว่าเปิดในโหมด PWA (Standalone) หรือไม่
 const isStandalone = () =>
   typeof window !== "undefined" &&
   (window.matchMedia("(display-mode: standalone)").matches || (window.navigator as any).standalone);
@@ -13,19 +14,21 @@ const MobileBackButton = () => {
   const [canGoBack, setCanGoBack] = useState(false);
   const router = useRouter();
   const theme = useTheme();
-  const lgUp = useMediaQuery(theme.breakpoints.down("lg"));
   const path = usePathname();
   const basePath = ['/','/dashboard']
+  
   useEffect(() => {
     const check = () => {
       const hasHistory = typeof window !== "undefined" && window.history.length > 1;
-      setShow((isStandalone() || lgUp) && hasHistory);
+      // เช็คเฉพาะว่าเป็น PWA mode และมี history
+      setShow(isStandalone() && hasHistory);
       setCanGoBack(hasHistory);
     };
+    
     check();
     window.addEventListener("popstate", check);
     return () => window.removeEventListener("popstate", check);
-  }, [lgUp]);
+  }, []); // ลบการพึ่งพา lgUp
 
   if (!show || !canGoBack || basePath.includes(path)) return null;
 
