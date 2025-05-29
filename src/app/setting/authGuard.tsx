@@ -1,6 +1,6 @@
 import { UserContext } from "@/app/context/UserContext";
 import { useContext } from "react";
-import Loading from "../components/shared/loading";
+import Loading from "../loading";
 import Error404 from "../auth/error/404/page";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {

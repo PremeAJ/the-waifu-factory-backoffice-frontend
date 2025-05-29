@@ -1,4 +1,4 @@
-import Loading from "@/app/components/shared/loading";
+import Loading from "@/app/loading";
 import { AuthContext } from "@/app/context/AuthContext";
 import { UserContext } from "@/app/context/UserContext";
 import { usePathname, useRouter } from "next/navigation";

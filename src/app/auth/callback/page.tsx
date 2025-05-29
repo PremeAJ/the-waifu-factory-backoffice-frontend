@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { AuthContext } from "@/app/context/AuthContext";
 import { csrGetSession } from "@/utils/supabase/client";
 import { UserContext } from "@/app/context/UserContext";
-import Loading from "@/app/components/shared/loading";
+import Loading from "@/app/loading";
 
 export default function AuthCallback() {
   const router = useRouter();
