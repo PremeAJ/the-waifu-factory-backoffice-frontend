@@ -62,29 +62,17 @@ interface ProfileType {
 }
 const profile: ProfileType[] = [
   {
-    href: "/setting/account/profile",
+    href: "/setting",
     title: "My Profile",
     subtitle: "Account Settings",
     icon: "/images/svgs/icon-account.svg",
   },
-  // {
-  //   href: "/dashboard/apps/email",
-  //   title: "My Inbox",
-  //   subtitle: "Messages & Emails",
-  //   icon: "/images/svgs/icon-inbox.svg",
-  // },
     {
     href: "/dashboard",
     title: "My Company",
     subtitle: "Dashboard",
     icon: "/images/svgs/icon-store.svg",
   },
-  // {
-  //   href: "/dashboard/apps/kanban",
-  //   title: "My Tasks",
-  //   subtitle: "To-do and Daily Tasks",
-  //   icon: "/images/svgs/icon-tasks.svg",
-  // },
 ];
 
 // apps dropdown

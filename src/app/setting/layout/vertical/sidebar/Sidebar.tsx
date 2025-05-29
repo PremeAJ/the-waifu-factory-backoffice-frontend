@@ -5,30 +5,20 @@ import { useTheme } from "@mui/material/styles";
 import SidebarItems from "./SidebarItems";
 import Logo from "../../shared/logo/Logo";
 import { CustomizerContext } from "@/app/context/setting/customizerContext";
-import config from '@/app/context/setting/config'
+import config from "@/app/context/setting/config";
 
 import Scrollbar from "@/app/components/custom-scroll/Scrollbar";
-import { Profile } from "./SidebarProfile/Profile";
 import { useContext } from "react";
-
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const {
-    isCollapse,
-    isSidebarHover,
-    setIsSidebarHover,
-    isMobileSidebar,
-    setIsMobileSidebar,
-  } = useContext(CustomizerContext);
+  const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } =
+    useContext(CustomizerContext);
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
 
   const theme = useTheme();
-  const toggleWidth =
-    isCollapse == "mini-sidebar" && !isSidebarHover
-      ? MiniSidebarWidth
-      : SidebarWidth;
+  const toggleWidth = isCollapse == "mini-sidebar" && !isSidebarHover ? MiniSidebarWidth : SidebarWidth;
 
   const onHoverEnter = () => {
     if (isCollapse == "mini-sidebar") {
@@ -39,7 +29,6 @@ const Sidebar = () => {
   const onHoverLeave = () => {
     setIsSidebarHover(false);
   };
-
 
   return (
     <>
@@ -72,7 +61,7 @@ const Sidebar = () => {
                   width: toggleWidth,
                   boxSizing: "border-box",
                 },
-              }
+              },
             }}
           >
             {/* ------------------------------------------- */}
@@ -95,7 +84,7 @@ const Sidebar = () => {
                 {/* ------------------------------------------- */}
                 <SidebarItems />
               </Scrollbar>
-              <Profile />
+              {/* <Profile /> */}
             </Box>
           </Drawer>
         </Box>
@@ -112,7 +101,7 @@ const Sidebar = () => {
                 border: "0 !important",
                 boxShadow: (theme) => theme.shadows[8],
               },
-            }
+            },
           }}
         >
           {/* ------------------------------------------- */}

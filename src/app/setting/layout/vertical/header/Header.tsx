@@ -11,12 +11,12 @@ import Profile from "../../../../components/shared/Profile";
 import Cart from "./Cart";
 import Search from "./Search";
 import Language from "../../../../components/shared/Language/Language";
-import { CustomizerContext } from '@/app/context/setting/customizerContext';
+import { CustomizerContext } from "@/app/context/setting/customizerContext";
 import Navigation from "./Navigation";
 import MobileRightSidebar from "./MobileRightSidebar";
-import config from '@/app/context/setting/config'
+import config from "@/app/context/setting/config";
 import { useContext } from "react";
-import { ProductProvider } from '@/app/context/Ecommercecontext/index'
+import { ProductProvider } from "@/app/context/Ecommercecontext/index";
 
 const Header = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
@@ -24,7 +24,16 @@ const Header = () => {
   const TopbarHeight = config.topbarHeight;
 
   // drawer
-  const { isSidebarHover, activeMode, setActiveMode, setIsCollapse, isCollapse, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const {
+    isSidebarHover,
+    activeMode,
+    setActiveMode,
+    setIsCollapse,
+    isCollapse,
+    setIsSidebarHover,
+    isMobileSidebar,
+    setIsMobileSidebar,
+  } = useContext(CustomizerContext);
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: "none",
@@ -40,7 +49,7 @@ const Header = () => {
     color: theme.palette.text.secondary,
   }));
 
-  return (
+  return lgUp ? (
     <ProductProvider>
       <AppBarStyled position="sticky" color="default">
         <ToolbarStyled>
@@ -111,10 +120,7 @@ const Header = () => {
         </ToolbarStyled>
       </AppBarStyled>
     </ProductProvider>
-
-  );
+  ) : null;
 };
 
 export default Header;
-
-
