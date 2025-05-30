@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body>
           <NextTopLoader color="#5D87FF" />
           <MyApp>
-            <ScrollToTop />
+            <ScrollToTop /> 
             {children}
           </MyApp>
         </body>

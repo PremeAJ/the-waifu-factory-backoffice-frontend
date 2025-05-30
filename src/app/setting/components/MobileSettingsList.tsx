@@ -17,31 +17,12 @@ import { useTheme } from "@mui/material/styles";
 import {
   IconChevronRight,
   IconChevronDown,
-  IconUser,
-  IconPalette,
-  IconLock,
-  IconBell,
-  IconWallet,
-  IconHelp,
-  IconMessage,
   IconMoon,
-  IconHome,
-  IconMapPin,
-  IconKey,
-  IconDeviceMobile,
 } from "@tabler/icons-react";
 import CustomSwitch from "@/app/components/forms/theme-elements/CustomSwitch";
 import { CustomizerContext } from "@/app/context/setting/customizerContext";
 import { UserContext } from "@/app/context/UserContext";
-
-// กำหนดโครงสร้าง type สำหรับ menu item
-interface MenuItemType {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-  href?: string;
-  children?: MenuItemType[];
-}
+import Menuitems from "../layout/sidebar/MenuItems"; // นำเข้า Menuitems 
 
 const MobileSettingsList = () => {
   const theme = useTheme();
@@ -60,77 +41,6 @@ const MobileSettingsList = () => {
         : [...prev, menuId]
     );
   };
-
-  // รายการเมนูพร้อม submenu
-  const settingsItems: MenuItemType[] = [
-    {
-      id: "account",
-      title: "บัญชีของฉัน",
-      icon: <IconUser width={22} />,
-      children: [
-        {
-          id: "profile",
-          title: "ข้อมูลส่วนตัว",
-          icon: <IconHome width={22} />,
-          href: "/setting/account/profile",
-        },
-        {
-          id: "address",
-          title: "ที่อยู่",
-          icon: <IconMapPin width={22} />,
-          href: "/setting/account/address",
-        },
-        {
-          id: "password",
-          title: "รหัสผ่าน",
-          icon: <IconKey width={22} />,
-          href: "/setting/account/security",
-        },
-        {
-          id: "phone",
-          title: "หมายเลขโทรศัพท์",
-          icon: <IconDeviceMobile width={22} />,
-          href: "/setting/account/phone",
-        },
-      ],
-    },
-    {
-      id: "appearance",
-      title: "การแสดงผล",
-      icon: <IconPalette width={22} />,
-      href: "/setting/app/appearance",
-    },
-    {
-      id: "security",
-      title: "ความปลอดภัย",
-      icon: <IconLock width={22} />,
-      href: "/setting/account/security",
-    },
-    {
-      id: "notifications",
-      title: "การแจ้งเตือน",
-      icon: <IconBell width={22} />,
-      href: "/setting/notifications",
-    },
-    {
-      id: "payments",
-      title: "การชำระเงิน",
-      icon: <IconWallet width={22} />,
-      href: "/setting/payments",
-    },
-    {
-      id: "help",
-      title: "ช่วยเหลือ",
-      icon: <IconHelp width={22} />,
-      href: "/setting/help",
-    },
-    {
-      id: "support",
-      title: "ติดต่อเรา",
-      icon: <IconMessage width={22} />,
-      href: "/setting/support",
-    },
-  ];
 
   // User profile header
   const userProfile = (
@@ -153,10 +63,10 @@ const MobileSettingsList = () => {
         }}
       />
       <Typography variant="h5" fontWeight={600}>
-        {firstname} {lastname}
+        {firstname || "ผู้ใช้"} {lastname || ""}
       </Typography>
       <Typography variant="body2" color="textSecondary">
-        {email}
+        {email || "example@email.com"}
       </Typography>
     </Box>
   );
@@ -170,8 +80,26 @@ const MobileSettingsList = () => {
     updateAppearance({ activeMode: newMode });
   };
 
-  // วิธีการแสดงผล MenuItem แบบ recursive
-  const renderMenuItem = (item: MenuItemType, index: number, depth: number = 0) => {
+  // Define NavItem and NavGroup types
+  type NavItem = {
+    id: string;
+    title: string;
+    icon: React.ElementType | React.ReactElement;
+    href?: string;
+    navlabel?: boolean;
+    children?: NavItem[];
+  };
+  type NavGroup = NavItem;
+
+  // แปลง Icon Component เป็น JSX Element
+  const renderIcon = (icon: any) => {
+    if (React.isValidElement(icon)) return icon;
+    const IconComponent = icon;
+    return <IconComponent width={22} />;
+  };
+
+  // แสดงรายการเมนูปกติ (ไม่ใช่ navlabel)
+  const renderNavItem = (item: NavItem, index: number, depth: number = 0) => {
     const isParent = item.children && item.children.length > 0;
     const isExpanded = openMenus.includes(item.id);
     
@@ -190,7 +118,7 @@ const MobileSettingsList = () => {
               py: 1.5,
               minHeight: 50,
               color: "text.primary",
-              pl: depth > 0 ? 4 : 2, // เพิ่ม padding ซ้ายตาม depth
+              pl: depth > 0 ? 4 : 2,
             }}
           >
             <ListItemIcon
@@ -199,7 +127,7 @@ const MobileSettingsList = () => {
                 minWidth: 40,
               }}
             >
-              {item.icon}
+              {renderIcon(item.icon)}
             </ListItemIcon>
             <ListItemText
               primary={
@@ -216,24 +144,22 @@ const MobileSettingsList = () => {
           </ListItemButton>
         </ListItem>
 
-        {/* Submenu ที่จะแสดงเมื่อกดเปิด */}
+        {/* Submenu */}
         {isParent && (
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {item.children!.map((child, childIndex) => (
-                renderMenuItem(child, childIndex, depth + 1)
+              {item.children!.map((child: NavGroup, childIndex: number) => (
+                renderNavItem(child, childIndex, depth + 1)
               ))}
             </List>
           </Collapse>
         )}
-
-        {/* เส้นขั้นระหว่าง item ยกเว้น item สุดท้าย */}
-        {index < settingsItems.length - 1 && depth === 0 && (
-          <Divider variant="inset" component="li" />
-        )}
       </React.Fragment>
     );
   };
+
+  // กรองเฉพาะเมนูที่ไม่ใช่ navlabel
+  const filteredMenus = Menuitems.filter(item => !item.navlabel);
 
   return (
     <Box sx={{ p: 2 }}>
@@ -247,9 +173,21 @@ const MobileSettingsList = () => {
         {userProfile}
         <Divider />
         <List disablePadding>
-          {settingsItems.map((item, index) => renderMenuItem(item, index))}
+          {filteredMenus.map((item, index) => (
+            <React.Fragment key={item.id || index}>
+              {/* รายการเมนูปกติ */}
+              {renderNavItem(item as NavItem, index)}
+              
+              {/* เส้นขั้นระหว่างรายการยกเว้นรายการสุดท้าย */}
+              {index < filteredMenus.length - 1 && (
+                <Divider variant="inset" component="li" />
+              )}
+            </React.Fragment>
+          ))}
         </List>
       </Box>
+      
+      {/* Dark Mode Toggle */}
       <Typography variant="subtitle2" color="textSecondary" sx={{ px: 3, py: 2, mt: 2 }}>
         การตั้งค่าทั่วไป
       </Typography>
