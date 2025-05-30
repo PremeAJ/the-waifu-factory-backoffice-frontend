@@ -6,6 +6,7 @@ import { CustomizerContextProvider } from "./context/setting/customizerContext";
 import Header from "./header";
 import { Metadata, Viewport } from "next";
 import MobileBackButton from "./components/shared/MobileBackButton";
+import ScrollToTop from "./components/shared/scroll-to-top";
 export const metadata: Metadata = {
   // title: "Meow Som",
   // description: "แดชบอร์ดจัดการระบบ POS สำหรับร้านค้า MeowSom",
@@ -28,7 +29,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </head>
         <body>
           <NextTopLoader color="#5D87FF" />
-          <MyApp>{children}</MyApp>
+          <MyApp>
+            <ScrollToTop />
+            {children}
+          </MyApp>
         </body>
       </html>
     </CustomizerContextProvider>

@@ -4,7 +4,7 @@ import HpHeader from '../../components/frontend-pages/shared/header/HpHeader';
 import C2a from '../../components/frontend-pages/shared/c2a';
 import Footer from '../../components/frontend-pages/shared/footer';
 import Banner from '../../components/frontend-pages/portfolio/Banner';
-import ScrollToTop from '../../components/frontend-pages/shared/scroll-to-top';
+import ScrollToTop from '../../components/shared/scroll-to-top';
 import GalleryCard from '@/app/components/apps/userprofile/gallery/GalleryCard';
 import { Box, Container } from '@mui/material';
 import { UserDataProvider } from '@/app/context/UserDataContext/index'

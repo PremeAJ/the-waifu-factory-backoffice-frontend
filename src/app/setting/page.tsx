@@ -2,6 +2,7 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import MobileSettingsList from "./components/MobileSettingsList";
 import { redirect } from "next/navigation";
+import PageContainer from "../components/container/PageContainer";
 
 export default function SettingPage() {
   const theme = useTheme();
@@ -13,5 +14,9 @@ export default function SettingPage() {
   }
 
   // ถ้าเป็นมือถือแสดง mobile settings list
-  return <MobileSettingsList />;
+  return (
+    <PageContainer title="Setting" description="This is setting">
+      <MobileSettingsList />
+    </PageContainer>
+  );
 }

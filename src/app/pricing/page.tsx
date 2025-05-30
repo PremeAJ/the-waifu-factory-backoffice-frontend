@@ -1,5 +1,5 @@
 import PageContainer from '@/app/components/container/PageContainer';
-import ScrollToTop from '../components/frontend-pages/shared/scroll-to-top';
+import ScrollToTop from '../components/shared/scroll-to-top';
 import Pricing from '../components/frontend-pages/shared/pricing';
 import Footer from '../components/frontend-pages/shared/footer';
 import LpHeader from '../components/landingpage/header/Header';
@@ -10,7 +10,7 @@ const PricingPage = () => {
             <LpHeader />
             <Pricing />
             <Footer />
-            <ScrollToTop />
+            {/* <ScrollToTop /> */}
         </PageContainer>
     );
 };

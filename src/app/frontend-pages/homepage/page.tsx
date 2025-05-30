@@ -12,7 +12,7 @@ import Pricing from '../../components/frontend-pages/shared/pricing';
 import FAQ from '../../components/frontend-pages/homepage/faq';
 import C2a from '../../components/frontend-pages/shared/c2a';
 import Footer from '../../components/frontend-pages/shared/footer';
-import ScrollToTop from '../../components/frontend-pages/shared/scroll-to-top';
+import ScrollToTop from '../../components/shared/scroll-to-top';
 
 const HomePage = () => {
   return (
