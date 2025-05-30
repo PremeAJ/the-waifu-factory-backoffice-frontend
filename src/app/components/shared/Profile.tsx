@@ -34,9 +34,10 @@ const Profile = () => {
   const { signOut } = useContext(AuthContext);
   const { user, loading } = useContext(UserContext);
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
-  if (loading) {
-    return <ProfileSkeleton />;
-  } else if (!user) {
+  // if (loading) {
+  //   return <ProfileSkeleton />;
+  // } else 
+  if (!user) {
     return null;
   }
   const { email, avatarUrl, firstname, lastname } = user;
