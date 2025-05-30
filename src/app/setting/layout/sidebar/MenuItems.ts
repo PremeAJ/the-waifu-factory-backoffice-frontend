@@ -14,6 +14,22 @@ const Menuitems: NavGroup[] = [
     title: "Profile",
     icon: IconUserCircle,
     href: "/setting/account/profile",
+    children: [
+      {
+        id: uniqueId(),
+        title: "Modern",
+        icon: IconUserCircle,
+        href: "/",
+        chip: "New",
+        chipColor: "secondary",
+      },
+      {
+        id: uniqueId(),
+        title: "eCommerce",
+        icon: IconUserCircle,
+        href: "/dashboard/dashboards/ecommerce",
+      },
+    ],
   },
   {
     navlabel: true,

@@ -2,15 +2,12 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { styled, useTheme } from "@mui/material/styles";
-import React, { useContext, useEffect } from "react";
-import Header from "./layout/vertical/header/Header";
-import Sidebar from "./layout/vertical/sidebar/Sidebar";
-import Customizer from "./layout/shared/customizer/Customizer";
-import Navigation from "./layout/horizontal/navbar/Navigation";
-import HorizontalHeader from "./layout/horizontal/header/Header";
+import React, { useContext } from "react";
 import { CustomizerContext } from "@/app/context/setting/customizerContext";
 import config from "@/app/context/setting/config";
 import AuthGuard from "./authGuard";
+import Sidebar from "./layout/sidebar/Sidebar";
+import Header from "./layout/header/Header";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -57,9 +54,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* ------------------------------------------- */}
           {/* Header */}
           {/* ------------------------------------------- */}
-          {activeLayout === "horizontal" ? <HorizontalHeader /> : <Header />}
+          <Header />
           {/* PageContent */}
-          {activeLayout === "horizontal" ? <Navigation /> : ""}
           <Container
             sx={{
               pt: "30px",

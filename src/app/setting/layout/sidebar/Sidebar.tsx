@@ -3,12 +3,12 @@ import Drawer from "@mui/material/Drawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import SidebarItems from "./SidebarItems";
-import Logo from "../../shared/logo/Logo";
 import { CustomizerContext } from "@/app/context/setting/customizerContext";
 import config from "@/app/context/setting/config";
 
 import Scrollbar from "@/app/components/custom-scroll/Scrollbar";
 import { useContext } from "react";
+import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));

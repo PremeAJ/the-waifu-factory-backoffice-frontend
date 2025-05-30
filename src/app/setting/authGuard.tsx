@@ -9,7 +9,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   if (loading) {
     return <Loading />;
   }
-
   if (!user) {
     return <Error404 />;
   }
