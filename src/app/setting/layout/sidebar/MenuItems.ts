@@ -61,7 +61,7 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "การแสดงผล",
     icon: IconPalette,
-    href: "/setting/app/appearance",
+    href: "/setting/appearance",
   },
   {
     id: uniqueId(),
