@@ -167,7 +167,6 @@ const MobileSettingsList = () => {
         sx={{
           maxWidth: "100%",
           bgcolor: "background.paper",
-          borderRadius: (theme) => theme.shape.borderRadius,
         }} 
       >
         {userProfile}

@@ -1,48 +1,56 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
-import { IconArrowUp } from '@tabler/icons-react';
-import { Fab } from '@mui/material';
-
+"use client";
+import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import { IconArrowUp } from "@tabler/icons-react";
+import { Fab } from "@mui/material";
 
 const ScrollToTop = () => {
-    const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-    // Function to handle scroll to top
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth' // Smooth scrolling
-        });
+  // Function to handle scroll to top
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scrolling
+    });
+  };
+
+  // Function to handle showing/hiding the button on scroll
+  const toggleVisibility = () => {
+    if (window.pageYOffset > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", toggleVisibility);
     };
+  }, []);
 
-    // Function to handle showing/hiding the button on scroll
-    const toggleVisibility = () => {
-        if (window.pageYOffset > 300) {
-            setIsVisible(true);
-        } else {
-            setIsVisible(false);
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener('scroll', toggleVisibility);
-
-        return () => {
-            window.removeEventListener('scroll', toggleVisibility);
-        };
-    }, []);
-
-    return (
-        <> {isVisible ? <Fab color='primary' onClick={scrollToTop} sx={{
-            position: 'fixed',
-            right: '30px',
-            bottom: '30px'
-        }}>
-            <IconArrowUp size={24} />
-        </Fab> : null}</>
-
-    );
+  return (
+    <>
+      {" "}
+      {isVisible ? (
+        <Fab
+          color="primary"
+          size="medium"
+          onClick={scrollToTop}
+          sx={{
+            position: "fixed",
+            bottom: 16,
+            right: 16,
+          }}
+        >
+          <IconArrowUp />
+        </Fab>
+      ) : null}
+    </>
+  );
 };
 
 export default ScrollToTop;
