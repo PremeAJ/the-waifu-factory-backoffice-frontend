@@ -20,7 +20,7 @@ import AppLinks from "./AppLinks";
 const MobileRightSidebar = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [open, setOpen] = React.useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchApp, setSearchApp] = useState("");
 
   const handleClick = () => {
     setOpen(!open);
@@ -33,8 +33,8 @@ const MobileRightSidebar = () => {
         <TextField
           fullWidth
           placeholder="Search apps..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchApp}
+          onChange={(e) => setSearchApp(e.target.value)}
           size="small"
           variant="outlined"
           InputProps={{
@@ -43,9 +43,9 @@ const MobileRightSidebar = () => {
                 <IconSearch size={18} stroke={1.5} />
               </InputAdornment>
             ),
-            endAdornment: searchTerm && (
+            endAdornment: searchApp && (
               <InputAdornment position="end">
-                <IconButton size="small" onClick={() => setSearchTerm("")}>
+                <IconButton size="small" onClick={() => setSearchApp("")}>
                   <IconX size={14} />
                 </IconButton>
               </InputAdornment>
@@ -65,7 +65,7 @@ const MobileRightSidebar = () => {
           <Typography variant="subtitle2" color="textSecondary" fontWeight={500} mb={2}>
             Applications
           </Typography>
-          <AppLinks />
+          <AppLinks searchApp={searchApp} /> {/* ส่ง searchTerm เข้าไป */}
         </Box>
 
         <Divider />

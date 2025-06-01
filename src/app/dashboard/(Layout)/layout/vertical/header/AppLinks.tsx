@@ -3,12 +3,21 @@ import * as dropdownData from "./data";
 import Link from "next/link";
 import React from "react";
 import Grid from "@mui/system/Grid";
-import theme from "@/utils/theme";
 
-const AppLinks = () => {
+interface AppLinksProps {
+  searchApp?: string;
+}
+
+const AppLinks: React.FC<AppLinksProps> = ({ searchApp = "" }) => {
+  const filteredApps = dropdownData.appsLink.filter(
+    (app) =>
+      app.title.toLowerCase().includes(searchApp.toLowerCase()) ||
+      app.subtext?.toLowerCase().includes(searchApp.toLowerCase())
+  );
+
   return (
     <Grid container spacing={2}>
-      {dropdownData.appsLink.map((app, index) => (
+      {filteredApps.map((app, index) => (
         <Grid size={{ xs: 3 }} key={index}>
           <Link
             href={app.href}
@@ -41,17 +50,17 @@ const AppLinks = () => {
                 sx={{
                   width: 56,
                   height: 56,
-                  bgcolor: (theme) => theme.palette.action.hover, // รองรับทั้ง dark/light mode
+                  bgcolor: (theme) => theme.palette.action.hover,
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   mb: 1,
                   boxShadow: "0 4px 16px 0 rgba(0,0,0,0.10)",
-                  border: `2px solid ${app.color || theme.palette.primary.main}`,
+                  border: `2px solid ${app.color || "#1976d2"}`,
                   transition: "all 0.2s",
                   "&:hover": {
                     boxShadow: "0 8px 24px 0 rgba(0,0,0,0.18)",
-                    borderColor: theme.palette.primary.dark,
+                    borderColor: "#1565c0",
                   },
                 }}
               >
