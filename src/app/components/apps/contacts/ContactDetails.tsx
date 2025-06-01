@@ -38,15 +38,15 @@ const ContactDetails = () => {
     {
       id: 1,
       title: 'Firstname',
-      alias: 'firstname',
-      gdata: selectedContact ? selectedContact.firstname : '',
+      alias: 'firstName',
+      gdata: selectedContact ? selectedContact.firstName : '',
       type: 'text',
     },
     {
       id: 2,
       title: 'Lastname',
-      alias: 'lastname',
-      gdata: selectedContact ? selectedContact.lastname : '',
+      alias: 'lastName',
+      gdata: selectedContact ? selectedContact.lastName : '',
       type: 'text',
     },
     {
@@ -179,7 +179,7 @@ const ContactDetails = () => {
                   />
                   <Box sx={{ ml: 2 }}>
                     <Typography variant="h6" mb={0.5}>
-                      {selectedContact.firstname} {selectedContact.lastname}
+                      {selectedContact.firstName} {selectedContact.lastName}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" mb={0.5}>
                       {selectedContact.department}

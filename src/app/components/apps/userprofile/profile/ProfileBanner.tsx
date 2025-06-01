@@ -34,7 +34,7 @@ const ProfileBanner = () => {
     margin: "0 auto",
   }));
   const { user } = useContext(UserContext);
-  const { firstname, lastname, avatarUrl } = user || {};
+  const { firstName, lastName, avatarUrl } = user || {};
 
   return (
     <>
@@ -145,7 +145,7 @@ const ProfileBanner = () => {
                 </ProfileImage>
                 <Box mt={1}>
                   <Typography fontWeight={600} variant="h5">
-                    {firstname} {lastname}
+                    {firstName} {lastName}
                   </Typography>
                   <Typography
                     color="textSecondary"

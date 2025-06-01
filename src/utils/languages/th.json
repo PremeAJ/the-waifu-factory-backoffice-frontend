@@ -21,6 +21,18 @@
   "Navigation": {
     "Pricing": "ราคา"
   },
+  "common": {
+    "firstName": "ชื่อ",
+    "lastName": "นามสกุล",
+    "nickName": "ชื่อเล่น",
+    "phone": "เบอร์โทรศัพท์",
+    "email": "อีเมล",
+    "address": "ที่อยู่",
+    "city": "เมือง",
+    "state": "จังหวัด",
+    "zipCode": "รหัสไปรษณีย์",
+    "country": "ประเทศ"
+  },
   "email": "อีเมล",
   "password": "รหัสผ่าน",
   "Modern": "Modern",
@@ -47,5 +59,14 @@
   "Invoice": "Invoice",
   "Details": "Details",
   "Create": "Create",
-  "Edit": "Edit"
+  "Edit": "Edit",
+  "Setting": {
+    "AccountSetting": "ตั้งค่าบัญชี",
+    "Profile": "โปรไฟล์",
+    "ChangeProfile": "เปลี่ยนโปรไฟล์",
+    "ChangeProfileDesc": "เปลี่ยนรูปโปรไฟล์ของคุณที่นี่",
+    "AllowedFile": "(อนุญาต JPG, GIF หรือ PNG. ขนาดไม่เกิน 800K)",
+    "PersonalDetails": "ข้อมูลส่วนตัว",
+    "PersonalDetailsDesc": "หากต้องการเปลี่ยนข้อมูลส่วนตัว ให้แก้ไขและบันทึกที่นี่"
+  }
 }

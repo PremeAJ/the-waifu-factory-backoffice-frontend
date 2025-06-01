@@ -28,7 +28,7 @@ const MobileSettingsList = () => {
   const theme = useTheme();
   const router = useRouter();
   const { user } = useContext(UserContext);
-  const { email, firstname, lastname, avatarUrl } = user || {};
+  const { email, firstName, lastName, avatarUrl } = user || {};
   
   // State เก็บ ID ของเมนูที่เปิดอยู่
   const [openMenus, setOpenMenus] = useState<string[]>([]);
@@ -63,7 +63,7 @@ const MobileSettingsList = () => {
         }}
       />
       <Typography variant="h5" fontWeight={600}>
-        {firstname || "ผู้ใช้"} {lastname || ""}
+        {firstName || "ผู้ใช้"} {lastName || ""}
       </Typography>
       <Typography variant="body2" color="textSecondary">
         {email || "example@email.com"}

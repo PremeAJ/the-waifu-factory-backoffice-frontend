@@ -1,7 +1,7 @@
 export interface ContactType {
   id: number;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   image: string;
   department: string;
   company: string;

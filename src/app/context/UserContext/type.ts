@@ -1,8 +1,8 @@
 export interface userType {
   userId: string;
   avatarUrl: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   nickName: string | null;
   email: string;
   mobilePhone: string | null;

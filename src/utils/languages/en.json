@@ -10,7 +10,7 @@
       "DontHaveAccount": "Don't have an account",
       "CreateAnAccount": "Create an account",
       "SignIn": "Sign In",
-      "WelcomeToMeowSom":"Welcome to MeowSom"
+      "WelcomeToMeowSom": "Welcome to MeowSom"
     }
   },
   "Form": {
@@ -20,6 +20,18 @@
   },
   "Navigation": {
     "Pricing": "Pricing"
+  },
+  "common": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "nickName": "Nickname",
+    "phone": "Phone Number",
+    "email": "Email",
+    "address": "Address",
+    "city": "City",
+    "state": "State",
+    "zipCode": "Zip Code",
+    "country": "Country"
   },
   "email": "email",
   "password": "password",
@@ -47,5 +59,14 @@
   "Invoice": "Invoice",
   "Details": "Details",
   "Create": "Create",
-  "Edit": "Edit"
+  "Edit": "Edit",
+  "Setting": {
+    "AccountSetting": "Account Setting",
+    "Profile": "Profile",
+    "ChangeProfile": "Change Profile",
+    "ChangeProfileDesc": "Change your profile picture from here",
+    "AllowedFile": "(Allowed JPG, GIF or PNG. Max size of 800K)",
+    "PersonalDetails": "Personal Details",
+    "PersonalDetailsDesc": "To change your personal detail , edit and save from here"
+  }
 }

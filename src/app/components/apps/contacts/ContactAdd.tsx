@@ -24,8 +24,8 @@ const ContactAdd = () => {
   };
 
   const [values, setValues] = React.useState({
-    firstname: '',
-    lastname: '',
+    firstName: '',
+    lastName: '',
     department: 'Sales',
     company: '',
     phone: '',
@@ -39,8 +39,8 @@ const ContactAdd = () => {
 
     const newContact = {
       id: Date.now(),
-      firstname: values.firstname,
-      lastname: values.lastname,
+      firstName: values.firstName,
+      lastName: values.lastName,
       department: values.department,
       company: values.company,
       phone: values.phone,
@@ -87,12 +87,12 @@ const ContactAdd = () => {
                 }}>
                 <FormLabel>FirstName</FormLabel>
                 <TextField
-                  id="firstname"
+                  id="firstName"
                   size="small"
                   variant="outlined"
                   fullWidth
-                  value={values.firstname}
-                  onChange={(e) => setValues({ ...values, firstname: e.target.value })}
+                  value={values.firstName}
+                  onChange={(e) => setValues({ ...values, firstName: e.target.value })}
                 />
               </Grid>
               <Grid
@@ -102,12 +102,12 @@ const ContactAdd = () => {
                 }}>
                 <FormLabel>LastName</FormLabel>
                 <TextField
-                  id="lastname"
+                  id="lastName"
                   size="small"
                   variant="outlined"
                   fullWidth
-                  value={values.lastname}
-                  onChange={(e) => setValues({ ...values, lastname: e.target.value })}
+                  value={values.lastName}
+                  onChange={(e) => setValues({ ...values, lastName: e.target.value })}
                 />
               </Grid>
               <Grid
@@ -220,7 +220,7 @@ const ContactAdd = () => {
                   color="primary"
                   sx={{ mr: 1 }}
                   type="submit"
-                  disabled={values.firstname.length === 0 || values.notes.length === 0}
+                  disabled={values.firstName.length === 0 || values.notes.length === 0}
                 >
                   Submit
                 </Button>

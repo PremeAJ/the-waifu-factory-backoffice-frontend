@@ -1,91 +1,41 @@
-'use client'
+"use client";
 
-import * as React from 'react';
-import PageContainer from '@/app/components/container/PageContainer';
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import { Grid, Tabs, Tab, Box, CardContent, Divider } from '@mui/material';
+import * as React from "react";
+import PageContainer from "@/app/components/container/PageContainer";
+import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import { Grid, CardContent, Divider } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 // components
-import AccountTab from '@/app/components/pages/account-setting/AccountTab';
-import { IconArticle, IconBell, IconLock, IconUserCircle } from '@tabler/icons-react';
-import BlankCard from '@/app/components/shared/BlankCard';
-import NotificationTab from '@/app/components/pages/account-setting/NotificationTab';
-import BillsTab from '@/app/components/pages/account-setting/BillsTab';
-import SecurityTab from '@/app/components/pages/account-setting/SecurityTab';
-
-const BCrumb = [
-  {
-    to: '/',
-    title: 'Home',
-  },
-  {
-    title: 'Account Setting',
-  },
-];
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box>{children}</Box>}
-    </div>
-  );
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
+import BlankCard from "@/app/components/shared/BlankCard";
+import AccountTab from "@/app/components/settings/account-setting/AccountTab";
 
 const AccountSetting = () => {
-  const [value, setValue] = React.useState(0);
+  const { t } = useTranslation();
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const BCrumb = [
+    {
+      to: "/setting/account/profile",
+      title: t("Setting.AccountSetting"),
+    },
+    {
+      to: "/setting/account/profile",
+      title: t("Setting.AccountSetting"),
+    },
+    {
+      title: t("Setting.Profile"),
+    },
+  ];
 
   return (
-    (<PageContainer title="Account Setting" description="this is Account Setting">
-      {/* breadcrumb */}
-      <Breadcrumb title="Account Setting" items={BCrumb} />
-      {/* end breadcrumb */}
-      <Grid container spacing={3}>
-        <Grid size={12}>
-          <BlankCard>
-            <Divider />
-            <CardContent>
-              <TabPanel value={value} index={0}>
-                <AccountTab />
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <NotificationTab />
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                <BillsTab />
-              </TabPanel>
-              <TabPanel value={value} index={3}>
-                <SecurityTab />
-              </TabPanel>
-            </CardContent>
-          </BlankCard>
-        </Grid>
-      </Grid>
-    </PageContainer>)
+    <PageContainer title={t("Setting.AccountSetting")} description="this is Account Setting">
+      <Breadcrumb title={t("Setting.Profile")} items={BCrumb} />
+      <BlankCard>
+        <CardContent>
+          <AccountTab />
+        </CardContent>
+      </BlankCard>
+    </PageContainer>
   );
 };
 

@@ -1,8 +1,8 @@
 "use client";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import MobileSettingsList from "./components/MobileSettingsList";
 import { redirect } from "next/navigation";
 import PageContainer from "../components/container/PageContainer";
+import MobileSettingsList from "./layout/MobileSettingsList";
 
 export default function SettingPage() {
   const theme = useTheme();

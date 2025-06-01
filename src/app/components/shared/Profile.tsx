@@ -15,7 +15,7 @@ const Profile = () => {
   if (!user) {
     return null;
   }
-  const { email, avatarUrl, firstname, lastname } = user;
+  const { email, avatarUrl, firstName, lastName } = user;
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -92,7 +92,7 @@ const Profile = () => {
           <Avatar src={avatarUrl ?? "/images/profile/user-1.jpg"} alt={"ProfileImg"} sx={{ width: 95, height: 95 }} />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-              {firstname || lastname ? `${firstname ?? ""} ${lastname ?? ""}`.trim() : "-"}
+              {firstName || lastName ? `${firstName ?? ""} ${lastName ?? ""}`.trim() : "-"}
             </Typography>
             <Typography variant="subtitle2" color="textSecondary">
               Designer

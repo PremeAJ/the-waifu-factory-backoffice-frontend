@@ -54,8 +54,8 @@ const ContactList = ({ showrightSidebar }: Props) => {
       const searchTermLower = search.toLowerCase();
       filteredContacts = filteredContacts.filter(
         (contact) =>
-          contact.firstname.toLowerCase().includes(searchTermLower) ||
-          contact.lastname.toLowerCase().includes(searchTermLower)
+          contact.firstName.toLowerCase().includes(searchTermLower) ||
+          contact.lastName.toLowerCase().includes(searchTermLower)
       );
     }
 

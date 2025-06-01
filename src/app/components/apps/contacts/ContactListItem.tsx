@@ -17,8 +17,8 @@ type Props = {
   onStarredClick: React.MouseEventHandler<SVGElement>;
   onDeleteClick: React.MouseEventHandler<SVGElement>;
   id: string | number;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   image: string;
   department: string;
   starred: boolean;
@@ -30,8 +30,8 @@ const ContactListItem = ({
   onStarredClick,
   onDeleteClick,
   id,
-  firstname,
-  lastname,
+  firstName,
+  lastName,
   image,
   department,
   starred,
@@ -55,7 +55,7 @@ const ContactListItem = ({
         <Stack direction="row" gap="10px" alignItems="center">
           <Box mr="auto" onClick={onContactClick}>
             <Typography variant="subtitle1" noWrap fontWeight={600} sx={{ maxWidth: '150px' }}>
-              {firstname} {lastname}
+              {firstName} {lastName}
             </Typography>
             <Typography variant="body2" color="text.secondary" noWrap>
               {department}
