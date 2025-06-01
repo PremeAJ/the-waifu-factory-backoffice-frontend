@@ -1,63 +1,85 @@
-import { Avatar, Box, Typography, Grid, Stack } from '@mui/material';
-import * as dropdownData from './data';
-import Link from 'next/link';
-import React from 'react';
+import { Avatar, Box, Typography, Paper } from "@mui/material";
+import * as dropdownData from "./data";
+import Link from "next/link";
+import React from "react";
+import Grid from "@mui/system/Grid";
+import theme from "@/utils/theme";
 
 const AppLinks = () => {
   return (
-    <Grid container spacing={3} mb={4}>
-      {dropdownData.appsLink.map((links, index) => (
-        <Grid
-          key={index}
-          size={{
-            lg: 6
-          }}>
-          <Link href={links.href} className="hover-text-primary">
-            <Stack direction="row" spacing={2}>
+    <Grid container spacing={2}>
+      {dropdownData.appsLink.map((app, index) => (
+        <Grid size={{ xs: 3 }} key={index}>
+          <Link
+            href={app.href}
+            style={{
+              textDecoration: "none",
+              display: "block",
+            }}
+          >
+            <Paper
+              elevation={0}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                p: 1,
+                textAlign: "center",
+                borderRadius: 2,
+                bgcolor: "none",
+                transition: "all 0.2s ease-in-out",
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                  bgcolor: "primary.light",
+                  "& .app-name": {
+                    color: "primary.main",
+                  },
+                },
+              }}
+            >
               <Box
-                minWidth="45px"
-                height="45px"
-                bgcolor="grey.100"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+                sx={{
+                  width: 56,
+                  height: 56,
+                  bgcolor: (theme) => theme.palette.action.hover, // รองรับทั้ง dark/light mode
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  mb: 1,
+                  boxShadow: "0 4px 16px 0 rgba(0,0,0,0.10)",
+                  border: `2px solid ${app.color || theme.palette.primary.main}`,
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    boxShadow: "0 8px 24px 0 rgba(0,0,0,0.18)",
+                    borderColor: theme.palette.primary.dark,
+                  },
+                }}
               >
                 <Avatar
-                  src={links.avatar}
-                  alt={links.avatar}
+                  src={app.avatar}
+                  alt={app.title}
                   sx={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: 0,
+                    width: 32,
+                    height: 32,
+                    borderRadius: 1,
+                    boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)",
                   }}
                 />
               </Box>
-              <Box>
-                <Typography
-                  variant="subtitle2"
-                  fontWeight={600}
-                  color="textPrimary"
-                  noWrap
-                  className="text-hover"
-                  sx={{
-                    width: '240px',
-                  }}
-                >
-                  {links.title}
-                </Typography>
-                <Typography
-                  color="textSecondary"
-                  variant="subtitle2"
-                  fontSize="12px"
-                  sx={{
-                    width: '240px',
-                  }}
-                  noWrap
-                >
-                  {links.subtext}
-                </Typography>
-              </Box>
-            </Stack>
+              <Typography
+                variant="caption"
+                className="app-name"
+                noWrap
+                sx={{
+                  width: "100%",
+                  fontWeight: 500,
+                  fontSize: "11px",
+                  color: "text.primary",
+                }}
+              >
+                {app.title.split(" ")[0]}
+              </Typography>
+            </Paper>
           </Link>
         </Grid>
       ))}

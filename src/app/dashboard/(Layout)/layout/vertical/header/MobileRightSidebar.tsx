@@ -1,13 +1,5 @@
-import React, { useState } from 'react';
-import {
-  IconApps,
-  IconCalendarEvent,
-  IconChevronDown,
-  IconChevronUp,
-  IconGridDots,
-  IconMail,
-  IconMessages,
-} from '@tabler/icons-react';
+import React, { useState } from "react";
+import { IconCalendarEvent, IconGridDots, IconMail, IconMessages, IconSearch, IconX } from "@tabler/icons-react";
 import {
   Box,
   Typography,
@@ -17,88 +9,95 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Collapse,
-} from '@mui/material';
+  TextField,
+  InputAdornment,
+  Divider,
+} from "@mui/material";
 
-import Link from 'next/link';
-import AppLinks from './AppLinks';
-import QuickLinks from './QuickLinks';
+import Link from "next/link";
+import AppLinks from "./AppLinks";
 
 const MobileRightSidebar = () => {
   const [showDrawer, setShowDrawer] = useState(false);
-
   const [open, setOpen] = React.useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleClick = () => {
     setOpen(!open);
   };
 
   const cartContent = (
-    <Box>
-      {/* ------------------------------------------- */}
-      {/* Apps Content */}
-      {/* ------------------------------------------- */}
-      <Box px={1}>
-        <List
-          sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-          component="nav"
-          aria-labelledby="nested-list-subheader"
-        >
-          <ListItemButton component={Link} href="/apps/chats">
-            <ListItemIcon sx={{ minWidth: 35 }}>
-              <IconMessages size="21" stroke="1.5" />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Chats
-              </Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component={Link} href="/apps/calendar">
-            <ListItemIcon sx={{ minWidth: 35 }}>
-              <IconCalendarEvent size="21" stroke="1.5" />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Calendar
-              </Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton component={Link} href="/apps/email">
-            <ListItemIcon sx={{ minWidth: 35 }}>
-              <IconMail size="21" stroke="1.5" />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Email
-              </Typography>
-            </ListItemText>
-          </ListItemButton>
-          <ListItemButton onClick={handleClick}>
-            <ListItemIcon sx={{ minWidth: 35 }}>
-              <IconApps size="21" stroke="1.5" />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography variant="subtitle2" fontWeight={600}>
-                Apps
-              </Typography>
-            </ListItemText>
-            {open ? (
-              <IconChevronDown size="21" stroke="1.5" />
-            ) : (
-              <IconChevronUp size="21" stroke="1.5" />
-            )}
-          </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box px={4} pt={3} overflow="hidden">
-              <AppLinks />
-            </Box>
-          </Collapse>
-        </List>
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      {/* Search Bar */}
+      <Box px={3} pt={2} pb={2}>
+        <TextField
+          fullWidth
+          placeholder="Search apps..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          size="small"
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconSearch size={18} stroke={1.5} />
+              </InputAdornment>
+            ),
+            endAdornment: searchTerm && (
+              <InputAdornment position="end">
+                <IconButton size="small" onClick={() => setSearchTerm("")}>
+                  <IconX size={14} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+            },
+          }}
+        />
       </Box>
 
-      <Box px={3} mt={3}>
-        <QuickLinks />
+      {/* Apps Grid */}
+      <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
+        <Box px={3} pb={3}>
+          <Typography variant="subtitle2" color="textSecondary" fontWeight={500} mb={2}>
+            Applications
+          </Typography>
+          <AppLinks />
+        </Box>
+
+        <Divider />
+
+        {/* Frequently Used Apps */}
+        <Box px={3} pt={2}>
+          <Typography variant="subtitle2" color="textSecondary" fontWeight={500} mb={2}>
+            Frequently Used
+          </Typography>
+          <List disablePadding>
+            <ListItemButton component={Link} href="/apps/chats" sx={{ borderRadius: 1, mb: 0.5 }}>
+              <ListItemIcon sx={{ minWidth: 35 }}>
+                <IconMessages size="21" stroke="1.5" />
+              </ListItemIcon>
+              <ListItemText primary="Chats" />
+            </ListItemButton>
+
+            <ListItemButton component={Link} href="/apps/calendar" sx={{ borderRadius: 1, mb: 0.5 }}>
+              <ListItemIcon sx={{ minWidth: 35 }}>
+                <IconCalendarEvent size="21" stroke="1.5" />
+              </ListItemIcon>
+              <ListItemText primary="Calendar" />
+            </ListItemButton>
+
+            <ListItemButton component={Link} href="/apps/email" sx={{ borderRadius: 1, mb: 0.5 }}>
+              <ListItemIcon sx={{ minWidth: 35 }}>
+                <IconMail size="21" stroke="1.5" />
+              </ListItemIcon>
+              <ListItemText primary="Email" />
+            </ListItemButton>
+          </List>
+        </Box>
       </Box>
     </Box>
   );
@@ -111,27 +110,34 @@ const MobileRightSidebar = () => {
         onClick={() => setShowDrawer(true)}
         sx={{
           ...(showDrawer && {
-            color: 'primary.main',
+            color: "primary.main",
           }),
         }}
       >
         <IconGridDots size="21" stroke="1.5" />
       </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Cart Sidebar */}
-      {/* ------------------------------------------- */}
+
+      {/* Apps Drawer */}
       <Drawer
         anchor="right"
         open={showDrawer}
         onClose={() => setShowDrawer(false)}
         slotProps={{
-          paper: { sx: { width: '300px' } }
+          paper: {
+            sx: {
+              width: { xs: "100%", sm: "350px" },
+              maxWidth: "100%",
+            },
+          },
         }}
       >
-        <Box p={3} pb={0}>
+        <Box p={2} pb={0} display="flex" alignItems="center" justifyContent="space-between">
           <Typography variant="h5" fontWeight={600}>
-            Navigation
+            Apps
           </Typography>
+          <IconButton onClick={() => setShowDrawer(false)}>
+            <IconX size={18} />
+          </IconButton>
         </Box>
 
         {/* component */}

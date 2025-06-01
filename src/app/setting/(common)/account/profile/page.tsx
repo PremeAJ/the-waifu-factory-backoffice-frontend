@@ -67,40 +67,6 @@ const AccountSetting = () => {
       <Grid container spacing={3}>
         <Grid size={12}>
           <BlankCard>
-            <Box sx={{ maxWidth: { xs: 320, sm: 480 } }}>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                scrollButtons="auto"
-                aria-label="basic tabs example"
-              >
-                <Tab
-                  iconPosition="start"
-                  icon={<IconUserCircle size="22" />}
-                  label="Account"
-                  {...a11yProps(0)}
-                />
-
-                <Tab
-                  iconPosition="start"
-                  icon={<IconBell size="22" />}
-                  label="Notifications"
-                  {...a11yProps(1)}
-                />
-                <Tab
-                  iconPosition="start"
-                  icon={<IconArticle size="22" />}
-                  label="Bills"
-                  {...a11yProps(2)}
-                />
-                <Tab
-                  iconPosition="start"
-                  icon={<IconLock size="22" />}
-                  label="Security"
-                  {...a11yProps(3)}
-                />
-              </Tabs>
-            </Box>
             <Divider />
             <CardContent>
               <TabPanel value={value} index={0}>

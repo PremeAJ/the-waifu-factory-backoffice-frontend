@@ -1,8 +1,6 @@
 import { uniqueId } from "lodash";
 import {
-  IconPaint,
   IconUser,
-  IconUserCircle,
   IconMapPin,
   IconKey,
   IconDeviceMobile,

@@ -48,27 +48,4 @@ const notifications: notificationType[] = [
   },
 ];
 
-
-interface ProfileType {
-  href: string;
-  title: string;
-  subtitle: string;
-  icon: string;
-}
-const profile: ProfileType[] = [
-  {
-    href: "/setting",
-    title: "My Profile",
-    subtitle: "Account Settings",
-    icon: "/images/svgs/icon-account.svg",
-  },
-  {
-    href: "/dashboard",
-    title: "My Company",
-    subtitle: "Dashboard",
-    icon: "/images/svgs/icon-store.svg",
-  },
-];
-
-
-export { notifications, profile };
+export { notifications };

@@ -1,6 +1,5 @@
-// Notifications dropdown
-
-import { ElementType } from "react-spring";
+import { IconUserCircle, IconLayoutDashboard, IconMail, IconSettings } from "@tabler/icons-react";
+import { ElementType } from "react";
 
 interface notificationType {
   avatar: string;
@@ -51,37 +50,34 @@ const notifications: notificationType[] = [
   },
 ];
 
-//
-// Profile dropdown
-//
 interface ProfileType {
   href: string;
   title: string;
   subtitle: string;
-  icon: string;
+  icon: string | ElementType; 
 }
 const profile: ProfileType[] = [
   {
     href: "/setting",
     title: "My Profile",
     subtitle: "Account Settings",
-    icon: "/images/svgs/icon-account.svg",
+    icon: IconUserCircle,
   },
-    {
+  {
     href: "/dashboard",
     title: "My Company",
     subtitle: "Dashboard",
-    icon: "/images/svgs/icon-store.svg",
+    icon: IconLayoutDashboard,
   },
 ];
 
 // apps dropdown
-
 interface appsLinkType {
   href: string;
   title: string;
   subtext: string;
   avatar: string;
+  color?: string; // เพิ่ม field สี (optional)
 }
 
 const appsLink: appsLinkType[] = [
@@ -90,24 +86,28 @@ const appsLink: appsLinkType[] = [
     title: "Chat Application",
     subtext: "New messages arrived",
     avatar: "/images/svgs/icon-dd-chat.svg",
+    color: "#4CAF50", 
   },
   {
     href: "/apps/ecommerce/shop",
     title: "eCommerce App",
     subtext: "New stock available",
     avatar: "/images/svgs/icon-dd-cart.svg",
+    color: "#FF9800", 
   },
   {
     href: "/apps/notes",
     title: "Notes App",
     subtext: "To-do and Daily tasks",
     avatar: "/images/svgs/icon-dd-invoice.svg",
+    color: "#FFEB3B", 
   },
   {
     href: "/apps/calendar",
     title: "Calendar App",
     subtext: "Get dates",
     avatar: "/images/svgs/icon-dd-date.svg",
+    color: "#F44336", 
   },
   {
     href: "/apps/contacts",

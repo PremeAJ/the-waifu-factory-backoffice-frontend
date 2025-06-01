@@ -91,14 +91,12 @@ const MobileSettingsList = () => {
   };
   type NavGroup = NavItem;
 
-  // แปลง Icon Component เป็น JSX Element
   const renderIcon = (icon: any) => {
     if (React.isValidElement(icon)) return icon;
     const IconComponent = icon;
     return <IconComponent width={22} />;
   };
 
-  // แสดงรายการเมนูปกติ (ไม่ใช่ navlabel)
   const renderNavItem = (item: NavItem, index: number, depth: number = 0) => {
     const isParent = item.children && item.children.length > 0;
     const isExpanded = openMenus.includes(item.id);
