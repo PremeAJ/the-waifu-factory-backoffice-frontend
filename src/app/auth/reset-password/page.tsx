@@ -10,9 +10,7 @@ import { AuthContext } from "@/app/context/AuthContext";
 
 export default function ResetPassword() {
   const { verifyOtp } = useContext(AuthContext);
-
   const [isValid, setIsValid] = useState(false);
-
   const searchParams = useSearchParams();
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");

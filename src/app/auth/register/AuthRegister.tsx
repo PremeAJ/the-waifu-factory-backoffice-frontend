@@ -59,9 +59,10 @@ const AuthRegister = () => {
         password,
         options: {
           data: {
-            full_name: "" + firstName + " " + lastName,
+            full_name: `${firstName} ${lastName}`,
           },
           captchaToken: captchaToken,
+          emailRedirectTo: `${window.location.origin}/auth/callback`, // เพิ่มบรรทัดนี้
         },
       };
       const { data: data2, error } = await signUpWithEmail(userData);

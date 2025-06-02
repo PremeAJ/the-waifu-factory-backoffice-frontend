@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useContext } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AuthContext } from "@/app/context/AuthContext";
 import { supabaseGetSession } from "@/utils/supabase/client";
 import { UserContext } from "@/app/context/UserContext";
@@ -13,13 +13,16 @@ interface AuthCallbackHandlerProps {
 }
 
 export default function AuthCallbackHandler({ redirectPath, loginPath }: AuthCallbackHandlerProps) {
-  const router = useRouter();
-  const { setSession, getSession } = useContext(AuthContext);
+  const { setSession, getSession, exchangeCodeForSession } = useContext(AuthContext);
   const { syncUser } = useContext(UserContext);
   const { appearanceMutate } = useContext(CustomizerContext);
+  const router = useRouter();
+  const params = useSearchParams();
 
   useEffect(() => {
     const handleAuth = async () => {
+      const code = params.get("code") || "";
+      await exchangeCodeForSession(code)
       const { data: csrData } = await supabaseGetSession();
       if (csrData.session) {
         const { access_token, refresh_token } = csrData.session;
@@ -34,7 +37,7 @@ export default function AuthCallbackHandler({ redirectPath, loginPath }: AuthCal
       if (clientData.session) {
         await syncUser();
         await appearanceMutate();
-        await new Promise((res) => setTimeout(res, 1000)); // ถ้าต้องการรอ 1 วิ
+        await new Promise((res) => setTimeout(res, 1000)); 
         router.replace(redirectPath);
       } else {
         router.replace(loginPath);
