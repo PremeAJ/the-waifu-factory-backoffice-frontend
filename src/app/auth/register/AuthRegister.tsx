@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import CustomTextField from "@/app/components/forms/theme-elements/CustomTextField";
 import { registerType } from "@/utils/types/auth/auth";
-import AuthSocialButtons from "../authForms/AuthSocialButtons";
+import AuthSocialButtons from "../../components/auth/AuthSocialButtons";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import {
   confirmPasswordSchema,

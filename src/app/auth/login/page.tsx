@@ -2,7 +2,7 @@ import { Grid, Box, Stack, Typography } from "@mui/material";
 import PageContainer from "@/app/components/container/PageContainer";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import Image from "next/image";
-import AuthLogin from "../authForms/AuthLogin";
+import AuthLogin from "../../components/auth/AuthLogin";
 import { ServerLanguage } from "@/app/components/shared/Language/ServerLanguage";
 
 export default function Login() {

@@ -15,9 +15,7 @@ export default function ResetPassword() {
 
   const searchParams = useSearchParams();
   const token_hash = searchParams.get("token_hash");
-  console.log("🚀 ~ ResetPassword ~ token_hash:", token_hash);
   const type = searchParams.get("type");
-  console.log("🚀 ~ ResetPassword ~ type:", type);
 
   useEffect(() => {
     if (!token_hash || type !== "recovery") {
