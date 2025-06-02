@@ -5,7 +5,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
-export const csrSignInWithGoogle = async (redirectTo:string) => {
+export const supabaseSignInWithGoogle = async (redirectTo:string) => {
   await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -17,6 +17,6 @@ export const csrSignInWithGoogle = async (redirectTo:string) => {
   });
 };
 
-export const csrGetSession = async () => {
+export const supabaseGetSession = async () => {
   return supabase.auth.getSession();
 };

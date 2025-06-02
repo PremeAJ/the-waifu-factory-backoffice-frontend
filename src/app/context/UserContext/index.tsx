@@ -3,12 +3,13 @@ import React, { createContext, useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { userType } from "./type";
+import {  supabaseUploadFile,  UploadFileType } from "@/utils/supabase/server";
 
 export type UserContextType = {
   user: userType | null;
   setUser: React.Dispatch<React.SetStateAction<userType | null>>; // เพิ่ม setUser
-  refreshUser: () => {};
   syncUser: () => {};
+  uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};
   loading: boolean;
   error: Error | null;
 };
@@ -46,21 +47,35 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(isUsersLoading);
     }
   }, [usersData, usersError]);
-  const refreshUser = async () => {
-    await userMutate();
-  };
+
   const syncUser = async () => {
     try {
       await userMutate(postFetcher("/api/users/ensure", {}));
     } catch (error: any) {}
   };
+
+  async function uploadAvatar(file: File | Blob | ArrayBuffer | string) {
+    const payload: UploadFileType = {
+      file,
+      bucket: "avatars",
+      path: `/users/${user?.id}/avatar`,
+      ext: "png", // กำหนดนามสกุลไฟล์เป็น png
+      contentType: "image/png", // กำหนด content type เป็น image/png
+    };
+    const result = await supabaseUploadFile(payload);
+
+    // หลังอัปโหลดเสร็จ ให้ refresh user data
+    await userMutate();
+
+    return result;
+  }
   const value: UserContextType = {
     user,
-    setUser,
-    refreshUser,
-    syncUser,
-    loading,
     error,
+    loading,
+    setUser,
+    syncUser,
+    uploadAvatar,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

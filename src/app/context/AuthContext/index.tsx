@@ -4,17 +4,17 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 import {
   ResetPasswordForEmailType,
   ResetPasswordType,
-  ssrExchangeCodeForSession,
-  ssrForgotPassword,
-  ssrGetSession,
-  ssrGetUser,
-  ssrRefreshSession,
-  ssrResetPassword,
-  ssrSignInWithEmail,
-  ssrSignOut,
-  ssrSignUpWithEmail,
-  ssrVerifyOtp,
-  ssrSetSession,
+  supabaseExchangeCodeForSession,
+  supabaseForgotPassword,
+  supabaseGetSession,
+  supabaseGetUser,
+  supabaseRefreshSession,
+  supabaseResetPassword,
+  supabaseSignInWithEmail,
+  supabaseSignOut,
+  supabaseSignUpWithEmail,
+  supabaseSetSession,
+  supabaseVerifyOtp,
 } from "@/utils/supabase/server";
 import {
   SignInWithPasswordCredentials,
@@ -22,7 +22,7 @@ import {
   User,
   VerifyOtpParams,
 } from "@supabase/supabase-js";
-import { csrSignInWithGoogle } from "@/utils/supabase/client";
+import { supabaseSignInWithGoogle } from "@/utils/supabase/client";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
 import { UserContext } from "../UserContext";
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    ssrRefreshSession().then(({ data }) => {
+    supabaseRefreshSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
       setIsLoading(false);
     });
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithEmail = async (payload: SignInWithPasswordCredentials) => {
     setIsLoading(true);
-    const response = await ssrSignInWithEmail(payload);
+    const response = await supabaseSignInWithEmail(payload);
     if (!response.error) {
       setUser(response.data.user);
     }
@@ -71,28 +71,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUpWithEmail = async (payload: SignUpWithPasswordCredentials) => {
     setIsLoading(true);
-    const response = await ssrSignUpWithEmail(payload);
+    const response = await supabaseSignUpWithEmail(payload);
     setIsLoading(false);
     return response;
   };
 
   const forgotPassword = async (payload: ResetPasswordForEmailType) => {
     setIsLoading(true);
-    const response = await ssrForgotPassword(payload);
+    const response = await supabaseForgotPassword(payload);
     setIsLoading(false);
     return response;
   };
 
   const resetPassword = async (payload: ResetPasswordType) => {
     setIsLoading(true);
-    const response = await ssrResetPassword(payload);
+    const response = await supabaseResetPassword(payload);
     setIsLoading(false);
     return response;
   };
 
   const signOut = async () => {
     setIsLoading(true);
-    const response = await ssrSignOut();
+    const response = await supabaseSignOut();
     setUser(null);
     setUserFromContext(null);
     setIsLoading(false);
@@ -101,49 +101,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshSession = async () => {
     setIsLoading(true);
-    const { data } = await ssrRefreshSession();
+    const { data } = await supabaseRefreshSession();
     setUser(data.session?.user ?? null);
     setIsLoading(false);
   };
 
   const exchangeCodeForSession = async (code: string) => {
     setIsLoading(true);
-    const response = await ssrExchangeCodeForSession(code);
+    const response = await supabaseExchangeCodeForSession(code);
     setIsLoading(false);
     return response;
   };
 
   const verifyOtp = async (payload: VerifyOtpParams) => {
     setIsLoading(true);
-    const response = await ssrVerifyOtp(payload);
+    const response = await supabaseVerifyOtp(payload);
     setIsLoading(false);
     return response;
   };
 
   const getSession = async () => {
     setIsLoading(true);
-    const response = await ssrGetSession();
+    const response = await supabaseGetSession();
     setIsLoading(false);
     return response;
   };
 
   const getUser = async () => {
     setIsLoading(true);
-    const response = await ssrGetUser();
+    const response = await supabaseGetUser();
     setIsLoading(false);
     return response;
   };
 
   const signInWithGoogle = async (redirectTo: string) => {
     setIsLoading(true);
-    const response = await csrSignInWithGoogle(redirectTo);
+    const response = await supabaseSignInWithGoogle(redirectTo);
     setIsLoading(false);
     return response;
   };
 
   const setSession = async ({ access_token, refresh_token }: { access_token: string; refresh_token: string }) => {
     setIsLoading(true);
-    const response = await ssrSetSession({ access_token, refresh_token });
+    const response = await supabaseSetSession({ access_token, refresh_token });
     setUser(response.data.session?.user ?? null);
     setIsLoading(false);
     return response;

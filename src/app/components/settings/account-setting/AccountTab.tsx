@@ -21,7 +21,7 @@ const validationSchema = yup.object({
 const MAX_FILE_SIZE = 800 * 1024; // 800KB
 
 const AccountTab = () => {
-  const { user } = useContext(UserContext);
+  const { user, uploadAvatar } = useContext(UserContext);
   const { firstName, lastName, avatarUrl, email } = user || {};
   const [hover, setHover] = useState(false);
   const [preview, setPreview] = useState<string | undefined>(avatarUrl);
@@ -43,9 +43,11 @@ const AccountTab = () => {
       const reader = new FileReader();
       reader.onload = (ev) => {
         setPreview(ev.target?.result as string);
+        if (ev.target?.result) {
+          uploadAvatar(ev.target.result);
+        }
       };
       reader.readAsDataURL(file);
-      // คุณสามารถเพิ่ม logic อัพโหลดไฟล์ที่นี่
     }
   };
 
