@@ -1,19 +1,10 @@
 "use client";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Turnstile from "react-turnstile";
-import {
-  Box,
-  Typography,
-  FormGroup,
-  FormControlLabel,
-  Button,
-  Stack,
-  Divider,
-  InputAdornment,
-} from "@mui/material";
+import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Divider, InputAdornment } from "@mui/material";
 import Link from "next/link";
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
-import AuthSocialButtons from "../authForms/AuthSocialButtons";
+import AuthSocialButtons from "./AuthSocialButtons";
 import * as yup from "yup";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import { AuthContext } from "@/app/context/AuthContext";
@@ -28,12 +19,8 @@ const validationSchema = yup.object({
   password: requiredPasswordSchema,
 });
 
-const AuthLogin = () => {
-  const {
-    signOut,
-    signInWithEmail,
-    isLoading: authIsLoading,
-  } = useContext(AuthContext);
+const AuthLogin = ({ isDashboard = false }) => {
+  const { signOut, signInWithEmail, isLoading: authIsLoading } = useContext(AuthContext);
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
@@ -63,25 +50,21 @@ const AuthLogin = () => {
             formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
             break;
           case "over_request_rate_limit":
-            alert(
-              "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)"
-            );
+            alert("คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)");
             break;
           case "user_banned":
             alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
             break;
           case "captcha_failed":
           case "unexpected_failure":
-            alert(
-              "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า"
-            );
+            alert("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า");
             break;
           default:
             alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
             break;
         }
       } else {
-        window.location.href = "/dashboard/auth/callback";
+        window.location.href = isDashboard ? `/dashboard/auth/callback` : "/auth/callback";
       }
     },
   });
@@ -98,15 +81,6 @@ const AuthLogin = () => {
 
   return (
     <>
-      {/* <Typography
-        fontWeight="700"
-        variant="h3"
-        mb={1}
-        justifyContent="space-between"
-        display="flex"
-      >
-        {t("Page.Login.WelcomeToMeowSom")} <Language />
-      </Typography> */}
       <form onSubmit={formik.handleSubmit}>
         <Stack>
           <Box>
@@ -114,9 +88,7 @@ const AuthLogin = () => {
               name="email"
               formik={formik}
               label="Email"
-              placeholder={`${t("Form.Validator.PleaseEnterYour")}${t(
-                "email"
-              )}`}
+              placeholder={`${t("Form.Validator.PleaseEnterYour")}${t("email")}`}
               startAdornment={
                 <InputAdornment position="start">
                   <IconMail width={20} />
@@ -130,9 +102,7 @@ const AuthLogin = () => {
               formik={formik}
               label="Password"
               type="password"
-              placeholder={`${t("Form.Validator.PleaseEnterYour")}${t(
-                "password"
-              )}`}
+              placeholder={`${t("Form.Validator.PleaseEnterYour")}${t("password")}`}
               startAdornment={
                 <InputAdornment position="start">
                   <IconLock width={20} />
@@ -140,12 +110,7 @@ const AuthLogin = () => {
               }
             />
           </Box>
-          <Stack
-            justifyContent="space-between"
-            direction="row"
-            alignItems="center"
-            my={2}
-          >
+          <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
             <FormGroup>
               <FormControlLabel
                 control={<CustomCheckbox defaultChecked />}
@@ -189,37 +154,32 @@ const AuthLogin = () => {
           </Button>
         </Box>
       </form>
-      {/* <Stack direction="row" spacing={1} mt={3}>
-        <Typography color="textSecondary" variant="h6" fontWeight="500">
-          {t("Page.Login.DontHaveAccount")} ?
-        </Typography>
-        <Typography
-          component={Link}
-          href="/auth/register"
-          fontWeight="500"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-          }}
-        >
-          {t("Page.Login.CreateAnAccount")}
-        </Typography>
-      </Stack> */}
+      {!isDashboard && (
+        <Stack direction="row" spacing={1} mt={3}>
+          <Typography color="textSecondary" variant="h6" fontWeight="500">
+            {t("Page.Login.DontHaveAccount")} ?
+          </Typography>
+          <Typography
+            component={Link}
+            href="/auth/register"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            {t("Page.Login.CreateAnAccount")}
+          </Typography>
+        </Stack>
+      )}
       <Box mt={3}>
         <Divider>
-          <Typography
-            component="span"
-            color="textSecondary"
-            variant="h6"
-            fontWeight="400"
-            position="relative"
-            px={2}
-          >
+          <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" position="relative" px={2}>
             or
           </Typography>
         </Divider>
       </Box>
-      <AuthSocialButtons title="Sign in with" />
+      <AuthSocialButtons title="Sign in with" isDashboard={isDashboard} />
     </>
   );
 };

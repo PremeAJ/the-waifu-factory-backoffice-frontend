@@ -31,6 +31,7 @@ interface CustomizerContextState {
   setIsSidebarHover: (isHover: boolean) => void;
   isMobileSidebar: boolean; // Add this
   setIsMobileSidebar: (isMobileSidebar: boolean) => void;
+  appearanceMutate: () => Promise<void>;
   loading: boolean;
   error: Error | null;
 }
@@ -42,7 +43,6 @@ interface CustomizerContextProps {
 }
 
 export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ children }) => {
-  const { user } = useContext(UserContext);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
@@ -65,7 +65,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   const {
     data: userAppearanceData,
     isLoading: isAppearanceLoading,
-    error: appearanceError, 
+    error: appearanceError,
     mutate: appearanceMutate,
   } = useSWR("/api/user/setting/appearnce", getFetcher);
 
@@ -162,7 +162,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         setIsSidebarHover,
         isMobileSidebar,
         setIsMobileSidebar,
-
+        appearanceMutate,
         loading,
         error,
       }}

@@ -6,10 +6,10 @@ import { signInType } from "@/utils/types/auth/auth";
 import { AuthContext } from "@/app/context/AuthContext";
 import { useContext } from "react";
 
-const AuthSocialButtons = ({ title }: signInType) => {
+const AuthSocialButtons = ({ title, isDashboard = false }: signInType) => {
   const { signInWithGoogle, isLoading } = useContext(AuthContext);
   const onClick = () => {
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const redirectTo = isDashboard ? `${window.location.origin}/dashboard/auth/callback` : `${window.location.origin}/auth/callback`;
     signInWithGoogle(redirectTo);
   };
   return (
@@ -28,7 +28,6 @@ const AuthSocialButtons = ({ title }: signInType) => {
           />
           <Box
             sx={{
-              // display: { xs: "none", sm: "flex" },
               whiteSpace: "nowrap",
               mr: { sm: "3px" },
             }}
