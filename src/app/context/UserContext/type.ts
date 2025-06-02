@@ -5,8 +5,15 @@ export interface userType {
   lastName: string;
   nickName: string | null;
   email: string;
-  mobilePhone: string | null;
+  phone: string | null;
   role: string | null;
   permissionId: string | null;
   companyId: string | null;
+}
+
+export interface SettingProfile {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string
 }

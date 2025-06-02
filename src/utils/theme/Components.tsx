@@ -171,6 +171,7 @@ const components: any = (theme: Theme) => {
             backgroundColor: theme.palette.primary.light,
             color: theme.palette.primary.main,
           },
+          
         },
         colorPrimary: {
           "&:hover": {

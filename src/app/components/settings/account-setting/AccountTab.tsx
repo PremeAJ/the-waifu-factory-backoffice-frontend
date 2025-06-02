@@ -9,21 +9,32 @@ import { UserContext } from "@/app/context/UserContext";
 import BaseTextField from "../../forms/theme-elements/BaseTextField";
 import BaseButton from "../../forms/theme-elements/BaseButton";
 import { useFormik } from "formik";
-import { emailValidator, requiredPasswordSchema } from "@/utils/validator/yup";
+import {
+  emailValidatorNotRequired,
+  firstNameSchemaNotRequired,
+  lastNameSchemaNotRequired,
+  nickNameSchemaNotRequired,
+  phoneSchemaNotRequired,
+} from "@/utils/validator/yup";
 import { IconPencil } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
+import { removeUndefinedAndNull } from "@/utils/function/object/object-cleaner";
 
 const validationSchema = yup.object({
-  email: emailValidator,
-  password: requiredPasswordSchema,
+  firstName: firstNameSchemaNotRequired,
+  lastName: lastNameSchemaNotRequired,
+  nickName: nickNameSchemaNotRequired,
+  phone: phoneSchemaNotRequired,
+  email: emailValidatorNotRequired,
 });
 
-const MAX_FILE_SIZE = 800 * 1024; // 800KB
-
 const AccountTab = () => {
-  const { user, uploadAvatar } = useContext(UserContext);
-  const { firstName, lastName, avatarUrl, email } = user || {};
+  const { user, uploadAvatar, updateUser } = useContext(UserContext);
+  const { firstName, lastName, avatarUrl, email, phone, nickName } = user || {};
   const [hover, setHover] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+
   const [preview, setPreview] = useState<string | undefined>(avatarUrl);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
@@ -46,16 +57,33 @@ const AccountTab = () => {
     }
   };
 
+  const handleCancel = () => {
+    formik.resetForm();
+    setEditMode(false);
+  };
+
+  const handleSubmit = async (data: any) => {
+    setLoading(true);
+    const error = await updateUser(removeUndefinedAndNull(data));
+    if (error) {
+      alert(error);
+    } else {
+      setEditMode(false);
+    }
+    setLoading(false);
+  };
+
   const formik = useFormik({
     initialValues: {
       firstName: firstName || "",
-      email: email || "",
       lastName: lastName || "",
-      nickName: "",
-      phone: "",
+      nickName: nickName || "",
+      email: email || "",
+      phone: phone || "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (data) => {},
+    enableReinitialize: true,
+    onSubmit: handleSubmit,
   });
 
   return (
@@ -68,11 +96,7 @@ const AccountTab = () => {
           {t("Setting.ChangeProfileDesc")}
         </Typography>
         <Box textAlign="center" display="flex" justifyContent="center">
-          <Box
-            sx={{ position: "relative", display: "inline-block" }}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-          >
+          <Box sx={{ position: "relative", display: "inline-block" }} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
             <Avatar
               src={preview ?? "/images/profile/user-1.jpg"}
               alt={`${firstName} profile`}
@@ -86,13 +110,7 @@ const AccountTab = () => {
               }}
               onClick={handleAvatarClick}
             />
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            />
+            <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileChange} />
             {hover && (
               <Box
                 sx={{
@@ -132,26 +150,32 @@ const AccountTab = () => {
         <form onSubmit={formik.handleSubmit}>
           <Grid container columnSpacing={3}>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" />
+              <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" disabled={!editMode} />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" />
+              <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" disabled={!editMode} />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" />
+              <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" disabled={!editMode} />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="email" label={t("common.email")} placeholder="-" />
+              <BaseTextField formik={formik} name="email" label={t("common.email")} placeholder="-" disabled={!editMode} />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="phone" label={t("common.phone")} placeholder="-" />
+              <BaseTextField formik={formik} name="phone" label={t("common.phone")} placeholder="-" disabled={!editMode} />
             </Grid>
           </Grid>
+          <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }} mt={3}>
+            {!editMode ? (
+              <BaseButton preset="edit" fullWidth={false} onClick={() => setEditMode(true)} disabled={loading} ></BaseButton>
+            ) : (
+              <>
+                <BaseButton preset="save" fullWidth={false} type="submit" loading={loading} disabled={!formik.dirty || loading} />
+                <BaseButton preset="cancel" variant="text" fullWidth={false} loading={loading} onClick={handleCancel} />
+              </>
+            )}
+          </Stack>
         </form>
-        <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }} mt={3}>
-          <BaseButton preset="save" fullWidth={false} />
-          <BaseButton preset="cancel" variant="text" fullWidth={false} />
-        </Stack>
       </Grid>
     </Grid>
   );

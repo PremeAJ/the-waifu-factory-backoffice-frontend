@@ -2,7 +2,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
 import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
-import { userType } from "./type";
+import { SettingProfile, userType } from "./type";
 import { supabaseUploadFile, UploadFileType } from "@/utils/supabase/server";
 import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
 
@@ -11,6 +11,7 @@ export type UserContextType = {
   setUser: React.Dispatch<React.SetStateAction<userType | null>>; // เพิ่ม setUser
   syncUser: () => {};
   uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};
+  updateUser: (payload: SettingProfile) => {};
   loading: boolean;
   error: Error | null;
 };
@@ -56,18 +57,29 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   async function uploadAvatar(file: File | Blob | ArrayBuffer | string) {
-    file = await reduceImageFileSize(file, 800 * 1024);
-    const payload: UploadFileType = {
-      file,
-      bucket: "avatars",
-      path: `users/${user?.id}/avatar`,
-      ext: "png",
-      contentType: "image/png",
-    };
-    const newAvatarUrl = await supabaseUploadFile(payload);
-    await userMutate(patchFetcher("/api/users/avatar", { avatarUrl: newAvatarUrl }));
-    return null;
+    try {
+      file = await reduceImageFileSize(file, 800 * 1024);
+      const payload: UploadFileType = {
+        file,
+        bucket: "avatars",
+        path: `users/${user?.id}/avatar`,
+        ext: "png",
+        contentType: "image/png",
+      };
+      const newAvatarUrl = await supabaseUploadFile(payload);
+      await userMutate(patchFetcher("/api/users/avatar", { avatarUrl: newAvatarUrl }));
+      return null;
+    } catch (error) {}
   }
+
+  async function updateUser(payload: SettingProfile) {
+    try {
+      await userMutate(patchFetcher("/api/users/me", payload));
+    } catch (error: any) {
+      return error.message;
+    }
+  }
+
   const value: UserContextType = {
     user,
     error,
@@ -75,6 +87,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser,
     syncUser,
     uploadAvatar,
+    updateUser,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

@@ -68,5 +68,11 @@
     "AllowedFile": "(อนุญาต JPG, GIF หรือ PNG. ขนาดไม่เกิน 800K)",
     "PersonalDetails": "ข้อมูลส่วนตัว",
     "PersonalDetailsDesc": "หากต้องการเปลี่ยนข้อมูลส่วนตัว ให้แก้ไขและบันทึกที่นี่"
+  },
+  "button": {
+    "default": "ปุ่ม",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "edit": "แก้ไข"
   }
 }

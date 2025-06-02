@@ -68,5 +68,11 @@
     "AllowedFile": "(Allowed JPG, GIF or PNG. Max size of 800K)",
     "PersonalDetails": "Personal Details",
     "PersonalDetailsDesc": "To change your personal detail , edit and save from here"
+  },
+  "button": {
+    "default": "Button",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit"
   }
 }

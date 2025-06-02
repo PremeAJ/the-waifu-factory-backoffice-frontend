@@ -9,15 +9,13 @@ import {
   InputAdornment,
 } from "@mui/material";
 import Link from "next/link";
-import CustomTextField from "@/app/components/forms/theme-elements/CustomTextField";
-import { registerType } from "@/utils/types/auth/auth";
 import AuthSocialButtons from "../../components/auth/AuthSocialButtons";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import {
   confirmPasswordSchema,
   emailValidator,
+  firstNameSchema,
   lastNameSchema,
-  nameSchema,
   passwordSchema,
 } from "@/utils/validator/yup";
 import * as yup from "yup";
@@ -34,7 +32,7 @@ const validationSchema = yup.object({
   email: emailValidator,
   password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
-  firstName: nameSchema,
+  firstName: firstNameSchema,
   lastName: lastNameSchema,
 });
 
