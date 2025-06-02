@@ -259,10 +259,9 @@ export async function supabaseUploadFile(payload: UploadFileType) {
     upsert: true,
     contentType: contentType || fileContentType,
   });
-  console.log("🚀 ~ const{error}=awaitsupabase.storage.from ~ error:", error)
   if (error) {
     return { error };
   }
-  const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(path);
+  const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(extPath);
   return urlData.publicUrl;
 }

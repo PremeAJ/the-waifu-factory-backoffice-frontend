@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
-import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
+import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { userType } from "./type";
 import { supabaseUploadFile, UploadFileType } from "@/utils/supabase/server";
 import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
@@ -60,15 +60,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const payload: UploadFileType = {
       file,
       bucket: "avatars",
-      path: `/users/${user?.id}/avatar`,
-      ext: "png", // กำหนดนามสกุลไฟล์เป็น png
-      contentType: "image/png", // กำหนด content type เป็น image/png
+      path: `users/${user?.id}/avatar`,
+      ext: "png",
+      contentType: "image/png",
     };
-    await supabaseUploadFile(payload);
-
-    // หลังอัปโหลดเสร็จ ให้ refresh user data
-    await userMutate();
-
+    const newAvatarUrl = await supabaseUploadFile(payload);
+    await userMutate(patchFetcher("/api/users/avatar", { avatarUrl: newAvatarUrl }));
     return null;
   }
   const value: UserContextType = {
