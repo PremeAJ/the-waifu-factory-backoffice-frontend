@@ -8,7 +8,7 @@ import {
   InputAdornment
 } from "@mui/material";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
-import CustomFormLabel from "./CustomFormLabel";
+import BaseLabel from "./BaseLabel";
 
 interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   name: string;
@@ -98,7 +98,7 @@ const BaseTextField = ({
 
   return (
     <>
-      <CustomFormLabel htmlFor={name}>{label}</CustomFormLabel>
+      {label && <BaseLabel htmlFor={name}>{label}</BaseLabel>}
       <StyledTextField
         fullWidth
         variant="outlined"

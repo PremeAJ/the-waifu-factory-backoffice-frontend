@@ -9,7 +9,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import Link from "next/link";
-import AuthSocialButtons from "../../components/auth/AuthSocialButtons";
+import AuthSocialButtons from "./AuthSocialButtons";
 import BaseTextField from "@/app/components/forms/theme-elements/BaseTextField";
 import {
   confirmPasswordSchema,

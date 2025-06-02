@@ -7,6 +7,7 @@ import { IconMail } from "@tabler/icons-react";
 import { Stack } from "@mui/system";
 import { AuthContext } from "@/app/context/AuthContext";
 import { UserContext } from "@/app/context/UserContext";
+import BaseButton from "../forms/theme-elements/BaseButton";
 
 const Profile = () => {
   const { signOut } = useContext(AuthContext);
@@ -178,9 +179,7 @@ const Profile = () => {
           </Box>
         ))}
         <Box mt={2}>
-          <Button variant="outlined" color="primary" fullWidth onClick={handleLogout} loading={loading}>
-            Logout
-          </Button>
+          <BaseButton label="Logout" variant="outlined" onClick={handleLogout} loading={loading} />
         </Box>
       </Menu>
     </Box>

@@ -15,8 +15,8 @@ const AccountSetting = () => {
 
   const BCrumb = [
     {
-      to: "/setting/account/profile",
-      title: t("Setting.AccountSetting"),
+      to: "/setting",
+      title: t("Setting.Settings"),
     },
     {
       to: "/setting/account/profile",

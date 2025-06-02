@@ -3,7 +3,7 @@ import { Grid, Box, Typography } from "@mui/material";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import PageContainer from "@/app/components/container/PageContainer";
 import Image from "next/image";
-import AuthResetPassword from "./AuthResetPassword";
+import AuthResetPassword from "../../components/auth/AuthResetPassword";
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AuthContext } from "@/app/context/AuthContext";

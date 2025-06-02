@@ -2,7 +2,7 @@ import { Grid, Box, Card, Typography, Stack } from "@mui/material";
 import Link from "next/link";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import PageContainer from "@/app/components/container/PageContainer";
-import AuthRegister from "@/app/auth/register/AuthRegister";
+import AuthRegister from "@/app/components/auth/AuthRegister";
 
 export default function Register2() {
   return (

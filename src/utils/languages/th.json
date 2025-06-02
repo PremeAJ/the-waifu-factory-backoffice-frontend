@@ -61,6 +61,7 @@
   "Create": "Create",
   "Edit": "Edit",
   "Setting": {
+    "Settings": "การตั้งค่า",
     "AccountSetting": "ตั้งค่าบัญชี",
     "Profile": "โปรไฟล์",
     "ChangeProfile": "เปลี่ยนโปรไฟล์",

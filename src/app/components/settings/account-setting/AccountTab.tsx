@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import * as yup from "yup";
-import { Stack } from "@mui/system";
+import { Stack, useTheme } from "@mui/system";
 import { UserContext } from "@/app/context/UserContext";
 import BaseTextField from "../../forms/theme-elements/BaseTextField";
 import BaseButton from "../../forms/theme-elements/BaseButton";
@@ -16,9 +16,10 @@ import {
   nickNameSchemaNotRequired,
   phoneSchemaNotRequired,
 } from "@/utils/validator/yup";
-import { IconPencil } from "@tabler/icons-react";
+import { IconPencil, IconMail, IconDeviceMobile } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { removeUndefinedAndNull } from "@/utils/function/object/object-cleaner";
+import BaseLabel from "../../forms/theme-elements/BaseLabel";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -29,6 +30,7 @@ const validationSchema = yup.object({
 });
 
 const AccountTab = () => {
+  const theme = useTheme();
   const { user, uploadAvatar, updateUser } = useContext(UserContext);
   const { firstName, lastName, avatarUrl, email, phone, nickName } = user || {};
   const [hover, setHover] = useState(false);
@@ -89,12 +91,8 @@ const AccountTab = () => {
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, lg: 6 }}>
-        <Typography variant="h5" mb={1}>
-          {t("Setting.ChangeProfile")}
-        </Typography>
-        <Typography color="textSecondary" mb={3}>
-          {t("Setting.ChangeProfileDesc")}
-        </Typography>
+        <Typography variant="h5" mb={1}> {t("Setting.ChangeProfile")} </Typography>
+        <Typography color="textSecondary" mb={3}> {t("Setting.ChangeProfileDesc")} </Typography>
         <Box textAlign="center" display="flex" justifyContent="center">
           <Box sx={{ position: "relative", display: "inline-block" }} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
             <Avatar
@@ -136,38 +134,22 @@ const AccountTab = () => {
             )}
           </Box>
         </Box>
-        <Typography variant="subtitle1" color="textSecondary" mb={4} mt={2} textAlign="center" fontSize={12}>
-          {t("Setting.AllowedFile")}
-        </Typography>
+        <Typography variant="subtitle1" color="textSecondary" mb={4} mt={2} textAlign="center" fontSize={12}> {t("Setting.AllowedFile")} </Typography>
       </Grid>
       <Grid size={{ xs: 12, lg: 6 }}>
-        <Typography variant="h5" mb={1}>
-          {t("Setting.PersonalDetails")}
-        </Typography>
-        <Typography color="textSecondary" mb={3}>
-          {t("Setting.PersonalDetailsDesc")}
-        </Typography>
+        <Typography variant="h5" mb={1}> {t("Setting.PersonalDetails")} </Typography>
+        <Typography color="textSecondary" mb={3}> {t("Setting.PersonalDetailsDesc")} </Typography>
         <form onSubmit={formik.handleSubmit}>
           <Grid container columnSpacing={3}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" disabled={!editMode} />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" disabled={!editMode} />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" disabled={!editMode} />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="email" label={t("common.email")} placeholder="-" disabled={!editMode} />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="phone" label={t("common.phone")} placeholder="-" disabled={!editMode} />
-            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}> <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" disabled={!editMode} /> </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}> <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" disabled={!editMode} /> </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}> <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" disabled={!editMode} /> </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}> <BaseLabel htmlFor="email" sx={{ display: "flex", alignItems: "center", gap: 1 }}> <IconMail size={18} style={{ marginRight: 4 }} /> {t("common.email")} {editMode && <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span>} </BaseLabel> <BaseTextField formik={formik} name="email" placeholder="-" disabled={true} /> </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}> <BaseLabel htmlFor="phone" sx={{ display: "flex", alignItems: "center", gap: 1 }}> <IconDeviceMobile size={18} style={{ marginRight: 4 }} /> {t("common.phone")} {editMode && <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span>} </BaseLabel> <BaseTextField formik={formik} name="phone" placeholder="-" disabled={true} /> </Grid>
           </Grid>
           <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }} mt={3}>
             {!editMode ? (
-              <BaseButton preset="edit" fullWidth={false} onClick={() => setEditMode(true)} disabled={loading} ></BaseButton>
+              <BaseButton preset="edit" fullWidth={false} onClick={() => setEditMode(true)} disabled={loading}></BaseButton>
             ) : (
               <>
                 <BaseButton preset="save" fullWidth={false} type="submit" loading={loading} disabled={!formik.dirty || loading} />

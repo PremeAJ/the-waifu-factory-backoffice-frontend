@@ -12,6 +12,7 @@ import QuickLinks from "@/app/dashboard/(Layout)/layout/vertical/header/QuickLin
 import DemosDD from "./DemosDD";
 import { useTranslation } from "react-i18next";
 import { UserContext } from "@/app/context/UserContext";
+import BaseButton from "../../forms/theme-elements/BaseButton";
 
 const Navigations = () => {
   const { t } = useTranslation();
@@ -56,16 +57,9 @@ const Navigations = () => {
           onMouseEnter={handleOpen2}
           onMouseLeave={handleClose2}
           sx={{
-            color: open2
-              ? "primary.main"
-              : (theme) => theme.palette.text.secondary,
+            color: open2 ? "primary.main" : (theme) => theme.palette.text.secondary,
           }}
-          endIcon={
-            <IconChevronDown
-              size="15"
-              style={{ marginLeft: "-5px", marginTop: "2px" }}
-            />
-          }
+          endIcon={<IconChevronDown size="15" style={{ marginLeft: "-5px", marginTop: "2px" }} />}
         >
           ผลิตภัณฑ์ของเรา
         </StyledButton>
@@ -112,18 +106,11 @@ const Navigations = () => {
         variant="text"
         aria-expanded={open ? "true" : undefined}
         sx={{
-          color: open
-            ? "primary.main"
-            : (theme) => theme.palette.text.secondary,
+          color: open ? "primary.main" : (theme) => theme.palette.text.secondary,
         }}
         onMouseEnter={handleOpen}
         onMouseLeave={handleClose}
-        endIcon={
-          <IconChevronDown
-            size="15"
-            style={{ marginLeft: "-5px", marginTop: "2px" }}
-          />
-        }
+        endIcon={<IconChevronDown size="15" style={{ marginLeft: "-5px", marginTop: "2px" }} />}
       >
         Demos
       </StyledButton>
@@ -149,18 +136,7 @@ const Navigations = () => {
       <StyledButton color="inherit" variant="text" href="/">
         รู้จักเรา
       </StyledButton>
-      {loading ? null : user ? (
-        null
-      ) : (
-        <Button
-          color="primary"
-          variant="contained"
-          href="/auth/login"
-          sx={{ minWidth: "91px" }}
-        >
-          {t("Page.Main.Login")}
-        </Button>
-      )}
+      {loading ? null : user ? null : <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />}
     </>
   );
 };
