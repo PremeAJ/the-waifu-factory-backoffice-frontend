@@ -35,11 +35,6 @@ const AccountTab = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > MAX_FILE_SIZE) {
-        window.alert("ไฟล์มีขนาดใหญ่เกิน 800KB กรุณาเลือกไฟล์ใหม่");
-        e.target.value = ""; // reset input
-        return;
-      }
       const reader = new FileReader();
       reader.onload = (ev) => {
         setPreview(ev.target?.result as string);

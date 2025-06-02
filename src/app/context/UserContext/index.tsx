@@ -3,7 +3,8 @@ import React, { createContext, useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { userType } from "./type";
-import {  supabaseUploadFile,  UploadFileType } from "@/utils/supabase/server";
+import { supabaseUploadFile, UploadFileType } from "@/utils/supabase/server";
+import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
 
 export type UserContextType = {
   user: userType | null;
@@ -55,6 +56,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   async function uploadAvatar(file: File | Blob | ArrayBuffer | string) {
+    file = await reduceImageFileSize(file, 800 * 1024);
     const payload: UploadFileType = {
       file,
       bucket: "avatars",
@@ -62,12 +64,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ext: "png", // กำหนดนามสกุลไฟล์เป็น png
       contentType: "image/png", // กำหนด content type เป็น image/png
     };
-    const result = await supabaseUploadFile(payload);
+    await supabaseUploadFile(payload);
 
     // หลังอัปโหลดเสร็จ ให้ refresh user data
     await userMutate();
 
-    return result;
+    return null;
   }
   const value: UserContextType = {
     user,

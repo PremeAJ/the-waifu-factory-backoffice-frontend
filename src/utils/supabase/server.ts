@@ -2,8 +2,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { SignInWithPasswordCredentials, SignUpWithPasswordCredentials, VerifyOtpParams } from "@supabase/supabase-js";
 import { cookies, headers } from "next/headers";
-import getContentTypeAndExt from "../function/getContentTypeAndExt";
-import toBlob from "../function/toBlob";
+import getContentTypeAndExt from "../function/file/getContentTypeAndExt";
+import toBlob from "../function/file/toBlob";
 
 // ---------- Types ----------
 export interface ErrorLogData {
