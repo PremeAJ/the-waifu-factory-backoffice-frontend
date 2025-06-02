@@ -9,29 +9,29 @@ import Loading from "@/app/loading";
 export default function AuthCallback() {
   const router = useRouter();
   const { setSession, getSession } = useContext(AuthContext);
-  const { refreshUser, syncUser } = useContext(UserContext);
+  const { syncUser } = useContext(UserContext);
 
   useEffect(() => {
-    csrGetSession().then(async ({ data }) => {
-      if (data.session) {
-        const { access_token, refresh_token } = data.session;
-        const session = await getSession();
-        if (!session.data.session) {
-          await setSession({
-            access_token,
-            refresh_token,
-          });
-        }
-        syncUser();
-        setTimeout(() => {
-          router.replace("/dashboard");
-        }, 1000);
-      } else {
-        setTimeout(() => {
-          router.replace("/dashboard/auth/login");
-        }, 1000);
+    const handleAuth = async () => {
+      const { data: csrData } = await csrGetSession();
+      if (csrData.session) {
+        const { access_token, refresh_token } = csrData.session;
+        await setSession({
+          access_token,
+          refresh_token,
+        });
       }
-    });
+      localStorage.clear();
+      const { data: clientData } = await getSession();
+      if (clientData.session) {
+        syncUser();
+        router.replace("/dashboard");
+      } else {
+        router.replace("/dashboard/auth/login");
+      }
+    };
+
+    handleAuth();
   }, []);
 
   return <Loading />;

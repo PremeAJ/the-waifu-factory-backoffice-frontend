@@ -11,6 +11,7 @@ import { AuthProvider } from "@/app/context/AuthContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { UserProvider } from "./context/UserContext";
+import "./global.css";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   if (process.env.NODE_ENV === "production") {
