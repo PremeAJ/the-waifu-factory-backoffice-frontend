@@ -62,7 +62,7 @@ const AuthRegister = () => {
             full_name: `${firstName} ${lastName}`,
           },
           captchaToken: captchaToken,
-          emailRedirectTo: `${window.location.origin}/auth/callback`, // เพิ่มบรรทัดนี้
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       };
       const { data: data2, error } = await signUpWithEmail(userData);
