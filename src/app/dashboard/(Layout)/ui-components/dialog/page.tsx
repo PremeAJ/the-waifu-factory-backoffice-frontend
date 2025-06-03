@@ -5,7 +5,7 @@ import ParentCard from "@/app/components/shared/ParentCard";
 import ChildCard from "@/app/components/shared/ChildCard";
 import SimpleDialog from "@/app/components/ui-components/dialog/SimpleDialog";
 import AlertDialog from "@/app/components/ui-components/dialog/AlertDialog";
-import TransitionDialog from "@/app/components/ui-components/dialog/TransitionDialog";
+// import TransitionDialog from "@/app/components/ui-components/dialog/TransitionDialog";
 import FormDialog from "@/app/components/ui-components/dialog/FormDialog";
 import FullscreenDialog from "@/app/components/ui-components/dialog/FullscreenDialog";
 import MaxWidthDialog from "@/app/components/ui-components/dialog/MaxWidthDialog";
@@ -71,9 +71,9 @@ const MuiDialog = () => (
             lg: 4,
             sm: 6
           }}>
-          <ChildCard title="Transition" codeModel={<TransitionCode />}>
+          {/* <ChildCard title="Transition" codeModel={<TransitionCode />}>
             <TransitionDialog />
-          </ChildCard>
+          </ChildCard> */}
         </Grid>
         <Grid
           display="flex"

@@ -4,8 +4,8 @@ import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import Cropper from "react-easy-crop";
 import { useState, useCallback } from "react";
+import BaseButton from "../../forms/theme-elements/BaseButton";
 import getCroppedImg from "./cropImageUtil";
-import BaseButton from "../forms/theme-elements/BaseButton";
 
 interface AvatarCropDialogProps {
   open: boolean;
@@ -30,7 +30,6 @@ const AvatarCropDialog: React.FC<AvatarCropDialogProps> = ({ open, imageSrc, onC
     }
   };
 
-  // reset state when dialog closed
   React.useEffect(() => {
     if (!open) {
       setCrop({ x: 0, y: 0 });

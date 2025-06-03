@@ -138,7 +138,6 @@ const Profile = () => {
                     alignItems="center"
                     justifyContent="center"
                     flexShrink="0"
-                    borderRadius={2}
                     sx={{
                       transition: "all 0.18s",
                       "& svg": {

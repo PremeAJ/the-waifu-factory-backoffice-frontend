@@ -142,7 +142,7 @@ const LightThemeColors = [
         main: "#729753",
         light: "#EAF6E2",
         dark: "#8CBF5D",
-        contrastText: "#3E4C2C",
+        contrastText: "#ffffff",
       },
       secondary: {
         main: "#F7E7CE",

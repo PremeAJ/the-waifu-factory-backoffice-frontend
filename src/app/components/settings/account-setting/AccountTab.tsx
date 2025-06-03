@@ -1,10 +1,10 @@
 import React, { useContext, useState, useRef, useCallback } from "react";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
-import { Grid } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import { Grid, Typography, useMediaQuery } from "@mui/material";
 import * as yup from "yup";
 import { Stack, useTheme } from "@mui/system";
+import { useRouter } from "next/navigation";
 import { UserContext } from "@/app/context/UserContext";
 import BaseTextField from "../../forms/theme-elements/BaseTextField";
 import BaseButton from "../../forms/theme-elements/BaseButton";
@@ -20,7 +20,8 @@ import { IconPencil, IconMail, IconDeviceMobile } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { removeUndefinedAndNull } from "@/utils/function/object/object-cleaner";
 import BaseLabel from "../../forms/theme-elements/BaseLabel";
-import AvatarCropDialog from "../../dialogs/AvatarCropDialog";
+import AvatarCropDialog from "../../ui-components/dialog/AvatarCropDialog";
+import TransitionDialog from "../../ui-components/dialog/TransitionDialog";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -33,17 +34,23 @@ const validationSchema = yup.object({
 const AccountTab = () => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+
   const { user, uploadAvatar, updateUser } = useContext(UserContext);
   const { firstName, lastName, avatarUrl, email, phone, nickName } = user || {};
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hover, setHover] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [editMode, setEditMode] = useState(false);
 
   const [preview, setPreview] = useState<string | undefined>(avatarUrl);
 
   const [openCrop, setOpenCrop] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
+
+  // Dialog state
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+
+  const router = useRouter();
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -61,9 +68,21 @@ const AccountTab = () => {
     }
   };
 
+  // เปิด dialog ยืนยันยกเลิก
   const handleCancel = () => {
+    setOpenCancelDialog(true);
+  };
+
+  // ยืนยันยกเลิก: reset form และ redirect
+  const handleConfirmCancel = () => {
     formik.resetForm();
-    setEditMode(false);
+    setOpenCancelDialog(false);
+    if (isMobile) router.back();
+  };
+
+  // ปิด dialog
+  const handleCloseDialog = () => {
+    setOpenCancelDialog(false);
   };
 
   const handleSubmit = async (data: any) => {
@@ -71,8 +90,6 @@ const AccountTab = () => {
     const error = await updateUser(removeUndefinedAndNull(data));
     if (error) {
       alert(error);
-    } else {
-      setEditMode(false);
     }
     setLoading(false);
   };
@@ -94,12 +111,10 @@ const AccountTab = () => {
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, lg: 6 }}>
         <Typography variant="h5" mb={1}>
-          {" "}
-          {t("Setting.ChangeProfile")}{" "}
+          {t("Setting.ChangeProfile")}
         </Typography>
         <Typography color="textSecondary" mb={3}>
-          {" "}
-          {t("Setting.ChangeProfileDesc")}{" "}
+          {t("Setting.ChangeProfileDesc")}
         </Typography>
         <Box textAlign="center" display="flex" justifyContent="center">
           <Box sx={{ position: "relative", display: "inline-block" }} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
@@ -156,41 +171,32 @@ const AccountTab = () => {
         <form onSubmit={formik.handleSubmit}>
           <Grid container columnSpacing={3}>
             <Grid size={{ xs: 12, sm: 6 }}>
-              {" "}
-              <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" disabled={!editMode} />{" "}
+              <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              {" "}
-              <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" disabled={!editMode} />{" "}
+              <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              {" "}
-              <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" disabled={!editMode} />{" "}
+              <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <BaseLabel htmlFor="email" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <IconMail size={18} style={{ marginRight: 4 }} /> {t("common.email")}
-                {editMode && <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span>}
+                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span>
               </BaseLabel>
               <BaseTextField formik={formik} name="email" placeholder="-" disabled={true} />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <BaseLabel htmlFor="phone" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <IconDeviceMobile size={18} style={{ marginRight: 4 }} /> {t("common.phone")}
-                {editMode && <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span>}
+                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span>
               </BaseLabel>
               <BaseTextField formik={formik} name="phone" placeholder="-" disabled={true} />
             </Grid>
           </Grid>
           <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }} mt={3}>
-            {!editMode ? (
-              <BaseButton preset="edit" fullWidth={false} onClick={() => setEditMode(true)} disabled={loading}></BaseButton>
-            ) : (
-              <>
-                <BaseButton preset="save" fullWidth={false} type="submit" loading={loading} disabled={!formik.dirty || loading} />
-                <BaseButton preset="cancel" variant="text" fullWidth={false} loading={loading} onClick={handleCancel} />
-              </>
-            )}
+            <BaseButton preset="save" fullWidth={false} type="submit" loading={loading} disabled={!formik.dirty || loading} />
+            <BaseButton preset="cancel" variant="text" fullWidth={false} loading={loading} onClick={handleCancel} />
           </Stack>
         </form>
       </Grid>
@@ -203,6 +209,17 @@ const AccountTab = () => {
           setPreview(croppedImage);
           uploadAvatar(croppedImage);
         }}
+      />
+
+      <TransitionDialog
+        open={openCancelDialog}
+        title="ยืนยันการยกเลิก"
+        content="หากยืนยันยกเลิก การเปลี่ยนแปลงทั้งหมดจะไม่ถูกบันทึก"
+        confirmText="ยืนยัน"
+        cancelText="ยกเลิก"
+        confirmColor="error"
+        onConfirm={handleConfirmCancel}
+        onClose={handleCloseDialog}
       />
     </Grid>
   );
