@@ -1,4 +1,4 @@
-import { IconUserCircle, IconLayoutDashboard, IconMail, IconSettings } from "@tabler/icons-react";
+import { IconSettings,  IconBuildingCommunity } from "@tabler/icons-react";
 import { ElementType } from "react";
 
 interface notificationType {
@@ -59,15 +59,15 @@ interface ProfileType {
 const profile: ProfileType[] = [
   {
     href: "/setting",
-    title: "My Profile",
+    title: "Settings",
+    icon: IconSettings,
     subtitle: "Account Settings",
-    icon: IconUserCircle,
   },
   {
     href: "/dashboard",
     title: "My Company",
     subtitle: "Dashboard",
-    icon: IconLayoutDashboard,
+    icon: IconBuildingCommunity,
   },
 ];
 

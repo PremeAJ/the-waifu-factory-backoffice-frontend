@@ -105,9 +105,9 @@ const LightThemeColors = [
     name: "GRASS_THEME",
     palette: {
       primary: {
-        main: "#4CAF50", 
+        main: "#4CAF50",
         light: "#C8E6C9",
-        dark: "#388E3C", 
+        dark: "#388E3C",
         contrastText: "#ffffff",
       },
       secondary: {
@@ -139,13 +139,13 @@ const LightThemeColors = [
     name: "MATCHA_THEME",
     palette: {
       primary: {
-        main: "#B7DD99",
-        light: "#EAF6E2", 
-        dark: "#8CBF5D", 
-        contrastText: "#3E4C2C", 
+        main: "#729753",
+        light: "#EAF6E2",
+        dark: "#8CBF5D",
+        contrastText: "#3E4C2C",
       },
       secondary: {
-        main: "#F7E7CE", 
+        main: "#F7E7CE",
         light: "#FFF9F2",
         dark: "#E6D3B3",
         contrastText: "#3E4C2C",
