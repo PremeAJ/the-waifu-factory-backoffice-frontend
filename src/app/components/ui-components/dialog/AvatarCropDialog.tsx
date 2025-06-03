@@ -1,14 +1,14 @@
-import React, { useCallback, useState } from 'react';
-import Cropper from 'react-easy-crop';
+import React, { useCallback, useState } from "react";
+import Cropper from "react-easy-crop";
 
-import Box from '@mui/material/Box';
-import Dialog from '@mui/material/Dialog';
-import Slider from '@mui/material/Slider';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import Box from "@mui/material/Box";
+import Dialog from "@mui/material/Dialog";
+import Slider from "@mui/material/Slider";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
-import BaseButton from '../../forms/theme-elements/BaseButton';
-import getCroppedImg from './cropImageUtil';
+import BaseButton from "../../forms/theme-elements/BaseButton";
+import getCroppedImg from "./cropImageUtil";
 
 interface AvatarCropDialogProps {
   open: boolean;
@@ -49,7 +49,7 @@ const AvatarCropDialog: React.FC<AvatarCropDialogProps> = ({ open, imageSrc, onC
       <Box
         sx={{
           width: isMobile ? "100vw" : "100%",
-          height: isMobile ? "100vh" : 500,
+          height: isMobile ? "100vh" : "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -77,25 +77,9 @@ const AvatarCropDialog: React.FC<AvatarCropDialogProps> = ({ open, imageSrc, onC
               onCropChange={setCrop}
               onZoomChange={setZoom}
               onCropComplete={onCropComplete}
-              showGrid={false} // ซ่อนตาราง
+              objectFit="cover"
             />
           )}
-          {/* วงกลม overlay */}
-          <Box
-            sx={{
-              pointerEvents: "none",
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              width: isMobile ? 240 : 300,
-              height: isMobile ? 240 : 300,
-              transform: "translate(-50%, -50%)",
-              borderRadius: "50%",
-              border: "2px solid #fff",
-              boxShadow: "0 0 0 9999px rgba(0,0,0,0.5)",
-              zIndex: 10,
-            }}
-          />
         </Box>
         <Box px={2} py={1} display="flex" gap={1} width={isMobile ? 320 : "100%"}>
           <BaseButton onClick={onClose} preset="cancel" fullWidth />
