@@ -101,11 +101,12 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
           ) : (
             <Box sx={{ top: "0px", position: "absolute" }}>
               <Image
-                src={
-                  isDark
-                    ? "/images/breadcrumb/ChatBc2.png"
-                    : "/images/breadcrumb/ChatBc.png"
-                }
+                // src={
+                //   isDark
+                //     ? "/images/breadcrumb/ChatBc2.png"
+                //     : "/images/breadcrumb/ChatBc.png"
+                // }
+                src={"/images/breadcrumb/ChatBc.png"}
                 alt={"breadcrumbImg"}
                 style={{ width: "165px", height: "165px" }}
                 priority

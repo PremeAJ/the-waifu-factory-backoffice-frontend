@@ -169,6 +169,31 @@ const DarkThemeColors = [
       },
     },
   },
+  {
+    name: "JINX_THEME",
+    palette: {
+      primary: {
+        main: "#3ad1ff", // ฟ้าสดใส
+        light: "#193c47", // ฟ้าอ่อนแบบ dark
+        dark: "#1b9fc5", // ฟ้าเข้ม
+        contrastText: "#ffffff",
+      },
+      secondary: {
+        main: "#ff4fa3", 
+        light: "#3a1b2a", 
+        dark: "#c2185b",
+        contrastText: "#ffffff",
+      },
+      background: {
+        default: "#181c24",
+        paper: "#23273a",
+      },
+      text: {
+        primary: "#ffffff",
+        secondary: "#b2eaff",
+      },
+    },
+  },
 ];
 
 export { DarkThemeColors };

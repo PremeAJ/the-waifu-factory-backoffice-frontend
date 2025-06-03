@@ -152,6 +152,23 @@ const LightThemeColors = [
       },
     },
   },
+  {
+    name: "JINX_THEME",
+    palette: {
+      primary: {
+        main: "#3ad1ff",      // ฟ้าสดใส (Jinx hair)
+        light: "#e3f8ff",     // ฟ้าอ่อน
+        dark: "#1b9fc5",      // ฟ้าเข้ม
+        contrastText: "#ffffff",
+      },
+      secondary: {
+        main: "#ff4fa3",      // ชมพูสด (Jinx accent)
+        light: "#ffe3f2",     // ชมพูอ่อน
+        dark: "#c2185b",      // ชมพูเข้ม
+        contrastText: "#ffffff",
+      },
+    },
+  },
 ];
 
 export { LightThemeColors };
