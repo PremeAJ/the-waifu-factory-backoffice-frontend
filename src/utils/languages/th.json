@@ -66,7 +66,7 @@
     "Profile": "โปรไฟล์",
     "ChangeProfile": "เปลี่ยนโปรไฟล์",
     "ChangeProfileDesc": "เปลี่ยนรูปโปรไฟล์ของคุณที่นี่",
-    "AllowedFile": "(อนุญาต JPG, GIF หรือ PNG. ขนาดไม่เกิน 800K)",
+    "AllowedFile": "(อนุญาต JPG หรือ PNG. ขนาดไม่เกิน 800K)",
     "PersonalDetails": "ข้อมูลส่วนตัว",
     "PersonalDetailsDesc": "หากต้องการเปลี่ยนข้อมูลส่วนตัว ให้แก้ไขและบันทึกที่นี่"
   },
