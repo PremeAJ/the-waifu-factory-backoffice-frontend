@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 // components
 import BlankCard from "@/app/components/shared/BlankCard";
-import AccountTab from "@/app/components/settings/account-setting/AccountTab";
+import ProfileSetting from "@/app/components/settings/account-setting/ProfileSetting";
 
 const AccountSetting = () => {
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ const AccountSetting = () => {
       <Breadcrumb title={t("Setting.Profile")} items={BCrumb} />
       <BlankCard>
         <CardContent>
-          <AccountTab />
+          <ProfileSetting />
         </CardContent>
       </BlankCard>
     </PageContainer>

@@ -14,6 +14,7 @@ export interface userType {
 export interface SettingProfile {
   firstName?: string;
   lastName?: string;
+  nickName?: string;
   email?: string;
   phone?: string
 }
