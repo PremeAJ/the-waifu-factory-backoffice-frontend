@@ -1,13 +1,13 @@
 "use client";
 
 import * as React from "react";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import { Typography, Divider } from "@mui/material";
 import Box from "@mui/material/Box";
 import ThemeColors from "./components/ThemeColors";
 import ThemeMode from "./components/ThemeMode";
-import BlankCard from "@/app/components/shared/BlankCard";
+import BlankCard from "@/components/shared/BlankCard";
 import Border from "./components/Border";
 import Others from "./components/Others";
 

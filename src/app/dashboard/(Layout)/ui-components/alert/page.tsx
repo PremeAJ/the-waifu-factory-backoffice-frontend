@@ -2,15 +2,15 @@ import React from "react";
 import { Grid, Stack, Button, Alert, AlertTitle } from "@mui/material";
 
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
-import AlertTransition from "@/app/components/ui-components/alert/AlertTransition";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
+import AlertTransition from "@/components/ui-components/alert/AlertTransition";
 
-import FilledCode from "@/app/components/ui-components/alert/code/FilledCode";
-import OutlinedCode from "@/app/components/ui-components/alert/code/OutlinedCode";
-import DescriptionCode from "@/app/components/ui-components/alert/code/DescriptionCode";
-import ActionCode from "@/app/components/ui-components/alert/code/ActionCode";
+import FilledCode from "@/components/ui-components/alert/code/FilledCode";
+import OutlinedCode from "@/components/ui-components/alert/code/OutlinedCode";
+import DescriptionCode from "@/components/ui-components/alert/code/DescriptionCode";
+import ActionCode from "@/components/ui-components/alert/code/ActionCode";
 
 const BCrumb = [
   {

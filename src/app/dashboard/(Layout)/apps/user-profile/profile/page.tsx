@@ -1,12 +1,12 @@
 import Grid from "@mui/material/Grid";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 
-import ProfileBanner from "@/app/components/apps/userprofile/profile/ProfileBanner";
-import IntroCard from "@/app/components/apps/userprofile/profile/IntroCard";
-import PhotosCard from "@/app/components/apps/userprofile/profile/PhotosCard";
-import Post from "@/app/components/apps/userprofile/profile/Post";
+import ProfileBanner from "@/components/apps/userprofile/profile/ProfileBanner";
+import IntroCard from "@/components/apps/userprofile/profile/IntroCard";
+import PhotosCard from "@/components/apps/userprofile/profile/PhotosCard";
+import Post from "@/components/apps/userprofile/profile/Post";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import { UserDataProvider } from "@/app/context/UserDataContext";
+import { UserDataProvider } from "@/context/UserDataContext";
 
 const BCrumb = [
   {

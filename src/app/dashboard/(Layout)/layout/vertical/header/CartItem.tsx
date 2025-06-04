@@ -10,7 +10,7 @@ import Link from "next/link";
 import { IconMinus, IconPlus } from "@tabler/icons-react";
 import emptyCart from "/public/images/products/empty-shopping-cart.svg";
 import Image from "next/image";
-import { ProductContext } from "@/app/context/Ecommercecontext";
+import { ProductContext } from "@/context/Ecommercecontext";
 import { useContext } from "react";
 
 const CartItems = () => {

@@ -1,12 +1,12 @@
-import PageContainer from '@/app/components/container/PageContainer';
-import HeaderAlert from '../../components/frontend-pages/shared/header/HeaderAlert';
-import HpHeader from '../../components/frontend-pages/shared/header/HpHeader';
+import PageContainer from '@/components/container/PageContainer';
+import HeaderAlert from '../../../components/frontend-pages/shared/header/HeaderAlert';
+import HpHeader from '../../../components/frontend-pages/shared/header/HpHeader';
 
-import C2a from '../../components/frontend-pages/shared/c2a';
-import Footer from '../../components/frontend-pages/shared/footer';
-import Banner from '../../components/frontend-pages/contact/banner';
-import Form from '../../components/frontend-pages/contact/form';
-import ScrollToTop from '../../components/shared/scroll-to-top';
+import C2a from '../../../components/frontend-pages/shared/c2a';
+import Footer from '../../../components/frontend-pages/shared/footer';
+import Banner from '../../../components/frontend-pages/contact/banner';
+import Form from '../../../components/frontend-pages/contact/form';
+import ScrollToTop from '../../../components/shared/scroll-to-top';
 
 const Contact = () => {
     return (

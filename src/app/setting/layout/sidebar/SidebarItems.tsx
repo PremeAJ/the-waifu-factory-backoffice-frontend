@@ -3,12 +3,12 @@ import { usePathname } from "next/navigation";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 import NavItem from "./NavItem";
 import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
 import { useContext } from "react";
-import SidebarItemsSkeleton from "@/app/components/dashboards/skeleton/SidebarItemsSkeleton";
+import SidebarItemsSkeleton from "@/components/dashboards/skeleton/SidebarItemsSkeleton";
 
 const SidebarItems = () => {
   const pathname = usePathname();

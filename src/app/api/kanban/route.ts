@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { KanbanData } from "../../components/apps/kanban/kanbanData";
+import { KanbanData } from "../../../components/apps/kanban/kanbanData";
 
 // Extracting unique task properties from TodoData
 const taskPropertiesSet = new Set<string>();

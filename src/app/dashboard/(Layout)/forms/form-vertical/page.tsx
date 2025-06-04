@@ -2,17 +2,17 @@ import { Grid, Typography } from "@mui/material";
 
 // components
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
 
-import BasicLayout from "@/app/components/forms/form-vertical/BasicLayout";
-import BasicIcons from "@/app/components/forms/form-vertical/BasicIcons";
-import FormSeparator from "@/app/components/forms/form-vertical/FormSeparator";
-import CollapsibleForm from "@/app/components/forms/form-vertical/CollapsibleForm";
-import FormTabs from "@/app/components/forms/form-vertical/FormTabs";
+import BasicLayout from "@/components/forms/form-vertical/BasicLayout";
+import BasicIcons from "@/components/forms/form-vertical/BasicIcons";
+import FormSeparator from "@/components/forms/form-vertical/FormSeparator";
+import CollapsibleForm from "@/components/forms/form-vertical/CollapsibleForm";
+import FormTabs from "@/components/forms/form-vertical/FormTabs";
 
-import BasicLayoutCode from "@/app/components/forms/form-vertical/code/BasicLayoutCode";
-import BasicIconsCode from "@/app/components/forms/form-vertical/code/BasicIconsCode";
+import BasicLayoutCode from "@/components/forms/form-vertical/code/BasicLayoutCode";
+import BasicIconsCode from "@/components/forms/form-vertical/code/BasicIconsCode";
 
 const BCrumb = [
   {

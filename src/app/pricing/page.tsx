@@ -1,8 +1,8 @@
-import PageContainer from '@/app/components/container/PageContainer';
-import ScrollToTop from '../components/shared/scroll-to-top';
-import Pricing from '../components/frontend-pages/shared/pricing';
-import Footer from '../components/frontend-pages/shared/footer';
-import LpHeader from '../components/landingpage/header/Header';
+import PageContainer from '@/components/container/PageContainer';
+import ScrollToTop from '../../components/shared/scroll-to-top';
+import Pricing from '../../components/frontend-pages/shared/pricing';
+import Footer from '../../components/frontend-pages/shared/footer';
+import LpHeader from '../../components/landingpage/header/Header';
 
 const PricingPage = () => {
     return (

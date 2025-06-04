@@ -15,7 +15,7 @@ import {
 import { SliderThumb } from '@mui/material/Slider';
 
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import PageContainer from '@/app/components/container/PageContainer';
+import PageContainer from '@/components/container/PageContainer';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
@@ -23,17 +23,17 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-import CustomTextField from '@/app/components/forms/theme-elements/CustomTextField';
-import CustomSelect from '@/app/components/forms/theme-elements/CustomSelect';
-import CustomSlider from '@/app/components/forms/theme-elements/CustomSlider';
-import CustomRangeSlider from '@/app/components/forms/theme-elements/CustomRangeSlider';
-import CustomSwitch from '@/app/components/forms/theme-elements/CustomSwitch';
-import CustomDisabledButton from '@/app/components/forms/theme-elements/CustomDisabledButton';
-import CustomOutlinedButton from '@/app/components/forms/theme-elements/CustomOutlinedButton';
-import CustomFormLabel from '@/app/components/forms/theme-elements/CustomFormLabel';
-import CustomCheckbox from '@/app/components/forms/theme-elements/CustomCheckbox';
-import CustomRadio from '@/app/components/forms/theme-elements/CustomRadio';
-import ParentCard from '@/app/components/shared/ParentCard';
+import CustomTextField from '@/components/forms/theme-elements/CustomTextField';
+import CustomSelect from '@/components/forms/theme-elements/CustomSelect';
+import CustomSlider from '@/components/forms/theme-elements/CustomSlider';
+import CustomRangeSlider from '@/components/forms/theme-elements/CustomRangeSlider';
+import CustomSwitch from '@/components/forms/theme-elements/CustomSwitch';
+import CustomDisabledButton from '@/components/forms/theme-elements/CustomDisabledButton';
+import CustomOutlinedButton from '@/components/forms/theme-elements/CustomOutlinedButton';
+import CustomFormLabel from '@/components/forms/theme-elements/CustomFormLabel';
+import CustomCheckbox from '@/components/forms/theme-elements/CustomCheckbox';
+import CustomRadio from '@/components/forms/theme-elements/CustomRadio';
+import ParentCard from '@/components/shared/ParentCard';
 import { IconVolume, IconVolume2 } from '@tabler/icons-react';
 import { Stack } from '@mui/material';
 

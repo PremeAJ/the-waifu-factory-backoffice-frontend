@@ -1,8 +1,8 @@
 import React from "react";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import TableRowDragDrop from "../../../../components/react-table/TableRowDragDrop";
-import TableColumnDragDrop from "../../../../components/react-table/TableColumnDragDrop";
+import PageContainer from "@/components/container/PageContainer";
+import TableRowDragDrop from "../../../../../components/react-table/TableRowDragDrop";
+import TableColumnDragDrop from "../../../../../components/react-table/TableColumnDragDrop";
 import { Grid } from "@mui/material";
 
 const BCrumb = [

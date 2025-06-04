@@ -1,11 +1,11 @@
 'use client'
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 import Grid from '@mui/material/Grid';
-import BasicSparkLine from "@/app/components/muicharts/sparklinecharts/BasicSparkLine";
-import AreaSparkLineChart from "@/app/components/muicharts/sparklinecharts/AreaSparkLineChart";
-import BasicSparkLineCustomizationChart from "@/app/components/muicharts/sparklinecharts/BasicSparkLineCustomizationChart";
+import BasicSparkLine from "@/components/muicharts/sparklinecharts/BasicSparkLine";
+import AreaSparkLineChart from "@/components/muicharts/sparklinecharts/AreaSparkLineChart";
+import BasicSparkLineCustomizationChart from "@/components/muicharts/sparklinecharts/BasicSparkLineCustomizationChart";
 
 
 const BCrumb = [

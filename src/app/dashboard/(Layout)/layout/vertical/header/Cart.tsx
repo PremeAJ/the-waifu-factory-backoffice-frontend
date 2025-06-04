@@ -4,7 +4,7 @@ import { IconShoppingCart, IconX } from '@tabler/icons-react';
 import { Box, Typography, Badge, Drawer, IconButton, Button, Stack } from '@mui/material';
 import Link from 'next/link';
 import CartItems from './CartItem';
-import { ProductContext } from '@/app/context/Ecommercecontext';
+import { ProductContext } from '@/context/Ecommercecontext';
 
 
 const Cart = () => {

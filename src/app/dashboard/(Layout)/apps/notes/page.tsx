@@ -1,8 +1,8 @@
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import AppCard from "@/app/components/shared/AppCard";
-import NotesApp from "@/app/components/apps/notes";
-import { NotesProvider } from '@/app/context/NotesContext/index'
+import PageContainer from "@/components/container/PageContainer";
+import AppCard from "@/components/shared/AppCard";
+import NotesApp from "@/components/apps/notes";
+import { NotesProvider } from '@/context/NotesContext/index'
 const BCrumb = [
   {
     to: "/",

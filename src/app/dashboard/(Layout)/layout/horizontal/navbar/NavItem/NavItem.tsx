@@ -15,7 +15,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { styled, useTheme } from '@mui/material/styles';
 
 import { useTranslation } from "react-i18next";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 import { ItemType } from "@/utils/types/layout/sidebar";
 
 export default function NavItem({

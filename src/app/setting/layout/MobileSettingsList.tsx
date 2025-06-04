@@ -19,9 +19,9 @@ import {
   IconChevronDown,
   IconMoon,
 } from "@tabler/icons-react";
-import CustomSwitch from "@/app/components/forms/theme-elements/CustomSwitch";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
-import { UserContext } from "@/app/context/UserContext";
+import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
+import { CustomizerContext } from "@/context/setting/customizerContext";
+import { UserContext } from "@/context/UserContext";
 import Menuitems from "../layout/sidebar/MenuItems"; // นำเข้า Menuitems 
 
 const MobileSettingsList = () => {

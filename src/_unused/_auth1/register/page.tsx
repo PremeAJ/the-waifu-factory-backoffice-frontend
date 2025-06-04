@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Grid, Box, Typography, Stack } from "@mui/material";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 
 import Image from "next/image";
-import AuthRegister from "@/app/components/auth/AuthRegister";
+import AuthRegister from "@/components/auth/AuthRegister";
 
 export default function Register() {
   return (

@@ -1,25 +1,25 @@
 import { Grid } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
-import SimpleDialog from "@/app/components/ui-components/dialog/SimpleDialog";
-import AlertDialog from "@/app/components/ui-components/dialog/AlertDialog";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
+import SimpleDialog from "@/components/ui-components/dialog/SimpleDialog";
+import AlertDialog from "@/components/ui-components/dialog/AlertDialog";
 // import TransitionDialog from "@/app/components/ui-components/dialog/TransitionDialog";
-import FormDialog from "@/app/components/ui-components/dialog/FormDialog";
-import FullscreenDialog from "@/app/components/ui-components/dialog/FullscreenDialog";
-import MaxWidthDialog from "@/app/components/ui-components/dialog/MaxWidthDialog";
-import ScrollContentDialog from "@/app/components/ui-components/dialog/ScrollContentDialog";
-import ResponsiveDialog from "@/app/components/ui-components/dialog/ResponsiveDialog";
+import FormDialog from "@/components/ui-components/dialog/FormDialog";
+import FullscreenDialog from "@/components/ui-components/dialog/FullscreenDialog";
+import MaxWidthDialog from "@/components/ui-components/dialog/MaxWidthDialog";
+import ScrollContentDialog from "@/components/ui-components/dialog/ScrollContentDialog";
+import ResponsiveDialog from "@/components/ui-components/dialog/ResponsiveDialog";
 
-import SimpleCode from "@/app/components/ui-components/dialog/code/SimpleCode";
-import AlertCode from "@/app/components/ui-components/dialog/code/AlertCode";
-import TransitionCode from "@/app/components/ui-components/dialog/code/TransitionCode";
-import FormCode from "@/app/components/ui-components/dialog/code/FormCode";
-import FullScreenCode from "@/app/components/ui-components/dialog/code/FullScreenCode";
-import MaxWidthCode from "@/app/components/ui-components/dialog/code/MaxWidthCode";
-import ScrollingContentCode from "@/app/components/ui-components/dialog/code/ScrollingContentCode";
-import ResponsiveFullscreenCode from "@/app/components/ui-components/dialog/code/ResponsiveFullscreenCode";
+import SimpleCode from "@/components/ui-components/dialog/code/SimpleCode";
+import AlertCode from "@/components/ui-components/dialog/code/AlertCode";
+import TransitionCode from "@/components/ui-components/dialog/code/TransitionCode";
+import FormCode from "@/components/ui-components/dialog/code/FormCode";
+import FullScreenCode from "@/components/ui-components/dialog/code/FullScreenCode";
+import MaxWidthCode from "@/components/ui-components/dialog/code/MaxWidthCode";
+import ScrollingContentCode from "@/components/ui-components/dialog/code/ScrollingContentCode";
+import ResponsiveFullscreenCode from "@/components/ui-components/dialog/code/ResponsiveFullscreenCode";
 
 const BCrumb = [
   {

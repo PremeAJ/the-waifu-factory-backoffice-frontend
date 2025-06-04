@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import PageContainer from '@/app/components/container/PageContainer';
-import TableColumnVisibility from '@/app/components/react-table/TableColumnVisibility';
+import PageContainer from '@/components/container/PageContainer';
+import TableColumnVisibility from '@/components/react-table/TableColumnVisibility';
 import Breadcrumb from '../../layout/shared/breadcrumb/Breadcrumb';
 
 const BCrumb = [

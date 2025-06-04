@@ -1,12 +1,12 @@
 import React from "react";
-import BlogList from "../../components/frontend-pages/blog/blog-list/Blog";
-import PageContainer from '@/app/components/container/PageContainer';
-import HeaderAlert from '../../components/frontend-pages/shared/header/HeaderAlert';
-import HpHeader from '../../components/frontend-pages/shared/header/HpHeader';
-import C2a from '../../components/frontend-pages/shared/c2a';
-import Footer from '../../components/frontend-pages/shared/footer';
-import Banner from '../../components/frontend-pages/blog/banner';
-import ScrollToTop from '../../components/shared/scroll-to-top';
+import BlogList from "../../../components/frontend-pages/blog/blog-list/Blog";
+import PageContainer from '@/components/container/PageContainer';
+import HeaderAlert from '../../../components/frontend-pages/shared/header/HeaderAlert';
+import HpHeader from '../../../components/frontend-pages/shared/header/HpHeader';
+import C2a from '../../../components/frontend-pages/shared/c2a';
+import Footer from '../../../components/frontend-pages/shared/footer';
+import Banner from '../../../components/frontend-pages/blog/banner';
+import ScrollToTop from '../../../components/shared/scroll-to-top';
 
 const BlogPage = () => {
 

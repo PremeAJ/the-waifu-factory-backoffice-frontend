@@ -3,10 +3,10 @@ import Drawer from "@mui/material/Drawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import SidebarItems from "./SidebarItems";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
-import config from "@/app/context/setting/config";
+import { CustomizerContext } from "@/context/setting/customizerContext";
+import config from "@/context/setting/config";
 
-import Scrollbar from "@/app/components/custom-scroll/Scrollbar";
+import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import { useContext } from "react";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 

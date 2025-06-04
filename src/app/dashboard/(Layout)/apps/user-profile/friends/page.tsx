@@ -1,9 +1,9 @@
 import Grid from '@mui/material/Grid'
-import PageContainer from '@/app/components/container/PageContainer';
-import ProfileBanner from '@/app/components/apps/userprofile/profile/ProfileBanner';
-import FriendsCard from '@/app/components/apps/userprofile/friends/FriendsCard';
+import PageContainer from '@/components/container/PageContainer';
+import ProfileBanner from '@/components/apps/userprofile/profile/ProfileBanner';
+import FriendsCard from '@/components/apps/userprofile/friends/FriendsCard';
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import { UserDataProvider } from '@/app/context/UserDataContext';
+import { UserDataProvider } from '@/context/UserDataContext';
 
 
 

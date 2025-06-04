@@ -4,7 +4,7 @@ import { Stack, Typography } from "@mui/material";
 import { IconSquareFilled, IconCircleFilled } from "@tabler/icons-react";
 import useMediaQuery from "@mui/system/useMediaQuery";
 import useTheme from "@mui/system/useTheme";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 import { useContext } from "react";
 
 const marks = [

@@ -4,7 +4,7 @@ import WbSunnyTwoToneIcon from "@mui/icons-material/WbSunnyTwoTone";
 import DarkModeTwoToneIcon from "@mui/icons-material/DarkModeTwoTone";
 import StyledBox from "../StyledBox";
 import { useContext } from "react";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 
 const ThemeMode = () => {
   const { updateAppearance, activeMode, setActiveMode } = useContext(CustomizerContext);

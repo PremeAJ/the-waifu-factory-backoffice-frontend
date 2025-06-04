@@ -1,12 +1,12 @@
 import { Grid } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import WelcomeCard from "@/app/components/dashboards/ecommerce/WelcomeCard";
-import Banner1 from "@/app/components/widgets/banners/Banner1";
-import Banner2 from "@/app/components/widgets/banners/Banner2";
-import Banner3 from "@/app/components/widgets/banners/Banner3";
-import Banner4 from "@/app/components/widgets/banners/Banner4";
-import Banner5 from "@/app/components/widgets/banners/Banner5";
+import PageContainer from "@/components/container/PageContainer";
+import WelcomeCard from "@/components/dashboards/ecommerce/WelcomeCard";
+import Banner1 from "@/components/widgets/banners/Banner1";
+import Banner2 from "@/components/widgets/banners/Banner2";
+import Banner3 from "@/components/widgets/banners/Banner3";
+import Banner4 from "@/components/widgets/banners/Banner4";
+import Banner5 from "@/components/widgets/banners/Banner5";
 
 const BCrumb = [
   {

@@ -1,8 +1,8 @@
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import { Grid } from "@mui/material";
-import Questions from "@/app/components/pages/faq/Questions";
-import StillQuestions from "@/app/components/pages/faq/StillQuestions";
+import Questions from "@/components/pages/faq/Questions";
+import StillQuestions from "@/components/pages/faq/StillQuestions";
 
 const BCrumb = [
   {

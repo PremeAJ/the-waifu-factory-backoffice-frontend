@@ -1,8 +1,8 @@
 import Box from "@mui/material/Box";
 import { Avatar, Stack, Typography } from "@mui/material";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 import { useContext } from "react";
-import CustomSwitch from "@/app/components/forms/theme-elements/CustomSwitch";
+import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
 import ViewSidebarTwoToneIcon from "@mui/icons-material/ViewSidebarTwoTone";
 import useTheme from "@mui/system/useTheme";
 

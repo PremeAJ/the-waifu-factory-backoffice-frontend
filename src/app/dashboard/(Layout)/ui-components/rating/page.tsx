@@ -1,17 +1,17 @@
 import * as React from "react";
 import { Grid, Rating, Stack } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
 
-import Controlled from "@/app/components/ui-components/rating/Controlled";
-import CustomIconSet from "@/app/components/ui-components/rating/CustomIconSet";
-import Disabled from "@/app/components/ui-components/rating/Disabled";
-import HoverFeedback from "@/app/components/ui-components/rating/HoverFeedback";
-import NoRating from "@/app/components/ui-components/rating/NoRating";
-import RadioGroup from "@/app/components/ui-components/rating/RadioGroup";
-import ReadOnly from "@/app/components/ui-components/rating/ReadOnly";
+import Controlled from "@/components/ui-components/rating/Controlled";
+import CustomIconSet from "@/components/ui-components/rating/CustomIconSet";
+import Disabled from "@/components/ui-components/rating/Disabled";
+import HoverFeedback from "@/components/ui-components/rating/HoverFeedback";
+import NoRating from "@/components/ui-components/rating/NoRating";
+import RadioGroup from "@/components/ui-components/rating/RadioGroup";
+import ReadOnly from "@/components/ui-components/rating/ReadOnly";
 
 const BCrumb = [
   {

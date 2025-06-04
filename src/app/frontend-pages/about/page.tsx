@@ -1,15 +1,15 @@
-import PageContainer from "@/app/components/container/PageContainer";
-import HeaderAlert from "../../components/frontend-pages/shared/header/HeaderAlert";
-import HpHeader from "../../components/frontend-pages/shared/header/HpHeader";
-import Leadership from "../../components/frontend-pages/shared/leadership";
-import Reviews from "../../components/frontend-pages/shared/reviews";
-import Pricing from "../../components/frontend-pages/shared/pricing";
-import C2a from "../../components/frontend-pages/shared/c2a";
-import Footer from "../../components/frontend-pages/shared/footer";
-import Banner from "../../components/frontend-pages/about/banner";
-import Process from "../../components/frontend-pages/about/process";
-import KeyMetric from "../../components/frontend-pages/about/key-metric";
-import ScrollToTop from "../../components/shared/scroll-to-top";
+import PageContainer from "@/components/container/PageContainer";
+import HeaderAlert from "../../../components/frontend-pages/shared/header/HeaderAlert";
+import HpHeader from "../../../components/frontend-pages/shared/header/HpHeader";
+import Leadership from "../../../components/frontend-pages/shared/leadership";
+import Reviews from "../../../components/frontend-pages/shared/reviews";
+import Pricing from "../../../components/frontend-pages/shared/pricing";
+import C2a from "../../../components/frontend-pages/shared/c2a";
+import Footer from "../../../components/frontend-pages/shared/footer";
+import Banner from "../../../components/frontend-pages/about/banner";
+import Process from "../../../components/frontend-pages/about/process";
+import KeyMetric from "../../../components/frontend-pages/about/key-metric";
+import ScrollToTop from "../../../components/shared/scroll-to-top";
 
 const About = () => {
   return (

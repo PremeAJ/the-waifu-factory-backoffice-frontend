@@ -1,9 +1,9 @@
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import PageContainer from '@/app/components/container/PageContainer';
-import TicketListing from '@/app/components/apps/tickets/TicketListing';
-import TicketFilter from '@/app/components/apps/tickets/TicketFilter';
-import ChildCard from '@/app/components/shared/ChildCard';
-import { TicketProvider } from '@/app/context/TicketContext/index';
+import PageContainer from '@/components/container/PageContainer';
+import TicketListing from '@/components/apps/tickets/TicketListing';
+import TicketFilter from '@/components/apps/tickets/TicketFilter';
+import ChildCard from '@/components/shared/ChildCard';
+import { TicketProvider } from '@/context/TicketContext/index';
 
 const BCrumb = [
   {

@@ -1,13 +1,13 @@
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 import Grid from '@mui/material/Grid';
-import SimpleLineChart from "@/app/components/muicharts/linescharts/linechart/SimpleLineChart";
-import TinyLineChart from "@/app/components/muicharts/linescharts/linechart/TinyLineChart";
-import DashedLineChart from "@/app/components/muicharts/linescharts/linechart/DashedLineChart";
-import BiaxialLineChart from "@/app/components/muicharts/linescharts/linechart/BiaxialLineChart";
-import LineChartWithReferenceLines from "@/app/components/muicharts/linescharts/linechart/LineChartWithReferenceLinesChart";
-import LinewithforecastChart from "@/app/components/muicharts/linescharts/linechart/LinewithforecastChart";
+import SimpleLineChart from "@/components/muicharts/linescharts/linechart/SimpleLineChart";
+import TinyLineChart from "@/components/muicharts/linescharts/linechart/TinyLineChart";
+import DashedLineChart from "@/components/muicharts/linescharts/linechart/DashedLineChart";
+import BiaxialLineChart from "@/components/muicharts/linescharts/linechart/BiaxialLineChart";
+import LineChartWithReferenceLines from "@/components/muicharts/linescharts/linechart/LineChartWithReferenceLinesChart";
+import LinewithforecastChart from "@/components/muicharts/linescharts/linechart/LinewithforecastChart";
 
 const BCrumb = [
     {

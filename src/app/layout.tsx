@@ -2,11 +2,11 @@ import React from "react";
 import MyApp from "./app";
 import NextTopLoader from "nextjs-toploader";
 import "./global.css";
-import { CustomizerContextProvider } from "./context/setting/customizerContext";
+import { CustomizerContextProvider } from "../context/setting/customizerContext";
 import Header from "./header";
 import { Metadata, Viewport } from "next";
-import MobileBackButton from "./components/shared/MobileBackButton";
-import ScrollToTop from "./components/shared/scroll-to-top";
+import MobileBackButton from "../components/shared/MobileBackButton";
+import ScrollToTop from "../components/shared/scroll-to-top";
 export const metadata: Metadata = {
   // title: "Meow Som",
   // description: "แดชบอร์ดจัดการระบบ POS สำหรับร้านค้า MeowSom",

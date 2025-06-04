@@ -1,14 +1,14 @@
 
 
 import { Grid } from '@mui/material';
-import ProductCarousel from '@/app/components/apps/ecommerce/productDetail/ProductCarousel';
+import ProductCarousel from '@/components/apps/ecommerce/productDetail/ProductCarousel';
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import PageContainer from '@/app/components/container/PageContainer';
-import ProductDetail from '@/app/components/apps/ecommerce/productDetail';
-import ProductDesc from '@/app/components/apps/ecommerce/productDetail/ProductDesc';
-import ProductRelated from '@/app/components/apps/ecommerce/productDetail/ProductRelated';
-import ChildCard from '@/app/components/shared/ChildCard';
-import { ProductProvider } from '@/app/context/Ecommercecontext/index'
+import PageContainer from '@/components/container/PageContainer';
+import ProductDetail from '@/components/apps/ecommerce/productDetail';
+import ProductDesc from '@/components/apps/ecommerce/productDetail/ProductDesc';
+import ProductRelated from '@/components/apps/ecommerce/productDetail/ProductRelated';
+import ChildCard from '@/components/shared/ChildCard';
+import { ProductProvider } from '@/context/Ecommercecontext/index'
 
 const BCrumb = [
   {

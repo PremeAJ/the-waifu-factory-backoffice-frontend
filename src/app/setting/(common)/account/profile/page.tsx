@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import { Grid, CardContent, Divider } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 // components
-import BlankCard from "@/app/components/shared/BlankCard";
-import ProfileSetting from "@/app/components/settings/account-setting/ProfileSetting";
+import BlankCard from "@/components/shared/BlankCard";
+import ProfileSetting from "@/components/settings/account-setting/ProfileSetting";
 
 const AccountSetting = () => {
   const { t } = useTranslation();

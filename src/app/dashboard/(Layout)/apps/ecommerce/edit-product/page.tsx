@@ -1,20 +1,20 @@
 
 import { Button, Grid, Stack } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 
-import GeneralCard from "@/app/components/apps/ecommerce/productEdit/GeneralCard";
-import MediaCard from "@/app/components/apps/ecommerce/productEdit/Media";
-import VariationCard from "@/app/components/apps/ecommerce/productEdit/VariationCard";
-import PricingCard from "@/app/components/apps/ecommerce/productEdit/Pricing";
-import Thumbnail from "@/app/components/apps/ecommerce/productEdit/Thumbnail";
-import StatusCard from "@/app/components/apps/ecommerce/productEdit/Status";
-import ProductDetails from "@/app/components/apps/ecommerce/productEdit/ProductDetails";
-import ProductTemplate from "@/app/components/apps/ecommerce/productEdit/ProductTemplate";
-import CustomersReviews from "@/app/components/apps/ecommerce/productEdit/CustomersReviews";
-import ProductAvgSales from "@/app/components/apps/ecommerce/productEdit/ProductAvgSales";
-import BlankCard from "@/app/components/shared/BlankCard";
-import { ProductProvider } from '@/app/context/Ecommercecontext/index'
+import GeneralCard from "@/components/apps/ecommerce/productEdit/GeneralCard";
+import MediaCard from "@/components/apps/ecommerce/productEdit/Media";
+import VariationCard from "@/components/apps/ecommerce/productEdit/VariationCard";
+import PricingCard from "@/components/apps/ecommerce/productEdit/Pricing";
+import Thumbnail from "@/components/apps/ecommerce/productEdit/Thumbnail";
+import StatusCard from "@/components/apps/ecommerce/productEdit/Status";
+import ProductDetails from "@/components/apps/ecommerce/productEdit/ProductDetails";
+import ProductTemplate from "@/components/apps/ecommerce/productEdit/ProductTemplate";
+import CustomersReviews from "@/components/apps/ecommerce/productEdit/CustomersReviews";
+import ProductAvgSales from "@/components/apps/ecommerce/productEdit/ProductAvgSales";
+import BlankCard from "@/components/shared/BlankCard";
+import { ProductProvider } from '@/context/Ecommercecontext/index'
 
 const BCrumb = [
   {

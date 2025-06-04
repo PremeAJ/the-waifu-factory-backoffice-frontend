@@ -7,16 +7,16 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
 import Notifications from "./Notification";
-import Profile from "../../../../../components/shared/Profile";
+import Profile from "../../../../../../components/shared/Profile";
 import Cart from "./Cart";
 import Search from "./Search";
-import Language from "../../../../../components/shared/Language/Language";
-import { CustomizerContext } from '@/app/context/setting/customizerContext';
+import Language from "../../../../../../components/shared/Language/Language";
+import { CustomizerContext } from '@/context/setting/customizerContext';
 import Navigation from "./Navigation";
 import MobileRightSidebar from "./MobileRightSidebar";
-import config from '@/app/context/setting/config'
+import config from '@/context/setting/config'
 import { useContext } from "react";
-import { ProductProvider } from '@/app/context/Ecommercecontext/index'
+import { ProductProvider } from '@/context/Ecommercecontext/index'
 
 const Header = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));

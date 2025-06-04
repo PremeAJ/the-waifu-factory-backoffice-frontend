@@ -3,14 +3,14 @@ import { Grid } from "@mui/material";
 
 // common component
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
 
-import TooltipArrow from "@/app/components/ui-components/tooltip/TooltipArrow";
-import TooltipPosition from "@/app/components/ui-components/tooltip/TooltipPosition";
-import TooltipSimple from "@/app/components/ui-components/tooltip/TooltipSimple";
-import TooltipTransition from "@/app/components/ui-components/tooltip/TooltipTransition";
-import TooltipVariableWidth from "@/app/components/ui-components/tooltip/TooltipVariableWidth";
+import TooltipArrow from "@/components/ui-components/tooltip/TooltipArrow";
+import TooltipPosition from "@/components/ui-components/tooltip/TooltipPosition";
+import TooltipSimple from "@/components/ui-components/tooltip/TooltipSimple";
+import TooltipTransition from "@/components/ui-components/tooltip/TooltipTransition";
+import TooltipVariableWidth from "@/components/ui-components/tooltip/TooltipVariableWidth";
 
 const BCrumb = [
   {

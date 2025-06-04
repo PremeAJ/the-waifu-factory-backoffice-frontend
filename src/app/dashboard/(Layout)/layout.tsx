@@ -7,8 +7,8 @@ import Header from "./layout/vertical/header/Header";
 import Sidebar from "./layout/vertical/sidebar/Sidebar";
 import Navigation from "./layout/horizontal/navbar/Navigation";
 import HorizontalHeader from "./layout/horizontal/header/Header";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
-import config from "@/app/context/setting/config";
+import { CustomizerContext } from "@/context/setting/customizerContext";
+import config from "@/context/setting/config";
 import AuthGuard from "./authGuard";
 
 const MainWrapper = styled("div")(() => ({

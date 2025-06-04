@@ -1,8 +1,8 @@
 "use client";
 
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import TypographyCommon from "@/app/components/ui-components/typography/TypographyCommon";
+import PageContainer from "@/components/container/PageContainer";
+import TypographyCommon from "@/components/ui-components/typography/TypographyCommon";
 
 const BCrumb = [
   {

@@ -1,13 +1,13 @@
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 import Grid from '@mui/material/Grid';
-import SimpleAreaChart from "@/app/components/muicharts/linescharts/areacharts/SimpleAreaChart";
-import StackedAreaChart from "@/app/components/muicharts/linescharts/areacharts/StackedAreaChart";
-import TinyAreaChart from "@/app/components/muicharts/linescharts/areacharts/TinyAreaChart";
-import PercentAreaChart from "@/app/components/muicharts/linescharts/areacharts/PercentAreaChart";
-import AreaChartConnectNulls from "@/app/components/muicharts/linescharts/areacharts/AreaChartConnectNullsChart";
-import AreaChartFillByValueChart from "@/app/components/muicharts/linescharts/areacharts/AreaChartFillByValueChart";
+import SimpleAreaChart from "@/components/muicharts/linescharts/areacharts/SimpleAreaChart";
+import StackedAreaChart from "@/components/muicharts/linescharts/areacharts/StackedAreaChart";
+import TinyAreaChart from "@/components/muicharts/linescharts/areacharts/TinyAreaChart";
+import PercentAreaChart from "@/components/muicharts/linescharts/areacharts/PercentAreaChart";
+import AreaChartConnectNulls from "@/components/muicharts/linescharts/areacharts/AreaChartConnectNullsChart";
+import AreaChartFillByValueChart from "@/components/muicharts/linescharts/areacharts/AreaChartFillByValueChart";
 
 const BCrumb = [
     {

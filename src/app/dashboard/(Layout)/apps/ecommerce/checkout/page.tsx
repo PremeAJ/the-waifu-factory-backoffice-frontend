@@ -1,10 +1,10 @@
 
 import { Box } from '@mui/material';
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import PageContainer from '@/app/components/container/PageContainer';
-import ProductCheckout from '@/app/components/apps/ecommerce/productCheckout/ProductCheckout';
-import ChildCard from '@/app/components/shared/ChildCard';
-import { ProductProvider } from '@/app/context/Ecommercecontext/index'
+import PageContainer from '@/components/container/PageContainer';
+import ProductCheckout from '@/components/apps/ecommerce/productCheckout/ProductCheckout';
+import ChildCard from '@/components/shared/ChildCard';
+import { ProductProvider } from '@/context/Ecommercecontext/index'
 
 const BCrumb = [
   {

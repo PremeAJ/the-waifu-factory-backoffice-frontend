@@ -1,7 +1,7 @@
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
-import ApexCandlestick from "@/app/components/charts/ApexCandlestick";
+import ApexCandlestick from "@/components/charts/ApexCandlestick";
 
 const BCrumb = [
   {

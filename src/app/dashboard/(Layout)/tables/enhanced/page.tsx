@@ -1,8 +1,8 @@
 import React from "react";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 
-import TableEnhance from "@/app/components/tables/TableEnhance";
+import TableEnhance from "@/components/tables/TableEnhance";
 
 const BCrumb = [
   {

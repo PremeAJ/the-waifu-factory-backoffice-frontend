@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Grid, Box, Stack, Typography } from "@mui/material";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
 import Image from "next/image";
-import AuthLogin from "@/app/components/auth/AuthLogin";
+import AuthLogin from "@/components/auth/AuthLogin";
 
 export default function Login() {
   return (

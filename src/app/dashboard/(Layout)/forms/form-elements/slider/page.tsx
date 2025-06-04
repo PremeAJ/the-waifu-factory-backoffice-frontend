@@ -5,21 +5,21 @@ import { SliderValueLabelProps } from "@mui/material/Slider";
 import { SliderThumb } from "@mui/material/Slider";
 import { Slider } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import CustomSlider from "@/app/components/forms/theme-elements/CustomSlider";
+import PageContainer from "@/components/container/PageContainer";
+import CustomSlider from "@/components/forms/theme-elements/CustomSlider";
 import { IconVolume, IconVolume2 } from "@tabler/icons-react";
 
-import VolumeSlider from "@/app/components/forms/form-elements/slider/VolumeSlider";
-import RangeDefault from "@/app/components/forms/form-elements/slider/RangeDefault";
-import DiscreteSlider from "@/app/components/forms/form-elements/slider/DiscreteSlider";
-import RangeSlider from "@/app/components/forms/form-elements/slider/RangeSlider";
-import DisabledSliderCode from "@/app/components/forms/form-elements/slider/code/DisabledSliderCode";
-import DefaultsliderCode from "@/app/components/forms/form-elements/slider/code/DefaultsliderCode";
-import VolumesliderCode from "@/app/components/forms/form-elements/slider/code/VolumesliderCode";
-import CustomSliderCode from "@/app/components/forms/form-elements/slider/code/CustomSliderCode";
+import VolumeSlider from "@/components/forms/form-elements/slider/VolumeSlider";
+import RangeDefault from "@/components/forms/form-elements/slider/RangeDefault";
+import DiscreteSlider from "@/components/forms/form-elements/slider/DiscreteSlider";
+import RangeSlider from "@/components/forms/form-elements/slider/RangeSlider";
+import DisabledSliderCode from "@/components/forms/form-elements/slider/code/DisabledSliderCode";
+import DefaultsliderCode from "@/components/forms/form-elements/slider/code/DefaultsliderCode";
+import VolumesliderCode from "@/components/forms/form-elements/slider/code/VolumesliderCode";
+import CustomSliderCode from "@/components/forms/form-elements/slider/code/CustomSliderCode";
 
 const BCrumb = [
   {

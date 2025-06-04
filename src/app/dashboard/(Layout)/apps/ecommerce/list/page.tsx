@@ -1,9 +1,9 @@
 
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import PageContainer from '@/app/components/container/PageContainer';
-import ProductTableList from '@/app/components/apps/ecommerce/ProductTableList/ProductTableList';
-import BlankCard from '@/app/components/shared/BlankCard';
-import { ProductProvider } from '@/app/context/Ecommercecontext/index'
+import PageContainer from '@/components/container/PageContainer';
+import ProductTableList from '@/components/apps/ecommerce/ProductTableList/ProductTableList';
+import BlankCard from '@/components/shared/BlankCard';
+import { ProductProvider } from '@/context/Ecommercecontext/index'
 
 const BCrumb = [
   {

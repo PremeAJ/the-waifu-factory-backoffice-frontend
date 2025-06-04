@@ -1,18 +1,18 @@
 
 import { Button, Grid, Stack } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 
-import GeneralCard from "@/app/components/apps/ecommerce/productAdd/GeneralCard";
-import MediaCard from "@/app/components/apps/ecommerce/productAdd/Media";
-import VariationCard from "@/app/components/apps/ecommerce/productAdd/VariationCard";
-import PricingCard from "@/app/components/apps/ecommerce/productAdd/Pricing";
-import Thumbnail from "@/app/components/apps/ecommerce/productAdd/Thumbnail";
-import StatusCard from "@/app/components/apps/ecommerce/productAdd/Status";
-import ProductDetails from "@/app/components/apps/ecommerce/productAdd/ProductDetails";
-import ProductTemplate from "@/app/components/apps/ecommerce/productAdd/ProductTemplate";
-import BlankCard from "@/app/components/shared/BlankCard";
-import { ProductProvider } from '@/app/context/Ecommercecontext/index'
+import GeneralCard from "@/components/apps/ecommerce/productAdd/GeneralCard";
+import MediaCard from "@/components/apps/ecommerce/productAdd/Media";
+import VariationCard from "@/components/apps/ecommerce/productAdd/VariationCard";
+import PricingCard from "@/components/apps/ecommerce/productAdd/Pricing";
+import Thumbnail from "@/components/apps/ecommerce/productAdd/Thumbnail";
+import StatusCard from "@/components/apps/ecommerce/productAdd/Status";
+import ProductDetails from "@/components/apps/ecommerce/productAdd/ProductDetails";
+import ProductTemplate from "@/components/apps/ecommerce/productAdd/ProductTemplate";
+import BlankCard from "@/components/shared/BlankCard";
+import { ProductProvider } from '@/context/Ecommercecontext/index'
 const BCrumb = [
   {
     to: "/",

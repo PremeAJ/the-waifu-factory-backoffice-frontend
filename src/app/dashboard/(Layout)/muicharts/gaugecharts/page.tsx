@@ -1,12 +1,12 @@
 'use client'
 
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 import Grid from '@mui/material/Grid';
-import BasicGaugesChart from "@/app/components/muicharts/gaugecharts/BasicGaugesChart";
-import ArcDesignChart from "@/app/components/muicharts/gaugecharts/ArcDesignChart";
-import GaugePointerChart from "@/app/components/muicharts/gaugecharts/GaugePointerChart";
+import BasicGaugesChart from "@/components/muicharts/gaugecharts/BasicGaugesChart";
+import ArcDesignChart from "@/components/muicharts/gaugecharts/ArcDesignChart";
+import GaugePointerChart from "@/components/muicharts/gaugecharts/GaugePointerChart";
 
 const BCrumb = [
     {

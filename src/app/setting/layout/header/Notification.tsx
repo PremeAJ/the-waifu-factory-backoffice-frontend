@@ -11,7 +11,7 @@ import {
   Chip,
 } from '@mui/material';
 import * as dropdownData from './data';
-import Scrollbar from '@/app/components/custom-scroll/Scrollbar';
+import Scrollbar from '@/components/custom-scroll/Scrollbar';
 
 import { IconBellRinging } from '@tabler/icons-react';
 import { Stack } from '@mui/system';

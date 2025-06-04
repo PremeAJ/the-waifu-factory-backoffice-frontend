@@ -1,22 +1,22 @@
 import { Grid } from "@mui/material";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ColorLabelRadio from "@/app/components/forms/form-elements/radio/ColorLabel";
-import DefaultRadio from "@/app/components/forms/form-elements/radio/Default";
-import ColorsRadio from "@/app/components/forms/form-elements/radio/Colors";
-import SizesRadio from "@/app/components/forms/form-elements/radio/Sizes";
-import CustomExRadio from "@/app/components/forms/form-elements/radio/Custom";
-import PositionRadio from "@/app/components/forms/form-elements/radio/Position";
+import PageContainer from "@/components/container/PageContainer";
+import ColorLabelRadio from "@/components/forms/form-elements/radio/ColorLabel";
+import DefaultRadio from "@/components/forms/form-elements/radio/Default";
+import ColorsRadio from "@/components/forms/form-elements/radio/Colors";
+import SizesRadio from "@/components/forms/form-elements/radio/Sizes";
+import CustomExRadio from "@/components/forms/form-elements/radio/Custom";
+import PositionRadio from "@/components/forms/form-elements/radio/Position";
 
 // codeModel
-import CustomExRadioCode from "@/app/components/forms/form-elements/radio/code/CustomExRadioCode";
-import ColorLabelRadioCode from "@/app/components/forms/form-elements/radio/code/ColorLabelRadioCode";
-import DefaultRadioCode from "@/app/components/forms/form-elements/radio/code/DefaultRadioCode";
-import ColorsRadioCode from "@/app/components/forms/form-elements/radio/code/ColorsRadioCode";
-import SizesRadioCode from "@/app/components/forms/form-elements/radio/code/SizesRadioCode";
-import PositionRadioCode from "@/app/components/forms/form-elements/radio/code/PositionRadioCode";
+import CustomExRadioCode from "@/components/forms/form-elements/radio/code/CustomExRadioCode";
+import ColorLabelRadioCode from "@/components/forms/form-elements/radio/code/ColorLabelRadioCode";
+import DefaultRadioCode from "@/components/forms/form-elements/radio/code/DefaultRadioCode";
+import ColorsRadioCode from "@/components/forms/form-elements/radio/code/ColorsRadioCode";
+import SizesRadioCode from "@/components/forms/form-elements/radio/code/SizesRadioCode";
+import PositionRadioCode from "@/components/forms/form-elements/radio/code/PositionRadioCode";
 
 const BCrumb = [
   {

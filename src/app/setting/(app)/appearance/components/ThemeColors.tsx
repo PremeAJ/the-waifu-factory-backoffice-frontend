@@ -4,7 +4,7 @@ import { IconCheck } from "@tabler/icons-react";
 import { LightThemeColors } from "@/utils/theme/LightThemeColors";
 import StyledBox from "../StyledBox";
 import { useContext } from "react";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 
 interface colors {
   id: number;

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { createTheme } from '@mui/material/styles';
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 import { useContext, useEffect } from 'react';
 import components from './Components';
 import typography from './Typography';

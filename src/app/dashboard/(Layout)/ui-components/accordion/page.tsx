@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Grid } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
-import Basic from "@/app/components/ui-components/accordion/Basic";
-import Controlled from "@/app/components/ui-components/accordion/Controlled";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
+import Basic from "@/components/ui-components/accordion/Basic";
+import Controlled from "@/components/ui-components/accordion/Controlled";
 
 const BCrumb = [
   {

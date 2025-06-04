@@ -1,5 +1,5 @@
 
-import BlankCard from "@/app/components/shared/BlankCard";
+import BlankCard from "@/components/shared/BlankCard";
 import { getAllPosts, getPostBySlug } from "@/utils/markdown";
 import markdownToHtml from "@/utils/markdownToHtml";
 import { CardContent, Container, Divider } from "@mui/material";
@@ -12,13 +12,13 @@ import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import { IconEye, IconMessage2, IconPoint } from '@tabler/icons-react';
-import PageContainer from '@/app/components/container/PageContainer';
-import C2a from '@/app/components/frontend-pages/shared/c2a';
-import Footer from '@/app/components/frontend-pages/shared/footer';
-import ScrollToTop from '@/app/components/shared/scroll-to-top';
-import HeaderAlert from "@/app/components/frontend-pages/shared/header/HeaderAlert";
-import HpHeader from "@/app/components/frontend-pages/shared/header/HpHeader";
-import Banner from "@/app/components/frontend-pages/blog/banner";
+import PageContainer from '@/components/container/PageContainer';
+import C2a from '@/components/frontend-pages/shared/c2a';
+import Footer from '@/components/frontend-pages/shared/footer';
+import ScrollToTop from '@/components/shared/scroll-to-top';
+import HeaderAlert from "@/components/frontend-pages/shared/header/HeaderAlert";
+import HpHeader from "@/components/frontend-pages/shared/header/HpHeader";
+import Banner from "@/components/frontend-pages/blog/banner";
 
 
 export async function generateMetadata({ params }: any) {

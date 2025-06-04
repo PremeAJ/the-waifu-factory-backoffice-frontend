@@ -3,21 +3,21 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 
 import { Box, Grid } from '@mui/material';
-import PageContainer from '@/app/components/container/PageContainer';
+import PageContainer from '@/components/container/PageContainer';
 
-import WeeklyStats from '@/app/components/dashboards/modern/WeeklyStats';
-import YearlySales from '@/app/components/dashboards/ecommerce/YearlySales';
-import PaymentGateways from '@/app/components/dashboards/ecommerce/PaymentGateways';
-import WelcomeCard from '@/app/components/dashboards/ecommerce/WelcomeCard';
-import Expence from '@/app/components/dashboards/ecommerce/Expence';
-import Growth from '@/app/components/dashboards/ecommerce/Growth';
-import RevenueUpdates from '@/app/components/dashboards/ecommerce/RevenueUpdates';
-import SalesOverview from '@/app/components/dashboards/ecommerce/SalesOverview';
-import SalesTwo from '@/app/components/dashboards/ecommerce/SalesTwo';
-import Sales from '@/app/components/dashboards/ecommerce/Sales';
-import MonthlyEarnings from '@/app/components/dashboards/ecommerce/MonthlyEarnings';
-import ProductPerformances from '@/app/components/dashboards/ecommerce/ProductPerformances';
-import RecentTransactions from '@/app/components/dashboards/ecommerce/RecentTransactions';
+import WeeklyStats from '@/components/dashboards/modern/WeeklyStats';
+import YearlySales from '@/components/dashboards/ecommerce/YearlySales';
+import PaymentGateways from '@/components/dashboards/ecommerce/PaymentGateways';
+import WelcomeCard from '@/components/dashboards/ecommerce/WelcomeCard';
+import Expence from '@/components/dashboards/ecommerce/Expence';
+import Growth from '@/components/dashboards/ecommerce/Growth';
+import RevenueUpdates from '@/components/dashboards/ecommerce/RevenueUpdates';
+import SalesOverview from '@/components/dashboards/ecommerce/SalesOverview';
+import SalesTwo from '@/components/dashboards/ecommerce/SalesTwo';
+import Sales from '@/components/dashboards/ecommerce/Sales';
+import MonthlyEarnings from '@/components/dashboards/ecommerce/MonthlyEarnings';
+import ProductPerformances from '@/components/dashboards/ecommerce/ProductPerformances';
+import RecentTransactions from '@/components/dashboards/ecommerce/RecentTransactions';
 
 const Ecommerce = () => {
 

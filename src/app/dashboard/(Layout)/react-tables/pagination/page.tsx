@@ -2,8 +2,8 @@
 import * as React from "react";
 
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import TablePagination from "@/app/components/react-table/TablePagination";
+import PageContainer from "@/components/container/PageContainer";
+import TablePagination from "@/components/react-table/TablePagination";
 
 const BCrumb = [
   {

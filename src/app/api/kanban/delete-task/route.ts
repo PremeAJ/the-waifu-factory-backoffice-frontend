@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { KanbanData } from "../../../components/apps/kanban/kanbanData";
+import { KanbanData } from "../../../../components/apps/kanban/kanbanData";
 
 export async function DELETE(req: Request) {
   try {

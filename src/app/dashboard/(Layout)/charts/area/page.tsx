@@ -1,7 +1,7 @@
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
-import ApexArea from "@/app/components/charts/ApexArea";
+import ApexArea from "@/components/charts/ApexArea";
 
 const BCrumb = [
   {

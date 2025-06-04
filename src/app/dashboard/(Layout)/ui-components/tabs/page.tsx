@@ -1,16 +1,16 @@
 import * as React from "react";
 import { Grid } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
-import TabIconLabel from "@/app/components/ui-components/tab/TabIconLabel";
-import TabIconBottom from "@/app/components/ui-components/tab/TabIconBottom";
-import TabIconLeft from "@/app/components/ui-components/tab/TabIconLeft";
-import TabIconRight from "@/app/components/ui-components/tab/TabIconRight";
-import TabScrollable from "@/app/components/ui-components/tab/TabScrollable";
-import TabVertical from "@/app/components/ui-components/tab/TabVertical";
-import TabIcon from "@/app/components/ui-components/tab/TabIcon";
-import TabText from "@/app/components/ui-components/tab/TabText";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
+import TabIconLabel from "@/components/ui-components/tab/TabIconLabel";
+import TabIconBottom from "@/components/ui-components/tab/TabIconBottom";
+import TabIconLeft from "@/components/ui-components/tab/TabIconLeft";
+import TabIconRight from "@/components/ui-components/tab/TabIconRight";
+import TabScrollable from "@/components/ui-components/tab/TabScrollable";
+import TabVertical from "@/components/ui-components/tab/TabVertical";
+import TabIcon from "@/components/ui-components/tab/TabIcon";
+import TabText from "@/components/ui-components/tab/TabText";
 
 const BCrumb = [
   {

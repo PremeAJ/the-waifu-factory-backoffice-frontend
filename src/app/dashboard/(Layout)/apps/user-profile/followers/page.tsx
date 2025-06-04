@@ -1,9 +1,9 @@
 import Grid from '@mui/material/Grid'
-import PageContainer from '@/app/components/container/PageContainer';
-import ProfileBanner from '@/app/components/apps/userprofile/profile/ProfileBanner';
-import FollowerCard from '@/app/components/apps/userprofile/followers/FollowerCard';
+import PageContainer from '@/components/container/PageContainer';
+import ProfileBanner from '@/components/apps/userprofile/profile/ProfileBanner';
+import FollowerCard from '@/components/apps/userprofile/followers/FollowerCard';
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import { UserDataProvider } from '@/app/context/UserDataContext';
+import { UserDataProvider } from '@/context/UserDataContext';
 
 
 const BCrumb = [

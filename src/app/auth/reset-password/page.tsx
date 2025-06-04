@@ -1,12 +1,12 @@
 "use client";
 import { Grid, Box, Typography } from "@mui/material";
 import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Image from "next/image";
-import AuthResetPassword from "../../components/auth/AuthResetPassword";
+import AuthResetPassword from "../../../components/auth/AuthResetPassword";
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AuthContext } from "@/app/context/AuthContext";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function ResetPassword() {
   const { verifyOtp } = useContext(AuthContext);

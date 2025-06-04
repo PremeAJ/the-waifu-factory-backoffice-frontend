@@ -1,18 +1,18 @@
 'use client'
 
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 
 import Grid from '@mui/material/Grid';
-import BasicPieChart from "@/app/components/muicharts/piecharts/BasicPieChart";
-import TwoLevelPieChart from "@/app/components/muicharts/piecharts/TwoLevelPieChart";
-import StraightAnglePieChart from "@/app/components/muicharts/piecharts/StraightAnglePieChart";
-import TwoSimplePieChart from "@/app/components/muicharts/piecharts/TwoSimplePieChart";
-import PieChartWithCustomizedLabel from "@/app/components/muicharts/piecharts/PieChartWithCustomizedLabel";
-import PieChartWithPaddingAngleChart from "@/app/components/muicharts/piecharts/PieChartWithPaddingAngleChart";
-import PieChartWithCenterLabelChart from "@/app/components/muicharts/piecharts/PieChartWithCenterLabelChart";
-import OnSeriesItemClickChart from "@/app/components/muicharts/piecharts/OnSeriesItemClickChart";
+import BasicPieChart from "@/components/muicharts/piecharts/BasicPieChart";
+import TwoLevelPieChart from "@/components/muicharts/piecharts/TwoLevelPieChart";
+import StraightAnglePieChart from "@/components/muicharts/piecharts/StraightAnglePieChart";
+import TwoSimplePieChart from "@/components/muicharts/piecharts/TwoSimplePieChart";
+import PieChartWithCustomizedLabel from "@/components/muicharts/piecharts/PieChartWithCustomizedLabel";
+import PieChartWithPaddingAngleChart from "@/components/muicharts/piecharts/PieChartWithPaddingAngleChart";
+import PieChartWithCenterLabelChart from "@/components/muicharts/piecharts/PieChartWithCenterLabelChart";
+import OnSeriesItemClickChart from "@/components/muicharts/piecharts/OnSeriesItemClickChart";
 
 const BCrumb = [
     {

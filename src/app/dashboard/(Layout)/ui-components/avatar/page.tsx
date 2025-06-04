@@ -1,18 +1,18 @@
 import { Grid, Avatar, AvatarGroup, Badge, Stack } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
 import { IconMoodSmile } from "@tabler/icons-react";
 
-import ImageAvatarsCode from "@/app/components/ui-components/avatar/code/ImageAvatarsCode";
-import LetterAvatarsCode from "@/app/components/ui-components/avatar/code/LetterAvatarsCode";
-import IconAvatarsCode from "@/app/components/ui-components/avatar/code/IconAvatarsCode";
-import VariantCode from "@/app/components/ui-components/avatar/code/VariantCode";
-import GroupedCode from "@/app/components/ui-components/avatar/code/GroupedCode";
-import GroupedSizeCode from "@/app/components/ui-components/avatar/code/GroupedSizeCode";
-import WithBadgeCode from "@/app/components/ui-components/avatar/code/WithBadgeCode";
-import SizesCode from "@/app/components/ui-components/avatar/code/SizesCode";
+import ImageAvatarsCode from "@/components/ui-components/avatar/code/ImageAvatarsCode";
+import LetterAvatarsCode from "@/components/ui-components/avatar/code/LetterAvatarsCode";
+import IconAvatarsCode from "@/components/ui-components/avatar/code/IconAvatarsCode";
+import VariantCode from "@/components/ui-components/avatar/code/VariantCode";
+import GroupedCode from "@/components/ui-components/avatar/code/GroupedCode";
+import GroupedSizeCode from "@/components/ui-components/avatar/code/GroupedSizeCode";
+import WithBadgeCode from "@/components/ui-components/avatar/code/WithBadgeCode";
+import SizesCode from "@/components/ui-components/avatar/code/SizesCode";
 
 const BCrumb = [
   {

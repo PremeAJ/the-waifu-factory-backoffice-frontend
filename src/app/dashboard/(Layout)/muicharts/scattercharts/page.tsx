@@ -1,12 +1,12 @@
 'use client'
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 import Grid from '@mui/material/Grid';
-import BasicScatterChart from "@/app/components/muicharts/scattercharts/BasicScatterChart";
-import ScatterDatasetChart from "@/app/components/muicharts/scattercharts/ScatterDatasetChart";
-import VoronoiInteractionChart from "@/app/components/muicharts/scattercharts/VoronoiInteractionChart";
-import ScatterClickNoSnapChart from "@/app/components/muicharts/scattercharts/ScatterClickNoSnapChart";
+import BasicScatterChart from "@/components/muicharts/scattercharts/BasicScatterChart";
+import ScatterDatasetChart from "@/components/muicharts/scattercharts/ScatterDatasetChart";
+import VoronoiInteractionChart from "@/components/muicharts/scattercharts/VoronoiInteractionChart";
+import ScatterClickNoSnapChart from "@/components/muicharts/scattercharts/ScatterClickNoSnapChart";
 
 const BCrumb = [
     {

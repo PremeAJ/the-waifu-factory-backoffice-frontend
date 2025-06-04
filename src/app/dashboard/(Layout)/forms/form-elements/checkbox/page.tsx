@@ -1,25 +1,25 @@
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
 
 import { Grid } from "@mui/material";
 
 // custom components
-import PositionCheckbox from "@/app/components/forms/form-elements/checkbox/Position";
-import SizesCheckbox from "@/app/components/forms/form-elements/checkbox/Sizes";
-import DefaultcolorsCheckbox from "@/app/components/forms/form-elements/checkbox/DefaultColors";
-import CustomEleCheckbox from "@/app/components/forms/form-elements/checkbox/Custom";
-import DefaultCheckbox from "@/app/components/forms/form-elements/checkbox/Default";
-import ColorsCheckbox from "@/app/components/forms/form-elements/checkbox/Colors";
+import PositionCheckbox from "@/components/forms/form-elements/checkbox/Position";
+import SizesCheckbox from "@/components/forms/form-elements/checkbox/Sizes";
+import DefaultcolorsCheckbox from "@/components/forms/form-elements/checkbox/DefaultColors";
+import CustomEleCheckbox from "@/components/forms/form-elements/checkbox/Custom";
+import DefaultCheckbox from "@/components/forms/form-elements/checkbox/Default";
+import ColorsCheckbox from "@/components/forms/form-elements/checkbox/Colors";
 
 // codeModel
-import CustomEleCheckboxCode from "@/app/components/forms/form-elements/checkbox/code/CustomEleCheckboxCode";
-import ColorsCheckboxCode from "@/app/components/forms/form-elements/checkbox/code/ColorsCheckboxCode";
-import DefaultCheckboxCode from "@/app/components/forms/form-elements/checkbox/code/DefaultCheckboxCode";
-import DefaultcolorsCheckboxCode from "@/app/components/forms/form-elements/checkbox/code/DefaultcolorsCheckboxCode";
-import SizesCheckboxCode from "@/app/components/forms/form-elements/checkbox/code/SizesCheckboxCode";
-import PositionCheckboxCode from "@/app/components/forms/form-elements/checkbox/code/PositionCheckboxCode";
+import CustomEleCheckboxCode from "@/components/forms/form-elements/checkbox/code/CustomEleCheckboxCode";
+import ColorsCheckboxCode from "@/components/forms/form-elements/checkbox/code/ColorsCheckboxCode";
+import DefaultCheckboxCode from "@/components/forms/form-elements/checkbox/code/DefaultCheckboxCode";
+import DefaultcolorsCheckboxCode from "@/components/forms/form-elements/checkbox/code/DefaultcolorsCheckboxCode";
+import SizesCheckboxCode from "@/components/forms/form-elements/checkbox/code/SizesCheckboxCode";
+import PositionCheckboxCode from "@/components/forms/form-elements/checkbox/code/PositionCheckboxCode";
 
 const BCrumb = [
   {

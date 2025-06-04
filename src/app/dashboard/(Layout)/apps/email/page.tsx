@@ -1,10 +1,10 @@
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 
-import PageContainer from "@/app/components/container/PageContainer";
-import AppCard from "@/app/components/shared/AppCard";
+import PageContainer from "@/components/container/PageContainer";
+import AppCard from "@/components/shared/AppCard";
 import Image from "next/image";
-import EmailsApp from "@/app/components/apps/email";
-import { EmailContextProvider } from '@/app/context/EmailContext/index'
+import EmailsApp from "@/components/apps/email";
+import { EmailContextProvider } from '@/context/EmailContext/index'
 const Email = () => {
   return (
     <EmailContextProvider>

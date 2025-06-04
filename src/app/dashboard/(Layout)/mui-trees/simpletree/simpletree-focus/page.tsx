@@ -1,11 +1,11 @@
 "use client";
 
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 
 import Grid from '@mui/material/Grid';
-import ApiMethodFocusItem from "@/app/components/muitrees/simpletree/ApiMethodFocusItem";
+import ApiMethodFocusItem from "@/components/muitrees/simpletree/ApiMethodFocusItem";
 
 const BCrumb = [
     {

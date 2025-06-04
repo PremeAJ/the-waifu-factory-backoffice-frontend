@@ -1,23 +1,23 @@
 import { Grid } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
+import PageContainer from "@/components/container/PageContainer";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
 
-import SimpleList from "@/app/components/ui-components/lists/SimpleList";
-import NestedList from "@/app/components/ui-components/lists/NestedList";
-import FolderList from "@/app/components/ui-components/lists/FolderList";
-import SelectedList from "@/app/components/ui-components/lists/SelectedList";
-import ControlsList from "@/app/components/ui-components/lists/ControlsList";
-import SwitchList from "@/app/components/ui-components/lists/SwitchList";
+import SimpleList from "@/components/ui-components/lists/SimpleList";
+import NestedList from "@/components/ui-components/lists/NestedList";
+import FolderList from "@/components/ui-components/lists/FolderList";
+import SelectedList from "@/components/ui-components/lists/SelectedList";
+import ControlsList from "@/components/ui-components/lists/ControlsList";
+import SwitchList from "@/components/ui-components/lists/SwitchList";
 import React from "react";
 
-import SimpleListCode from "@/app/components/ui-components/lists/code/SimpleListCode";
-import NestedListCode from "@/app/components/ui-components/lists/code/NestedListCode";
-import FolderListCode from "@/app/components/ui-components/lists/code/FolderListCode";
-import SelectedListCode from "@/app/components/ui-components/lists/code/SelectedListCode";
-import ControlsListCode from "@/app/components/ui-components/lists/code/ControlsListCode";
-import SwitchListCode from "@/app/components/ui-components/lists/code/SwitchListCode";
+import SimpleListCode from "@/components/ui-components/lists/code/SimpleListCode";
+import NestedListCode from "@/components/ui-components/lists/code/NestedListCode";
+import FolderListCode from "@/components/ui-components/lists/code/FolderListCode";
+import SelectedListCode from "@/components/ui-components/lists/code/SelectedListCode";
+import ControlsListCode from "@/components/ui-components/lists/code/ControlsListCode";
+import SwitchListCode from "@/components/ui-components/lists/code/SwitchListCode";
 
 const BCrumb = [
   {

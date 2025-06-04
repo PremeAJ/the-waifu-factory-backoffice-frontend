@@ -4,10 +4,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import SidebarItems from "./SidebarItems";
 import Logo from "../../shared/logo/Logo";
-import { CustomizerContext } from "@/app/context/setting/customizerContext";
-import config from '@/app/context/setting/config'
+import { CustomizerContext } from "@/context/setting/customizerContext";
+import config from '@/context/setting/config'
 
-import Scrollbar from "@/app/components/custom-scroll/Scrollbar";
+import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import { Profile } from "./SidebarProfile/Profile";
 import { useContext } from "react";
 

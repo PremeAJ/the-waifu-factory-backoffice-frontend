@@ -1,12 +1,12 @@
 "use client";
 
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 import Grid from '@mui/material/Grid';
-import MultiSelectTreeView from "@/app/components/muitrees/simpletree/MultiSelectTreeView";
-import CheckboxSelection from "@/app/components/muitrees/simpletree/CheckboxSelection";
-import ControlledSelectiontree from "@/app/components/muitrees/simpletree/ControlledSelectiontree";
+import MultiSelectTreeView from "@/components/muitrees/simpletree/MultiSelectTreeView";
+import CheckboxSelection from "@/components/muitrees/simpletree/CheckboxSelection";
+import ControlledSelectiontree from "@/components/muitrees/simpletree/ControlledSelectiontree";
 
 const BCrumb = [
     {

@@ -1,12 +1,12 @@
 "use client";
 
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 
 import Grid from '@mui/material/Grid';
-import ControlledExpansionTree from "@/app/components/muitrees/simpletree/ControlledExpansionTree";
-import ApiMethodSetItemExpansion from "@/app/components/muitrees/simpletree/ApiMethodSetItemExpansion";
+import ControlledExpansionTree from "@/components/muitrees/simpletree/ControlledExpansionTree";
+import ApiMethodSetItemExpansion from "@/components/muitrees/simpletree/ApiMethodSetItemExpansion";
 
 const BCrumb = [
     {

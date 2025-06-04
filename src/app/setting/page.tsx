@@ -1,7 +1,7 @@
 "use client";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { redirect } from "next/navigation";
-import PageContainer from "../components/container/PageContainer";
+import PageContainer from "../../components/container/PageContainer";
 import MobileSettingsList from "./layout/MobileSettingsList";
 
 export default function SettingPage() {

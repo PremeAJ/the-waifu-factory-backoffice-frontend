@@ -1,10 +1,10 @@
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import React from "react";
-import CreateInvoiceApp from "@/app/components/apps/invoice/Add-invoice";
-import BlankCard from "@/app/components/shared/BlankCard";
+import CreateInvoiceApp from "@/components/apps/invoice/Add-invoice";
+import BlankCard from "@/components/shared/BlankCard";
 import { CardContent } from "@mui/material";
-import { InvoiceProvider } from "@/app/context/InvoiceContext";
+import { InvoiceProvider } from "@/context/InvoiceContext";
 
 const BCrumb = [
   {

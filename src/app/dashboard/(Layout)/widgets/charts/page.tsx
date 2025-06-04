@@ -1,21 +1,21 @@
 
 import { Grid } from "@mui/material";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import PageContainer from "@/app/components/container/PageContainer";
-import YearlyBreakup from "@/app/components/dashboards/modern/YearlyBreakup";
-import Projects from "@/app/components/dashboards/modern/Projects";
-import Customers from "@/app/components/dashboards/modern/Customers";
-import SalesTwo from "@/app/components/dashboards/ecommerce/SalesTwo";
-import MonthlyEarnings from "@/app/components/dashboards/ecommerce/MonthlyEarnings";
-import SalesOverview from "@/app/components/dashboards/ecommerce/SalesOverview";
-import RevenueUpdates from "@/app/components/dashboards/ecommerce/RevenueUpdates";
-import YearlySales from "@/app/components/dashboards/ecommerce/YearlySales";
-import MostVisited from "@/app/components/widgets/charts/MostVisited";
-import PageImpressions from "@/app/components/widgets/charts/PageImpressions";
-import Followers from "@/app/components/widgets/charts/Followers";
-import Views from "@/app/components/widgets/charts/Views";
-import Earned from "@/app/components/widgets/charts/Earned";
-import CurrentValue from "@/app/components/widgets/charts/CurrentValue";
+import PageContainer from "@/components/container/PageContainer";
+import YearlyBreakup from "@/components/dashboards/modern/YearlyBreakup";
+import Projects from "@/components/dashboards/modern/Projects";
+import Customers from "@/components/dashboards/modern/Customers";
+import SalesTwo from "@/components/dashboards/ecommerce/SalesTwo";
+import MonthlyEarnings from "@/components/dashboards/ecommerce/MonthlyEarnings";
+import SalesOverview from "@/components/dashboards/ecommerce/SalesOverview";
+import RevenueUpdates from "@/components/dashboards/ecommerce/RevenueUpdates";
+import YearlySales from "@/components/dashboards/ecommerce/YearlySales";
+import MostVisited from "@/components/widgets/charts/MostVisited";
+import PageImpressions from "@/components/widgets/charts/PageImpressions";
+import Followers from "@/components/widgets/charts/Followers";
+import Views from "@/components/widgets/charts/Views";
+import Earned from "@/components/widgets/charts/Earned";
+import CurrentValue from "@/components/widgets/charts/CurrentValue";
 
 const BCrumb = [
   {

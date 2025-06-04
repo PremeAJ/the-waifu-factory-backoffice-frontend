@@ -1,11 +1,11 @@
 "use client";
 
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
 import React from "react";
 import Grid from '@mui/material/Grid';
-import BasicCustomIcons from "@/app/components/muitrees/simpletree/BasicCustomIcons";
-import CustomTreeItemView from "@/app/components/muitrees/simpletree/CustomTreeItemView";
+import BasicCustomIcons from "@/components/muitrees/simpletree/BasicCustomIcons";
+import CustomTreeItemView from "@/components/muitrees/simpletree/CustomTreeItemView";
 
 const BCrumb = [
     {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ProductsData } from "@/app/components/apps/ecommerce/productData";
+import { ProductsData } from "@/components/apps/ecommerce/productData";
 
 // Api to fetch all products
 export async function GET() {

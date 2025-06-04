@@ -1,17 +1,17 @@
 'use client'
 
 import * as React from 'react';
-import PageContainer from '@/app/components/container/PageContainer';
+import PageContainer from '@/components/container/PageContainer';
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
 import { Grid, Tabs, Tab, Box, CardContent, Divider } from '@mui/material';
 
 // components
-import AccountTab from '@/app/components/pages/account-setting/AccountTab';
+import AccountTab from '@/components/pages/account-setting/AccountTab';
 import { IconArticle, IconBell, IconLock, IconUserCircle } from '@tabler/icons-react';
-import BlankCard from '@/app/components/shared/BlankCard';
-import NotificationTab from '@/app/components/pages/account-setting/NotificationTab';
-import BillsTab from '@/app/components/pages/account-setting/BillsTab';
-import SecurityTab from '@/app/components/pages/account-setting/SecurityTab';
+import BlankCard from '@/components/shared/BlankCard';
+import NotificationTab from '@/components/pages/account-setting/NotificationTab';
+import BillsTab from '@/components/pages/account-setting/BillsTab';
+import SecurityTab from '@/components/pages/account-setting/SecurityTab';
 
 const BCrumb = [
   {

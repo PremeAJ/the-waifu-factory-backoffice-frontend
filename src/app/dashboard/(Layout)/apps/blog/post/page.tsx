@@ -1,7 +1,7 @@
 import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
-import PageContainer from '@/app/components/container/PageContainer';
-import BlogListing from '@/app/components/apps/blog/BlogListing';
-import { BlogProvider } from '@/app/context/BlogContext/index';
+import PageContainer from '@/components/container/PageContainer';
+import BlogListing from '@/components/apps/blog/BlogListing';
+import { BlogProvider } from '@/context/BlogContext/index';
 const Blog = () => {
   return (
     <BlogProvider>

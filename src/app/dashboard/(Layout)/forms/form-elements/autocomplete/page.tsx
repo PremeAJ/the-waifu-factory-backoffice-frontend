@@ -1,26 +1,26 @@
 import { Grid } from "@mui/material";
 
-import ComboBoxAutocomplete from "@/app/components/forms/form-elements/autoComplete/ComboBoxAutocomplete";
-import CountrySelectAutocomplete from "@/app/components/forms/form-elements/autoComplete/CountrySelectAutocomplete";
-import ControlledStateAutocomplete from "@/app/components/forms/form-elements/autoComplete/ControlledStateAutocomplete";
-import FreeSoloAutocomplete from "@/app/components/forms/form-elements/autoComplete/FreeSoloAutocomplete";
-import MultipleValuesAutocomplete from "@/app/components/forms/form-elements/autoComplete/MultipleValuesAutocomplete";
-import CheckboxesAutocomplete from "@/app/components/forms/form-elements/autoComplete/CheckboxesAutocomplete";
-import SizesAutocomplete from "@/app/components/forms/form-elements/autoComplete/SizesAutocomplete";
+import ComboBoxAutocomplete from "@/components/forms/form-elements/autoComplete/ComboBoxAutocomplete";
+import CountrySelectAutocomplete from "@/components/forms/form-elements/autoComplete/CountrySelectAutocomplete";
+import ControlledStateAutocomplete from "@/components/forms/form-elements/autoComplete/ControlledStateAutocomplete";
+import FreeSoloAutocomplete from "@/components/forms/form-elements/autoComplete/FreeSoloAutocomplete";
+import MultipleValuesAutocomplete from "@/components/forms/form-elements/autoComplete/MultipleValuesAutocomplete";
+import CheckboxesAutocomplete from "@/components/forms/form-elements/autoComplete/CheckboxesAutocomplete";
+import SizesAutocomplete from "@/components/forms/form-elements/autoComplete/SizesAutocomplete";
 
-import PageContainer from "@/app/components/container/PageContainer";
+import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
-import ParentCard from "@/app/components/shared/ParentCard";
-import ChildCard from "@/app/components/shared/ChildCard";
+import ParentCard from "@/components/shared/ParentCard";
+import ChildCard from "@/components/shared/ChildCard";
 
 // codeModel
-import ComboBoxCode from "@/app/components/forms/form-elements/autoComplete/code/ComboBoxCode";
-import CountrySelectCode from "@/app/components/forms/form-elements/autoComplete/code/CountrySelectCode";
-import ControlledStateCode from "@/app/components/forms/form-elements/autoComplete/code/ControlledStateCode";
-import FreeSoloCode from "@/app/components/forms/form-elements/autoComplete/code/FreeSoloCode";
-import MultipleValuesCode from "@/app/components/forms/form-elements/autoComplete/code/MultipleValuesCode";
-import CheckboxesCode from "@/app/components/forms/form-elements/autoComplete/code/CheckboxesCode";
-import SizesCode from "@/app/components/forms/form-elements/autoComplete/code/SizesCode";
+import ComboBoxCode from "@/components/forms/form-elements/autoComplete/code/ComboBoxCode";
+import CountrySelectCode from "@/components/forms/form-elements/autoComplete/code/CountrySelectCode";
+import ControlledStateCode from "@/components/forms/form-elements/autoComplete/code/ControlledStateCode";
+import FreeSoloCode from "@/components/forms/form-elements/autoComplete/code/FreeSoloCode";
+import MultipleValuesCode from "@/components/forms/form-elements/autoComplete/code/MultipleValuesCode";
+import CheckboxesCode from "@/components/forms/form-elements/autoComplete/code/CheckboxesCode";
+import SizesCode from "@/components/forms/form-elements/autoComplete/code/SizesCode";
 
 const BCrumb = [
   {
