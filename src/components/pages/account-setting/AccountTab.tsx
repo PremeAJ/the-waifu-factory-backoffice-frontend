@@ -59,7 +59,8 @@ const currencies = [
 
 const AccountTab = () => {
   const { user } = useContext(UserContext);
-  const { firstName, lastName, avatarUrl, email } = user || {};
+  const { firstName, lastName, avatarUrl, users } = user || {};
+  const { email } = users || {};
   const [location, setLocation] = React.useState("india");
 
   const handleChange1 = (event: {

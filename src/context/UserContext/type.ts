@@ -9,6 +9,10 @@ export interface userType {
   role: string | null;
   permissionId: string | null;
   companyId: string | null;
+  users:{
+    email: string;
+    phone: string | null;
+  }
 }
 
 export interface SettingProfile {

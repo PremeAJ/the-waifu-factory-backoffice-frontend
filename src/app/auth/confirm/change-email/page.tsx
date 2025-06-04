@@ -1,16 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Box, Typography, Container, Paper, CircularProgress } from "@mui/material";
 import { IconCheck, IconMail, IconAlertTriangle } from "@tabler/icons-react";
 import BaseButton from "@/components/forms/theme-elements/BaseButton";
-import { UserContext } from "@/context/UserContext";
-import { AuthContext } from "@/context/AuthContext";
 
 const EmailConfirmPage = () => {
-  const { syncUser } = useContext(UserContext);
-  const { exchangeCodeForSession } = useContext(AuthContext)
   const searchParams = useSearchParams();
   const router = useRouter();
 

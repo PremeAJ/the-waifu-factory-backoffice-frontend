@@ -1,5 +1,4 @@
 import Loading from "@/app/loading";
-import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";

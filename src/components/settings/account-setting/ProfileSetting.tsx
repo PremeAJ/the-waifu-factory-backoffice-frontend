@@ -30,7 +30,8 @@ const AccountTab = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
   const { user, uploadAvatar, updateUser } = useContext(UserContext);
-  const { firstName, lastName, avatarUrl, email, phone, nickName } = user || {};
+  const { firstName, lastName, avatarUrl, nickName, users } = user || {};
+  const { email, phone} = users || {};
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hover, setHover] = useState(false);
   const [loading, setLoading] = useState(false);

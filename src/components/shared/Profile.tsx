@@ -16,7 +16,8 @@ const Profile = () => {
   if (!user) {
     return null;
   }
-  const { email, avatarUrl, firstName, lastName } = user;
+  const { avatarUrl, firstName, lastName, users } = user;
+  const { email } = users || {};
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };

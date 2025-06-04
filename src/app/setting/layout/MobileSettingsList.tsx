@@ -28,8 +28,8 @@ const MobileSettingsList = () => {
   const theme = useTheme();
   const router = useRouter();
   const { user } = useContext(UserContext);
-  const { email, firstName, lastName, avatarUrl } = user || {};
-  
+  const { firstName, lastName, avatarUrl, users } = user || {};
+  const {email, phone } = users || {};
   // State เก็บ ID ของเมนูที่เปิดอยู่
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
