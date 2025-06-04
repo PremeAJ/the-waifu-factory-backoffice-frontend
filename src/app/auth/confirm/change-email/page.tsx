@@ -10,10 +10,10 @@ import { AuthContext } from "@/context/AuthContext";
 
 const EmailConfirmPage = () => {
   const { syncUser } = useContext(UserContext);
-  const {exchangeCodeForSession} = useContext(AuthContext)
+  const { exchangeCodeForSession } = useContext(AuthContext)
   const searchParams = useSearchParams();
   const router = useRouter();
-  
+
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<"loading" | "first_confirmed" | "email_changed" | "error">("loading");
   const [message, setMessage] = useState("");
@@ -34,24 +34,11 @@ const EmailConfirmPage = () => {
           setMessage("ยืนยันอีเมลแรกสำเร็จ");
           setLoading(false);
         } else if (code) {
-          // อีเมลที่สอง - มี code มาให้ verify ผ่าน server action
+          // อีเมลที่สอง - มี code มาให้ ผ่านเลยไม่ต้อง verify
           try {
             setLoading(true);
-            
-            // ใช้ server action เพื่อ verify code
-            const result = await exchangeCodeForSession(code);
-            
-            if (result.error) {
-              console.error("Code verification failed:", result.error);
-              setStatus("error");
-              setMessage("เกิดข้อผิดพลาดในการยืนยันอีเมล");
-            } else {
-              // Sync user data
-              await syncUser();
-              
-              setStatus("email_changed");
-              setMessage("เปลี่ยนอีเมลสำเร็จ");
-            }
+            setStatus("email_changed");
+            setMessage("เปลี่ยนอีเมลสำเร็จ");
           } catch (error) {
             console.error("Unexpected error:", error);
             setStatus("error");
@@ -73,7 +60,7 @@ const EmailConfirmPage = () => {
     };
 
     handleConfirmation();
-  }, [searchParams, syncUser]);
+  }, []);
 
   const handleGoToApp = () => {
     router.push("/setting");
@@ -128,7 +115,7 @@ const EmailConfirmPage = () => {
               <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
                 คุณได้ยืนยันอีเมลเดิมเรียบร้อยแล้ว
               </Typography>
-              
+
               <Box sx={{ backgroundColor: "#fff3cd", p: 2, borderRadius: 2, mb: 3 }}>
                 <Box display="flex" alignItems="center" justifyContent="center" mb={1}>
                   <IconMail size={20} color="#856404" style={{ marginRight: 8 }} />
@@ -161,19 +148,41 @@ const EmailConfirmPage = () => {
               <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
                 อีเมลของคุณได้รับการเปลี่ยนแปลงเรียบร้อยแล้ว
               </Typography>
-              
+
               <Box sx={{ backgroundColor: "#d4edda", p: 2, borderRadius: 2, mb: 3 }}>
-                <Typography variant="body2" color="#155724">
-                  ✅ ยืนยันอีเมลเดิมสำเร็จ<br/>
-                  ✅ ยืนยันอีเมลใหม่สำเร็จ<br/>
-                  ✅ เปลี่ยนอีเมลเสร็จสิ้น
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                  <IconCheck size={16} color="#155724" />
+                  <Typography variant="body2" color="#155724">
+                    ยืนยันอีเมลเดิมสำเร็จ
+                  </Typography>
+                </Box>
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                  <IconCheck size={16} color="#155724" />
+                  <Typography variant="body2" color="#155724">
+                    ยืนยันอีเมลใหม่สำเร็จ
+                  </Typography>
+                </Box>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <IconCheck size={16} color="#155724" />
+                  <Typography variant="body2" color="#155724">
+                    เปลี่ยนอีเมลเสร็จสิ้น
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ backgroundColor: "#fff3cd", p: 2, borderRadius: 2, mb: 3 }}>
+                <Typography variant="body2" color="#856404" fontWeight="bold" mb={1}>
+                  โปรดเข้าสู่ระบบใหม่
+                </Typography>
+                <Typography variant="body2" color="#856404">
+                  เพื่อความปลอดภัย กรุณาเข้าสู่ระบบใหม่ด้วยอีเมลใหม่ของคุณ
                 </Typography>
               </Box>
 
               <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap" }}>
                 <BaseButton
-                  label="ไปที่การตั้งค่า"
-                  onClick={handleGoToApp}
+                  label="เข้าสู่ระบบใหม่"
+                  onClick={() => router.push("/dashboard/auth/login")}
                   fullWidth={false}
                   color="primary"
                 />
@@ -198,7 +207,7 @@ const EmailConfirmPage = () => {
               <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
                 {message}
               </Typography>
-              
+
               <Box sx={{ backgroundColor: "#f8d7da", p: 2, borderRadius: 2, mb: 3 }}>
                 <Typography variant="body2" color="#721c24">
                   กรุณาลองใหม่อีกครั้ง หรือติดต่อทีมงานหากปัญหายังคงอยู่
