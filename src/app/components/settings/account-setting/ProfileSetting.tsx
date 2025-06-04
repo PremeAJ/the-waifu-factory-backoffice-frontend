@@ -9,13 +9,7 @@ import { UserContext } from "@/app/context/UserContext";
 import BaseTextField from "../../forms/theme-elements/BaseTextField";
 import BaseButton from "../../forms/theme-elements/BaseButton";
 import { useFormik } from "formik";
-import {
-  emailValidatorNotRequired,
-  firstNameSchemaNotRequired,
-  lastNameSchemaNotRequired,
-  nickNameSchemaNotRequired,
-  phoneSchemaNotRequired,
-} from "@/utils/validator/yup";
+import { firstNameSchemaNotRequired, lastNameSchemaNotRequired, nickNameSchemaNotRequired } from "@/utils/validator/yup";
 import { IconPencil, IconMail, IconDeviceMobile } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { removeUndefinedAndNull } from "@/utils/function/object/object-cleaner";
@@ -27,8 +21,6 @@ const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
   lastName: lastNameSchemaNotRequired,
   nickName: nickNameSchemaNotRequired,
-  // phone: phoneSchemaNotRequired,
-  // email: emailValidatorNotRequired,
 });
 
 const AccountTab = () => {
@@ -48,7 +40,7 @@ const AccountTab = () => {
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
 
   // Dialog state
-  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [dialog, setDialog] = useState("");
 
   const router = useRouter();
 
@@ -70,19 +62,19 @@ const AccountTab = () => {
 
   // เปิด dialog ยืนยันยกเลิก
   const handleCancel = () => {
-    setOpenCancelDialog(true);
+    setDialog("cancel");
   };
 
   // ยืนยันยกเลิก: reset form และ redirect
   const handleConfirmCancel = () => {
     formik.resetForm();
-    setOpenCancelDialog(false);
+    setDialog("");
     if (isMobile) router.back();
   };
 
   // ปิด dialog
   const handleCloseDialog = () => {
-    setOpenCancelDialog(false);
+    setDialog("");
   };
 
   const handleSubmit = async (data: any) => {
@@ -110,8 +102,12 @@ const AccountTab = () => {
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, lg: 6 }}>
-        <Typography variant="h5" mb={1}> {t("Setting.ChangeProfile")} </Typography>
-        <Typography color="textSecondary" mb={3}> {t("Setting.ChangeProfileDesc")} </Typography>
+        <Typography variant="h5" mb={1}>
+          {t("Setting.ChangeProfile")}
+        </Typography>
+        <Typography color="textSecondary" mb={3}>
+          {t("Setting.ChangeProfileDesc")}
+        </Typography>
         <Box textAlign="center" display="flex" justifyContent="center">
           <Box sx={{ position: "relative", display: "inline-block" }} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
             <Avatar
@@ -153,23 +149,43 @@ const AccountTab = () => {
             )}
           </Box>
         </Box>
-        <Typography variant="subtitle1" color="textSecondary" mb={4} mt={2} textAlign="center" fontSize={12}> {t("Setting.AllowedFile")} </Typography>
+        <Typography variant="subtitle1" color="textSecondary" mb={4} mt={2} textAlign="center" fontSize={12}>
+          {t("Setting.AllowedFile")}
+        </Typography>
       </Grid>
       <Grid size={{ xs: 12, lg: 6 }}>
-        <Typography variant="h5" mb={1}> {t("Setting.PersonalDetails")} </Typography>
-        <Typography color="textSecondary" mb={3}> {t("Setting.PersonalDetailsDesc")} </Typography>
+        <Typography variant="h5" mb={1}>
+          {t("Setting.PersonalDetails")}
+        </Typography>
+        <Typography color="textSecondary" mb={3}>
+          {t("Setting.PersonalDetailsDesc")}
+        </Typography>
         <form onSubmit={formik.handleSubmit}>
           <Grid container columnSpacing={3}>
-            <Grid size={{ xs: 12, sm: 6 }}> <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" /> </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}> <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" /> </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}> <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" /> </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseLabel htmlFor="email" sx={{ display: "flex", alignItems: "center", gap: 1 }}> <IconMail size={18} style={{ marginRight: 4 }} /> {t("common.email")} <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span> </BaseLabel>
-              <BaseTextField name="email" placeholder="-" value={email} disabled={true} />
+              <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseLabel htmlFor="phone" sx={{ display: "flex", alignItems: "center", gap: 1 }}> <IconDeviceMobile size={18} style={{ marginRight: 4 }} /> {t("common.phone")} <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span> </BaseLabel>
-              <BaseTextField name="phone" placeholder="-" value={phone} disabled={true} />
+              <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <BaseLabel htmlFor="email" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <IconMail size={18} style={{ marginRight: 4 }} /> {t("common.email")}
+                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }} onClick={() => setDialog("verifyEmail")}>
+                  เปลี่ยน
+                </span>
+              </BaseLabel>
+              <BaseTextField name="email" value={email || "-"} disabled={true} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <BaseLabel htmlFor="phone" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <IconDeviceMobile size={18} style={{ marginRight: 4 }} /> {t("common.phone")}
+                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span>
+              </BaseLabel>
+              <BaseTextField name="phone" value={phone || "-"} disabled={true} />
             </Grid>
           </Grid>
           <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }} mt={3}>
@@ -190,12 +206,24 @@ const AccountTab = () => {
       />
 
       <TransitionDialog
-        open={openCancelDialog}
+        open={dialog === "cancel"}
         title="ยืนยันการยกเลิก"
         content="หากยืนยันยกเลิก การเปลี่ยนแปลงทั้งหมดจะไม่ถูกบันทึก"
         confirmText="ยืนยัน"
         cancelText="ยกเลิก"
-        confirmColor="error"
+        onConfirm={handleConfirmCancel}
+        onClose={handleCloseDialog}
+      />
+
+      <TransitionDialog
+        open={dialog === "verifyEmail"}
+        icon="/images/breadcrumb/emailSv.png"
+        iconSize={100}
+        fullScreen={isMobile}
+        title="ยืนยันอีเมล"
+        content={`We'll need to verify your old email address before you can change it, ${email}, Please check your inbox for a verification link.`}
+        confirmText="ส่งรหัสยืนยัน"
+        cancelText="ยกเลิก"
         onConfirm={handleConfirmCancel}
         onClose={handleCloseDialog}
       />
