@@ -76,9 +76,10 @@ export async function createClient() {
               ...options,
               httpOnly: true,
               secure: true,
-              sameSite: "none",
+              sameSite: "lax",
               path: "/",
               maxAge: 7 * 24 * 60 * 60,
+              //  domain: process.env.NEXT_PUBLIC_DOMAIN?.replace(/^https?:\/\//, ''),
             })
           );
         } catch {
@@ -191,9 +192,11 @@ export async function supabaseExchangeCodeForSession(code: string) {
     await logError({
       errorCode: error.code,
       ip: await getClientIP(),
-      endpoint: "updateUser: Password",
+      endpoint: "updateUser: exchangeCodeForSession",
     });
   }
+  console.log("🚀 ~ supabaseExchangeCodeForSession ~ data:", data)
+  console.log("🚀 ~ supabaseExchangeCodeForSession ~ error:", error)
   return { data, error: error?.code };
 }
 
@@ -264,4 +267,27 @@ export async function supabaseUploadFile(payload: UploadFileType) {
   }
   const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(extPath);
   return urlData.publicUrl;
+}
+
+export async function supabaseUpdateEmail(newEmail: string) {
+  const supabase = await createClient();
+  
+  const { data, error } = await supabase.auth.updateUser(
+    {
+      email: newEmail,
+    },
+    {
+      emailRedirectTo: new URL("/auth/confirm/change-email?type=email_change", process.env.NEXT_PUBLIC_DOMAIN!).toString(),
+    }
+  );
+
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "updateUser: Email",
+    });
+  }
+
+  return { data, error: error?.code };
 }

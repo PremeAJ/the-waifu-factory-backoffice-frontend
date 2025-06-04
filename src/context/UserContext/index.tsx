@@ -3,15 +3,17 @@ import React, { createContext, useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
 import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { SettingProfile, userType } from "./type";
-import { supabaseUploadFile, UploadFileType } from "@/utils/supabase/server";
+import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType } from "@/utils/supabase/server";
 import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
 
 export type UserContextType = {
   user: userType | null;
   setUser: React.Dispatch<React.SetStateAction<userType | null>>; // เพิ่ม setUser
   syncUser: () => {};
-  uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};
   updateUser: (payload: SettingProfile) => {};
+  uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};
+  checkExistEmail: (email: string) => Promise<boolean>;
+  updateUserEmail: (newEmail: string) => Promise<any>;
   loading: boolean;
   error: Error | null;
 };
@@ -33,12 +35,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<Error | null>(initialConfig.error);
 
   // Fetch Data
-  const {
-    data: usersData,
-    isLoading: isUsersLoading,
-    error: usersError,
-    mutate: userMutate,
-  } = useSWR("/api/users/me", getFetcher);
+  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate } = useSWR("/api/users/me", getFetcher);
 
   useEffect(() => {
     if (usersData) {
@@ -80,14 +77,33 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  async function updateUserEmail(newEmail: string) {
+    const response = await  supabaseUpdateEmail(newEmail);
+    return response
+  }
+
+  async function checkExistEmail(email: string) {
+    try {
+      // เพิ่มการ encode email ก่อนส่งไป API
+      const encodedEmail = encodeURIComponent(email);
+      const response = await getFetcher(`/api/users/email/${encodedEmail}/exists`);
+      return response.data.exists;
+    } catch (error: any) {
+      setError(error);
+      return false;
+    }
+  }
+
   const value: UserContextType = {
     user,
     error,
     loading,
     setUser,
     syncUser,
-    uploadAvatar,
     updateUser,
+    uploadAvatar,
+    checkExistEmail,
+    updateUserEmail,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

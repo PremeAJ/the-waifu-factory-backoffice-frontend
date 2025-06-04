@@ -11,16 +11,16 @@ const Transition = React.forwardRef(function Transition(props: TransitionProps &
 interface TransitionDialogProps {
   open: boolean;
   title: string;
-  content: string;
+  content: string | React.ReactNode; // เปลี่ยนให้รองรับ JSX
   confirmText?: string;
   cancelText?: string;
   onConfirm: () => void;
   onClose: () => void;
   confirmColor?: "primary" | "error" | "success";
   loading?: boolean;
-  icon?: string; // เพิ่ม prop สำหรับ icon path
-  iconSize?: number; // เพิ่ม prop สำหรับขนาด icon
-  fullScreen?: boolean; // เพิ่ม prop สำหรับ full screen
+  icon?: string;
+  iconSize?: number;
+  fullScreen?: boolean;
 }
 
 const TransitionDialog: React.FC<TransitionDialogProps> = ({
@@ -45,7 +45,7 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
     aria-describedby="alert-dialog-slide-description"
     fullScreen={fullScreen}
   >
-    <Box my={fullScreen ? "50%" : 0} maxWidth={"sm"} alignSelf={"center"}>
+    <Box my={fullScreen ? "40%" : 0} maxWidth={"sm"} alignSelf={"center"}>
       <DialogTitle sx={{ textAlign: "center", pb: icon ? 1 : 2 }}>
         {icon && (
           <Box display="flex" justifyContent="center" mb={2}>
@@ -62,29 +62,62 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
         {title}
       </DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-slide-description" sx={{ textAlign: "center" }}>
-          {content}
-        </DialogContentText>
+        {typeof content === "string" ? (
+          <DialogContentText id="alert-dialog-slide-description" sx={{ textAlign: "center" }}>
+            {content}
+          </DialogContentText>
+        ) : (
+          <Box id="alert-dialog-slide-description">
+            {content}
+          </Box>
+        )}
       </DialogContent>
       <DialogActions sx={fullScreen ? {
         flexDirection: "column",
         gap: 2,
         padding: 3
       } : {}}>
-        <BaseButton 
-          label={confirmText} 
-          onClick={onConfirm} 
-          disabled={loading} 
-          fullWidth={fullScreen} 
-          {...(confirmColor ? { color: confirmColor } : null)}
-        />
-        <BaseButton 
-          label={cancelText} 
-          onClick={onClose} 
-          disabled={loading} 
-          fullWidth={fullScreen} 
-          variant="outlined" 
-        />
+        {fullScreen ? (
+          <>
+            <BaseButton 
+              label={confirmText} 
+              onClick={onConfirm} 
+              disabled={loading} 
+              fullWidth={true}
+              loading={loading}
+              {...(confirmColor ? { color: confirmColor } : null)}
+            />
+            {cancelText && (
+              <BaseButton 
+                label={cancelText} 
+                onClick={onClose} 
+                disabled={loading} 
+                fullWidth={true}
+                variant="outlined" 
+              />
+            )}
+          </>
+        ) : (
+          <>
+            {cancelText && (
+              <BaseButton 
+                label={cancelText} 
+                onClick={onClose} 
+                disabled={loading} 
+                fullWidth={false}
+                variant="outlined" 
+              />
+            )}
+            <BaseButton 
+              label={confirmText} 
+              onClick={onConfirm} 
+              disabled={loading} 
+              fullWidth={false}
+              loading={loading}
+              {...(confirmColor ? { color: confirmColor } : null)}
+            />
+          </>
+        )}
       </DialogActions>
     </Box>
   </Dialog>

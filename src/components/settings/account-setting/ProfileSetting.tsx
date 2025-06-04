@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useCallback } from "react";
+import React, { useContext, useState, useRef } from "react";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import { Grid, Typography, useMediaQuery } from "@mui/material";
@@ -16,6 +16,7 @@ import { removeUndefinedAndNull } from "@/utils/function/object/object-cleaner";
 import BaseLabel from "../../forms/theme-elements/BaseLabel";
 import AvatarCropDialog from "../../ui-components/dialog/AvatarCropDialog";
 import TransitionDialog from "../../ui-components/dialog/TransitionDialog";
+import EmailChangeFlow from "./EmailChangeFlow";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -39,8 +40,9 @@ const AccountTab = () => {
   const [openCrop, setOpenCrop] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
 
-  // Dialog state
-  const [dialog, setDialog] = useState("");
+  // Dialog states
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showEmailChangeFlow, setShowEmailChangeFlow] = useState(false);
 
   const router = useRouter();
 
@@ -60,21 +62,15 @@ const AccountTab = () => {
     }
   };
 
-  // เปิด dialog ยืนยันยกเลิก
+  // Handle cancel confirmation
   const handleCancel = () => {
-    setDialog("cancel");
+    setShowCancelDialog(true);
   };
 
-  // ยืนยันยกเลิก: reset form และ redirect
   const handleConfirmCancel = () => {
     formik.resetForm();
-    setDialog("");
-    if (isMobile) router.back();
-  };
-
-  // ปิด dialog
-  const handleCloseDialog = () => {
-    setDialog("");
+    setShowCancelDialog(false);
+    if (isMobile) router.replace("/setting");
   };
 
   const handleSubmit = async (data: any) => {
@@ -91,8 +87,6 @@ const AccountTab = () => {
       firstName: firstName || "",
       lastName: lastName || "",
       nickName: nickName || "",
-      // email: email || "",
-      // phone: phone || "",
     },
     validationSchema: validationSchema,
     enableReinitialize: true,
@@ -153,6 +147,7 @@ const AccountTab = () => {
           {t("Setting.AllowedFile")}
         </Typography>
       </Grid>
+      
       <Grid size={{ xs: 12, lg: 6 }}>
         <Typography variant="h5" mb={1}>
           {t("Setting.PersonalDetails")}
@@ -174,7 +169,7 @@ const AccountTab = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <BaseLabel htmlFor="email" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <IconMail size={18} style={{ marginRight: 4 }} /> {t("common.email")}
-                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }} onClick={() => setDialog("verifyEmail")}>
+                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }} onClick={() => setShowEmailChangeFlow(true)}>
                   เปลี่ยน
                 </span>
               </BaseLabel>
@@ -189,11 +184,13 @@ const AccountTab = () => {
             </Grid>
           </Grid>
           <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }} mt={3}>
-            <BaseButton preset="save" fullWidth={false} type="submit" loading={loading} disabled={!formik.dirty || loading} />
             <BaseButton preset="cancel" variant="text" fullWidth={false} loading={loading} onClick={handleCancel} />
+            <BaseButton preset="save" fullWidth={false} type="submit" loading={loading} disabled={!formik.dirty || loading} />
           </Stack>
         </form>
       </Grid>
+
+      {/* Avatar Crop Dialog */}
       <AvatarCropDialog
         open={openCrop}
         imageSrc={imageSrc}
@@ -205,27 +202,22 @@ const AccountTab = () => {
         }}
       />
 
+      {/* Cancel Confirmation Dialog */}
       <TransitionDialog
-        open={dialog === "cancel"}
+        open={showCancelDialog}
         title="ยืนยันการยกเลิก"
         content="หากยืนยันยกเลิก การเปลี่ยนแปลงทั้งหมดจะไม่ถูกบันทึก"
         confirmText="ยืนยัน"
         cancelText="ยกเลิก"
         onConfirm={handleConfirmCancel}
-        onClose={handleCloseDialog}
+        onClose={() => setShowCancelDialog(false)}
       />
 
-      <TransitionDialog
-        open={dialog === "verifyEmail"}
-        icon="/images/breadcrumb/emailSv.png"
-        iconSize={100}
-        fullScreen={isMobile}
-        title="ยืนยันอีเมล"
-        content={`We'll need to verify your old email address before you can change it, ${email}, Please check your inbox for a verification link.`}
-        confirmText="ส่งรหัสยืนยัน"
-        cancelText="ยกเลิก"
-        onConfirm={handleConfirmCancel}
-        onClose={handleCloseDialog}
+      {/* Email Change Flow */}
+      <EmailChangeFlow
+        open={showEmailChangeFlow}
+        onClose={() => setShowEmailChangeFlow(false)}
+        currentEmail={email || ""}
       />
     </Grid>
   );
