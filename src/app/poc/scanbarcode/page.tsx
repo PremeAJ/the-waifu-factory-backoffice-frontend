@@ -94,7 +94,7 @@ const BarcodeScannerPOC = () => {
     try {
       setError("");
       
-      if (!codeReader.current || !videoRef.current) {
+      if (!codeReader.current) {
         throw new Error('Code reader not initialized');
       }
 
@@ -103,11 +103,13 @@ const BarcodeScannerPOC = () => {
         video: {
           deviceId: currentDeviceId ? { exact: currentDeviceId } : undefined,
           facingMode: currentDeviceId ? undefined : { ideal: 'environment' },
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          width: { ideal: 1920, min: 640 },
+          height: { ideal: 1080, min: 480 },
+          aspectRatio: 16/9
         }
       };
 
+      console.log('Requesting camera access...');
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       setStream(mediaStream);
       setHasPermission(true);
@@ -115,15 +117,30 @@ const BarcodeScannerPOC = () => {
       // ตั้งค่า video element
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        await videoRef.current.play();
+        
+        // รอให้ video โหลดก่อน
+        await new Promise((resolve, reject) => {
+          if (!videoRef.current) return reject();
+          
+          videoRef.current.onloadedmetadata = () => {
+            console.log('Video metadata loaded');
+            resolve(true);
+          };
+          
+          videoRef.current.onerror = (e) => {
+            console.error('Video error:', e);
+            reject(e);
+          };
+          
+          videoRef.current.play();
+        });
       }
 
       setIsScanning(true);
+      console.log('Starting continuous scan...');
       
-      // รอให้ video พร้อม แล้วค่อยเริ่มสแกน
-      setTimeout(() => {
-        scanContinuous();
-      }, 500);
+      // ใช้ decodeFromVideoDevice แทน (ประสิทธิภาพดีกว่า)
+      startZXingScan();
 
     } catch (err: any) {
       console.error('Error starting scanner:', err);
@@ -141,22 +158,21 @@ const BarcodeScannerPOC = () => {
     }
   };
 
-  const scanContinuous = async () => {
-    if (!isScanning || !codeReader.current || !videoRef.current) {
-      return;
-    }
+  // วิธีใหม่ที่ใช้ ZXing built-in method
+  const startZXingScan = async () => {
+    if (!codeReader.current || !videoRef.current) return;
 
     try {
-      // ตรวจสอบว่า video พร้อมหรือยัง
-      if (videoRef.current.readyState !== videoRef.current.HAVE_ENOUGH_DATA) {
-        setTimeout(scanContinuous, 100);
-        return;
-      }
-
-      // สแกนจาก video element โดยตรง
-      const result = await codeReader.current.decodeFromVideoElement(videoRef.current);
+      console.log('Starting ZXing scan with device:', currentDeviceId);
       
+      const result = await codeReader.current.decodeOnceFromVideoDevice(
+        currentDeviceId || undefined,
+        videoRef.current
+      );
+
       if (result) {
+        console.log('Barcode detected:', result.getText());
+        
         const newResult: ScanResult = {
           text: result.getText(),
           format: result.getBarcodeFormat().toString(),
@@ -173,32 +189,32 @@ const BarcodeScannerPOC = () => {
           navigator.vibrate(200);
         }
 
-        // พักสักครู่แล้วสแกนต่อ (เพื่อไม่ให้ duplicate)
+        // สแกนต่อเนื่อง
         setTimeout(() => {
           if (isScanning) {
-            scanContinuous();
+            startZXingScan();
           }
         }, 1000);
       } else {
-        // ไม่พบ barcode ลองสแกนต่อ
+        // ไม่พบ barcode ลองใหม่
         setTimeout(() => {
           if (isScanning) {
-            scanContinuous();
+            startZXingScan();
           }
-        }, 100);
+        }, 200);
       }
 
     } catch (err) {
       if (!(err instanceof NotFoundException)) {
-        console.error('Scan error:', err);
+        console.error('ZXing scan error:', err);
       }
       
       // ลองสแกนต่อ
-      setTimeout(() => {
-        if (isScanning) {
-          scanContinuous();
-        }
-      }, 100);
+      if (isScanning) {
+        setTimeout(() => {
+          startZXingScan();
+        }, 200);
+      }
     }
   };
 
@@ -315,16 +331,21 @@ const BarcodeScannerPOC = () => {
               height: 'auto',
               backgroundColor: '#000',
               display: isScanning ? 'block' : 'none',
+              border: '2px solid #ccc' // เพิ่มเพื่อดู boundary
             }}
             playsInline
             muted
             autoPlay
+            controls={false} // ปิด controls
             onLoadedMetadata={() => {
-              console.log('Video loaded, ready to scan');
+              console.log('Video loaded, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
             }}
             onError={(e) => {
               console.error('Video error:', e);
               setError('เกิดข้อผิดพลาดกับวิดีโอ');
+            }}
+            onPlay={() => {
+              console.log('Video started playing');
             }}
           />
 
@@ -486,6 +507,24 @@ const BarcodeScannerPOC = () => {
           • รองรับ: QR Code, Code 128, Code 39, EAN-13, EAN-8, UPC-A, UPC-E
         </Typography>
       </Paper>
+
+      {/* Debug Info */}
+      {isScanning && (
+        <Box sx={{ mt: 2, p: 2, backgroundColor: 'grey.100', borderRadius: 1 }}>
+          <Typography variant="caption" display="block">
+            Camera: {devices.find(d => d.deviceId === currentDeviceId)?.label || 'Unknown'}
+          </Typography>
+          <Typography variant="caption" display="block">
+            Video Ready: {videoRef.current?.readyState === 4 ? 'Yes' : 'No'}
+          </Typography>
+          <Typography variant="caption" display="block">
+            Stream Active: {stream?.active ? 'Yes' : 'No'}
+          </Typography>
+          <Typography variant="caption" display="block">
+            Torch Support: {(stream?.getVideoTracks()[0]?.getCapabilities() as any).torch ? 'Yes' : 'No'}
+          </Typography>
+        </Box>
+      )}
 
       <style jsx>{`
         @keyframes pulse {
