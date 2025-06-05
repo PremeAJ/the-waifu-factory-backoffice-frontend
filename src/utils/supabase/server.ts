@@ -291,3 +291,21 @@ export async function supabaseUpdateEmail(newEmail: string) {
 
   return { data, error: error?.code };
 }
+
+export async function supabaseUpdatePhone(newPhone: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.updateUser({
+    phone: newPhone,
+  });
+  console.log("🚀 ~ supabaseUpdatePhone ~ error:", error)
+  console.log("🚀 ~ supabaseUpdatePhone ~ data:", data)
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "updateUser: Phone",
+    });
+  }  
+
+  return { data, error: error?.code };
+}

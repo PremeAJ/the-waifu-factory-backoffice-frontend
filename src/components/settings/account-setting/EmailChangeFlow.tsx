@@ -4,6 +4,7 @@ import { IconAlertTriangle, IconInfoCircle, IconMail } from "@tabler/icons-react
 import { UserContext } from "@/context/UserContext";
 import BaseTextField from "../../forms/theme-elements/BaseTextField";
 import TransitionDialog from "../../ui-components/dialog/TransitionDialog";
+import { emailRegex } from "@/utils/validator/regex";
 
 interface EmailChangeFlowProps {
   open: boolean;
@@ -31,7 +32,6 @@ const EmailChangeFlow: React.FC<EmailChangeFlowProps> = ({ open, onClose, curren
     }
 
     // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(newEmail)) {
       setEmailError("รูปแบบอีเมลไม่ถูกต้อง");
       return;

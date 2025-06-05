@@ -17,6 +17,7 @@ import BaseLabel from "../../forms/theme-elements/BaseLabel";
 import AvatarCropDialog from "../../ui-components/dialog/AvatarCropDialog";
 import TransitionDialog from "../../ui-components/dialog/TransitionDialog";
 import EmailChangeFlow from "./EmailChangeFlow";
+import PhoneChangeFlow from "./PhoneChangeFlow";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -44,6 +45,7 @@ const AccountTab = () => {
   // Dialog states
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showEmailChangeFlow, setShowEmailChangeFlow] = useState(false);
+  const [showPhoneChangeFlow, setShowPhoneChangeFlow] = useState(false);
 
   const router = useRouter();
 
@@ -179,7 +181,12 @@ const AccountTab = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <BaseLabel htmlFor="phone" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <IconDeviceMobile size={18} style={{ marginRight: 4 }} /> {t("common.phone")}
-                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>เปลี่ยน</span>
+                <span 
+                  style={{ color: theme.palette.primary.main, cursor: "pointer" }}
+                  onClick={() => setShowPhoneChangeFlow(true)}
+                >
+                  {phone ? "เปลี่ยน" : "เพิ่ม"}
+                </span>
               </BaseLabel>
               <BaseTextField name="phone" value={phone || "-"} disabled={true} />
             </Grid>
@@ -219,6 +226,13 @@ const AccountTab = () => {
         open={showEmailChangeFlow}
         onClose={() => setShowEmailChangeFlow(false)}
         currentEmail={email || ""}
+      />
+
+      {/* Phone Change Flow */}
+      <PhoneChangeFlow
+        open={showPhoneChangeFlow}
+        onClose={() => setShowPhoneChangeFlow(false)}
+        currentPhone={phone || ""}
       />
     </Grid>
   );

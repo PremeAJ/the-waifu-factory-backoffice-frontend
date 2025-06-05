@@ -3,8 +3,9 @@ import React, { createContext, useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
 import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { SettingProfile, userType } from "./type";
-import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType } from "@/utils/supabase/server";
+import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdatePhone, supabaseVerifyOtp } from "@/utils/supabase/server";
 import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
+import { VerifyOtpParams } from "@supabase/supabase-js";
 
 export type UserContextType = {
   user: userType | null;
@@ -16,6 +17,8 @@ export type UserContextType = {
   updateUserEmail: (newEmail: string) => Promise<any>;
   loading: boolean;
   error: Error | null;
+  updateUserPhone: (newPhone: string) => Promise<any>;
+  verifyPhoneOtp: (phone: string, token: string) => Promise<any>;
 };
 
 // สร้าง Context
@@ -78,8 +81,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   async function updateUserEmail(newEmail: string) {
-    const response = await  supabaseUpdateEmail(newEmail);
-    return response
+    const response = await supabaseUpdateEmail(newEmail);
+    return response;
   }
 
   async function checkExistEmail(email: string) {
@@ -94,6 +97,20 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  async function updateUserPhone(newPhone: string) {
+    const response = await supabaseUpdatePhone(newPhone);
+    return response;
+  }
+
+  async function verifyPhoneOtp(phone: string, token: string) {
+    const payload: VerifyOtpParams = { phone, token, type: "phone_change" };
+    const response = await supabaseVerifyOtp(payload);
+    if (!response.error) {
+      await userMutate();
+    }
+    return response;
+  }
+
   const value: UserContextType = {
     user,
     error,
@@ -102,8 +119,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     syncUser,
     updateUser,
     uploadAvatar,
+    verifyPhoneOtp,
     checkExistEmail,
     updateUserEmail,
+    updateUserPhone,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
