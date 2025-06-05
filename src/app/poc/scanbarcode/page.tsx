@@ -159,63 +159,32 @@ const BarcodeScannerPOC = () => {
   };
 
   // วิธีใหม่ที่ใช้ ZXing built-in method
-  const startZXingScan = async () => {
+  const startZXingScan = () => {
     if (!codeReader.current || !videoRef.current) return;
 
-    try {
-      console.log('Starting ZXing scan with device:', currentDeviceId);
-      
-      const result = await codeReader.current.decodeOnceFromVideoDevice(
-        currentDeviceId || undefined,
-        videoRef.current
-      );
-
-      if (result) {
-        console.log('Barcode detected:', result.getText());
-        
-        const newResult: ScanResult = {
-          text: result.getText(),
-          format: result.getBarcodeFormat().toString(),
-          timestamp: new Date()
-        };
-
-        setScanResults(prev => [newResult, ...prev.slice(0, 4)]);
-        
-        // เล่นเสียงแจ้งเตือน
-        playBeepSound();
-        
-        // แสดง vibration บนมือถือ
-        if ('vibrate' in navigator) {
-          navigator.vibrate(200);
+    // เรียก decodeFromVideoDevice แบบ continuous
+    codeReader.current.decodeFromVideoDevice(
+      currentDeviceId || null,
+      videoRef.current,
+      (result, err) => {
+        if (result) {
+          // ป้องกัน duplicate barcode ซ้ำ ๆ
+          setScanResults(prev => {
+            if (prev[0]?.text === result.getText()) return prev;
+            return [{ 
+              text: result.getText(), 
+              format: result.getBarcodeFormat().toString(), 
+              timestamp: new Date() 
+            }, ...prev.slice(0, 4)];
+          });
+          playBeepSound();
+          if ('vibrate' in navigator) navigator.vibrate(200);
         }
-
-        // สแกนต่อเนื่อง
-        setTimeout(() => {
-          if (isScanning) {
-            startZXingScan();
-          }
-        }, 1000);
-      } else {
-        // ไม่พบ barcode ลองใหม่
-        setTimeout(() => {
-          if (isScanning) {
-            startZXingScan();
-          }
-        }, 200);
+        if (err && !(err instanceof NotFoundException)) {
+          console.error('ZXing scan error:', err);
+        }
       }
-
-    } catch (err) {
-      if (!(err instanceof NotFoundException)) {
-        console.error('ZXing scan error:', err);
-      }
-      
-      // ลองสแกนต่อ
-      if (isScanning) {
-        setTimeout(() => {
-          startZXingScan();
-        }, 200);
-      }
-    }
+    );
   };
 
   const stopScanning = () => {
