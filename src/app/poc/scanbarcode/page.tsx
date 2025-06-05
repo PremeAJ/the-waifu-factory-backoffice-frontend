@@ -101,11 +101,9 @@ const BarcodeScannerPOC = () => {
       // ขอสิทธิ์เข้าถึงกล้องก่อน
       const constraints: MediaStreamConstraints = {
         video: {
-          deviceId: currentDeviceId ? { exact: currentDeviceId } : undefined,
-          facingMode: currentDeviceId ? undefined : { ideal: 'environment' },
-          width: { ideal: 1920, min: 640 },
-          height: { ideal: 1080, min: 480 },
-          aspectRatio: 16/9
+          facingMode: { ideal: 'environment' }, // กล้องหลัง
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
         }
       };
 
