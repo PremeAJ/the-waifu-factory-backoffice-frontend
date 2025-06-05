@@ -43,12 +43,12 @@ const Menuitems: NavGroup[] = [
         icon: IconKey,
         href: "/setting/account/security",
       },
-      {
-        id: uniqueId(),
-        title: "หมายเลขโทรศัพท์",
-        icon: IconDeviceMobile,
-        href: "/setting/account/phone",
-      },
+      // {
+      //   id: uniqueId(),
+      //   title: "หมายเลขโทรศัพท์",
+      //   icon: IconDeviceMobile,
+      //   href: "/setting/account/phone",
+      // },
     ],
   },
   {
