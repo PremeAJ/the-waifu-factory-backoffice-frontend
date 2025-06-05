@@ -11,7 +11,7 @@ async function handleResponse(res: Response, method: string, url: string) {
         errorText = await res.text();
       } catch {}
     }
-    console.error(`[${method}] ${url} | API Error:`, res.status, errorText);
+    console.debug(`[${method}] ${url} | API Error:`, res.status, errorText);
     throw new Error(errorText);
   }
   // log response ที่สำเร็จ
