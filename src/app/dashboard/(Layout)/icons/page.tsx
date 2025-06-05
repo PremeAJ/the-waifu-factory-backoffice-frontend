@@ -3,7 +3,7 @@
 
 import PageContainer from '@/components/container/PageContainer';
 import DashboardCard from '@/components/shared/DashboardCard';
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import { Typography, Link, Box, Divider } from '@mui/material';
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";

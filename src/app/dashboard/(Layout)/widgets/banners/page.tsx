@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import WelcomeCard from "@/components/dashboards/ecommerce/WelcomeCard";
 import Banner1 from "@/components/widgets/banners/Banner1";

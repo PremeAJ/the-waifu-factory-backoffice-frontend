@@ -2,10 +2,10 @@ import { CardContent, Grid } from "@mui/material";
 
 // common components
 import PageContainer from "@/components/container/PageContainer";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import ChildCard from "@/components/shared/ChildCard";
 import BlankCard from "@/components/shared/BlankCard";
-import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
+import Logo from "@/components/shared/logo/Logo";
 
 // custom components
 import FVLogin from "@/components/forms/form-validation/FVLogin";

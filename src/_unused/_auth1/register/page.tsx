@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Grid, Box, Typography, Stack } from "@mui/material";
 import PageContainer from "@/components/container/PageContainer";
-import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
+import Logo from "@/components/shared/logo/Logo";
 
 import Image from "next/image";
 import AuthRegister from "@/components/auth/AuthRegister";

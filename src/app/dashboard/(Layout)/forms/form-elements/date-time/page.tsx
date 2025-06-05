@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 
 import BasicDateTime from "@/components/forms/form-elements/date-time/BasicDateTime";

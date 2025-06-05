@@ -8,7 +8,7 @@ import config from "@/context/setting/config";
 
 import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import { useContext } from "react";
-import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
+import Logo from "@/components/shared/logo/Logo";
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));

@@ -1,5 +1,5 @@
 
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import PageContainer from '@/components/container/PageContainer';
 import ProductTableList from '@/components/apps/ecommerce/ProductTableList/ProductTableList';
 import BlankCard from '@/components/shared/BlankCard';

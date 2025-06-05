@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { SliderThumb } from '@mui/material/Slider';
 
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import PageContainer from '@/components/container/PageContainer';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';

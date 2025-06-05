@@ -1,6 +1,6 @@
 
 import { Box } from '@mui/material';
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import PageContainer from '@/components/container/PageContainer';
 import ProductCheckout from '@/components/apps/ecommerce/productCheckout/ProductCheckout';
 import ChildCard from '@/components/shared/ChildCard';

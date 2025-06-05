@@ -1,5 +1,5 @@
 import * as React from "react";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import TableRowSelection from "@/components/react-table/TableRowSelection";
 

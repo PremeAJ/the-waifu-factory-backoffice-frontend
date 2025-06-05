@@ -3,10 +3,8 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { styled, useTheme } from "@mui/material/styles";
 import React, { useContext, useEffect } from "react";
-import Header from "./layout/vertical/header/Header";
-import Sidebar from "./layout/vertical/sidebar/Sidebar";
-import Navigation from "./layout/horizontal/navbar/Navigation";
-import HorizontalHeader from "./layout/horizontal/header/Header";
+import Header from "./layout/header/Header";
+import Sidebar from "./layout/sidebar/Sidebar";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import config from "@/context/setting/config";
 import AuthGuard from "./authGuard";
@@ -27,21 +25,14 @@ const PageWrapper = styled("div")(() => ({
   backgroundColor: "transparent",
 }));
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { activeLayout, isLayout, activeMode, isCollapse } =
-    useContext(CustomizerContext);
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const { activeLayout, isLayout, activeMode, isCollapse } = useContext(CustomizerContext);
   const theme = useTheme();
   const MiniSidebarWidth = config.miniSidebarWidth;
 
   return (
     <AuthGuard>
-      <MainWrapper
-        className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}
-      >
+      <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
         <title>Modernize NextJs</title>
         {/* ------------------------------------------- */}
         {/* Sidebar */}
@@ -63,9 +54,8 @@ export default function RootLayout({
           {/* ------------------------------------------- */}
           {/* Header */}
           {/* ------------------------------------------- */}
-          {activeLayout === "horizontal" ? <HorizontalHeader /> : <Header />}
+          <Header />
           {/* PageContent */}
-          {activeLayout === "horizontal" ? <Navigation /> : ""}
           <Container
             sx={{
               pt: "30px",

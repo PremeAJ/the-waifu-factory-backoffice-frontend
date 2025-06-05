@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { format, isValid, parseISO } from "date-fns";
 import Link from "next/link";
-import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
+import Logo from "@/components/shared/logo/Logo";
 import { InvoiceList } from "@/utils/types/apps/invoice";
 
 const InvoiceDetail = () => {

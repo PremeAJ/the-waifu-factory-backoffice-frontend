@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
 import ChildCard from "@/components/shared/ChildCard";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import CustomExSwitch from "@/components/forms/form-elements/switch/Custom";
 import DefaultSwitch from "@/components/forms/form-elements/switch/Default";

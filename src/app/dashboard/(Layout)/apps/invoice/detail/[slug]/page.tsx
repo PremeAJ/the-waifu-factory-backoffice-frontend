@@ -1,5 +1,5 @@
 import React from "react";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import { InvoiceProvider } from "@/context/InvoiceContext/index";
 import InvoiceDetail from "@/components/apps/invoice/Invoice-detail/index";

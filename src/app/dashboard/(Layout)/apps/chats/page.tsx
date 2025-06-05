@@ -1,5 +1,5 @@
 import React from "react";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import AppCard from "@/components/shared/AppCard";
 import ChatsApp from "@/components/apps/chats";

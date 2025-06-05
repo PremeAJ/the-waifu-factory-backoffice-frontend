@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, Stack, Button, Alert, AlertTitle } from "@mui/material";
 
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import ParentCard from "@/components/shared/ParentCard";
 import ChildCard from "@/components/shared/ChildCard";

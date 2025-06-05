@@ -9,7 +9,7 @@ import CheckboxesAutocomplete from "@/components/forms/form-elements/autoComplet
 import SizesAutocomplete from "@/components/forms/form-elements/autoComplete/SizesAutocomplete";
 
 import PageContainer from "@/components/container/PageContainer";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import ParentCard from "@/components/shared/ParentCard";
 import ChildCard from "@/components/shared/ChildCard";
 

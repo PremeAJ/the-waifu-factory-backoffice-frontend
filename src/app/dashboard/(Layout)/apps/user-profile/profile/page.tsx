@@ -5,7 +5,7 @@ import ProfileBanner from "@/components/apps/userprofile/profile/ProfileBanner";
 import IntroCard from "@/components/apps/userprofile/profile/IntroCard";
 import PhotosCard from "@/components/apps/userprofile/profile/PhotosCard";
 import Post from "@/components/apps/userprofile/profile/Post";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import { UserDataProvider } from "@/context/UserDataContext";
 
 const BCrumb = [

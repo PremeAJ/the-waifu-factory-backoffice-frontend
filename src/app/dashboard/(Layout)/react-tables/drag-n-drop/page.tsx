@@ -1,5 +1,5 @@
 import React from "react";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import TableRowDragDrop from "../../../../../components/react-table/TableRowDragDrop";
 import TableColumnDragDrop from "../../../../../components/react-table/TableColumnDragDrop";

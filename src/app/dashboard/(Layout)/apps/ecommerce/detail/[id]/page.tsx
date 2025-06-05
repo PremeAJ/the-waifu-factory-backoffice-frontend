@@ -2,7 +2,7 @@
 
 import { Grid } from '@mui/material';
 import ProductCarousel from '@/components/apps/ecommerce/productDetail/ProductCarousel';
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import PageContainer from '@/components/container/PageContainer';
 import ProductDetail from '@/components/apps/ecommerce/productDetail';
 import ProductDesc from '@/components/apps/ecommerce/productDetail/ProductDesc';

@@ -1,4 +1,4 @@
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import PageContainer from '@/components/container/PageContainer';
 import TicketListing from '@/components/apps/tickets/TicketListing';
 import TicketFilter from '@/components/apps/tickets/TicketFilter';

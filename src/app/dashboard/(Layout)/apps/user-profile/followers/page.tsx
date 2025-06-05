@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid'
 import PageContainer from '@/components/container/PageContainer';
 import ProfileBanner from '@/components/apps/userprofile/profile/ProfileBanner';
 import FollowerCard from '@/components/apps/userprofile/followers/FollowerCard';
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import { UserDataProvider } from '@/context/UserDataContext';
 
 

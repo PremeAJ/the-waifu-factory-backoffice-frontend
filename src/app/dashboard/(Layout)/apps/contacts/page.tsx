@@ -1,5 +1,5 @@
 import PageContainer from "@/components/container/PageContainer";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import AppCard from "@/components/shared/AppCard";
 import ContactApp from "@/components/apps/contacts/index";
 import { ContactContextProvider } from '@/context/Conatactcontext/index'

@@ -1,4 +1,4 @@
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import PageContainer from '@/components/container/PageContainer';
 import BlogListing from '@/components/apps/blog/BlogListing';
 import { BlogProvider } from '@/context/BlogContext/index';

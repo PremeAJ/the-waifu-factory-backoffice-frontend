@@ -19,7 +19,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./Calendar.css";
 
 import PageContainer from "@/components/container/PageContainer";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import { IconCheck } from "@tabler/icons-react";
 import BlankCard from "@/components/shared/BlankCard";
 import Events, { EventType } from "@/app/dashboard/(Layout)/EventData";

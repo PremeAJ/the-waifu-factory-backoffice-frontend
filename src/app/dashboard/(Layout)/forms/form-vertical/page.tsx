@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@mui/material";
 
 // components
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import ParentCard from "@/components/shared/ParentCard";
 

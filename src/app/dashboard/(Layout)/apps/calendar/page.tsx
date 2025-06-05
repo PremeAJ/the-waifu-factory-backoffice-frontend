@@ -1,7 +1,7 @@
 import PageContainer from "@/components/container/PageContainer";
 import Calendar from "@/components/apps/calendar/index";
 import React from "react";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 
 const page = () => {
   return (

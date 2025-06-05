@@ -2,7 +2,7 @@
 import React from 'react';
 import { defineAbility, Ability } from '@casl/ability';
 import { Can } from '@casl/react';
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import PageContainer from '@/components/container/PageContainer';
 import { Box, Button, List, ListItem, Stack } from '@mui/material';
 import ParentCard from '@/components/shared/ParentCard';

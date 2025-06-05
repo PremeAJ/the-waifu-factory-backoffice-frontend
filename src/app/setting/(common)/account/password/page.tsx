@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import PageContainer from '@/components/container/PageContainer';
-import Breadcrumb from '@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb';
+import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import { Grid, Tabs, Tab, Box, CardContent, Divider } from '@mui/material';
 
 // components

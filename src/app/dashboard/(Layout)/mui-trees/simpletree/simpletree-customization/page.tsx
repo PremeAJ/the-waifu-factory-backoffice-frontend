@@ -1,7 +1,7 @@
 "use client";
 
 import PageContainer from "@/components/container/PageContainer";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import React from "react";
 import Grid from '@mui/material/Grid';
 import BasicCustomIcons from "@/components/muitrees/simpletree/BasicCustomIcons";

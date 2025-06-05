@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import ProductTableList from "@/components/apps/ecommerce/ProductTableList/ProductTableList";
 import { ProductProvider } from "@/context/Ecommercecontext";

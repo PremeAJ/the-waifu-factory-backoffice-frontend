@@ -18,7 +18,7 @@ import {
   Button,
   Skeleton,
 } from "@mui/material";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import {
   IconEye,
   IconMessage2,

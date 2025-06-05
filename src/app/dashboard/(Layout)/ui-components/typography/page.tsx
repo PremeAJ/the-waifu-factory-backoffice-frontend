@@ -1,6 +1,6 @@
 "use client";
 
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import TypographyCommon from "@/components/ui-components/typography/TypographyCommon";
 

@@ -7,7 +7,7 @@ import { Slider } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import ParentCard from "@/components/shared/ParentCard";
 import ChildCard from "@/components/shared/ChildCard";
-import Breadcrumb from "@/app/dashboard/(Layout)/layout/shared/breadcrumb/Breadcrumb";
+import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
 import CustomSlider from "@/components/forms/theme-elements/CustomSlider";
 import { IconVolume, IconVolume2 } from "@tabler/icons-react";

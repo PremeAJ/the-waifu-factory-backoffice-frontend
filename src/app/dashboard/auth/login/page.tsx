@@ -2,7 +2,7 @@
 import { Grid, Box, Card } from "@mui/material";
 
 // components
-import Logo from "@/app/dashboard/(Layout)/layout/shared/logo/Logo";
+import Logo from "@/components/shared/logo/Logo";
 import PageContainer from "@/components/container/PageContainer";
 import { ServerLanguage } from "@/components/shared/Language/ServerLanguage";
 import AuthLogin from "@/components/auth/AuthLogin";
