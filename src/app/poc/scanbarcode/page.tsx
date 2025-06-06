@@ -163,7 +163,8 @@ const BarcodeScannerPOC = () => {
   const startZXingScan = () => {
     if (!codeReader.current || !videoRef.current) return;
 
-    codeReader.current.decodeFromVideoDevice(currentDeviceId || null, videoRef.current, (result, err) => {
+    // ส่ง null เพื่อให้ ZXing ใช้ stream ที่ผูกกับ videoRef (ซึ่งเป็นกล้องหลังจาก constraints)
+    codeReader.current.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
       if (result && !scanCooldownRef.current) {
         scanCooldownRef.current = true;
         console.log("Barcode detected:", result.getText());
