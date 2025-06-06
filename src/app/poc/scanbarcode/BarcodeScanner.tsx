@@ -15,11 +15,7 @@ interface BarcodeScannerProps {
   showResult?: boolean;
 }
 
-const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
-  onScan,
-  onError,
-  showResult = true,
-}) => {
+const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showResult = true }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<ScanResult[]>([]);
@@ -61,7 +57,20 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       setStream(mediaStream);
       setHasPermission(true);
-
+      const videoTrack = mediaStream.getVideoTracks()[0];
+      const capabilities = videoTrack.getCapabilities();
+      if ("zoom" in capabilities) {
+        try {
+          const zoom = capabilities.zoom as { max?: number; min?: number };
+          if (zoom && typeof zoom.max === "number") {
+            const zoomValue = Math.min(2, zoom.max);
+            await videoTrack.applyConstraints({ advanced: [{ zoom: zoomValue }] } as any);
+            console.log("Zoom set to", zoomValue);
+          }
+        } catch (e) {
+          console.warn("Zoom not supported or failed:", e);
+        }
+      }
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
         await new Promise((resolve, reject) => {
