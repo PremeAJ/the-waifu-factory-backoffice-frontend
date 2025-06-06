@@ -275,13 +275,12 @@ const BarcodeScannerPOC = () => {
     navigator.clipboard.writeText(text);
   };
 
-  // เพิ่มฟังก์ชันนี้ใน component
-  function cropCenterAndDraw(video: HTMLVideoElement, canvas: HTMLCanvasElement, cropRatio = 0.5) {
+  // ฟังก์ชันใหม่: วาด crop กลาง + enhance ภาพ (grayscale + contrast)
+  function drawAndEnhanceFrame(video: HTMLVideoElement, canvas: HTMLCanvasElement, cropRatio = 0.5) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const vw = video.videoWidth;
     const vh = video.videoHeight;
-    // cropRatio = 0.5 คือเอา 50% ตรงกลาง
     const cw = vw * cropRatio;
     const ch = vh * cropRatio;
     const sx = (vw - cw) / 2;
@@ -289,13 +288,28 @@ const BarcodeScannerPOC = () => {
     canvas.width = cw;
     canvas.height = ch;
     ctx.drawImage(video, sx, sy, cw, ch, 0, 0, cw, ch);
+
+    // แปลงเป็น grayscale และเพิ่ม contrast
+    const imageData = ctx.getImageData(0, 0, cw, ch);
+    const data = imageData.data;
+    // ปรับ contrast (factor 1.5) และ grayscale
+    const contrast = 1.5;
+    for (let i = 0; i < data.length; i += 4) {
+      // grayscale
+      const avg = (data[i] + data[i+1] + data[i+2]) / 3;
+      // contrast
+      const contrasted = ((avg - 128) * contrast) + 128;
+      data[i] = data[i+1] = data[i+2] = Math.max(0, Math.min(255, contrasted));
+      // alpha คงเดิม
+    }
+    ctx.putImageData(imageData, 0, 0);
   }
 
-  // ฟังก์ชันนี้ต้องอยู่ใน async function เท่านั้น
+  // แก้ไขฟังก์ชัน scanSmallBarcodeFromCanvas ให้ใช้ drawAndEnhanceFrame
   const scanSmallBarcodeFromCanvas = () => {
     if (!videoRef.current || !canvasRef.current || !codeReader.current) return;
 
-    cropCenterAndDraw(videoRef.current, canvasRef.current, 0.5); // 0.5 = 50% ตรงกลาง
+    drawAndEnhanceFrame(videoRef.current, canvasRef.current, 0.5);
 
     try {
       const canvas = canvasRef.current as HTMLCanvasElement;
