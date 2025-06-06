@@ -275,6 +275,56 @@ const BarcodeScannerPOC = () => {
     navigator.clipboard.writeText(text);
   };
 
+  // เพิ่มฟังก์ชันนี้ใน component
+  function cropCenterAndDraw(video: HTMLVideoElement, canvas: HTMLCanvasElement, cropRatio = 0.5) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    // cropRatio = 0.5 คือเอา 50% ตรงกลาง
+    const cw = vw * cropRatio;
+    const ch = vh * cropRatio;
+    const sx = (vw - cw) / 2;
+    const sy = (vh - ch) / 2;
+    canvas.width = cw;
+    canvas.height = ch;
+    ctx.drawImage(video, sx, sy, cw, ch, 0, 0, cw, ch);
+  }
+
+  // ฟังก์ชันนี้ต้องอยู่ใน async function เท่านั้น
+  const scanSmallBarcodeFromCanvas = () => {
+    if (!videoRef.current || !canvasRef.current || !codeReader.current) return;
+
+    cropCenterAndDraw(videoRef.current, canvasRef.current, 0.5); // 0.5 = 50% ตรงกลาง
+
+    try {
+      const canvas = canvasRef.current as HTMLCanvasElement;
+      const image = new window.Image();
+      image.src = canvas.toDataURL();
+      image.onload = () => {
+        try {
+          const result = codeReader.current!.decode(image);
+          if (result) {
+            setScanResults(prev => {
+              if (prev[0]?.text === result.getText()) return prev;
+              return [{
+                text: result.getText(),
+                format: result.getBarcodeFormat().toString(),
+                timestamp: new Date()
+              }, ...prev.slice(0, 4)];
+            });
+            playBeepSound();
+            if ('vibrate' in navigator) navigator.vibrate(200);
+          }
+        } catch (e) {
+          // ไม่เจอ barcode ใน frame นี้
+        }
+      };
+    } catch (e) {
+      // ไม่เจอ barcode ใน frame นี้
+    }
+  };
+
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h4" sx={{ mb: 3, textAlign: 'center' }}>
@@ -331,22 +381,11 @@ const BarcodeScannerPOC = () => {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: 200,
-                height: 200,
-                border: '2px solid #ff0000',
+                width: 100,
+                height: 100,
+                border: '2px solid #00f',
                 borderRadius: 2,
-                pointerEvents: 'none',
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: -1,
-                  left: -1,
-                  right: -1,
-                  bottom: -1,
-                  border: '2px solid rgba(255,255,255,0.5)',
-                  borderRadius: 2,
-                  animation: 'pulse 2s infinite'
-                }
+                pointerEvents: 'none'
               }}
             />
           )}
