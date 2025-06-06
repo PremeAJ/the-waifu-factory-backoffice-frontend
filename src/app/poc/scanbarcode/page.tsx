@@ -99,6 +99,24 @@ const BarcodeScannerPOC = () => {
       setStream(mediaStream);
       setHasPermission(true);
 
+      // ลอง zoom กล้อง (ถ้าอุปกรณ์รองรับ)
+      const videoTrack = mediaStream.getVideoTracks()[0];
+      const capabilities = videoTrack.getCapabilities();
+      if ("zoom" in capabilities) {
+        try {
+          // ตรวจสอบว่า capabilities.zoom เป็น object ที่มี property max
+          const zoom = capabilities.zoom as { max?: number; min?: number };
+          if (zoom && typeof zoom.max === "number") {
+            // เลือกค่ากลางระหว่าง min/max หรือกำหนดเอง เช่น 2x
+            const zoomValue = Math.min(2, zoom.max);
+            await videoTrack.applyConstraints({ advanced: [{ zoom: zoomValue }] } as any);
+            console.log("Zoom set to", zoomValue);
+          }
+        } catch (e) {
+          console.warn("Zoom not supported or failed:", e);
+        }
+      }
+
       // ตั้งค่า video element
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
