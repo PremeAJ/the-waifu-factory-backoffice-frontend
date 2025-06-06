@@ -89,8 +89,8 @@ const appsLink: appsLinkType[] = [
     color: "#4CAF50", 
   },
   {
-    href: "/poc/scanbarcode (ทดสอบ)",
-    title: "Barcode Scanner",
+    href: "/poc/scanbarcode",
+    title: "Barcode Scanner (ทดสอบ)",
     subtext: "Scan QR & Barcode",
     avatar: "/images/svgs/icon-scan-barcode.svg",
     color: "#2196F3",
