@@ -41,7 +41,14 @@ const BarcodeScannerQuagga = () => {
           facingMode: "environment",
           width: { ideal: 1280 },
           height: { ideal: 720 }
-        }
+        },
+        area: { // โฟกัสตรงกลาง frame
+          top: "20%",    // กำหนดเป็นเปอร์เซ็นต์ของความสูง
+          right: "20%",
+          left: "20%",
+          bottom: "20%"
+        },
+        singleChannel: true // แปลงเป็น grayscale อัตโนมัติ
       },
       decoder: {
         readers: [
@@ -54,7 +61,11 @@ const BarcodeScannerQuagga = () => {
         ]
       },
       locate: true,
-      locator: { patchSize: "medium", halfSample: true }
+      locator: { patchSize: "medium", halfSample: false }, // ใช้ภาพเต็มความละเอียด
+      numOfWorkers: 0, // ปรับเป็น 0 เพื่อ debug/ปรับแต่ง filter ได้ง่าย
+      frequency: 10, // ความถี่ในการสแกน (ms)
+      // เพิ่ม filter สำหรับ contrast/threshold
+      // (Quagga2 จะใช้ filter อัตโนมัติเมื่อ singleChannel: true)
     }, err => {
       if (err) {
         setError("ไม่สามารถเริ่มกล้องได้: " + err.message);
