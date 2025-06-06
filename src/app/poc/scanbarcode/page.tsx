@@ -1,5 +1,6 @@
 "use client";
-import BarcodeScanner from "./BarcodeScanner";
+
+import BarcodeScanner from "@/components/barcode/BarcodeScanner";
 
 export default function ScanBarcodePage() {
   return (
