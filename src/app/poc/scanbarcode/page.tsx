@@ -101,10 +101,11 @@ const BarcodeScannerPOC = () => {
       // ขอสิทธิ์เข้าถึงกล้องก่อน
       const constraints: MediaStreamConstraints = {
         video: {
-          facingMode: { ideal: 'environment' }, // กล้องหลัง
-          width: { ideal: 1080},    // เพิ่มความละเอียดสูงสุด
-          height: { ideal: 1920 },
-          aspectRatio: { ideal: 16 / 9 }
+          deviceId: currentDeviceId ? { exact: currentDeviceId } : undefined,
+          facingMode: currentDeviceId ? undefined : { ideal: 'environment' },
+          width: { ideal: 1920, min: 640 },
+          height: { ideal: 1080, min: 480 },
+          aspectRatio: 16/9
         }
       };
 
@@ -158,32 +159,63 @@ const BarcodeScannerPOC = () => {
   };
 
   // วิธีใหม่ที่ใช้ ZXing built-in method
-  const startZXingScan = () => {
+  const startZXingScan = async () => {
     if (!codeReader.current || !videoRef.current) return;
 
-    // เรียก decodeFromVideoDevice แบบ continuous
-    codeReader.current.decodeFromVideoDevice(
-      currentDeviceId || null,
-      videoRef.current,
-      (result, err) => {
-        if (result) {
-          // ป้องกัน duplicate barcode ซ้ำ ๆ
-          setScanResults(prev => {
-            if (prev[0]?.text === result.getText()) return prev;
-            return [{ 
-              text: result.getText(), 
-              format: result.getBarcodeFormat().toString(), 
-              timestamp: new Date() 
-            }, ...prev.slice(0, 4)];
-          });
-          playBeepSound();
-          if ('vibrate' in navigator) navigator.vibrate(200);
+    try {
+      console.log('Starting ZXing scan with device:', currentDeviceId);
+      
+      const result = await codeReader.current.decodeOnceFromVideoDevice(
+        currentDeviceId || undefined,
+        videoRef.current
+      );
+
+      if (result) {
+        console.log('Barcode detected:', result.getText());
+        
+        const newResult: ScanResult = {
+          text: result.getText(),
+          format: result.getBarcodeFormat().toString(),
+          timestamp: new Date()
+        };
+
+        setScanResults(prev => [newResult, ...prev.slice(0, 4)]);
+        
+        // เล่นเสียงแจ้งเตือน
+        playBeepSound();
+        
+        // แสดง vibration บนมือถือ
+        if ('vibrate' in navigator) {
+          navigator.vibrate(200);
         }
-        if (err && !(err instanceof NotFoundException)) {
-          console.error('ZXing scan error:', err);
-        }
+
+        // สแกนต่อเนื่อง
+        setTimeout(() => {
+          if (isScanning) {
+            startZXingScan();
+          }
+        }, 1000);
+      } else {
+        // ไม่พบ barcode ลองใหม่
+        setTimeout(() => {
+          if (isScanning) {
+            startZXingScan();
+          }
+        }, 200);
       }
-    );
+
+    } catch (err) {
+      if (!(err instanceof NotFoundException)) {
+        console.error('ZXing scan error:', err);
+      }
+      
+      // ลองสแกนต่อ
+      if (isScanning) {
+        setTimeout(() => {
+          startZXingScan();
+        }, 200);
+      }
+    }
   };
 
   const stopScanning = () => {
@@ -275,70 +307,6 @@ const BarcodeScannerPOC = () => {
     navigator.clipboard.writeText(text);
   };
 
-  // ฟังก์ชันใหม่: วาด crop กลาง + enhance ภาพ (grayscale + contrast)
-  function drawAndEnhanceFrame(video: HTMLVideoElement, canvas: HTMLCanvasElement, cropRatio = 0.5) {
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const vw = video.videoWidth;
-    const vh = video.videoHeight;
-    const cw = vw * cropRatio;
-    const ch = vh * cropRatio;
-    const sx = (vw - cw) / 2;
-    const sy = (vh - ch) / 2;
-    canvas.width = cw;
-    canvas.height = ch;
-    ctx.drawImage(video, sx, sy, cw, ch, 0, 0, cw, ch);
-
-    // แปลงเป็น grayscale และเพิ่ม contrast
-    const imageData = ctx.getImageData(0, 0, cw, ch);
-    const data = imageData.data;
-    // ปรับ contrast (factor 1.5) และ grayscale
-    const contrast = 1.5;
-    for (let i = 0; i < data.length; i += 4) {
-      // grayscale
-      const avg = (data[i] + data[i+1] + data[i+2]) / 3;
-      // contrast
-      const contrasted = ((avg - 128) * contrast) + 128;
-      data[i] = data[i+1] = data[i+2] = Math.max(0, Math.min(255, contrasted));
-      // alpha คงเดิม
-    }
-    ctx.putImageData(imageData, 0, 0);
-  }
-
-  // แก้ไขฟังก์ชัน scanSmallBarcodeFromCanvas ให้ใช้ drawAndEnhanceFrame
-  const scanSmallBarcodeFromCanvas = () => {
-    if (!videoRef.current || !canvasRef.current || !codeReader.current) return;
-
-    drawAndEnhanceFrame(videoRef.current, canvasRef.current, 0.5);
-
-    try {
-      const canvas = canvasRef.current as HTMLCanvasElement;
-      const image = new window.Image();
-      image.src = canvas.toDataURL();
-      image.onload = () => {
-        try {
-          const result = codeReader.current!.decode(image);
-          if (result) {
-            setScanResults(prev => {
-              if (prev[0]?.text === result.getText()) return prev;
-              return [{
-                text: result.getText(),
-                format: result.getBarcodeFormat().toString(),
-                timestamp: new Date()
-              }, ...prev.slice(0, 4)];
-            });
-            playBeepSound();
-            if ('vibrate' in navigator) navigator.vibrate(200);
-          }
-        } catch (e) {
-          // ไม่เจอ barcode ใน frame นี้
-        }
-      };
-    } catch (e) {
-      // ไม่เจอ barcode ใน frame นี้
-    }
-  };
-
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h4" sx={{ mb: 3, textAlign: 'center' }}>
@@ -353,26 +321,32 @@ const BarcodeScannerPOC = () => {
 
       {/* Scanner Interface */}
       <Paper sx={{ p: 2, mb: 3 }}>
-        <Box sx={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+        <Box sx={{ position: 'relative', textAlign: 'center' }}>
           {/* Video Element */}
           <video
             ref={videoRef}
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              objectFit: 'cover',
+              width: '100%',
+              maxWidth: 500,
+              height: 'auto',
               backgroundColor: '#000',
-              zIndex: 1,
               display: isScanning ? 'block' : 'none',
-              border: 'none'
+              border: '2px solid #ccc' // เพิ่มเพื่อดู boundary
             }}
             playsInline
             muted
             autoPlay
-            controls={false}
+            controls={false} // ปิด controls
+            onLoadedMetadata={() => {
+              console.log('Video loaded, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
+            }}
+            onError={(e) => {
+              console.error('Video error:', e);
+              setError('เกิดข้อผิดพลาดกับวิดีโอ');
+            }}
+            onPlay={() => {
+              console.log('Video started playing');
+            }}
           />
 
           {/* Hidden Canvas for processing */}
@@ -389,11 +363,22 @@ const BarcodeScannerPOC = () => {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: 100,
-                height: 100,
-                border: '2px solid #00f',
+                width: 200,
+                height: 200,
+                border: '2px solid #ff0000',
                 borderRadius: 2,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: -1,
+                  left: -1,
+                  right: -1,
+                  bottom: -1,
+                  border: '2px solid rgba(255,255,255,0.5)',
+                  borderRadius: 2,
+                  animation: 'pulse 2s infinite'
+                }
               }}
             />
           )}
@@ -451,25 +436,14 @@ const BarcodeScannerPOC = () => {
               เริ่มสแกน Barcode
             </Button>
           ) : (
-            <>
-              <Button
-                variant="outlined"
-                size="large"
-                startIcon={<IconCameraOff />}
-                onClick={() => setIsScanning(false)}
-                sx={{ mr: 1 }}
-              >
-                หยุดสแกน
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={scanSmallBarcodeFromCanvas}
-                sx={{ ml: 1 }}
-              >
-                สแกนบาร์โค้ด (โหมดช่วยเหลือ)
-              </Button>
-            </>
+            <Button
+              variant="outlined"
+              size="large"
+              startIcon={<IconCameraOff />}
+              onClick={() => setIsScanning(false)}
+            >
+              หยุดสแกน
+            </Button>
           )}
         </Box>
       </Paper>
