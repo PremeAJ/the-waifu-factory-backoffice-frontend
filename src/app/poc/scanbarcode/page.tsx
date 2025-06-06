@@ -40,6 +40,7 @@ const BarcodeScannerPOC = () => {
   const [currentDeviceId, setCurrentDeviceId] = useState<string>("");
   const [torchEnabled, setTorchEnabled] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [scanCooldown, setScanCooldown] = useState(false);
 
   const codeReader = useRef<BrowserMultiFormatReader | null>(null);
 
@@ -159,63 +160,33 @@ const BarcodeScannerPOC = () => {
   };
 
   // วิธีใหม่ที่ใช้ ZXing built-in method
-  const startZXingScan = async () => {
+  const startZXingScan = () => {
     if (!codeReader.current || !videoRef.current) return;
 
-    try {
-      console.log('Starting ZXing scan with device:', currentDeviceId);
-      
-      const result = await codeReader.current.decodeOnceFromVideoDevice(
-        currentDeviceId || undefined,
-        videoRef.current
-      );
+    codeReader.current.decodeFromVideoDevice(
+      currentDeviceId || null,
+      videoRef.current,
+      (result, err) => {
+        if (result && !scanCooldown) {
+          setScanCooldown(true);
+          console.log('Barcode detected:', result.getText());
+          const newResult: ScanResult = {
+            text: result.getText(),
+            format: result.getBarcodeFormat().toString(),
+            timestamp: new Date()
+          };
+          setScanResults(prev => [newResult, ...prev.slice(0, 4)]);
+          playBeepSound();
+          if ('vibrate' in navigator) navigator.vibrate(200);
 
-      if (result) {
-        console.log('Barcode detected:', result.getText());
-        
-        const newResult: ScanResult = {
-          text: result.getText(),
-          format: result.getBarcodeFormat().toString(),
-          timestamp: new Date()
-        };
-
-        setScanResults(prev => [newResult, ...prev.slice(0, 4)]);
-        
-        // เล่นเสียงแจ้งเตือน
-        playBeepSound();
-        
-        // แสดง vibration บนมือถือ
-        if ('vibrate' in navigator) {
-          navigator.vibrate(200);
+          // หน่วง 1 วินาที ก่อนจะยอมสแกนรอบถัดไป
+          setTimeout(() => setScanCooldown(false), 3000);
         }
-
-        // สแกนต่อเนื่อง
-        setTimeout(() => {
-          if (isScanning) {
-            startZXingScan();
-          }
-        }, 1000);
-      } else {
-        // ไม่พบ barcode ลองใหม่
-        setTimeout(() => {
-          if (isScanning) {
-            startZXingScan();
-          }
-        }, 200);
+        if (err && !(err instanceof NotFoundException)) {
+          console.error('ZXing scan error:', err);
+        }
       }
-
-    } catch (err) {
-      if (!(err instanceof NotFoundException)) {
-        console.error('ZXing scan error:', err);
-      }
-      
-      // ลองสแกนต่อ
-      if (isScanning) {
-        setTimeout(() => {
-          startZXingScan();
-        }, 200);
-      }
-    }
+    );
   };
 
   const stopScanning = () => {
