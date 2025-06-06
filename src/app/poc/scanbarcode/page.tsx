@@ -451,14 +451,25 @@ const BarcodeScannerPOC = () => {
               เริ่มสแกน Barcode
             </Button>
           ) : (
-            <Button
-              variant="outlined"
-              size="large"
-              startIcon={<IconCameraOff />}
-              onClick={() => setIsScanning(false)}
-            >
-              หยุดสแกน
-            </Button>
+            <>
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={<IconCameraOff />}
+                onClick={() => setIsScanning(false)}
+                sx={{ mr: 1 }}
+              >
+                หยุดสแกน
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={scanSmallBarcodeFromCanvas}
+                sx={{ ml: 1 }}
+              >
+                สแกนบาร์โค้ด (โหมดช่วยเหลือ)
+              </Button>
+            </>
           )}
         </Box>
       </Paper>
