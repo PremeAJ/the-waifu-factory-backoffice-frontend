@@ -25,6 +25,7 @@ const BarcodeScannerPOC = () => {
   const [scanCooldown, setScanCooldown] = useState(false);
 
   const codeReader = useRef<BrowserMultiFormatReader | null>(null);
+  const scanCooldownRef = useRef(false);
 
   useEffect(() => {
     // Initialize ZXing code reader
@@ -146,8 +147,8 @@ const BarcodeScannerPOC = () => {
     if (!codeReader.current || !videoRef.current) return;
 
     codeReader.current.decodeFromVideoDevice(currentDeviceId || null, videoRef.current, (result, err) => {
-      if (result && !scanCooldown) {
-        setScanCooldown(true);
+      if (result && !scanCooldownRef.current) {
+        scanCooldownRef.current = true;
         console.log("Barcode detected:", result.getText());
         const newResult: ScanResult = {
           text: result.getText(),
@@ -158,8 +159,10 @@ const BarcodeScannerPOC = () => {
         playBeepSound();
         if ("vibrate" in navigator) navigator.vibrate(200);
 
-        // หน่วง 1 วินาที ก่อนจะยอมสแกนรอบถัดไป
-        setTimeout(() => setScanCooldown(false), 3000);
+        // หน่วง 3 วินาที ก่อนจะยอมสแกนรอบถัดไป
+        setTimeout(() => {
+          scanCooldownRef.current = false;
+        }, 3000);
       }
       if (err && !(err instanceof NotFoundException)) {
         console.error("ZXing scan error:", err);
