@@ -102,8 +102,8 @@ const BarcodeScannerPOC = () => {
       const constraints: MediaStreamConstraints = {
         video: {
           facingMode: { ideal: 'environment' }, // กล้องหลัง
-          width: { ideal: 4096, max: 4096 },    // เพิ่มความละเอียดสูงสุด
-          height: { ideal: 2160, max: 2160 },
+          width: { ideal: 1080},    // เพิ่มความละเอียดสูงสุด
+          height: { ideal: 1920 },
           aspectRatio: { ideal: 16 / 9 }
         }
       };
@@ -339,32 +339,26 @@ const BarcodeScannerPOC = () => {
 
       {/* Scanner Interface */}
       <Paper sx={{ p: 2, mb: 3 }}>
-        <Box sx={{ position: 'relative', textAlign: 'center' }}>
+        <Box sx={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
           {/* Video Element */}
           <video
             ref={videoRef}
             style={{
-              width: '100%',
-              maxWidth: 500,
-              height: 'auto',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              objectFit: 'cover',
               backgroundColor: '#000',
+              zIndex: 1,
               display: isScanning ? 'block' : 'none',
-              border: '2px solid #ccc' // เพิ่มเพื่อดู boundary
+              border: 'none'
             }}
             playsInline
             muted
             autoPlay
-            controls={false} // ปิด controls
-            onLoadedMetadata={() => {
-              console.log('Video loaded, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
-            }}
-            onError={(e) => {
-              console.error('Video error:', e);
-              setError('เกิดข้อผิดพลาดกับวิดีโอ');
-            }}
-            onPlay={() => {
-              console.log('Video started playing');
-            }}
+            controls={false}
           />
 
           {/* Hidden Canvas for processing */}
