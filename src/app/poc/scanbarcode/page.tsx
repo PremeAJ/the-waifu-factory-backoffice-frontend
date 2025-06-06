@@ -102,8 +102,9 @@ const BarcodeScannerPOC = () => {
       const constraints: MediaStreamConstraints = {
         video: {
           facingMode: { ideal: 'environment' }, // กล้องหลัง
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+          width: { ideal: 4096, max: 4096 },    // เพิ่มความละเอียดสูงสุด
+          height: { ideal: 2160, max: 2160 },
+          aspectRatio: { ideal: 16 / 9 }
         }
       };
 
