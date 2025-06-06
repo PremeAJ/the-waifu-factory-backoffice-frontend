@@ -83,11 +83,10 @@ const BarcodeScannerPOC = () => {
         throw new Error("Code reader not initialized");
       }
 
-      // ขอสิทธิ์เข้าถึงกล้องก่อน
+      // ขอสิทธิ์เข้าถึงกล้องหลังเท่านั้น
       const constraints: MediaStreamConstraints = {
         video: {
-          deviceId: currentDeviceId ? { exact: currentDeviceId } : undefined,
-          facingMode: currentDeviceId ? undefined : { ideal: "environment" },
+          facingMode: { exact: "environment" }, // บังคับกล้องหลัง
           width: { ideal: 1920, min: 640 },
           height: { ideal: 1080, min: 480 },
           aspectRatio: 16 / 9,
