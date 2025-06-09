@@ -195,8 +195,6 @@ export async function supabaseExchangeCodeForSession(code: string) {
       endpoint: "updateUser: exchangeCodeForSession",
     });
   }
-  console.log("🚀 ~ supabaseExchangeCodeForSession ~ data:", data)
-  console.log("🚀 ~ supabaseExchangeCodeForSession ~ error:", error)
   return { data, error: error?.code };
 }
 

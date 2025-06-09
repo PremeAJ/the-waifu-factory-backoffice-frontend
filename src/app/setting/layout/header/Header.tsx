@@ -1,27 +1,27 @@
+import { ProductProvider } from "@/context/Ecommercecontext/index";
+import config from "@/context/setting/config";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { styled } from "@mui/material/styles";
-import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
-import Notifications from "./Notification";
-import Profile from "../../../../components/shared/Profile";
-import Language from "../../../../components/shared/Language/Language";
-import { CustomizerContext } from "@/context/setting/customizerContext";
-import config from "@/context/setting/config";
+import { IconMenu2 } from "@tabler/icons-react";
 import { useContext } from "react";
-import { ProductProvider } from "@/context/Ecommercecontext/index";
+import Language from "../../../../components/shared/Language/Language";
+import Profile from "../../../../components/shared/Profile";
+import Notifications from "./Notification";
+import { UserContext } from "@/context/UserContext";
 
 const Header = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-  const lgDown = useMediaQuery((theme) => theme.breakpoints.down("lg"));
   const TopbarHeight = config.topbarHeight;
 
   // drawer
   const { setIsCollapse, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
-
+  const { loading, user } = useContext(UserContext);
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: "none",
     background: theme.palette.background.paper,
@@ -58,7 +58,7 @@ const Header = () => {
           <Stack spacing={1} direction="row" alignItems="center">
             <Language />
             <Notifications />
-            <Profile />
+            <Profile loading={loading || !user} />
           </Stack>
         </ToolbarStyled>
       </AppBarStyled>

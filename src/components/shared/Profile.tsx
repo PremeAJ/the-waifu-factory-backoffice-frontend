@@ -1,23 +1,22 @@
 import React, { useContext, useState } from "react";
 import Link from "next/link";
-import { Box, Menu, Avatar, Typography, Divider, Button, IconButton, Skeleton } from "@mui/material";
+import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } from "@mui/material";
 import * as dropdownData from "../../app/dashboard/(Layout)/layout/header/data";
-
 import { IconMail } from "@tabler/icons-react";
-import { Stack } from "@mui/system";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
 import BaseButton from "../forms/theme-elements/BaseButton";
 
-const Profile = () => {
+interface ProfileProps {
+  loading?: boolean;
+}
+
+const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   const { signOut } = useContext(AuthContext);
-  const { user, loading } = useContext(UserContext);
+  const { user, loading: loadingContext } = useContext(UserContext);
+  const loading = loadingProp ?? loadingContext;
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
-  if (!user) {
-    return null;
-  }
-  const { avatarUrl, firstName, lastName, users } = user;
-  const { email } = users || {};
+
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -48,6 +47,72 @@ const Profile = () => {
     }
   };
 
+  // --- Skeleton UI ---
+  if (loading) {
+    return (
+      <Box>
+        <IconButton color="inherit">
+          <Skeleton variant="circular" width={35} height={35} />
+        </IconButton>
+        <Menu
+          open={Boolean(anchorEl2)}
+          anchorEl={anchorEl2}
+          sx={{
+            "& .MuiMenu-paper": {
+              width: "360px",
+              p: 4,
+            },
+          }}
+          PaperProps={{ style: { pointerEvents: "none" } }}
+        >
+          <Typography variant="h5">
+            <Skeleton width={120} />
+          </Typography>
+          <Stack direction="row" py={3} spacing={2} alignItems="center">
+            <Skeleton variant="circular" width={95} height={95} />
+            <Box>
+              <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
+                <Skeleton width={120} />
+              </Typography>
+              <Typography variant="subtitle2" color="textSecondary">
+                <Skeleton width={80} />
+              </Typography>
+              <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
+                <Skeleton width={140} />
+              </Typography>
+            </Box>
+          </Stack>
+          <Divider />
+          {[1, 2, 3].map((i) => (
+            <Box key={i} sx={{ py: 2 }}>
+              <Stack direction="row" spacing={2}>
+                <Skeleton variant="rectangular" width={45} height={45} sx={{ borderRadius: 2 }} />
+                <Box>
+                  <Typography variant="subtitle2" fontWeight={600} color="textPrimary">
+                    <Skeleton width={120} />
+                  </Typography>
+                  <Typography color="textSecondary" variant="subtitle2">
+                    <Skeleton width={100} />
+                  </Typography>
+                </Box>
+              </Stack>
+            </Box>
+          ))}
+          <Box mt={2}>
+            <Skeleton variant="rectangular" width={120} height={40} sx={{ borderRadius: 2 }} />
+          </Box>
+        </Menu>
+      </Box>
+    );
+  }
+
+  // --- Normal UI ---
+  if (!user) {
+    return null;
+  }
+  const { avatarUrl, firstName, lastName, users } = user;
+  const { email } = users || {};
+
   return (
     <Box>
       <IconButton
@@ -71,9 +136,6 @@ const Profile = () => {
           }}
         />
       </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
       <Menu
         id="msgs-menu"
         anchorEl={anchorEl2}

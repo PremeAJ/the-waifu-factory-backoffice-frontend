@@ -1,30 +1,32 @@
+import { ProductProvider } from "@/context/Ecommercecontext/index";
+import config from "@/context/setting/config";
+import { CustomizerContext } from "@/context/setting/customizerContext";
+import { UserContext } from "@/context/UserContext";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { styled } from "@mui/material/styles";
-import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
-import Notifications from "./Notification";
+import { IconMenu2 } from "@tabler/icons-react";
+import { useContext } from "react";
+import Language from "../../../../../components/shared/Language/Language";
 import Profile from "../../../../../components/shared/Profile";
 import Cart from "./Cart";
-import Search from "./Search";
-import Language from "../../../../../components/shared/Language/Language";
-import { CustomizerContext } from '@/context/setting/customizerContext';
-import Navigation from "./Navigation";
 import MobileRightSidebar from "./MobileRightSidebar";
-import config from '@/context/setting/config'
-import { useContext } from "react";
-import { ProductProvider } from '@/context/Ecommercecontext/index'
+import Navigation from "./Navigation";
+import Notifications from "./Notification";
+import Search from "./Search";
 
 const Header = () => {
+  const { loading, user } = useContext(UserContext);
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const lgDown = useMediaQuery((theme) => theme.breakpoints.down("lg"));
   const TopbarHeight = config.topbarHeight;
 
   // drawer
-  const { isSidebarHover, activeMode, setActiveMode, setIsCollapse, isCollapse, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { setIsCollapse, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: "none",
@@ -106,15 +108,12 @@ const Header = () => {
             {/* Toggle Right Sidebar for mobile */}
             {/* ------------------------------------------- */}
             {lgDown ? <MobileRightSidebar /> : null}
-            <Profile />
+            <Profile loading={loading || !user} />
           </Stack>
         </ToolbarStyled>
       </AppBarStyled>
     </ProductProvider>
-
   );
 };
 
 export default Header;
-
-
