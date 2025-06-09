@@ -50,8 +50,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     supabaseRefreshSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
-      setIsLoading(false);
     });
+    setIsLoading(false);
   }, []);
 
   const signInWithEmail = async (payload: SignInWithPasswordCredentials) => {
