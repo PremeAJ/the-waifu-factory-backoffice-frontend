@@ -399,10 +399,4 @@ export const gallery: GallaryType[] = [
     name: chance.sentence({ words: 3 }),
     time: sub(new Date(), { days: 2, hours: 6, minutes: 20 }),
   },
-  {
-    id: uniqueId("#gallery_"),
-    cover: "/images/products/s12.jpg",
-    name: chance.sentence({ words: 3 }),
-    time: sub(new Date(), { days: 1, hours: 6, minutes: 20 }),
-  },
 ];

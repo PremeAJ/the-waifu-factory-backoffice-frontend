@@ -202,7 +202,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
               }}
               className="hover-text-primary"
             >
-              <Link href={profile.href}>
+              <Link href={profile.href} >
                 <Stack direction="row" spacing={2}>
                   <Box
                     className="profile-icon-box"
