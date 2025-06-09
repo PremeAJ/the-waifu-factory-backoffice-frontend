@@ -45,7 +45,7 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
     aria-describedby="alert-dialog-slide-description"
     fullScreen={fullScreen}
   >
-    <Box my={fullScreen ? "40%" : 0} maxWidth={"sm"} alignSelf={"center"}>
+    <Box my={fullScreen ? "40%" : 2} mx={fullScreen ? 0 : 2} alignSelf={"center"} >
       <DialogTitle sx={{ textAlign: "center", pb: icon ? 1 : 2 }}>
         {icon && (
           <Box display="flex" justifyContent="center" mb={2}>

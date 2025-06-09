@@ -6,6 +6,7 @@ import { IconMail } from "@tabler/icons-react";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
 import BaseButton from "../forms/theme-elements/BaseButton";
+import ConfirmSignOutDialog from "@/components/auth/dialog/ConfirmSignOutDialog";
 
 interface ProfileProps {
   loading?: boolean;
@@ -17,14 +18,25 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   const loading = loadingProp ?? loadingContext;
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
 
+  const [openSignOut, setOpenSignOut] = useState(false);
+  const [signOutLoading, setSignOutLoading] = useState(false);
+
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
   };
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
-  const handleLogout = async () => {
+
+  const handleLogout = () => {
+    setOpenSignOut(true);
+  };
+
+  const handleConfirmSignOut = async () => {
+    setSignOutLoading(true);
     await signOut();
+    setSignOutLoading(false);
+    setOpenSignOut(false);
     window.location.reload();
   };
 
@@ -244,6 +256,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
           <BaseButton label="Logout" variant="outlined" onClick={handleLogout} loading={loading} />
         </Box>
       </Menu>
+      <ConfirmSignOutDialog open={openSignOut} onClose={() => setOpenSignOut(false)} onConfirm={handleConfirmSignOut} loading={signOutLoading} />
     </Box>
   );
 };
