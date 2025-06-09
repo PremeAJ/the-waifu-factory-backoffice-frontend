@@ -36,7 +36,7 @@ const BannerContent = () => {
         <Typography variant="h6" display={"flex"} gap={1} mb={2}>
           <Typography color={"secondary"}>
             <IconRocket size={"21"} />
-          </Typography>{" "}
+          </Typography>
           Kick start your project with
         </Typography>
 
@@ -45,18 +45,18 @@ const BannerContent = () => {
           fontWeight={900}
           sx={{
             fontSize: {
-              md: "54px",
+              md: "50px",
             },
             lineHeight: {
-              md: "60px",
+              md: "55px",
             },
           }}
         >
-          Most powerful &{" "}
+          ระบบ All-in-one สำหรับธุรกิจยุคใหม่ที่
           <Typography component={"span"} variant="inherit" color={"primary"}>
-            Developer friendly
-          </Typography>{" "}
-          NextJs dashboard
+          &nbsp;ครบจบในที่เดียว <br />
+          </Typography>
+          ทั้ง POS, CRM, HRM และคลังสินค้า
         </Typography>
       </motion.div>
       <Box pt={4} pb={3}>
@@ -71,8 +71,8 @@ const BannerContent = () => {
           }}
         >
           <Typography variant="h5" fontWeight={300}>
-            Modernize comes with light & dark color skins, well designed
-            dashboards, applications and pages.
+            เชื่อมโยงทุกการจัดการธุรกิจ ทั้งหน้าร้าน ลูกค้า พนักงาน และสต็อกสินค้า
+            ใช้งานง่าย ครอบคลุมทุกฟังก์ชัน พร้อมรองรับการเติบโตของคุณ
           </Typography>
         </motion.div>
       </Box>

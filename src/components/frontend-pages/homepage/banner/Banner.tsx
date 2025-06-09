@@ -112,7 +112,7 @@ const Banner = () => {
                 },
               }}
             >
-              Most powerful &{" "}
+              Most powerful &
               <Typography
                 variant="h1"
                 sx={{
@@ -126,7 +126,7 @@ const Banner = () => {
                 color="primary.main"
               >
                 developer friendly
-              </Typography>{" "}
+              </Typography>
               dashboard
             </Typography>
             <Stack
@@ -194,7 +194,7 @@ const Banner = () => {
                   alt="icon"
                   width={40}
                   height={40}
-                />{" "}
+                />
                 See how it works
               </Button>
             </Stack>

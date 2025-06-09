@@ -48,8 +48,8 @@ const Banner = () => {
           <Grid
             size={{
               xs: 12,
-              lg: 6,
-              sm: 8
+              sm: 8,
+              lg: 7,
             }}>
             <BannerContent />
           </Grid>
@@ -57,7 +57,7 @@ const Banner = () => {
             <Grid
               size={{
                 xs: 12,
-                lg: 6
+                lg: 5
               }}>
               <Box
                 p={3.2}
