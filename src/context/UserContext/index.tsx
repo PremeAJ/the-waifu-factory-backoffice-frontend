@@ -36,12 +36,16 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<Error | null>(initialConfig.error);
   const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
-  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher);
+  const {
+    data: usersData,
+    isLoading: isUsersLoading,
+    error: usersError,
+    mutate: userMutate,
+  } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher);
 
   useEffect(() => {
     if (!session && !authIsLoading) {
       setLoading(false);
-      return;
     }
     if (usersData) {
       setUser(usersData?.data);
@@ -50,7 +54,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setError(usersError);
       setLoading(isUsersLoading);
     }
-  }, [session, usersData, usersError, isUsersLoading]);
+  }, [session, usersData, usersError, isUsersLoading, authIsLoading]);
 
   const syncUser = async () => {
     try {
