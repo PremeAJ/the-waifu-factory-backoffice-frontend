@@ -18,76 +18,80 @@ import Profile from "@/components/shared/Profile";
 import Language from "@/components/shared/Language/Language";
 
 const LpHeader = () => {
- const AppBarStyled = styled(AppBar)(({ theme }) => ({
-  justifyContent: "center",
-  [theme.breakpoints.up("lg")]: {
-   minHeight: "80px",
-  },
-  backgroundColor: theme.palette.background.default,
- }));
+  const AppBarStyled = styled(AppBar)(({ theme }) => ({
+    justifyContent: "center",
+    [theme.breakpoints.up("lg")]: {
+      minHeight: "80px",
+    },
+    backgroundColor: theme.palette.background.default,
+  }));
 
- const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
-  width: "100%",
-  paddingLeft: "0 !important",
-  paddingRight: "0 !important",
-  color: theme.palette.text.secondary,
- }));
+  const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
+    width: "100%",
+    paddingLeft: "0 !important",
+    paddingRight: "0 !important",
+    color: theme.palette.text.secondary,
+  }));
 
- //   sidebar
- const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
- const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
+  //   sidebar
+  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
+  const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
- const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
- const handleDrawerOpen = () => {
-  setOpen(true);
- };
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
 
- const toggleDrawer = (newOpen: boolean) => () => {
-  setOpen(newOpen);
- };
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
 
- return (
-  <AppBarStyled position="sticky" elevation={8}>
-   <Container maxWidth="lg">
-    <ToolbarStyled>
-     <Logo />
-     <Box flexGrow={1} />
-     {lgDown ? (
-      <IconButton color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
-       <IconMenu2 size="20" />
-      </IconButton>
-     ) : null}
-     {lgUp ? (
-      <Stack spacing={1} direction="row" alignItems="center">
-       <Navigations />
-      </Stack>
-     ) : null}
-     <Box ml={2} display="flex" alignItems="center">
-      <Language />
-      <Profile />
-     </Box>
-    </ToolbarStyled>
-   </Container>
-   <Drawer
-    anchor="left"
-    open={open}
-    variant="temporary"
-    onClose={toggleDrawer(false)}
-    slotProps={{
-     paper: {
-      sx: {
-       width: 270,
-       border: "0 !important",
-       boxShadow: (theme) => theme.shadows[8],
-      },
-     },
-    }}
-   >
-    <MobileSidebar />
-   </Drawer>
-  </AppBarStyled>
- );
+  return (
+    <AppBarStyled position="sticky" elevation={8}>
+      <Container maxWidth="lg">
+        <ToolbarStyled>
+          <Logo />
+          <Box flexGrow={1} />
+          {lgDown ? (
+            <IconButton
+              color="inherit"
+              aria-label="menu"
+              onClick={handleDrawerOpen}
+            >
+              <IconMenu2 size="20" />
+            </IconButton>
+          ) : null}
+          {lgUp ? (
+            <Stack spacing={1} direction="row" alignItems="center">
+              <Navigations />
+            </Stack>
+          ) : null}
+          <Box ml={2} display="flex" alignItems="center">
+            <Profile />
+            <Language />
+          </Box>
+        </ToolbarStyled>
+      </Container>
+      <Drawer
+        anchor="left"
+        open={open}
+        variant="temporary"
+        onClose={toggleDrawer(false)}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 270,
+              border: "0 !important",
+              boxShadow: (theme) => theme.shadows[8],
+            },
+          },
+        }}
+      >
+        <MobileSidebar />
+      </Drawer>
+    </AppBarStyled>
+  );
 };
 
 export default LpHeader;

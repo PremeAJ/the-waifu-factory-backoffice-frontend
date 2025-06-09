@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { set } from "lodash";
 import { getFetcher, patchFetcher } from "@/app/api/globalFetcher";
 import { UserContext } from "../UserContext";
+import { AuthContext } from "../AuthContext";
 
 // Define the shape of the context state
 interface CustomizerContextState {
@@ -45,6 +46,8 @@ interface CustomizerContextProps {
 export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
+  const { user: session } = useContext(AuthContext);
+
   useEffect(() => {
     const lang = Cookies.get("lang") ?? config.isLanguage;
     setIsLanguage(lang);
@@ -67,9 +70,12 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     isLoading: isAppearanceLoading,
     error: appearanceError,
     mutate: appearanceMutate,
-  } = useSWR("/api/user/setting/appearnce", getFetcher);
+  } = useSWR(session ? "/api/user/setting/appearnce" : null, getFetcher);
 
   useEffect(() => {
+    if (!session) {
+      setLoading(false);
+    }
     if (userAppearanceData) {
       const appearanceData = userAppearanceData.data || {};
       if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);

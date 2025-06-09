@@ -15,7 +15,7 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   const { signOut } = useContext(AuthContext);
   const { user, loading: loadingContext } = useContext(UserContext);
-  const loading = loadingProp ?? loadingContext;
+  const loading = loadingProp;
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
 
   const [openSignOut, setOpenSignOut] = useState(false);
@@ -202,7 +202,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
               }}
               className="hover-text-primary"
             >
-              <Link href={profile.href} >
+              <Link href={profile.href}>
                 <Stack direction="row" spacing={2}>
                   <Box
                     className="profile-icon-box"

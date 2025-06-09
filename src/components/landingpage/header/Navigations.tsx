@@ -136,7 +136,7 @@ const Navigations = () => {
       <StyledButton color="inherit" variant="text" href="/">
         รู้จักเรา
       </StyledButton>
-      {loading ? null : user ? null : <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />}
+      {user ? null : <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />}
     </>
   );
 };

@@ -47,7 +47,7 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const { setUser: setUserFromContext } = useContext(UserContext);
+  // const { setUser: setUserFromContext } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     const response = await supabaseSignOut();
     setUser(null);
-    setUserFromContext(null);
+    // setUserFromContext(null);
     setIsLoading(false);
     return response;
   };

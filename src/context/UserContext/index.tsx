@@ -1,11 +1,12 @@
 "use client";
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import useSWR, { mutate } from "swr";
 import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { SettingProfile, userType } from "./type";
 import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdatePhone, supabaseVerifyOtp } from "@/utils/supabase/server";
 import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
 import { VerifyOtpParams } from "@supabase/supabase-js";
+import { AuthContext } from "../AuthContext";
 
 export type UserContextType = {
   user: userType | null;
@@ -21,10 +22,8 @@ export type UserContextType = {
   verifyPhoneOtp: (phone: string, token: string) => Promise<any>;
 };
 
-// สร้าง Context
 export const UserContext = createContext<UserContextType>({} as UserContextType);
 
-// ค่าเริ่มต้น
 const initialConfig = {
   user: null,
   loading: true,
@@ -32,15 +31,19 @@ const initialConfig = {
 };
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // State Management
   const [user, setUser] = useState<userType | null>(initialConfig.user);
   const [loading, setLoading] = useState<boolean>(initialConfig.loading);
   const [error, setError] = useState<Error | null>(initialConfig.error);
+  const { user: session } = useContext(AuthContext);
 
-  // Fetch Data
-  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate } = useSWR("/api/users/me", getFetcher);
+  // ถ้าไม่มี session จะไม่ fetch
+  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate } = useSWR(session ? "/api/users/me" : null, getFetcher);
 
   useEffect(() => {
+    if (!session) {
+      setLoading(false);
+      return;
+    }
     if (usersData) {
       setUser(usersData?.data);
       setLoading(isUsersLoading);
@@ -48,7 +51,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setError(usersError);
       setLoading(isUsersLoading);
     }
-  }, [usersData, usersError]);
+  }, [session, usersData, usersError, isUsersLoading]);
 
   const syncUser = async () => {
     try {
@@ -87,7 +90,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function checkExistEmail(email: string) {
     try {
-      // เพิ่มการ encode email ก่อนส่งไป API
       const encodedEmail = encodeURIComponent(email);
       const response = await getFetcher(`/api/users/email/${encodedEmail}/exists`);
       return response.data.exists;
