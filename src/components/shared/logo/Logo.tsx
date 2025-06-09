@@ -8,65 +8,27 @@ import { useContext } from "react";
 import { usePathname } from "next/navigation";
 
 const Logo = () => {
-  const { isCollapse, isSidebarHover, activeDir, activeMode } =
-    useContext(CustomizerContext);
-  const path = usePathname();
-  const url = path.includes("dashboard") ? "/dashboard" : "/";
-  const TopbarHeight = config.topbarHeight;
+ const { isCollapse, isSidebarHover, activeMode } = useContext(CustomizerContext);
+ const path = usePathname();
+ const url = path.includes("dashboard") ? "/dashboard" : "/";
+ const TopbarHeight = config.topbarHeight;
 
-  const LinkStyled = styled(Link)(() => ({
-    height: TopbarHeight,
+ const LinkStyled = styled(Link)(() => ({
+  height: TopbarHeight,
+  width: isCollapse == "mini-sidebar" && !isSidebarHover ? "40px" : "180px",
+  overflow: "hidden",
+  display: "block",
+ }));
 
-    width: isCollapse == "mini-sidebar" && !isSidebarHover ? "40px" : "180px",
-    overflow: "hidden",
-    display: "block",
-  }));
-
-  if (activeDir === "ltr") {
-    return (
-      <LinkStyled href={url}>
-        {activeMode === "dark" ? (
-          <Image
-            src="/images/logos/light-logo.svg"
-            alt="logo"
-            height={TopbarHeight}
-            width={174}
-            priority
-          />
-        ) : (
-          <Image
-            src={"/images/logos/dark-logo.svg"}
-            alt="logo"
-            height={TopbarHeight}
-            width={174}
-            priority
-          />
-        )}
-      </LinkStyled>
-    );
-  }
-
-  return (
-    <LinkStyled href={url}>
-      {activeMode === "dark" ? (
-        <Image
-          src="/images/logos/dark-rtl-logo.svg"
-          alt="logo"
-          height={TopbarHeight}
-          width={174}
-          priority
-        />
-      ) : (
-        <Image
-          src="/images/logos/light-logo-rtl.svg"
-          alt="logo"
-          height={TopbarHeight}
-          width={174}
-          priority
-        />
-      )}
-    </LinkStyled>
-  );
+ return (
+  <LinkStyled href={url}>
+   {activeMode === "dark" ? (
+    <Image src="/images/logos/light-logo.svg" alt="logo" height={TopbarHeight} width={174} priority />
+   ) : (
+    <Image src={"/images/logos/dark-logo.svg"} alt="logo" height={TopbarHeight} width={174} priority />
+   )}
+  </LinkStyled>
+ );
 };
 
 export default Logo;
