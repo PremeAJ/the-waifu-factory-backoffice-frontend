@@ -50,7 +50,7 @@ const TopCards = ({ isLoading }: { isLoading?: boolean }) => {
         <Grid
           key={i}
           size={{
-            xs: 12,
+            xs: 6,
             sm: 4,
             lg: 2,
           }}

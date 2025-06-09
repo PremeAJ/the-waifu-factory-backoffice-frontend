@@ -4,6 +4,20 @@ import { Box, Grid, Typography, Chip, CardContent, Divider, Stack, Button } from
 import Image from 'next/image';
 import BlankCard from '../../../shared/BlankCard';
 
+// สร้างฟังก์ชันสำหรับแสดงไอคอน check/close
+const FeatureIcon = ({ checked }: { checked: boolean }) => (
+    <Image
+        src={
+            checked
+                ? "/images/frontend-pages/icons/icon-check.svg"
+                : "/images/frontend-pages/icons/icon-close.svg"
+        }
+        alt={checked ? "check" : "close"}
+        width={20}
+        height={20}
+    />
+);
+
 const Licenses = [
     {
         id: 1,
@@ -94,58 +108,33 @@ const PricingCard = () => {
                                 </Stack>
                                 <Stack my={4} gap="12px">
                                     <Box display="flex" alignItems="center" gap="8px">
-                                        {license.fullSourceCode ?
-                                            <Image src="/images/frontend-pages/icons/icon-check.svg" alt="circle" width={20} height={20} />
-                                            :
-                                            <Image src="/images/frontend-pages/icons/icon-close.svg" alt="circle" width={20} height={20} />
-                                        }
+                                        <FeatureIcon checked={license.fullSourceCode} />
                                         <Typography fontSize="14px" fontWeight={500}>Full source code</Typography>
-
                                     </Box>
                                     <Box display="flex" alignItems="center" gap="8px">
-                                        {license.isDoc ?
-                                            <Image src="/images/frontend-pages/icons/icon-check.svg" alt="circle" width={20} height={20} />
-                                            :
-                                            <Image src="/images/frontend-pages/icons/icon-close.svg" alt="circle" width={20} height={20} />
-                                        }
+                                        <FeatureIcon checked={license.isDoc} />
                                         <Typography fontSize="14px" fontWeight={500}>Documentation</Typography>
                                     </Box>
                                     <Box display="flex" alignItems="center" gap="8px">
-                                        {license.isSass ?
-                                            <Image src="/images/frontend-pages/icons/icon-check.svg" alt="circle" width={20} height={20} />
-                                            :
-                                            <Image src="/images/frontend-pages/icons/icon-close.svg" alt="circle" width={20} height={20} />
-                                        }
+                                        <FeatureIcon checked={license.isSass} />
                                         <Typography fontSize="14px" sx={{
-                                            color: `${license.isSass ? 'text.primary' : '#99AABA'}`,
+                                            color: `${license.isSass ? 'text.primary' : '#99aaba'}`,
                                             fontWeight: `${license.isSass ? '500' : '400'}`,
                                         }}>Use in SaaS app</Typography>
                                     </Box>
                                     <Box display="flex" alignItems="center" gap="8px">
-                                        {license.isSingleProject ?
-                                            <Image src="/images/frontend-pages/icons/icon-check.svg" alt="circle" width={20} height={20} />
-                                            :
-                                            <Image src="/images/frontend-pages/icons/icon-check.svg" alt="circle" width={20} height={20} />
-                                        }
+                                        <FeatureIcon checked={license.isSingleProject} />
                                         <Typography fontSize="14px" whiteSpace="nowrap" gap="2px" fontWeight={500} display="flex">
                                             <Box fontWeight={700} component="span" whiteSpace="nowrap"> {license.isSingleProject ? "One" : "Unlimited"} </Box>
                                             Project
                                         </Typography>
                                     </Box>
                                     <Box display="flex" alignItems="center" gap="8px">
-                                        {license.isSupport ?
-                                            <Image src="/images/frontend-pages/icons/icon-check.svg" alt="circle" width={20} height={20} />
-                                            :
-                                            <Image src="/images/frontend-pages/icons/icon-close.svg" alt="circle" width={20} height={20} />
-                                        }
+                                        <FeatureIcon checked={license.isSupport} />
                                         <Typography fontSize="14px" whiteSpace="nowrap" gap="2px" fontWeight={500} display="flex"><Box fontWeight={700} component="span" whiteSpace="nowrap">One Year</Box> Technical Support</Typography>
                                     </Box>
                                     <Box display="flex" alignItems="center" gap="8px">
-                                        {license.isUpdate ?
-                                            <Image src="/images/frontend-pages/icons/icon-check.svg" alt="circle" width={20} height={20} />
-                                            :
-                                            <Image src="/images/frontend-pages/icons/icon-close.svg" alt="circle" width={20} height={20} />
-                                        }
+                                        <FeatureIcon checked={license.isUpdate} />
                                         <Typography fontSize="14px" whiteSpace="nowrap" gap="2px" fontWeight={500} display="flex"><Box fontWeight={700} component="span" whiteSpace="nowrap">One Year</Box> Free Updates</Typography>
                                     </Box>
                                 </Stack>

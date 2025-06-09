@@ -28,7 +28,7 @@ const Error404 = () => (
         color="primary"
         variant="contained"
         component={Link}
-        href="/"
+        href="/dashboard"
         disableElevation
       >
         Go Back to Home

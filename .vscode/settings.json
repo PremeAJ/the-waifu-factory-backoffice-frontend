@@ -2,12 +2,12 @@
   "highlight-matching-tag.styles": {
     "opening": {
       "name": {
-        "highlight": "red"
+        "highlight": "green"
       }
     },
     "closing": {
       "name": {
-        "highlight": "red"
+        "highlight": "green"
       }
     }
   },
