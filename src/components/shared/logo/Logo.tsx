@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 const Logo = () => {
  const { isCollapse, isSidebarHover, activeMode } = useContext(CustomizerContext);
  const path = usePathname();
- const url = path.includes("dashboard") ? "/dashboard" : "/";
+ const url = path.includes("dashboard") ? "/dashboard" : path.includes("setting") ? "/setting" : "/";
  const TopbarHeight = config.topbarHeight;
 
  const LinkStyled = styled(Link)(() => ({
