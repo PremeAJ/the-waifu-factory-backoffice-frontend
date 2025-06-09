@@ -46,7 +46,7 @@ interface CustomizerContextProps {
 export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const { user: session } = useContext(AuthContext);
+  const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
   useEffect(() => {
     const lang = Cookies.get("lang") ?? config.isLanguage;
@@ -70,10 +70,10 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     isLoading: isAppearanceLoading,
     error: appearanceError,
     mutate: appearanceMutate,
-  } = useSWR(session ? "/api/user/setting/appearnce" : null, getFetcher);
+  } = useSWR(session && !authIsLoading ? "/api/user/setting/appearnce" : null, getFetcher);
 
   useEffect(() => {
-    if (!session) {
+    if (!session && !authIsLoading) {
       setLoading(false);
     }
     if (userAppearanceData) {

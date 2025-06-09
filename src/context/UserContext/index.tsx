@@ -34,13 +34,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<userType | null>(initialConfig.user);
   const [loading, setLoading] = useState<boolean>(initialConfig.loading);
   const [error, setError] = useState<Error | null>(initialConfig.error);
-  const { user: session } = useContext(AuthContext);
+  const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
-  // ถ้าไม่มี session จะไม่ fetch
-  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate } = useSWR(session ? "/api/users/me" : null, getFetcher);
+  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher);
 
   useEffect(() => {
-    if (!session) {
+    if (!session && !authIsLoading) {
       setLoading(false);
       return;
     }

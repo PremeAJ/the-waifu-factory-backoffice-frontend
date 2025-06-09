@@ -23,10 +23,6 @@ import {
   VerifyOtpParams,
 } from "@supabase/supabase-js";
 import { supabaseSignInWithGoogle } from "@/utils/supabase/client";
-import useSWR from "swr";
-import { getFetcher } from "@/app/api/globalFetcher";
-import { UserContext } from "../UserContext";
-
 type AuthContextType = {
   isLoading: boolean;
   user: User | null; // เพิ่ม user type
@@ -47,8 +43,7 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // const { setUser: setUserFromContext } = useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
