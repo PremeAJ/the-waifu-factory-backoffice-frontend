@@ -10,11 +10,11 @@ import Toolbar from "@mui/material/Toolbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import Logo from "@/components/shared/logo/Logo";
-import Navigations from "./Navigations";
-import MobileSidebar from "./MobileSidebar";
 import { IconMenu2 } from "@tabler/icons-react";
+import Navigations from "../Sidebar/Navigations";
+import MobileSidebar from "../Sidebar/MobileSidebar";
 
-const HpHeader = (props: any) => {
+const HomePageHeader = (props: any) => {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     justifyContent: "center",
     [theme.breakpoints.up("lg")]: {
@@ -100,4 +100,4 @@ const HpHeader = (props: any) => {
   );
 };
 
-export default HpHeader;
+export default HomePageHeader;

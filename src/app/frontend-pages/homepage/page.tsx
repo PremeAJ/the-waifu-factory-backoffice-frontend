@@ -1,7 +1,7 @@
 import PageContainer from '@/components/container/PageContainer';
 import Banner from '../../../components/frontend-pages/homepage/banner/Banner';
-import HeaderAlert from '../../../components/shared/layout/header/HeaderAlert';
-import HpHeader from '../../../components/shared/layout/header/HpHeader';
+import HeaderAlert from '../../../components/layout/header/HeaderAlert';
+import HpHeader from '../../../components/layout/header/HomePageHeader';
 import Features from '../../../components/frontend-pages/homepage/features/Features';
 import DefendFocus from '../../../components/frontend-pages/homepage/defend-focus';
 import Leadership from '../../../components/frontend-pages/shared/leadership';
@@ -11,7 +11,7 @@ import ExceptionalFeature from '../../../components/frontend-pages/homepage/exce
 import Pricing from '../../../components/pages/pricing';
 import FAQ from '../../../components/frontend-pages/homepage/faq';
 import C2a from '../../../components/frontend-pages/shared/c2a';
-import Footer from '../../../components/shared/layout/footer/FllowUsFooter';
+import Footer from '../../../components/layout/footer/FllowUsFooter';
 import ScrollToTop from '../../../components/shared/scroll-to-top';
 
 const HomePage = () => {

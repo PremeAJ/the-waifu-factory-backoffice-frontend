@@ -1,8 +1,8 @@
 import PageContainer from "@/components/container/PageContainer";
-import HeaderAlert from "../../../components/shared/layout/header/HeaderAlert";
-import HpHeader from "../../../components/shared/layout/header/HpHeader";
+import HeaderAlert from "../../../components/layout/header/HeaderAlert";
+import HomePageHeader from "../../../components/layout/header/HomePageHeader";
 import C2a from "../../../components/frontend-pages/shared/c2a";
-import Footer from "../../../components/shared/layout/footer/FllowUsFooter";
+import Footer from "../../../components/layout/footer/FllowUsFooter";
 import Banner from "../../../components/frontend-pages/portfolio/Banner";
 import ScrollToTop from "../../../components/shared/scroll-to-top";
 import GalleryCard from "@/components/apps/userprofile/gallery/GalleryCard";
@@ -13,7 +13,7 @@ const PricingPage = () => {
   <UserDataProvider>
    <PageContainer title="Portfolio" description="this is Portfolio">
     <HeaderAlert />
-    <HpHeader />
+    <HomePageHeader />
     <Banner />
     <Box my={3}>
      <Container maxWidth="lg">

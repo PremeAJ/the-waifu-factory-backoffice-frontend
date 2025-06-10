@@ -11,13 +11,13 @@ import Toolbar from "@mui/material/Toolbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import Logo from "@/components/shared/logo/Logo";
-import Navigations from "../../../landingpage/header/Navigations";
-import MobileSidebar from "../../../landingpage/header/MobileSidebar";
+import Navigations from "../../landingpage/header/Navigations";
+import MobileSidebar from "../../landingpage/header/MobileSidebar";
 import { IconMenu2 } from "@tabler/icons-react";
 import Profile from "@/components/shared/Profile";
 import Language from "@/components/shared/Language/Language";
 
-const LpHeader = () => {
+const LandingPageHeader = () => {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     justifyContent: "center",
     [theme.breakpoints.up("lg")]: {
@@ -94,4 +94,4 @@ const LpHeader = () => {
   );
 };
 
-export default LpHeader;
+export default LandingPageHeader;

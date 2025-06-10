@@ -1,12 +1,12 @@
 import PageContainer from "@/components/container/PageContainer";
-import LpHeader from "../../components/shared/layout/header/Header";
+import LandingPageHeader from "../../components/layout/header/LandingPageHeader";
 import Pricing from "@/components/pages/pricing";
-import Footer from "@/components/shared/layout/footer/FllowUsFooter";
+import Footer from "@/components/layout/footer/FllowUsFooter";
 
 const PricingPage = () => {
   return (
     <PageContainer title="Pricing" description="this is Pricing">
-      <LpHeader />
+      <LandingPageHeader />
       <Pricing />
       <Footer />
     </PageContainer>
