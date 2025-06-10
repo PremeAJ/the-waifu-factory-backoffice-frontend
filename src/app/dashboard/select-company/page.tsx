@@ -2,7 +2,7 @@ import PageContainer from "@/components/container/PageContainer";
 import { Box, Container } from "@mui/material";
 import { UserDataProvider } from "@/context/UserDataContext/index";
 import MyCompanyCard from "@/components/apps/(dashboard)/MyCompanyCard";
-const PricingPage = () => {
+const SelectCompanyPage = () => {
   return (
     <UserDataProvider>
       <PageContainer title="Portfolio" description="this is Portfolio">
@@ -16,4 +16,4 @@ const PricingPage = () => {
   );
 };
 
-export default PricingPage;
+export default SelectCompanyPage;

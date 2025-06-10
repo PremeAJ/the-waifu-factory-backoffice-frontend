@@ -12,7 +12,7 @@ const config = {
   isHorizontal: false,
   isBorderRadius: 7,
   sidebarWidth: 270,
-  miniSidebarWidth: 87,
+  miniSidebarWidth: 100,
   topbarHeight: 70,
 };
 
