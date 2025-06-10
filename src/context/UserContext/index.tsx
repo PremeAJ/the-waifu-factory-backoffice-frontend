@@ -19,6 +19,7 @@ export interface userType {
   permissionId: string | null;
   companyId: string | null;
   activeCompanyId: string | null;
+  hasReceivedTrial: string | null
   users: {
     email: string;
     phone: string | null;
@@ -60,13 +61,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<Error | null>(initialConfig.error);
   const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
-  const {
-    data: usersData,
-    isLoading: isUsersLoading,
-    error: usersError,
-    mutate: userMutate,
-  } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher);
-
+  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate, } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher);
   useEffect(() => {
     if (!session && !authIsLoading) {
       setLoading(false);

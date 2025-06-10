@@ -36,7 +36,7 @@ const Pricing = () => {
                   },
                 }}
               >
-                111,476+ Trusted developers & many tech giants as well
+                ร่วมเป็นหนึ่งในแพลตฟอร์มของเรา!
               </Typography>
             </Grid>
           </Grid>
