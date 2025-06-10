@@ -1,12 +1,13 @@
 import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } from "@mui/material";
-import * as dropdownData from "../../app/dashboard/(Layout)/layout/header/data";
+import * as dropdownData from "../../app/dashboard/(company-auth)/layout/header/data";
 import { IconMail } from "@tabler/icons-react";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
 import BaseButton from "../forms/theme-elements/BaseButton";
 import ConfirmSignOutDialog from "@/components/auth/dialog/ConfirmSignOutDialog";
+import { bgcolor } from "@mui/system";
 
 interface ProfileProps {
   loading?: boolean;
@@ -253,7 +254,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
           </Box>
         ))}
         <Box mt={2}>
-          <BaseButton label="Logout" variant="outlined" onClick={handleLogout} loading={loading} />
+          <BaseButton label="Logout" onClick={handleLogout} loading={loading} />
         </Box>
       </Menu>
       <ConfirmSignOutDialog open={openSignOut} onClose={() => setOpenSignOut(false)} onConfirm={handleConfirmSignOut} loading={signOutLoading} />

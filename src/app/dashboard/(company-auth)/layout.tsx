@@ -2,11 +2,10 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { styled, useTheme } from "@mui/material/styles";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import Header from "./layout/header/Header";
 import Sidebar from "./layout/sidebar/Sidebar";
 import { CustomizerContext } from "@/context/setting/customizerContext";
-import config from "@/context/setting/config";
 import AuthGuard from "./authGuard";
 
 const MainWrapper = styled("div")(() => ({
@@ -26,21 +25,14 @@ const PageWrapper = styled("div")(() => ({
 }));
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { activeLayout, isLayout, activeMode, isCollapse } = useContext(CustomizerContext);
+  const { isLayout, activeMode, isCollapse } = useContext(CustomizerContext);
   const theme = useTheme();
-  const MiniSidebarWidth = config.miniSidebarWidth;
 
   return (
     <AuthGuard>
       <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
         <title>Modernize NextJs</title>
-        {/* ------------------------------------------- */}
-        {/* Sidebar */}
-        {/* ------------------------------------------- */}
-        {activeLayout === "horizontal" ? "" : <Sidebar />}
-        {/* ------------------------------------------- */}
-        {/* Main Wrapper */}
-        {/* ------------------------------------------- */}
+        <Sidebar />
         <PageWrapper
           className="page-wrapper"
           sx={{
@@ -51,31 +43,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }),
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Header */}
-          {/* ------------------------------------------- */}
           <Header />
-          {/* PageContent */}
           <Container
             sx={{
               pt: "30px",
               maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
             }}
           >
-            {/* ------------------------------------------- */}
-            {/* PageContent */}
-            {/* ------------------------------------------- */}
-
-            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>
-              {/* <Outlet /> */}
-              {children}
-              {/* <Index /> */}
-            </Box>
-            {/* ------------------------------------------- */}
-            {/* End Page */}
-            {/* ------------------------------------------- */}
+            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
           </Container>
-          {/* <Customizer /> */}
         </PageWrapper>
       </MainWrapper>
     </AuthGuard>

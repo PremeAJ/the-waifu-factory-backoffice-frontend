@@ -14,7 +14,11 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!authLoading && !authUser && !appUserLoading && !appUser) {
       router.replace("/dashboard/auth/login");
-    } else {
+    } 
+    else if (appUser && !appUser.activeCompanyId) {
+      router.replace("/dashboard/select-company");
+    }
+    else {
       setIsAuthenticated(true);
     }
   }, [pathname, appUser, appUserLoading, authUser, authLoading]);

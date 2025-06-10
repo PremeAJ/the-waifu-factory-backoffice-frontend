@@ -9,11 +9,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Badge,
   Tooltip,
   IconButton,
-  Tabs,
-  Tab,
   TableHead,
   TableRow,
   TableCell,
@@ -26,9 +23,6 @@ import {
   Chip,
 } from "@mui/material";
 import Link from "next/link";
-import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
   IconEdit,
   IconEye,

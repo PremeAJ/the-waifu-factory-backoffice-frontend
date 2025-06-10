@@ -9,6 +9,7 @@ export interface userType {
   role: string | null;
   permissionId: string | null;
   companyId: string | null;
+  activeCompanyId: string | null;
   users:{
     email: string;
     phone: string | null;

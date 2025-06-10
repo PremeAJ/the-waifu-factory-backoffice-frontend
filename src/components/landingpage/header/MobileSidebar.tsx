@@ -7,8 +7,8 @@ import Stack from "@mui/material/Stack";
 import { IconChevronDown } from "@tabler/icons-react";
 import Logo from "@/components/shared/logo/Logo";
 import DemosDD from "./DemosDD";
-import AppLinks from "@/app/dashboard/(Layout)/layout/header/AppLinks";
-import QuickLinks from "@/app/dashboard/(Layout)/layout/header/QuickLinks";
+import AppLinks from "@/app/dashboard/(company-auth)/layout/header/AppLinks";
+import QuickLinks from "@/app/dashboard/(company-auth)/layout/header/QuickLinks";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
 
