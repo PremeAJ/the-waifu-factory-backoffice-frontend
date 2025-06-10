@@ -77,7 +77,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const syncUser = async () => {
     try {
-      await userMutate(postFetcher("/api/users/ensure", {}));
+      await postFetcher("/api/users/ensure", {}); // รอสร้าง user เสร็จจริง
+      await userMutate(); // fetch /api/users/me ใหม่หลังจากนั้น
     } catch (error: any) {}
   };
 

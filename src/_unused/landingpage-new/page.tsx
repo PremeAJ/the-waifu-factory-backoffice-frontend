@@ -10,7 +10,7 @@ import Features from '@/components/landingpage/features/Features';
 import Footer from '@/components/shared/layout/footer/MainFooter';
 import Frameworks from '@/components/landingpage/frameworks/Frameworks';
 import OtherFramework from '@/components/landingpage/other-framework/OtherFramework';
-import LpHeader from '@/components/landingpage/header/Header';
+import LpHeader from '@/components/shared/layout/header/Header';
 import Testimonial from '@/components/landingpage/testimonial/Testimonial';
 
 export default function Landingpage() {

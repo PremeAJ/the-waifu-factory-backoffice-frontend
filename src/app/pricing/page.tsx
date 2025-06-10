@@ -1,5 +1,5 @@
 import PageContainer from "@/components/container/PageContainer";
-import LpHeader from "../../components/landingpage/header/Header";
+import LpHeader from "../../components/shared/layout/header/Header";
 import Pricing from "@/components/pages/pricing";
 import Footer from "@/components/shared/layout/footer/FllowUsFooter";
 

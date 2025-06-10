@@ -15,7 +15,7 @@ const Header = () => {
   const TopbarHeight = config.topbarHeight;
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
-    boxShadow: "none",
+    boxShadow: "0 8px 32px 0 rgba(0,0,0,0.06), 0 2px 8px 0 rgba(60,60,60,0.04)",
     background: theme.palette.background.paper,
     justifyContent: "center",
     backdropFilter: "blur(4px)",
