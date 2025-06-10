@@ -5,17 +5,17 @@ import { useEffect, useState } from "react";
 import { Grid, Box } from "@mui/material";
 import PageContainer from "@/components/container/PageContainer";
 // components
-import YearlyBreakup from "@/components/dashboards/modern/YearlyBreakup";
-import MonthlyEarnings from "@/components/dashboards/modern/MonthlyEarnings";
-import TopCards from "@/components/dashboards/modern/TopCards";
-import RevenueUpdates from "@/components/dashboards/modern/RevenueUpdates";
-import EmployeeSalary from "@/components/dashboards/modern/EmployeeSalary";
-import Customers from "@/components/dashboards/modern/Customers";
-import Projects from "@/components/dashboards/modern/Projects";
-import Social from "@/components/dashboards/modern/Social";
-import SellingProducts from "@/components/dashboards/modern/SellingProducts";
-import WeeklyStats from "@/components/dashboards/modern/WeeklyStats";
-import TopPerformers from "@/components/dashboards/modern/TopPerformers";
+import YearlyBreakup from "@/components/dashboard/user-auth/modern/YearlyBreakup";
+import MonthlyEarnings from "@/components/dashboard/user-auth/modern/MonthlyEarnings";
+import TopCards from "@/components/dashboard/user-auth/modern/TopCards";
+import RevenueUpdates from "@/components/dashboard/user-auth/modern/RevenueUpdates";
+import EmployeeSalary from "@/components/dashboard/user-auth/modern/EmployeeSalary";
+import Customers from "@/components/dashboard/user-auth/modern/Customers";
+import Projects from "@/components/dashboard/user-auth/modern/Projects";
+import Social from "@/components/dashboard/user-auth/modern/Social";
+import SellingProducts from "@/components/dashboard/user-auth/modern/SellingProducts";
+import WeeklyStats from "@/components/dashboard/user-auth/modern/WeeklyStats";
+import TopPerformers from "@/components/dashboard/user-auth/modern/TopPerformers";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 
 

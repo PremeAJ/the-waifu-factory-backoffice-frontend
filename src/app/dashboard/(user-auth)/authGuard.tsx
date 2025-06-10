@@ -10,18 +10,17 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { user: authUser, isLoading: authLoading } = useContext(AuthContext);
   const { user: appUser, loading: appUserLoading } = useContext(UserContext);
-
+  const isLoading = authLoading || appUserLoading;
+  const user = appUser && authUser;
   useEffect(() => {
-    if (!authLoading && !authUser && !appUserLoading && !appUser) {
+    if (!isLoading && !user) {
       router.replace("/dashboard/auth/login");
-    } 
-    else if (appUser && !appUser.activeCompanyId) {
-      router.replace("/dashboard/select-company");
-    }
-    else {
+    } else if (!isLoading && user) {
       setIsAuthenticated(true);
     }
-  }, [pathname, appUser, appUserLoading, authUser, authLoading]);
-
+  }, [pathname, user, isLoading]);
+  if (isLoading) {
+    return <Loading />;
+  }
   return <>{(isAuthenticated && children) || <Loading />}</>;
 }

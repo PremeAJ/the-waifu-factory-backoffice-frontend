@@ -1,7 +1,7 @@
 import PageContainer from "@/components/container/PageContainer";
 import { Box, Container } from "@mui/material";
 import { UserDataProvider } from "@/context/UserDataContext/index";
-import MyCompanyCard from "@/components/apps/(dashboard)/MyCompanyCard";
+import MyCompanyCard from "@/components/dashboard/user-auth/select-company/MyCompanyCard";
 const SelectCompanyPage = () => {
   return (
     <UserDataProvider>

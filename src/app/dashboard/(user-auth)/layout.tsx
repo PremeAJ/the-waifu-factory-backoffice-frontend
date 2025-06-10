@@ -5,7 +5,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import React, { useContext } from "react";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import AuthGuard from "./authGuard";
-import Header from "../(company-auth)/layout/header/Header";
+import Header from "@/components/dashboard/user-auth/layout/Header";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",

@@ -8,7 +8,7 @@ import NavItem from "./NavItem";
 import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
 import { useContext } from "react";
-import SidebarItemsSkeleton from "@/components/dashboards/skeleton/SidebarItemsSkeleton";
+import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
 
 const SidebarItems = () => {
   const pathname = usePathname();

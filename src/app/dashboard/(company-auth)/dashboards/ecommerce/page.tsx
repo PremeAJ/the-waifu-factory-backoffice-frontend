@@ -5,19 +5,19 @@ import { useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
 import PageContainer from '@/components/container/PageContainer';
 
-import WeeklyStats from '@/components/dashboards/modern/WeeklyStats';
-import YearlySales from '@/components/dashboards/ecommerce/YearlySales';
-import PaymentGateways from '@/components/dashboards/ecommerce/PaymentGateways';
-import WelcomeCard from '@/components/dashboards/ecommerce/WelcomeCard';
-import Expence from '@/components/dashboards/ecommerce/Expence';
-import Growth from '@/components/dashboards/ecommerce/Growth';
-import RevenueUpdates from '@/components/dashboards/ecommerce/RevenueUpdates';
-import SalesOverview from '@/components/dashboards/ecommerce/SalesOverview';
-import SalesTwo from '@/components/dashboards/ecommerce/SalesTwo';
-import Sales from '@/components/dashboards/ecommerce/Sales';
-import MonthlyEarnings from '@/components/dashboards/ecommerce/MonthlyEarnings';
-import ProductPerformances from '@/components/dashboards/ecommerce/ProductPerformances';
-import RecentTransactions from '@/components/dashboards/ecommerce/RecentTransactions';
+import WeeklyStats from '@/components/dashboard/user-auth/modern/WeeklyStats';
+import YearlySales from '@/components/dashboard/user-auth/ecommerce/YearlySales';
+import PaymentGateways from '@/components/dashboard/user-auth/ecommerce/PaymentGateways';
+import WelcomeCard from '@/components/dashboard/user-auth/ecommerce/WelcomeCard';
+import Expence from '@/components/dashboard/user-auth/ecommerce/Expence';
+import Growth from '@/components/dashboard/user-auth/ecommerce/Growth';
+import RevenueUpdates from '@/components/dashboard/user-auth/ecommerce/RevenueUpdates';
+import SalesOverview from '@/components/dashboard/user-auth/ecommerce/SalesOverview';
+import SalesTwo from '@/components/dashboard/user-auth/ecommerce/SalesTwo';
+import Sales from '@/components/dashboard/user-auth/ecommerce/Sales';
+import MonthlyEarnings from '@/components/dashboard/user-auth/ecommerce/MonthlyEarnings';
+import ProductPerformances from '@/components/dashboard/user-auth/ecommerce/ProductPerformances';
+import RecentTransactions from '@/components/dashboard/user-auth/ecommerce/RecentTransactions';
 
 const Ecommerce = () => {
 
