@@ -14,10 +14,10 @@ import Box from '@mui/material/Box';
 import { IconEye, IconMessage2, IconPoint } from '@tabler/icons-react';
 import PageContainer from '@/components/container/PageContainer';
 import C2a from '@/components/frontend-pages/shared/c2a';
-import Footer from '@/components/frontend-pages/shared/footer';
+import Footer from '@/components/shared/layout/footer/FllowUsFooter';
 import ScrollToTop from '@/components/shared/scroll-to-top';
-import HeaderAlert from "@/components/frontend-pages/shared/header/HeaderAlert";
-import HpHeader from "@/components/frontend-pages/shared/header/HpHeader";
+import HeaderAlert from "@/components/shared/layout/header/HeaderAlert";
+import HpHeader from "@/components/shared/layout/header/HpHeader";
 import Banner from "@/components/frontend-pages/blog/banner";
 
 

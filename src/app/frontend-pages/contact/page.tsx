@@ -1,9 +1,9 @@
 import PageContainer from '@/components/container/PageContainer';
-import HeaderAlert from '../../../components/frontend-pages/shared/header/HeaderAlert';
-import HpHeader from '../../../components/frontend-pages/shared/header/HpHeader';
+import HeaderAlert from '../../../components/shared/layout/header/HeaderAlert';
+import HpHeader from '../../../components/shared/layout/header/HpHeader';
 
 import C2a from '../../../components/frontend-pages/shared/c2a';
-import Footer from '../../../components/frontend-pages/shared/footer';
+import Footer from '../../../components/shared/layout/footer/FllowUsFooter';
 import Banner from '../../../components/frontend-pages/contact/banner';
 import Form from '../../../components/frontend-pages/contact/form';
 import ScrollToTop from '../../../components/shared/scroll-to-top';

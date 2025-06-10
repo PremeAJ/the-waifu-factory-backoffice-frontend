@@ -1,18 +1,16 @@
-import PageContainer from '@/components/container/PageContainer';
-import ScrollToTop from '../../components/shared/scroll-to-top';
-import Pricing from '../../components/frontend-pages/shared/pricing';
-import Footer from '../../components/frontend-pages/shared/footer';
-import LpHeader from '../../components/landingpage/header/Header';
+import PageContainer from "@/components/container/PageContainer";
+import LpHeader from "../../components/landingpage/header/Header";
+import Pricing from "@/components/pages/pricing";
+import Footer from "@/components/shared/layout/footer/FllowUsFooter";
 
 const PricingPage = () => {
-    return (
-        <PageContainer title="Pricing" description="this is Pricing">
-            <LpHeader />
-            <Pricing />
-            <Footer />
-            {/* <ScrollToTop /> */}
-        </PageContainer>
-    );
+  return (
+    <PageContainer title="Pricing" description="this is Pricing">
+      <LpHeader />
+      <Pricing />
+      <Footer />
+    </PageContainer>
+  );
 };
 
 export default PricingPage;

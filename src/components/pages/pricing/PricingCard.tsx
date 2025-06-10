@@ -2,7 +2,7 @@
 import React from 'react';
 import { Box, Grid, Typography, Chip, CardContent, Divider, Stack, Button } from '@mui/material';
 import Image from 'next/image';
-import BlankCard from '../../../shared/BlankCard';
+import BlankCard from '../../shared/BlankCard';
 
 // สร้างฟังก์ชันสำหรับแสดงไอคอน check/close
 const FeatureIcon = ({ checked }: { checked: boolean }) => (

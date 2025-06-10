@@ -1,16 +1,40 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
-import { SettingProfile, userType } from "./type";
 import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdatePhone, supabaseVerifyOtp } from "@/utils/supabase/server";
 import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
 import { VerifyOtpParams } from "@supabase/supabase-js";
 import { AuthContext } from "../AuthContext";
 
+export interface userType {
+  id: string;
+  avatarUrl: string;
+  firstName: string;
+  lastName: string;
+  nickName: string | null;
+  email: string;
+  phone: string | null;
+  role: string | null;
+  permissionId: string | null;
+  companyId: string | null;
+  activeCompanyId: string | null;
+  users: {
+    email: string;
+    phone: string | null;
+  };
+}
+export interface SettingProfile {
+  firstName?: string;
+  lastName?: string;
+  nickName?: string;
+  email?: string;
+  phone?: string;
+}
+
 export type UserContextType = {
   user: userType | null;
-  setUser: React.Dispatch<React.SetStateAction<userType | null>>; // เพิ่ม setUser
+  setUser: React.Dispatch<React.SetStateAction<userType | null>>; 
   syncUser: () => {};
   updateUser: (payload: SettingProfile) => {};
   uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};

@@ -16,30 +16,30 @@ import { format } from "date-fns";
 
 import BlankCard from "@/components/shared/BlankCard";
 import { GallaryType } from "@/utils/types/apps/users";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { UserContext } from "@/context/UserContext";
 
 const MyCompanyCard = () => {
+  const { user } = useContext(UserContext)
   const { gallery } = useContext(UserDataContext);
+  const router = useRouter();
   const [search, setSearch] = React.useState("");
-
   const filterPhotos = (photos: GallaryType[], cSearch: string) => {
     if (photos) return photos.filter((t) => t.name.toLocaleLowerCase().includes(cSearch.toLocaleLowerCase()));
-
     return photos;
   };
-
   const getPhotos = filterPhotos(gallery, search);
-
-  // skeleton
   const [isLoading, setLoading] = React.useState(true);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 500);
-
     return () => clearTimeout(timer);
   }, []);
+
+  const onClickAddCompany = () => {
+    router.push("/dashboard/create-company");
+  }
 
   return (
     <>
@@ -95,13 +95,7 @@ const MyCompanyCard = () => {
                     <Skeleton variant="rectangular" animation="wave" width="100%" height={220}></Skeleton>
                   </>
                 ) : (
-                  <CardMedia
-                    component={"img"}
-                    height="220"
-                    alt="Remy Sharp"
-                    src={photo.cover}
-                    sx={{ cursor: "pointer" }}
-                  />
+                  <CardMedia component={"img"} height="220" alt="Remy Sharp" src={photo.cover} sx={{ cursor: "pointer" }} />
                 )}
                 <Box p={3}>
                   <Stack direction="row" gap={1}>
@@ -126,7 +120,7 @@ const MyCompanyCard = () => {
             xs: 12,
             lg: 4,
           }}
-          sx={{ mb: { xs: 2, md: 0 } }} 
+          sx={{ mb: { xs: 2, md: 0 } }}
         >
           <BlankCard
             className="hoverCard"
@@ -146,9 +140,7 @@ const MyCompanyCard = () => {
                 bgcolor: "primary.lighter",
               },
             }}
-            onClick={() => {
-              redirect("/dashboard/create-company");
-            }}
+            onClick={() => {onClickAddCompany}}
           >
             <IconPlus size={48} stroke={1.5} />
             <Typography variant="subtitle1" mt={2} color="primary.main">
