@@ -140,7 +140,7 @@ const MyCompanyCard = () => {
                 bgcolor: "primary.lighter",
               },
             }}
-            onClick={() => {onClickAddCompany}}
+            onClick={onClickAddCompany}
           >
             <IconPlus size={48} stroke={1.5} />
             <Typography variant="subtitle1" mt={2} color="primary.main">
