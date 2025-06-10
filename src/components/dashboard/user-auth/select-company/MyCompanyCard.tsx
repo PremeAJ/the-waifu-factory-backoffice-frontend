@@ -16,6 +16,7 @@ import { format } from "date-fns";
 
 import BlankCard from "@/components/shared/BlankCard";
 import { GallaryType } from "@/utils/types/apps/users";
+import { redirect } from "next/navigation";
 
 const MyCompanyCard = () => {
   const { gallery } = useContext(UserDataContext);
@@ -146,8 +147,7 @@ const MyCompanyCard = () => {
               },
             }}
             onClick={() => {
-              // TODO: ใส่ logic เปิด modal หรือไปหน้าสร้างใหม่
-              alert("สร้างการ์ดใหม่");
+              redirect("/dashboard/create-company");
             }}
           >
             <IconPlus size={48} stroke={1.5} />

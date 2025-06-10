@@ -2,26 +2,17 @@ import Language from "@/components/shared/Language/Language";
 import Profile from "@/components/shared/Profile";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import config from "@/context/setting/config";
-import { CustomizerContext } from "@/context/setting/customizerContext";
 import { UserContext } from "@/context/UserContext";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { IconMenu2 } from "@tabler/icons-react";
 import { useContext } from "react";
 
 const Header = () => {
   const { loading, user } = useContext(UserContext);
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-  const lgDown = useMediaQuery((theme) => theme.breakpoints.down("lg"));
   const TopbarHeight = config.topbarHeight;
-
-  // drawer
-  const { setIsCollapse, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: "none",
@@ -41,31 +32,9 @@ const Header = () => {
     <ProductProvider>
       <AppBarStyled position="sticky" color="default">
         <ToolbarStyled>
-          {/* ------------------------------------------- */}
-          {/* Toggle Button Sidebar */}
-          {/* ------------------------------------------- */}
-
-          <IconButton
-            color="inherit"
-            aria-label="menu"
-            onClick={() => {
-              // Toggle sidebar on both mobile and desktop based on screen size
-              if (lgUp) {
-                // For large screens, toggle between full-sidebar and mini-sidebar
-                isCollapse === "full-sidebar" ? setIsCollapse("mini-sidebar") : setIsCollapse("full-sidebar");
-              } else {
-                // For smaller screens, toggle mobile sidebar
-                setIsMobileSidebar(!isMobileSidebar);
-              }
-            }}
-          >
-            <IconMenu2 size="20" />
-          </IconButton>
-    
           <Box flexGrow={1} />
           <Stack spacing={1} direction="row" alignItems="center">
             <Language />
-     
             <Profile loading={loading || !user} />
           </Stack>
         </ToolbarStyled>
