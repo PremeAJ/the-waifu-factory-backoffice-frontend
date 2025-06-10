@@ -28,11 +28,13 @@ export const Profile = () => {
   };
 
   return (
-    <Box display={"flex"} alignItems="center" gap={2} sx={{ m: 3, p: 2, bgcolor: `${"secondary.light"}` }}>
-      {!hideMenu ? (
+    <Box display={"flex"} alignItems="center" gap={2} sx={{ m: 3, p: hideMenu ? 0 : 2, bgcolor: hideMenu ? "none" : `${"secondary.light"}` }}>
+      {hideMenu ? (
+        // แสดง Avatar อย่างเดียวถ้า hideMenu เป็น true
+        <Avatar alt="Remy Sharp" src={avatarUrl || "/images/profile/user-1.jpg"} sx={{ height: 40, width: 40 }} />
+      ) : (
         <>
           <Avatar alt="Remy Sharp" src={avatarUrl || "/images/profile/user-1.jpg"} sx={{ height: 40, width: 40 }} />
-
           <Box>
             <Typography variant="h6">{firstName}</Typography>
             <Typography variant="caption">Designer</Typography>
@@ -51,8 +53,6 @@ export const Profile = () => {
             loading={loading}
           />
         </>
-      ) : (
-        ""
       )}
     </Box>
   );
