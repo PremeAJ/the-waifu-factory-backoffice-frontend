@@ -2,7 +2,7 @@ import React from "react";
 import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 
-import FormWizardSteps from "@/components/forms/form-wizard/FormWizardSteps";
+import FormWizardSteps from "@/components/dashboard/user-auth/create-company/CreateCompanyForm";
 
 const FormWizard = () => {
   return (
