@@ -4,6 +4,10 @@ import { Box, Grid, Typography, Chip, CardContent, Divider, Stack, Button } from
 import Image from "next/image";
 import BlankCard from "../../shared/BlankCard";
 import { UserContext } from "@/context/UserContext";
+import { PlanContext } from "@/context/PlanContext";
+import { I18nString } from "@/utils/i18n/I18nString";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 const FeatureIcon = ({ checked }: { checked: boolean }) => (
   <Image
@@ -14,72 +18,42 @@ const FeatureIcon = ({ checked }: { checked: boolean }) => (
   />
 );
 
-const Licenses = [
-  {
-    id: 1,
-    type: "Starter",
-    isPopular: false,
-    typeText: "Use for single end product which end users can’t be charged for.",
-    price: "99",
-    fullSourceCode: true,
-    isDoc: true,
-    isSass: false,
-    isSingleProject: true,
-    isSupport: true,
-    isUpdate: true,
-  },
-  {
-    id: 2,
-    type: "Basic",
-    isPopular: false,
-    typeText: "Use for unlimited end products end users can’t be charged for.",
-    price: "159",
-    fullSourceCode: true,
-    isDoc: true,
-    isSass: false,
-    isSingleProject: false,
-    isSupport: true,
-    isUpdate: true,
-  },
-  {
-    id: 3,
-    type: "Pro",
-    isPopular: true,
-    typeText: "Use for single end product which end users can be charged for.",
-    price: "299",
-    fullSourceCode: true,
-    isDoc: true,
-    isSass: true,
-    isSingleProject: true,
-    isSupport: true,
-    isUpdate: true,
-  },
-  {
-    id: 4,
-    type: "Premium",
-    isPopular: false,
-    typeText: "Use in unlimited end products end users can be charged for.",
-    price: "499",
-    fullSourceCode: true,
-    isDoc: true,
-    isSass: true,
-    isSingleProject: false,
-    isSupport: true,
-    isUpdate: true,
-  },
-];
-
 const PricingCard = () => {
+  const { plan: planData, error } = useContext(PlanContext);
   const { user } = useContext(UserContext);
+  const { i18n } = useTranslation();
+  const router = useRouter();
+  const { language } = i18n;
   const { hasReceivedTrial } = user || {};
+  const featureList: { key: string; labelTh: string; labelEn: string }[] = [
+    { key: "pos", labelTh: "ระบบขายหน้าร้าน (POS)", labelEn: "POS System" },
+    { key: "crm", labelTh: "ระบบลูกค้าสัมพันธ์ (CRM)", labelEn: "CRM" },
+    { key: "hrm", labelTh: "ระบบบริหารบุคคล (HRM)", labelEn: "HRM" },
+    { key: "inventory", labelTh: "คลังสินค้า", labelEn: "Inventory" },
+    { key: "multiUser", labelTh: "ผู้ใช้หลายคน", labelEn: "Multi-user" },
+    { key: "support", labelTh: "ซัพพอร์ต", labelEn: "Support" },
+    { key: "update", labelTh: "อัปเดตฟรี", labelEn: "Free Updates" },
+    { key: "api", labelTh: "API เชื่อมต่อ", labelEn: "API Access" },
+    { key: "custom", labelTh: "ปรับแต่งระบบ", labelEn: "Customizable" },
+  ];
+
+  const onClickPlan = () =>{
+    if (user) {
+      router.push("/dashboard/create-company");
+    } else {
+      router.push("/auth/register");
+    }
+  }
+
   return (
     <>
       <Grid container spacing={3}>
-        {Licenses.map((license, i) => {
-          const isTrialLicense = license.id === 1 && !hasReceivedTrial;
+        {planData.map((plan) => {
+          const { id, name, descriptionTh, descriptionEn, price, isPopular, isTrial, features } = plan;
+          const isTrialLicense = isTrial && !hasReceivedTrial;
           return (
             <Grid
-              key={i}
+              key={id}
               size={{
                 xs: 12,
                 lg: 3,
@@ -90,9 +64,9 @@ const PricingCard = () => {
                 <CardContent sx={{ p: "32px" }}>
                   <Box display="flex" alignItems="center" mb={2}>
                     <Typography variant="h4" fontSize="20px" fontWeight={600}>
-                      {license.type}
+                      {name}
                     </Typography>
-                    {license.isPopular ? (
+                    {isPopular ? (
                       <Chip
                         label="Popular"
                         size="small"
@@ -105,9 +79,8 @@ const PricingCard = () => {
                       />
                     ) : null}
                   </Box>
-
                   <Typography fontSize="13px" mb={4}>
-                    {license.typeText}
+                    {I18nString(language, descriptionTh, descriptionEn)}
                   </Typography>
                   <Divider />
                   <Stack mt={4} direction="row" gap="8px" alignItems="end">
@@ -117,7 +90,7 @@ const PricingCard = () => {
                       fontWeight={700}
                       sx={isTrialLicense ? { textDecoration: "line-through", color: "text.disabled" } : {}}
                     >
-                      ฿{license.price}
+                      ฿{price}
                     </Typography>
                     {isTrialLicense && (
                       <Typography variant="h4" fontSize="30px" fontWeight={700}>
@@ -129,60 +102,19 @@ const PricingCard = () => {
                     </Typography>
                   </Stack>
                   <Stack my={4} gap="12px">
-                    <Box display="flex" alignItems="center" gap="8px">
-                      <FeatureIcon checked={license.fullSourceCode} />
-                      <Typography fontSize="14px" fontWeight={500}>
-                        Full source code
-                      </Typography>
-                    </Box>
-                    <Box display="flex" alignItems="center" gap="8px">
-                      <FeatureIcon checked={license.isDoc} />
-                      <Typography fontSize="14px" fontWeight={500}>
-                        Documentation
-                      </Typography>
-                    </Box>
-                    <Box display="flex" alignItems="center" gap="8px">
-                      <FeatureIcon checked={license.isSass} />
-                      <Typography
-                        fontSize="14px"
-                        sx={{
-                          color: `${license.isSass ? "text.primary" : "#99aaba"}`,
-                          fontWeight: `${license.isSass ? "500" : "400"}`,
-                        }}
-                      >
-                        Use in SaaS app
-                      </Typography>
-                    </Box>
-                    <Box display="flex" alignItems="center" gap="8px">
-                      <FeatureIcon checked={license.isSingleProject} />
-                      <Typography fontSize="14px" whiteSpace="nowrap" gap="2px" fontWeight={500} display="flex">
-                        <Box fontWeight={700} component="span" whiteSpace="nowrap">
-                          {" "}
-                          {license.isSingleProject ? "One" : "Unlimited"}{" "}
+                    {featureList.map((feature) => {
+                      const { key, labelTh, labelEn } = feature;
+                      return (
+                        <Box key={key} display="flex" alignItems="center" gap="8px">
+                          <FeatureIcon checked={features[key]} />
+                          <Typography fontSize="14px" fontWeight={500}>
+                            {I18nString(language, labelTh, labelEn)}
+                          </Typography>
                         </Box>
-                        Project
-                      </Typography>
-                    </Box>
-                    <Box display="flex" alignItems="center" gap="8px">
-                      <FeatureIcon checked={license.isSupport} />
-                      <Typography fontSize="14px" whiteSpace="nowrap" gap="2px" fontWeight={500} display="flex">
-                        <Box fontWeight={700} component="span" whiteSpace="nowrap">
-                          One Year
-                        </Box>{" "}
-                        Technical Support
-                      </Typography>
-                    </Box>
-                    <Box display="flex" alignItems="center" gap="8px">
-                      <FeatureIcon checked={license.isUpdate} />
-                      <Typography fontSize="14px" whiteSpace="nowrap" gap="2px" fontWeight={500} display="flex">
-                        <Box fontWeight={700} component="span" whiteSpace="nowrap">
-                          One Year
-                        </Box>{" "}
-                        Free Updates
-                      </Typography>
-                    </Box>
+                      );
+                    })}
                   </Stack>
-                  <Button fullWidth variant="contained" size="large">
+                  <Button fullWidth variant="contained" size="large" onClick={onClickPlan}>
                     {isTrialLicense ? "ทดลองใช้งานฟรี 7 วัน" : "Purchase Now"}
                   </Button>
                 </CardContent>

@@ -25,11 +25,17 @@ async function handleResponse(res: Response, method: string, url: string) {
   return res.json();
 }
 
-const getFetcher = (url: string) =>
-  fetch(url, {
+const getFetcher = (url: string, params?: Record<string, any>) => {
+  let fullUrl = url;
+  if (params && Object.keys(params).length > 0) {
+    const search = new URLSearchParams(params).toString();
+    fullUrl += (url.includes("?") ? "&" : "?") + search;
+  }
+  return fetch(fullUrl, {
     method: "GET",
     headers: { browserrefreshed: "false" },
-  }).then(res => handleResponse(res, "GET", url));
+  }).then(res => handleResponse(res, "GET", fullUrl));
+};
 
 const postFetcher = (url: string, arg: any) =>
   fetch(url, {

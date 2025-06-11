@@ -4,7 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeSettings } from "@/utils/theme/Theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import "@/utils/i18n";
+import "@/utils/i18n/i18n";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { UserProvider } from "../context/UserContext";

@@ -167,22 +167,41 @@ export async function supabaseSetSession({ access_token, refresh_token }: { acce
 
 export async function supabaseRefreshSession() {
   const supabase = await createClient();
-  try {
-    return await supabase.auth.getSession();
-  } catch (error) {
-    await removeCookies();
-    return { data: { session: null }, error };
+  const { data, error } = await supabase.auth.getSession();
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "supabaseRefreshSession",
+    });
   }
+  return { data, error: error?.code };
 }
 
 export async function supabaseGetSession() {
   const supabase = await createClient();
-  return supabase.auth.getSession();
+  const { data, error } = await supabase.auth.getSession();
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "supabaseRefreshSession",
+    });
+  }
+  return { data, error: error?.code };
 }
 
 export async function supabaseGetUser() {
   const supabase = await createClient();
-  return supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
+  if (error) {
+    await logError({
+      errorCode: error.code,
+      ip: await getClientIP(),
+      endpoint: "supabaseRefreshSession",
+    });
+  }
+  return { data, error: error?.code };
 }
 
 export async function supabaseExchangeCodeForSession(code: string) {
@@ -269,7 +288,7 @@ export async function supabaseUploadFile(payload: UploadFileType) {
 
 export async function supabaseUpdateEmail(newEmail: string) {
   const supabase = await createClient();
-  
+
   const { data, error } = await supabase.auth.updateUser(
     {
       email: newEmail,
@@ -295,15 +314,13 @@ export async function supabaseUpdatePhone(newPhone: string) {
   const { data, error } = await supabase.auth.updateUser({
     phone: newPhone,
   });
-  console.log("🚀 ~ supabaseUpdatePhone ~ error:", error)
-  console.log("🚀 ~ supabaseUpdatePhone ~ data:", data)
   if (error) {
     await logError({
       errorCode: error.code,
       ip: await getClientIP(),
       endpoint: "updateUser: Phone",
     });
-  }  
+  }
 
   return { data, error: error?.code };
 }
