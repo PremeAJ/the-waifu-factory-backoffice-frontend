@@ -1,10 +1,15 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Grid, Typography, Container } from "@mui/material";
 import PricingCard from "./PricingCard";
 import PaymentMethods from "./PaymentMethods";
+import { PlanContext } from "@/context/PlanContext";
+import { CustomizerContext } from "@/context/setting/customizerContext";
 
 const Pricing = () => {
+  const { isLoading:IsPlanLoading } = useContext(PlanContext)
+  const { loading } = useContext(CustomizerContext);
+  const isLoading = loading || IsPlanLoading;
   return (
     <>
       <Box
@@ -41,7 +46,7 @@ const Pricing = () => {
             </Grid>
           </Grid>
 
-          <PricingCard />
+          <PricingCard isLoading={isLoading}/>
           <PaymentMethods />
         </Container>
       </Box>

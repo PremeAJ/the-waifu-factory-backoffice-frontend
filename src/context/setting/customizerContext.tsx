@@ -45,6 +45,7 @@ interface CustomizerContextProps {
 
 export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
+  
   const [error, setError] = useState<Error | null>(null);
   const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 

@@ -8,6 +8,7 @@ import { PlanContext } from "@/context/PlanContext";
 import { I18nString } from "@/utils/i18n/I18nString";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import Skeleton from "@mui/material/Skeleton";
 
 const FeatureIcon = ({ checked }: { checked: boolean }) => (
   <Image
@@ -18,7 +19,11 @@ const FeatureIcon = ({ checked }: { checked: boolean }) => (
   />
 );
 
-const PricingCard = () => {
+interface PricingCardProps {
+  isLoading?: boolean;
+}
+
+const PricingCard = ({ isLoading }: PricingCardProps) => {
   const { plan: planData, error } = useContext(PlanContext);
   const { user } = useContext(UserContext);
   const { i18n } = useTranslation();
@@ -37,12 +42,48 @@ const PricingCard = () => {
     { key: "custom", labelTh: "ปรับแต่งระบบ", labelEn: "Customizable" },
   ];
 
-  const onClickPlan = () =>{
+  const onClickPlan = () => {
     if (user) {
       router.push("/dashboard/create-company");
     } else {
       router.push("/auth/register");
     }
+  };
+
+  // Skeleton UI
+  if (isLoading) {
+    return (
+      <Grid container spacing={3}>
+        {[1, 2, 3, 4].map((i) => (
+          <Grid key={i} size={{ xs: 12, lg: 3, sm: 6 }}>
+            <BlankCard>
+              <CardContent sx={{ p: "32px" }}>
+                <Box display="flex" alignItems="center" mb={2}>
+                  <Skeleton variant="text" width={120} height={32} />
+                  <Skeleton variant="rectangular" width={60} height={24} sx={{ ml: 1, borderRadius: "8px" }} />
+                </Box>
+                <Skeleton variant="text" width="80%" height={20} sx={{ mb: 2 }} />
+                <Divider />
+                <Stack mt={4} direction="row" gap="8px" alignItems="end">
+                  <Skeleton variant="text" width={60} height={40} />
+                  <Skeleton variant="text" width={40} height={30} />
+                  <Skeleton variant="text" width={40} height={20} />
+                </Stack>
+                <Stack my={4} gap="12px">
+                  {featureList.map((f) => (
+                    <Box key={f.key} display="flex" alignItems="center" gap="8px">
+                      <Skeleton variant="circular" width={20} height={20} />
+                      <Skeleton variant="text" width={100} height={20} />
+                    </Box>
+                  ))}
+                </Stack>
+                <Skeleton variant="rectangular" width="100%" height={40} sx={{ borderRadius: 2 }} />
+              </CardContent>
+            </BlankCard>
+          </Grid>
+        ))}
+      </Grid>
+    );
   }
 
   return (
