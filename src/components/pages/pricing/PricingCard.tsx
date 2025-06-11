@@ -50,7 +50,6 @@ const PricingCard = ({ isLoading }: PricingCardProps) => {
     }
   };
 
-  // Skeleton UI
   if (isLoading) {
     return (
       <Grid container spacing={3}>
