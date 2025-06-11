@@ -2,9 +2,9 @@ import React, { useState, useContext } from "react";
 import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { IconAlertTriangle, IconInfoCircle, IconMail } from "@tabler/icons-react";
 import { UserContext } from "@/context/UserContext";
-import BaseTextField from "../../forms/theme-elements/BaseTextField";
-import TransitionDialog from "../../ui-components/dialog/TransitionDialog";
 import { emailRegex } from "@/utils/validator/regex";
+import TransitionDialog from "@/components/ui-components/dialog/TransitionDialog";
+import BaseTextField from "@/components/forms/theme-elements/BaseTextField";
 
 interface EmailChangeFlowProps {
   open: boolean;

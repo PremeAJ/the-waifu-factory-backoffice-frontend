@@ -3,9 +3,9 @@ import React, { useState, useContext } from "react";
 import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { IconAlertTriangle, IconInfoCircle, IconDeviceMobile, IconCheck } from "@tabler/icons-react";
 import { UserContext } from "@/context/UserContext";
-import BaseTextField from "../../forms/theme-elements/BaseTextField";
-import TransitionDialog from "../../ui-components/dialog/TransitionDialog";
 import { phoneRegex } from "@/utils/validator/regex";
+import BaseTextField from "@/components/forms/theme-elements/BaseTextField";
+import TransitionDialog from "@/components/ui-components/dialog/TransitionDialog";
 
 interface PhoneChangeFlowProps {
   open: boolean;
