@@ -6,18 +6,18 @@ import * as yup from "yup";
 import { Stack, useTheme } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/context/UserContext";
-import BaseTextField from "../../forms/theme-elements/BaseTextField";
-import BaseButton from "../../forms/theme-elements/BaseButton";
 import { useFormik } from "formik";
 import { firstNameSchemaNotRequired, lastNameSchemaNotRequired, nickNameSchemaNotRequired } from "@/utils/validator/yup";
 import { IconPencil, IconMail, IconDeviceMobile } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { removeUndefinedAndNull } from "@/utils/function/object/object-cleaner";
-import BaseLabel from "../../forms/theme-elements/BaseLabel";
-import AvatarCropDialog from "../../ui-components/dialog/AvatarCropDialog";
-import TransitionDialog from "../../ui-components/dialog/TransitionDialog";
 import EmailChangeFlow from "./EmailChangeFlow";
 import PhoneChangeFlow from "./PhoneChangeFlow";
+import TransitionDialog from "@/components/ui-components/dialog/TransitionDialog";
+import BaseTextField from "@/components/forms/theme-elements/BaseTextField";
+import BaseButton from "@/components/forms/theme-elements/BaseButton";
+import BaseLabel from "@/components/forms/theme-elements/BaseLabel";
+import AvatarCropDialog from "@/components/ui-components/dialog/AvatarCropDialog";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
