@@ -40,7 +40,7 @@ export const PlanProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  const { data: PlanData, isLoading: isPlanLoading, error: PlanError, mutate: PlanMutate } = useSWR("/api/plan", getFetcher);
+  const { data: PlanData, isLoading: isPlanLoading, error: PlanError, mutate: PlanMutate } = useSWR("/api/master/plan", getFetcher);
 
   useEffect(() => {
     if (PlanData) {
