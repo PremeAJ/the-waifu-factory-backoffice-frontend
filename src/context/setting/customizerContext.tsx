@@ -96,7 +96,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         setLoading(isAppearanceLoading);
       }
     }
-  }, [userAppearanceData, isAppearanceLoading, appearanceError]);
+  }, [userAppearanceData, isAppearanceLoading, appearanceError, session, authIsLoading]);
 
   useEffect(() => {
     document.documentElement.setAttribute("class", activeMode);

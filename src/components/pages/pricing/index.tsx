@@ -8,6 +8,8 @@ import { CustomizerContext } from "@/context/setting/customizerContext";
 
 const Pricing = () => {
   const { isLoading: IsPlanLoading } = useContext(PlanContext);
+  const { loading: IsCustomizerLoading } = useContext(CustomizerContext);
+  const isLoading = IsPlanLoading || IsCustomizerLoading;
   return (
     <>
       <Box
@@ -44,7 +46,7 @@ const Pricing = () => {
             </Grid>
           </Grid>
 
-          <PricingCard isLoading={IsPlanLoading} />
+          <PricingCard isLoading={isLoading} />
           <PaymentMethods />
         </Container>
       </Box>
