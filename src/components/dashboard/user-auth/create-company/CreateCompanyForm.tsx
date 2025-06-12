@@ -6,71 +6,80 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Button,
   Typography,
   FormControlLabel,
   Alert,
+  Stack,
 } from '@mui/material'
-import CustomTextField from '@/components/forms/theme-elements/CustomTextField'
-import CustomCheckbox from '@/components/forms/theme-elements/CustomCheckbox'
-import CustomFormLabel from '@/components/forms/theme-elements/CustomFormLabel'
 import ParentCard from '@/components/shared/ParentCard'
-import { Stack } from '@mui/system'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import BaseTextField from '@/components/forms/theme-elements/BaseTextField'
+import CustomCheckbox from '@/components/forms/theme-elements/CustomCheckbox'
+import BaseButton from '@/components/forms/theme-elements/BaseButton'
 
 const steps = ['ข้อมูลบริษัท', 'ข้อมูลผู้ติดต่อ', 'ยืนยัน']
 
+const stepSchemas = [
+  Yup.object({
+    companyName: Yup.string().required('กรุณากรอกชื่อบริษัท'),
+    companyEmail: Yup.string().email('รูปแบบอีเมลไม่ถูกต้อง').required('กรุณากรอกอีเมลบริษัท'),
+    companyAddress: Yup.string().required('กรุณากรอกที่อยู่บริษัท'),
+  }),
+  Yup.object({
+    contactName: Yup.string().required('กรุณากรอกชื่อผู้ติดต่อ'),
+    contactEmail: Yup.string().email('รูปแบบอีเมลไม่ถูกต้อง').required('กรุณากรอกอีเมลผู้ติดต่อ'),
+    contactPhone: Yup.string().required('กรุณากรอกเบอร์โทรศัพท์'),
+  }),
+  Yup.object({
+    agree: Yup.boolean().oneOf([true], 'กรุณายอมรับเงื่อนไขการใช้งาน'),
+  }),
+]
+
+const initialValues = {
+  companyName: '',
+  companyEmail: '',
+  companyAddress: '',
+  contactName: '',
+  contactEmail: '',
+  contactPhone: '',
+  agree: false,
+}
+
 const CreateCompanyForm = () => {
   const [activeStep, setActiveStep] = useState(0)
-  const [skipped, setSkipped] = useState(new Set<number>())
-  const [form, setForm] = useState({
-    companyName: '',
-    companyEmail: '',
-    companyAddress: '',
-    contactName: '',
-    contactEmail: '',
-    contactPhone: '',
-    agree: false,
-  })
   const [submitted, setSubmitted] = useState(false)
 
-  const isStepOptional = (step: number) => false
-  const isStepSkipped = (step: number) => skipped.has(step)
+  const formik = useFormik({
+    initialValues,
+    validationSchema: stepSchemas[activeStep],
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      setSubmitted(true)
+      setActiveStep(steps.length)
+      // TODO: ส่งข้อมูลไป backend
+    },
+  })
 
-  const handleNext = () => {
-    setActiveStep((prev) => prev + 1)
+  const handleNext = async () => {
+    const errs = await formik.validateForm()
+    if (Object.keys(errs).length === 0) {
+      setActiveStep((prev) => prev + 1)
+    } else {
+      formik.setTouched(
+        Object.keys(stepSchemas[activeStep].fields).reduce((acc, key) => ({ ...acc, [key]: true }), {})
+      )
+    }
   }
 
   const handleBack = () => {
     setActiveStep((prev) => prev - 1)
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }))
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitted(true)
-    // TODO: ส่งข้อมูลไป backend
-    setActiveStep(steps.length)
-  }
-
   const handleReset = () => {
     setActiveStep(0)
-    setForm({
-      companyName: '',
-      companyEmail: '',
-      companyAddress: '',
-      contactName: '',
-      contactEmail: '',
-      contactPhone: '',
-      agree: false,
-    })
     setSubmitted(false)
+    formik.resetForm()
   }
 
   const renderStep = (step: number) => {
@@ -78,82 +87,60 @@ const CreateCompanyForm = () => {
       case 0:
         return (
           <Box>
-            <CustomFormLabel htmlFor='companyName'>ชื่อบริษัท</CustomFormLabel>
-            <CustomTextField
-              id='companyName'
+            <BaseTextField
               name='companyName'
-              value={form.companyName}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
+              label='ชื่อบริษัท'
+              formik={formik}
               required
+              fullWidth
             />
-            <CustomFormLabel htmlFor='companyEmail' sx={{ mt: 2 }}>
-              อีเมลบริษัท
-            </CustomFormLabel>
-            <CustomTextField
-              id='companyEmail'
+            <BaseTextField
               name='companyEmail'
+              label='อีเมลบริษัท'
               type='email'
-              value={form.companyEmail}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
+              formik={formik}
               required
+              fullWidth
+              sx={{ mt: 2 }}
             />
-            <CustomFormLabel htmlFor='companyAddress' sx={{ mt: 2 }}>
-              ที่อยู่บริษัท
-            </CustomFormLabel>
-            <CustomTextField
-              id='companyAddress'
+            <BaseTextField
               name='companyAddress'
-              value={form.companyAddress}
-              onChange={handleChange}
-              variant='outlined'
+              label='ที่อยู่บริษัท'
+              formik={formik}
+              required
               fullWidth
               multiline
               rows={3}
-              required
+              sx={{ mt: 2 }}
             />
           </Box>
         )
       case 1:
         return (
           <Box>
-            <CustomFormLabel htmlFor='contactName'>ชื่อผู้ติดต่อ</CustomFormLabel>
-            <CustomTextField
-              id='contactName'
+            <BaseTextField
               name='contactName'
-              value={form.contactName}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
+              label='ชื่อผู้ติดต่อ'
+              formik={formik}
               required
+              fullWidth
             />
-            <CustomFormLabel htmlFor='contactEmail' sx={{ mt: 2 }}>
-              อีเมลผู้ติดต่อ
-            </CustomFormLabel>
-            <CustomTextField
-              id='contactEmail'
+            <BaseTextField
               name='contactEmail'
+              label='อีเมลผู้ติดต่อ'
               type='email'
-              value={form.contactEmail}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
+              formik={formik}
               required
+              fullWidth
+              sx={{ mt: 2 }}
             />
-            <CustomFormLabel htmlFor='contactPhone' sx={{ mt: 2 }}>
-              เบอร์โทรศัพท์
-            </CustomFormLabel>
-            <CustomTextField
-              id='contactPhone'
+            <BaseTextField
               name='contactPhone'
-              value={form.contactPhone}
-              onChange={handleChange}
-              variant='outlined'
-              fullWidth
+              label='เบอร์โทรศัพท์'
+              formik={formik}
               required
+              fullWidth
+              sx={{ mt: 2 }}
             />
           </Box>
         )
@@ -164,29 +151,33 @@ const CreateCompanyForm = () => {
               ตรวจสอบข้อมูลก่อนยืนยัน
             </Typography>
             <Typography variant='body2'>
-              <b>ชื่อบริษัท:</b> {form.companyName}
+              <b>ชื่อบริษัท:</b> {formik.values.companyName}
               <br />
-              <b>อีเมลบริษัท:</b> {form.companyEmail}
+              <b>อีเมลบริษัท:</b> {formik.values.companyEmail}
               <br />
-              <b>ที่อยู่บริษัท:</b> {form.companyAddress}
+              <b>ที่อยู่บริษัท:</b> {formik.values.companyAddress}
               <br />
-              <b>ชื่อผู้ติดต่อ:</b> {form.contactName}
+              <b>ชื่อผู้ติดต่อ:</b> {formik.values.contactName}
               <br />
-              <b>อีเมลผู้ติดต่อ:</b> {form.contactEmail}
+              <b>อีเมลผู้ติดต่อ:</b> {formik.values.contactEmail}
               <br />
-              <b>เบอร์โทรศัพท์:</b> {form.contactPhone}
+              <b>เบอร์โทรศัพท์:</b> {formik.values.contactPhone}
             </Typography>
             <FormControlLabel
               control={
                 <CustomCheckbox
-                  checked={form.agree}
-                  onChange={handleChange}
+                  checked={formik.values.agree}
+                  onChange={formik.handleChange}
                   name='agree'
+                  onBlur={formik.handleBlur}
                 />
               }
               label='ยอมรับเงื่อนไขการใช้งาน'
               sx={{ mt: 2 }}
             />
+            {formik.touched.agree && formik.errors.agree && (
+              <Typography color='error' variant='caption'>{formik.errors.agree}</Typography>
+            )}
           </Box>
         )
       default:
@@ -196,10 +187,10 @@ const CreateCompanyForm = () => {
 
   return (
     <ParentCard title='สร้างบริษัทใหม่'>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <Box width='100%'>
           <Stepper activeStep={activeStep}>
-            {steps.map((label, index) => (
+            {steps.map((label) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>
@@ -209,49 +200,39 @@ const CreateCompanyForm = () => {
             <Stack spacing={2} mt={3}>
               <Alert severity='success'>สร้างบริษัทสำเร็จ!</Alert>
               <Box textAlign='right'>
-                <Button onClick={handleReset} variant='contained' color='error'>
+                <BaseButton onClick={handleReset} variant='contained' color='error'>
                   สร้างใหม่
-                </Button>
+                </BaseButton>
               </Box>
             </Stack>
           ) : (
             <>
               <Box mt={3}>{renderStep(activeStep)}</Box>
               <Box display='flex' flexDirection='row' mt={3}>
-                <Button
+                <BaseButton
+                  fullWidth={false}
                   color='inherit'
                   variant='contained'
                   disabled={activeStep === 0}
                   onClick={handleBack}
-                  sx={{ mr: 1 }}>
-                  กลับ
-                </Button>
+                  label='กลับ'/>
                 <Box flex='1 1 auto' />
                 {activeStep < steps.length - 1 ? (
-                  <Button
+                  <BaseButton
+                    fullWidth={false}
                     onClick={handleNext}
                     variant='contained'
                     color='secondary'
-                    disabled={
-                      (activeStep === 0 &&
-                        (!form.companyName ||
-                          !form.companyEmail ||
-                          !form.companyAddress)) ||
-                      (activeStep === 1 &&
-                        (!form.contactName ||
-                          !form.contactEmail ||
-                          !form.contactPhone))
-                    }>
-                    ถัดไป
-                  </Button>
+                    label='ถัดไป'
+                    />
                 ) : (
-                  <Button
+                  <BaseButton
+                    fullWidth={false}
                     type='submit'
                     variant='contained'
                     color='success'
-                    disabled={!form.agree}>
-                    ยืนยัน
-                  </Button>
+                    disabled={!formik.values.agree}
+                    label='ยืนยัน'/>
                 )}
               </Box>
             </>
