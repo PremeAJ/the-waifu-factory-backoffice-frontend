@@ -12,7 +12,7 @@ import QuickLinks from "@/app/dashboard/(company-auth)/layout/header/QuickLinks"
 import DemosDD from "./DemosDD";
 import { useTranslation } from "react-i18next";
 import { UserContext } from "@/context/UserContext";
-import BaseButton from "../../forms/theme-elements/BaseButton";
+import BaseButton from "../../base/BaseButton";
 
 const Navigations = () => {
   const { t } = useTranslation();

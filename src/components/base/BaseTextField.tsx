@@ -1,12 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import {
-  TextField,
-  TextFieldProps,
-  IconButton,
-  InputAdornment
-} from "@mui/material";
+import { TextField, TextFieldProps, IconButton, InputAdornment } from "@mui/material";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import BaseLabel from "./BaseLabel";
 
@@ -18,7 +13,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   startAdornment?: React.ReactNode;
 }
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+export const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-input::-webkit-input-placeholder": {
     color: theme.palette.text.secondary,
     opacity: "0.8",
@@ -35,39 +30,26 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   "& input[type=password]": {
     // ปิด show password ของ Edge
     "&::-ms-reveal": {
-      display: "none"
+      display: "none",
     },
     // ปิด show password ของ Chrome
     "&::-ms-clear": {
-      display: "none"
-    }
+      display: "none",
+    },
   },
 }));
 
-const BaseTextField = ({
-  name,
-  label,
-  placeholder,
-  formik,
-  startAdornment,
-  type,
-  ...rest
-}: CustomTextFieldProps) => {
+const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type, ...rest }: CustomTextFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   let helperText = null;
   if (formik?.touched[name] && formik?.errors[name]) {
-    if (
-      typeof formik.errors[name] === "string" &&
-      formik.errors[name].includes("\n")
-    ) {
-      helperText = formik.errors[name]
-        .split("\n")
-        .map((msg: string, idx: number) => (
-          <span key={idx} style={{ display: "block" }}>
-            {msg}
-          </span>
-        ));
+    if (typeof formik.errors[name] === "string" && formik.errors[name].includes("\n")) {
+      helperText = formik.errors[name].split("\n").map((msg: string, idx: number) => (
+        <span key={idx} style={{ display: "block" }}>
+          {msg}
+        </span>
+      ));
     } else {
       helperText = formik.errors[name];
     }
@@ -82,12 +64,7 @@ const BaseTextField = ({
     if (type === "password") {
       return (
         <InputAdornment position="end">
-          <IconButton
-            aria-label="toggle password visibility"
-            onClick={handleClickShowPassword}
-            onMouseDown={handleMouseDownPassword}
-            edge="end"
-          >
+          <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword} edge="end">
             {showPassword ? <IconEyeOff width={20} /> : <IconEye width={20} />}
           </IconButton>
         </InputAdornment>
@@ -116,7 +93,8 @@ const BaseTextField = ({
           input: {
             startAdornment: startAdornment,
             endAdornment: getEndAdornment(),
-          }
+            ...(rest.InputProps || {}),
+          },
         }}
         {...rest}
       />

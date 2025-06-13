@@ -14,9 +14,9 @@ import { removeUndefinedAndNull } from "@/utils/function/object/object-cleaner";
 import EmailChangeFlow from "./EmailChangeFlow";
 import PhoneChangeFlow from "./PhoneChangeFlow";
 import TransitionDialog from "@/components/ui-components/dialog/TransitionDialog";
-import BaseTextField from "@/components/forms/theme-elements/BaseTextField";
-import BaseButton from "@/components/forms/theme-elements/BaseButton";
-import BaseLabel from "@/components/forms/theme-elements/BaseLabel";
+import BaseTextField from "@/components/base/BaseTextField";
+import BaseButton from "@/components/base/BaseButton";
+import BaseLabel from "@/components/base/BaseLabel";
 import AvatarCropDialog from "@/components/ui-components/dialog/AvatarCropDialog";
 
 const validationSchema = yup.object({

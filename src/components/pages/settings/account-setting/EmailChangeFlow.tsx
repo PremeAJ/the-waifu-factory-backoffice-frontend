@@ -4,7 +4,7 @@ import { IconAlertTriangle, IconInfoCircle, IconMail } from "@tabler/icons-react
 import { UserContext } from "@/context/UserContext";
 import { emailRegex } from "@/utils/validator/regex";
 import TransitionDialog from "@/components/ui-components/dialog/TransitionDialog";
-import BaseTextField from "@/components/forms/theme-elements/BaseTextField";
+import BaseTextField from "@/components/base/BaseTextField";
 
 interface EmailChangeFlowProps {
   open: boolean;

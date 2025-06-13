@@ -6,7 +6,7 @@ import Link from "next/link";
 import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import AuthSocialButtons from "./AuthSocialButtons";
 import * as yup from "yup";
-import BaseTextField from "@/components/forms/theme-elements/BaseTextField";
+import BaseTextField from "@/components/base/BaseTextField";
 import { AuthContext } from "@/context/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, requiredPasswordSchema } from "@/utils/validator/yup";

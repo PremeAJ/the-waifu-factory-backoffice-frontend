@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import AuthSocialButtons from "./AuthSocialButtons";
-import BaseTextField from "@/components/forms/theme-elements/BaseTextField";
+import BaseTextField from "@/components/base/BaseTextField";
 import {
   confirmPasswordSchema,
   emailValidator,

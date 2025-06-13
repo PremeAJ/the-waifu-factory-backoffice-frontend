@@ -5,7 +5,7 @@ import * as dropdownData from "../../app/dashboard/(company-auth)/layout/header/
 import { IconMail } from "@tabler/icons-react";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
-import BaseButton from "../forms/theme-elements/BaseButton";
+import BaseButton from "../base/BaseButton";
 import ConfirmSignOutDialog from "@/components/auth/dialog/ConfirmSignOutDialog";
 import { bgcolor } from "@mui/system";
 

@@ -14,9 +14,26 @@ import {
 import ParentCard from '@/components/shared/ParentCard'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import BaseTextField from '@/components/forms/theme-elements/BaseTextField'
+import BaseTextField from '@/components/base/BaseTextField'
 import CustomCheckbox from '@/components/forms/theme-elements/CustomCheckbox'
-import BaseButton from '@/components/forms/theme-elements/BaseButton'
+import BaseButton from '@/components/base/BaseButton'
+import BaseAutoComplete from "@/components/base/BaseAutoComplete";
+
+// สมมติข้อมูลตัวอย่าง
+const provinces = [
+  { id: 1, name: "กรุงเทพมหานคร" },
+  { id: 2, name: "เชียงใหม่" },
+  // ...
+];
+const districts = [
+  { id: 1, name: "เมืองเชียงใหม่", provinceId: 2 },
+  { id: 2, name: "สันทราย", provinceId: 2 },
+  // ...
+];
+const subdistricts = [
+  { id: 1, name: "ช้างเผือก", districtId: 1, postcode: "50300" },
+  // ...
+];
 
 const steps = ['ข้อมูลบริษัท', 'ข้อมูลผู้ติดต่อ', 'ยืนยัน']
 
@@ -44,6 +61,10 @@ const initialValues = {
   contactEmail: '',
   contactPhone: '',
   agree: false,
+  provinceId: undefined,
+  districtId: undefined,
+  subdistrictId: undefined,
+  postcode: '',
 }
 
 const CreateCompanyForm = () => {
@@ -82,6 +103,17 @@ const CreateCompanyForm = () => {
     formik.resetForm()
   }
 
+  // ฟิลเตอร์อำเภอ/ตำบล ตามจังหวัดที่เลือก
+  const filteredDistricts = districts.filter(
+    (d) => d.provinceId === formik.values.provinceId
+  );
+  const filteredSubdistricts = subdistricts.filter(
+    (s) => s.districtId === formik.values.districtId
+  );
+  const selectedSubdistrict = subdistricts.find(
+    (s) => s.id === formik.values.subdistrictId
+  );
+
   const renderStep = (step: number) => {
     switch (step) {
       case 0:
@@ -112,6 +144,48 @@ const CreateCompanyForm = () => {
               multiline
               rows={3}
               sx={{ mt: 2 }}
+            />
+            {/* เพิ่ม BaseAutoComplete จังหวัด */}
+            <BaseAutoComplete
+              name="provinceId"
+              label="จังหวัด"
+              options={provinces}
+              optionValueKey="id"
+              optionLabelKey="name"
+              formik={formik}
+              sx={{ mt: 2 }}
+            />
+            {/* เพิ่ม BaseAutoComplete อำเภอ */}
+            <BaseAutoComplete
+              name="districtId"
+              label="อำเภอ"
+              options={filteredDistricts}
+              optionValueKey="id"
+              optionLabelKey="name"
+              formik={formik}
+              sx={{ mt: 2 }}
+              disabled={!formik.values.provinceId}
+            />
+            {/* เพิ่ม BaseAutoComplete ตำบล */}
+            <BaseAutoComplete
+              name="subdistrictId"
+              label="ตำบล"
+              options={filteredSubdistricts}
+              optionValueKey="id"
+              optionLabelKey="name"
+              formik={formik}
+              sx={{ mt: 2 }}
+              disabled={!formik.values.districtId}
+            />
+            {/* รหัสไปรษณีย์ (auto fill) */}
+            <BaseTextField
+              name="postcode"
+              label="รหัสไปรษณีย์"
+              formik={formik}
+              value={selectedSubdistrict?.postcode || ""}
+              InputProps={{ readOnly: true }}
+              sx={{ mt: 2 }}
+              fullWidth
             />
           </Box>
         )
