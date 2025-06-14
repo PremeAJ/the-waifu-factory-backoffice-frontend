@@ -27,14 +27,14 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
     const responseData = await response.json();
 
     if (response.ok) {
-      console.log(`[API][${response.status}][${req.method}] ${backendUrl}`);
+      // console.log(`[API][${response.status}][${req.method}] ${backendUrl}`);
     } else {
-      console.error(`[API][${response.status}][${req.method}] ${backendUrl}`);
+      // console.error(`[API][${response.status}][${req.method}] ${backendUrl}`);
     }
 
     return NextResponse.json(responseData, { status: response.status });
   } catch (error: any) {
-    console.error(`[API][500][${req.method}] ${req.url} - ${error.message}`);
+    // console.error(`[API][500][${req.method}] ${req.url} - ${error.message}`);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

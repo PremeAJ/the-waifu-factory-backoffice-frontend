@@ -25,14 +25,18 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],
   },
-
+  // ปิด hover เมื่อ disabled
+  "& .Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
+    borderColor: theme.palette.grey[200],
+  },
+  "& .MuiOutlinedInput-root.Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
+    borderColor: theme.palette.grey[200],
+  },
   // ปิดลูกตาของ browser
   "& input[type=password]": {
-    // ปิด show password ของ Edge
     "&::-ms-reveal": {
       display: "none",
     },
-    // ปิด show password ของ Chrome
     "&::-ms-clear": {
       display: "none",
     },
