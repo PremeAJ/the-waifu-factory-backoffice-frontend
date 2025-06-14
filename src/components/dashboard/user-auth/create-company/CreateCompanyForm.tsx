@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Box, Stepper, Step, StepLabel, Typography, FormControlLabel, Alert, Stack, Grid } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
 import { useFormik } from "formik";
@@ -9,22 +9,7 @@ import BaseTextField from "@/components/base/BaseTextField";
 import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import BaseButton from "@/components/base/BaseButton";
 import BaseAutoComplete from "@/components/base/BaseAutoComplete";
-
-// สมมติข้อมูลตัวอย่าง
-const provinces = [
-  { id: 1, name: "กรุงเทพมหานคร" },
-  { id: 2, name: "เชียงใหม่" },
-  // ...
-];
-const districts = [
-  { id: 1, name: "เมืองเชียงใหม่", provinceId: 2 },
-  { id: 2, name: "สันทราย", provinceId: 2 },
-  // ...
-];
-const subdistricts = [
-  { id: 1, name: "ช้างเผือก", districtId: 1, postcode: "50300" },
-  // ...
-];
+import { AddressContext } from "@/context/Master/AddressContext";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
@@ -39,8 +24,7 @@ const stepSchemas = [
     provinceId: Yup.number().typeError("กรุณาเลือกจังหวัด").required("กรุณาเลือกจังหวัด"),
     districtId: Yup.number().typeError("กรุณาเลือกอำเภอ").required("กรุณาเลือกอำเภอ"),
     subdistrictId: Yup.number().typeError("กรุณาเลือกตำบล").required("กรุณาเลือกตำบล"),
-    postcode: Yup.string()
-      .required("กรุณากรอกรหัสไปรษณีย์")
+    zipcode: Yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
   }),
   Yup.object({
     contactName: Yup.string().required("กรุณากรอกชื่อผู้ติดต่อ"),
@@ -63,12 +47,14 @@ const initialValues = {
   provinceId: undefined,
   districtId: undefined,
   subdistrictId: undefined,
-  postcode: undefined,
+  zipcode: undefined,
 };
 
 const CreateCompanyForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const { provinces, districts, subdistricts, zipcode, setProvinceId, setDistrictId, setSubdistrictId, isLoading, error } =
+    useContext(AddressContext);
 
   const formik = useFormik({
     initialValues,
@@ -100,19 +86,27 @@ const CreateCompanyForm = () => {
     formik.resetForm();
   };
 
-  // ฟิลเตอร์อำเภอ/ตำบล ตามจังหวัดที่เลือก
-  const filteredDistricts = districts.filter((d) => d.provinceId === formik.values.provinceId);
-  const filteredSubdistricts = subdistricts.filter((s) => s.districtId === formik.values.districtId);
-  const selectedSubdistrict = subdistricts.find((s) => s.id === formik.values.subdistrictId);
-
+  // เมื่อเปลี่ยนจังหวัด ให้ล้างค่าอำเภอ, ตำบล, รหัสไปรษณีย์
   useEffect(() => {
-    if (selectedSubdistrict?.postcode && formik.values.subdistrictId) {
-      formik.setFieldValue("postcode", selectedSubdistrict.postcode);
-    } else if (!formik.values.subdistrictId) {
-      formik.setFieldValue("postcode", "");
-    }
-    // eslint-disable-next-line
-  }, [formik.values.subdistrictId, selectedSubdistrict?.postcode]);
+    setProvinceId(formik.values.provinceId ?? null);
+    formik.setFieldValue("districtId", undefined, false);
+    formik.setFieldValue("subdistrictId", undefined, false);
+    formik.setFieldValue("zipcode", undefined, false);
+  }, [formik.values.provinceId]);
+
+  // เมื่อเปลี่ยนอำเภอ ให้ล้างค่าตำบล, รหัสไปรษณีย์
+  useEffect(() => {
+    setDistrictId(formik.values.districtId ?? null);
+    formik.setFieldValue("subdistrictId", undefined, false);
+    formik.setFieldValue("zipcode", undefined, false);
+  }, [formik.values.districtId]);
+
+  // เมื่อเปลี่ยนตำบล ให้ล้างค่ารหัสไปรษณีย์
+  useEffect(() => {
+    setSubdistrictId(formik.values.subdistrictId ?? null);
+    formik.setFieldValue("zipcode", undefined, false);
+  }, [formik.values.subdistrictId]);
+
 
   const renderStep = (step: number) => {
     switch (step) {
@@ -129,15 +123,13 @@ const CreateCompanyForm = () => {
               <BaseTextField name="companyAddress" label="ที่อยู่บริษัท" formik={formik} required fullWidth multiline rows={3} />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <BaseAutoComplete name="provinceId" label="จังหวัด" options={provinces} optionValueKey="id" optionLabelKey="name" formik={formik} />
+              <BaseAutoComplete name="provinceId" label="จังหวัด" options={provinces.map((p) => ({ value: p.id, text: p.nameTh }))} formik={formik} />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <BaseAutoComplete
                 name="districtId"
                 label="อำเภอ"
-                options={filteredDistricts}
-                optionValueKey="id"
-                optionLabelKey="name"
+                options={districts.map((d: any) => ({ value: d.id, text: d.nameTh }))}
                 formik={formik}
                 disabled={!formik.values.provinceId}
               />
@@ -146,19 +138,17 @@ const CreateCompanyForm = () => {
               <BaseAutoComplete
                 name="subdistrictId"
                 label="ตำบล"
-                options={filteredSubdistricts}
-                optionValueKey="id"
-                optionLabelKey="name"
+                options={subdistricts.map((s: any) => ({ value: s.id, text: s.nameTh }))}
                 formik={formik}
                 disabled={!formik.values.districtId}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField
-                name="postcode"
+              <BaseAutoComplete
+                name="zipcode"
                 label="รหัสไปรษณีย์"
+                options={zipcode.map((z: any) => ({ value: z.id, text: z.zipcode }))}
                 formik={formik}
-                value={selectedSubdistrict?.postcode}
                 disabled={!formik.values.subdistrictId}
               />
             </Grid>

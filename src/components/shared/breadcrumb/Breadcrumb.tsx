@@ -21,7 +21,6 @@ interface BreadCrumbType {
 
 const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   const theme = useTheme();
-  console.log("🚀 ~ Breadcrumb ~ theme:", theme)
   const isDark = theme.palette.mode === "dark";
 
   return (

@@ -2,16 +2,16 @@ import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 async function handleRequest(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-  const { path } = await context.params; // ต้อง await ก่อนใช้งาน
-  const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/${path.join("/")}`;
-
+  const { path } = await context.params;
+  const search = req.nextUrl.search;
+  const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/${path.join("/")}${search}`;
   const supabase = await createClient();
   const { data } = await supabase.auth.getSession();
   const accessToken = data.session?.access_token || "";
 
   try {
     const options: RequestInit = {
-      method: req.method, // ใช้ method จาก request
+      method: req.method, 
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
@@ -19,7 +19,7 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
       },
       body:
         req.method !== "GET" && req.method !== "HEAD"
-          ? await req.text() // อ่าน body เฉพาะ method ที่ไม่ใช่ GET หรือ HEAD
+          ? await req.text() 
           : undefined,
     };
 

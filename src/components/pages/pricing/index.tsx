@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { Box, Grid, Typography, Container } from "@mui/material";
 import PricingCard from "./PricingCard";
 import PaymentMethods from "./PaymentMethods";
-import { PlanContext } from "@/context/PlanContext";
+import { PlanContext } from "@/context/Master/PlanContext";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 
 const Pricing = () => {
