@@ -7,7 +7,6 @@ import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
 import BaseButton from "../base/BaseButton";
 import ConfirmSignOutDialog from "@/components/auth/dialog/ConfirmSignOutDialog";
-import { bgcolor } from "@mui/system";
 
 interface ProfileProps {
   loading?: boolean;
@@ -142,7 +141,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
       >
         <Avatar
           src={avatarUrl ?? "/images/profile/user-1.jpg"}
-          alt={"ProfileImg"}
+          alt={firstName}
           sx={{
             width: 35,
             height: 35,
@@ -166,7 +165,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
       >
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
-          <Avatar src={avatarUrl ?? "/images/profile/user-1.jpg"} alt={"ProfileImg"} sx={{ width: 95, height: 95 }} />
+          <Avatar src={avatarUrl ?? "/images/profile/user-1.jpg"} alt={firstName} sx={{ width: 95, height: 95 }} />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
               {firstName || lastName ? `${firstName ?? ""} ${lastName ?? ""}`.trim() : "-"}
