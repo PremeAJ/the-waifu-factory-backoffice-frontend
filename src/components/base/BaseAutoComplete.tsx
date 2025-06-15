@@ -14,6 +14,7 @@ interface BaseAutoCompleteProps<T = OptionType, Multiple extends boolean | undef
   name: string;
   label?: string;
   placeholder?: string;
+  required?: boolean;
 }
 
 function BaseAutoComplete<T extends OptionType>({
@@ -22,6 +23,7 @@ function BaseAutoComplete<T extends OptionType>({
   label,
   placeholder,
   options,
+  required,
   ...rest
 }: BaseAutoCompleteProps<T>) {
   const value = options.find((opt) => opt.value === formik.values[name]) || null;
@@ -42,6 +44,7 @@ function BaseAutoComplete<T extends OptionType>({
           label={label}
           placeholder={placeholder}
           formik={formik}
+          required={required}
         />
       )}
       {...rest}

@@ -10,31 +10,10 @@ import BaseButton from "@/components/base/BaseButton";
 import Address from "@/components/forms/AddressForm";
 import { UserContext } from "@/context/UserContext";
 import BaseCheckBox from "@/components/base/BaseCheckBox";
+import { BusinessTypeContext } from "@/context/Master/BusinessTypeContext";
+import BaseAutoComplete from "@/components/base/BaseAutoComplete";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
-
-const stepSchemas = [
-  Yup.object({
-    companyName: Yup.string().required("กรุณากรอกชื่อบริษัท"),
-    companyEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลบริษัท"),
-    companyAddress: Yup.string()
-      .required("กรุณากรอกที่อยู่บริษัท")
-      .min(10, "ที่อยู่ต้องมีอย่างน้อย 10 ตัวอักษร")
-      .test("not-empty", "ที่อยู่ไม่ควรเป็นช่องว่าง", (val) => !!val && val.trim().length > 0),
-    provinceId: Yup.number().typeError("กรุณาเลือกจังหวัด").required("กรุณาเลือกจังหวัด"),
-    districtId: Yup.number().typeError("กรุณาเลือกอำเภอ").required("กรุณาเลือกอำเภอ"),
-    subdistrictId: Yup.number().typeError("กรุณาเลือกตำบล").required("กรุณาเลือกตำบล"),
-    zipcode: Yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
-  }),
-  Yup.object({
-    contactName: Yup.string().required("กรุณากรอกชื่อผู้ติดต่อ"),
-    contactEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลผู้ติดต่อ"),
-    contactPhone: Yup.string().required("กรุณากรอกเบอร์โทรศัพท์"),
-  }),
-  Yup.object({
-    agree: Yup.boolean().oneOf([true], "กรุณายอมรับเงื่อนไขการใช้งาน"),
-  }),
-];
 
 const initialValues = {
   companyName: "",
@@ -48,7 +27,37 @@ const initialValues = {
   districtId: undefined,
   subdistrictId: undefined,
   zipcode: undefined,
+  businessTypeId: undefined,
+  taxId: "", // เพิ่มตรงนี้
 };
+
+const stepSchemas = [
+  Yup.object({
+    companyName: Yup.string().required("กรุณากรอกชื่อบริษัท"),
+    companyEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลบริษัท"),
+    companyAddress: Yup.string()
+      .required("กรุณากรอกที่อยู่บริษัท")
+      .min(10, "ที่อยู่ต้องมีอย่างน้อย 10 ตัวอักษร")
+      .test("not-empty", "ที่อยู่ไม่ควรเป็นช่องว่าง", (val) => !!val && val.trim().length > 0),
+    provinceId: Yup.number().typeError("กรุณาเลือกจังหวัด").required("กรุณาเลือกจังหวัด"),
+    districtId: Yup.number().typeError("กรุณาเลือกอำเภอ").required("กรุณาเลือกอำเภอ"),
+    subdistrictId: Yup.number().typeError("กรุณาเลือกตำบล").required("กรุณาเลือกตำบล"),
+    zipcode: Yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
+    businessTypeId: Yup.number().typeError("กรุณาเลือกประเภทร้านค้า").required("กรุณาเลือกประเภทร้านค้า"),
+    taxId: Yup.string()
+      .matches(/^\d{13}$/, "เลขประจำตัวผู้เสียภาษีต้องมี 13 หลัก")
+      .nullable()
+      .notRequired(), // ไม่บังคับกรอก
+  }),
+  Yup.object({
+    contactName: Yup.string().required("กรุณากรอกชื่อผู้ติดต่อ"),
+    contactEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลผู้ติดต่อ"),
+    contactPhone: Yup.string().required("กรุณากรอกเบอร์โทรศัพท์"),
+  }),
+  Yup.object({
+    agree: Yup.boolean().oneOf([true], "กรุณายอมรับเงื่อนไขการใช้งาน"),
+  }),
+];
 
 const CreateCompanyForm = () => {
   const { user } = useContext(UserContext);
@@ -57,6 +66,7 @@ const CreateCompanyForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [useAccountEmail, setUseAccountEmail] = useState(false);
+  const { businessTypes, isLoading: businessTypeLoading } = useContext(BusinessTypeContext);
 
   const formik = useFormik({
     initialValues,
@@ -100,12 +110,20 @@ const CreateCompanyForm = () => {
         return (
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
+              <BaseTextField name="companyName" label="ชื่อบริษัท" formik={formik} required fullWidth placeholder="กรอกชื่อบริษัท" />
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
               <BaseTextField
-                name="companyName"
-                label="ชื่อบริษัท"
+                name="taxId"
+                label="เลขประจำตัวผู้เสียภาษี (13 หลัก)"
                 formik={formik}
-                required
                 fullWidth
+                placeholder="เช่น 1234567890123"
+                slotProps={{
+                  input: {
+                    inputProps: { maxLength: 13},
+                  },
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -117,12 +135,13 @@ const CreateCompanyForm = () => {
                 required
                 fullWidth
                 disabled={useAccountEmail}
+                placeholder="กรอกอีเมลบริษัท"
               />
               <BaseCheckBox
                 name="useAccountEmail"
                 label="ใช้อีเมลเดียวกับบัญชี"
                 checked={useAccountEmail}
-                onChange={e => {
+                onChange={(e) => {
                   setUseAccountEmail(e.target.checked);
                   if (e.target.checked) {
                     formik.setFieldValue("companyEmail", email || "", false);
@@ -132,6 +151,20 @@ const CreateCompanyForm = () => {
                 }}
               />
             </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <BaseAutoComplete
+                name="businessTypeId"
+                label="ประเภทร้านค้า"
+                options={businessTypes.map((b) => ({
+                  value: b.id,
+                  text: b.nameTh,
+                }))}
+                formik={formik}
+                loading={businessTypeLoading}
+                required
+                placeholder="เลือกประเภทร้านค้า"
+              />
+            </Grid>
             <Address formik={formik} />
           </Grid>
         );
@@ -139,13 +172,21 @@ const CreateCompanyForm = () => {
         return (
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField name="contactName" label="ชื่อผู้ติดต่อ" formik={formik} required fullWidth />
+              <BaseTextField name="contactName" label="ชื่อผู้ติดต่อ" formik={formik} required fullWidth placeholder="กรอกชื่อผู้ติดต่อ" />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField name="contactEmail" label="อีเมลผู้ติดต่อ" type="email" formik={formik} required fullWidth />
+              <BaseTextField
+                name="contactEmail"
+                label="อีเมลผู้ติดต่อ"
+                type="email"
+                formik={formik}
+                required
+                fullWidth
+                placeholder="กรอกอีเมลผู้ติดต่อ"
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField name="contactPhone" label="เบอร์โทรศัพท์" formik={formik} required fullWidth />
+              <BaseTextField name="contactPhone" label="เบอร์โทรศัพท์" formik={formik} required fullWidth placeholder="กรอกเบอร์โทรศัพท์" />
             </Grid>
           </Grid>
         );
@@ -168,11 +209,7 @@ const CreateCompanyForm = () => {
               <br />
               <b>เบอร์โทรศัพท์:</b> {formik.values.contactPhone}
             </Typography>
-            <BaseCheckBox
-              name="agree"
-              label="ยอมรับเงื่อนไขการใช้งาน"
-              formik={formik}
-            />
+            <BaseCheckBox name="agree" label="ยอมรับเงื่อนไขการใช้งาน" formik={formik} />
           </Box>
         );
       default:
@@ -195,7 +232,7 @@ const CreateCompanyForm = () => {
             <Stack spacing={2} mt={3}>
               <Alert severity="success">สร้างบริษัทสำเร็จ!</Alert>
               <Box textAlign="right">
-                <BaseButton onClick={handleReset} variant="contained" color="error" label="สร้างใหม่"/>
+                <BaseButton onClick={handleReset} variant="contained" color="error" label="สร้างใหม่" />
               </Box>
             </Stack>
           ) : (

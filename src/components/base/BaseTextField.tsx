@@ -11,6 +11,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   placeholder?: string;
   formik?: any;
   startAdornment?: React.ReactNode;
+  required?: boolean; // เพิ่มตรงนี้
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -43,7 +44,7 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type, ...rest }: CustomTextFieldProps) => {
+const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type, required, ...rest }: CustomTextFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   let helperText = null;
@@ -79,7 +80,12 @@ const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type,
 
   return (
     <>
-      {label && <BaseLabel htmlFor={name}>{label}</BaseLabel>}
+      {label && (
+        <BaseLabel htmlFor={name}>
+          {label}
+          {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
+        </BaseLabel>
+      )}
       <StyledTextField
         fullWidth
         variant="outlined"

@@ -35,10 +35,26 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
   return (
     <React.Fragment>
       <Grid size={{ xs: 12 }}>
-        <BaseTextField name="companyAddress" label="ที่อยู่บริษัท" formik={formik} required fullWidth multiline rows={3} />
+        <BaseTextField
+          name="companyAddress"
+          label="ที่อยู่บริษัท"
+          formik={formik}
+          required
+          fullWidth
+          multiline
+          rows={3}
+          placeholder="กรอกที่อยู่บริษัท"
+        />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <BaseAutoComplete name="provinceId" label="จังหวัด" options={provinces.map((p) => ({ value: p.id, text: p.nameTh }))} formik={formik} />
+        <BaseAutoComplete
+          name="provinceId"
+          label="จังหวัด"
+          options={provinces.map((p) => ({ value: p.id, text: p.nameTh }))}
+          formik={formik}
+          required
+          placeholder="เลือกจังหวัด"
+        />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <BaseAutoComplete
@@ -47,6 +63,8 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           options={districts.map((d: any) => ({ value: d.id, text: d.nameTh }))}
           formik={formik}
           disabled={!formik.values.provinceId}
+          required
+          placeholder="เลือกอำเภอ"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -56,6 +74,8 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           options={subdistricts.map((s: any) => ({ value: s.id, text: s.nameTh }))}
           formik={formik}
           disabled={!formik.values.districtId}
+          required
+          placeholder="เลือกตำบล"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -65,6 +85,8 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           options={zipcode.map((z: any) => ({ value: z.id, text: z.zipcode }))}
           formik={formik}
           disabled={!formik.values.subdistrictId}
+          required
+          placeholder="เลือกรหัสไปรษณีย์"
         />
       </Grid>
     </React.Fragment>
