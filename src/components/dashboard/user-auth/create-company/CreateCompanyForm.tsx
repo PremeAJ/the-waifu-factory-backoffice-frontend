@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
-import { Box, Stepper, Step, StepLabel, Typography, FormControlLabel, Alert, Stack, Grid } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { Box, Stepper, Step, StepLabel, Alert, Stack } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import BaseTextField from "@/components/base/BaseTextField";
 import BaseButton from "@/components/base/BaseButton";
-import Address from "@/components/forms/AddressForm";
 import { UserContext } from "@/context/UserContext";
-import BaseCheckBox from "@/components/base/BaseCheckBox";
 import { BusinessTypeContext } from "@/context/Master/BusinessTypeContext";
-import BaseAutoComplete from "@/components/base/BaseAutoComplete";
+import CompanyInfoStep from "./step/CompanyInfoStep";
+import ContactInfoStep from "./step/ContactInfoStep";
+import ConfirmStep from "./step/ConfirmStep";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
@@ -60,13 +59,8 @@ const stepSchemas = [
 ];
 
 const CreateCompanyForm = () => {
-  const { user } = useContext(UserContext);
-  const { users } = user || {};
-  const { email } = users || {};
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [useAccountEmail, setUseAccountEmail] = useState(false);
-  const { businessTypes, isLoading: businessTypeLoading } = useContext(BusinessTypeContext);
 
   const formik = useFormik({
     initialValues,
@@ -78,12 +72,6 @@ const CreateCompanyForm = () => {
       // TODO: ส่งข้อมูลไป backend
     },
   });
-
-  useEffect(() => {
-    if (useAccountEmail) {
-      formik.setFieldValue("companyEmail", email || "", false);
-    }
-  }, [useAccountEmail, email]);
 
   const handleNext = async () => {
     const errs = await formik.validateForm();
@@ -107,111 +95,11 @@ const CreateCompanyForm = () => {
   const renderStep = (step: number) => {
     switch (step) {
       case 0:
-        return (
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField name="companyName" label="ชื่อบริษัท" formik={formik} required fullWidth placeholder="กรอกชื่อบริษัท" />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField
-                name="taxId"
-                label="เลขประจำตัวผู้เสียภาษี (13 หลัก)"
-                formik={formik}
-                fullWidth
-                placeholder="เช่น 1234567890123"
-                slotProps={{
-                  input: {
-                    inputProps: { maxLength: 13},
-                  },
-                }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField
-                name="companyEmail"
-                label="อีเมลบริษัท"
-                type="email"
-                formik={formik}
-                required
-                fullWidth
-                disabled={useAccountEmail}
-                placeholder="กรอกอีเมลบริษัท"
-              />
-              <BaseCheckBox
-                name="useAccountEmail"
-                label="ใช้อีเมลเดียวกับบัญชี"
-                checked={useAccountEmail}
-                onChange={(e) => {
-                  setUseAccountEmail(e.target.checked);
-                  if (e.target.checked) {
-                    formik.setFieldValue("companyEmail", email || "", false);
-                  } else {
-                    formik.setFieldValue("companyEmail", "", false);
-                  }
-                }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <BaseAutoComplete
-                name="businessTypeId"
-                label="ประเภทร้านค้า"
-                options={businessTypes.map((b) => ({
-                  value: b.id,
-                  text: b.nameTh,
-                }))}
-                formik={formik}
-                loading={businessTypeLoading}
-                required
-                placeholder="เลือกประเภทร้านค้า"
-              />
-            </Grid>
-            <Address formik={formik} />
-          </Grid>
-        );
+        return <CompanyInfoStep formik={formik} />;
       case 1:
-        return (
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField name="contactName" label="ชื่อผู้ติดต่อ" formik={formik} required fullWidth placeholder="กรอกชื่อผู้ติดต่อ" />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField
-                name="contactEmail"
-                label="อีเมลผู้ติดต่อ"
-                type="email"
-                formik={formik}
-                required
-                fullWidth
-                placeholder="กรอกอีเมลผู้ติดต่อ"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField name="contactPhone" label="เบอร์โทรศัพท์" formik={formik} required fullWidth placeholder="กรอกเบอร์โทรศัพท์" />
-            </Grid>
-          </Grid>
-        );
+        return <ContactInfoStep formik={formik} />;
       case 2:
-        return (
-          <Box pt={3}>
-            <Typography variant="h6" mb={2}>
-              ตรวจสอบข้อมูลก่อนยืนยัน
-            </Typography>
-            <Typography variant="body2">
-              <b>ชื่อบริษัท:</b> {formik.values.companyName}
-              <br />
-              <b>อีเมลบริษัท:</b> {formik.values.companyEmail}
-              <br />
-              <b>ที่อยู่บริษัท:</b> {formik.values.companyAddress}
-              <br />
-              <b>ชื่อผู้ติดต่อ:</b> {formik.values.contactName}
-              <br />
-              <b>อีเมลผู้ติดต่อ:</b> {formik.values.contactEmail}
-              <br />
-              <b>เบอร์โทรศัพท์:</b> {formik.values.contactPhone}
-            </Typography>
-            <BaseCheckBox name="agree" label="ยอมรับเงื่อนไขการใช้งาน" formik={formik} />
-          </Box>
-        );
+        return <ConfirmStep formik={formik} />;
       default:
         return null;
     }

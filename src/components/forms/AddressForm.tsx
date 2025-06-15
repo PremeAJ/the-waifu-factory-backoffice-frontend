@@ -3,12 +3,15 @@ import { Grid } from "@mui/material";
 import BaseAutoComplete from "@/components/base/BaseAutoComplete";
 import { AddressContext } from "@/context/Master/AddressContext";
 import BaseTextField from "../base/BaseTextField";
+import { CustomizerContext } from "@/context/setting/customizerContext";
+import { I18nString } from "@/utils/i18n/I18nString";
 
 interface AddressZoneProps {
   formik: any;
 }
 
 const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
+  const { isLanguage } = useContext(CustomizerContext);
   const { provinces, districts, subdistricts, zipcode, setProvinceId, setDistrictId, setSubdistrictId } = useContext(AddressContext);
 
   // เมื่อเปลี่ยนจังหวัด ให้ล้างค่าอำเภอ, ตำบล, รหัสไปรษณีย์
@@ -50,7 +53,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
         <BaseAutoComplete
           name="provinceId"
           label="จังหวัด"
-          options={provinces.map((p) => ({ value: p.id, text: p.nameTh }))}
+          options={provinces.map((item) => ({ value: item.id, text: I18nString(isLanguage, item.nameTh, item.nameEn) }))}
           formik={formik}
           required
           placeholder="เลือกจังหวัด"
@@ -60,7 +63,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
         <BaseAutoComplete
           name="districtId"
           label="อำเภอ"
-          options={districts.map((d: any) => ({ value: d.id, text: d.nameTh }))}
+          options={districts.map((item: any) => ({ value: item.id, text: I18nString(isLanguage, item.nameTh, item.nameEn) }))}
           formik={formik}
           disabled={!formik.values.provinceId}
           required
@@ -71,7 +74,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
         <BaseAutoComplete
           name="subdistrictId"
           label="ตำบล"
-          options={subdistricts.map((s: any) => ({ value: s.id, text: s.nameTh }))}
+          options={subdistricts.map((item: any) => ({ value: item.id, text: I18nString(isLanguage, item.nameTh, item.nameEn) }))}
           formik={formik}
           disabled={!formik.values.districtId}
           required
@@ -82,7 +85,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
         <BaseAutoComplete
           name="zipcode"
           label="รหัสไปรษณีย์"
-          options={zipcode.map((z: any) => ({ value: z.id, text: z.zipcode }))}
+          options={zipcode.map((item: any) => ({ value: item.id, text: item.zipcode }))}
           formik={formik}
           disabled={!formik.values.subdistrictId}
           required

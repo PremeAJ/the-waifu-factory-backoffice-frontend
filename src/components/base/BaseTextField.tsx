@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { TextField, TextFieldProps, IconButton, InputAdornment } from "@mui/material";
+import { TextField, TextFieldProps, IconButton, InputAdornment, Tooltip } from "@mui/material";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import BaseLabel from "./BaseLabel";
 
@@ -11,7 +11,8 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   placeholder?: string;
   formik?: any;
   startAdornment?: React.ReactNode;
-  required?: boolean; // เพิ่มตรงนี้
+  required?: boolean;
+  tooltip?: string; // เพิ่มตรงนี้
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -28,7 +29,7 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   },
   // ปิด hover เมื่อ disabled
   "& .Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
-    borderColor: theme.palette.grey[300],
+    borderColor: theme.palette.grey[200],
   },
   "& .MuiOutlinedInput-root.Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],
@@ -44,7 +45,7 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type, required, ...rest }: CustomTextFieldProps) => {
+const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type, required, tooltip, ...rest }: CustomTextFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   let helperText = null;
@@ -78,6 +79,31 @@ const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type,
     return null;
   };
 
+  const textField = (
+    <StyledTextField
+      fullWidth
+      variant="outlined"
+      id={name}
+      name={name}
+      type={type === "password" ? (showPassword ? "text" : "password") : type}
+      value={formik?.values[name]}
+      onChange={formik?.handleChange}
+      onBlur={formik?.handleBlur}
+      placeholder={placeholder}
+      error={formik?.touched[name] && Boolean(formik.errors[name])}
+      helperText={helperText}
+      autoComplete={type === "password" ? "new-password" : undefined}
+      slotProps={{
+        input: {
+          startAdornment: startAdornment,
+          endAdornment: getEndAdornment(),
+          ...(rest.InputProps || {}),
+        },
+      }}
+      {...rest}
+    />
+  );
+
   return (
     <>
       {label && (
@@ -86,28 +112,13 @@ const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type,
           {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
         </BaseLabel>
       )}
-      <StyledTextField
-        fullWidth
-        variant="outlined"
-        id={name}
-        name={name}
-        type={type === "password" ? (showPassword ? "text" : "password") : type}
-        value={formik?.values[name]}
-        onChange={formik?.handleChange}
-        onBlur={formik?.handleBlur}
-        placeholder={placeholder}
-        error={formik?.touched[name] && Boolean(formik.errors[name])}
-        helperText={helperText}
-        autoComplete={type === "password" ? "new-password" : undefined}
-        slotProps={{
-          input: {
-            startAdornment: startAdornment,
-            endAdornment: getEndAdornment(),
-            ...(rest.InputProps || {}),
-          },
-        }}
-        {...rest}
-      />
+      {tooltip ? (
+        <Tooltip title={tooltip} placement="bottom-start" >
+          <span style={{ display: "block" }}>{textField}</span>
+        </Tooltip>
+      ) : (
+        textField
+      )}
     </>
   );
 };

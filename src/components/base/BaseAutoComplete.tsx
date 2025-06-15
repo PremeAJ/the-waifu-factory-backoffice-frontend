@@ -6,6 +6,7 @@ import BaseTextField from "./BaseTextField";
 interface OptionType {
   value: any;
   text: string;
+  group?: string; // เพิ่ม field สำหรับ group
 }
 
 interface BaseAutoCompleteProps<T = OptionType, Multiple extends boolean | undefined = false>
@@ -15,6 +16,7 @@ interface BaseAutoCompleteProps<T = OptionType, Multiple extends boolean | undef
   label?: string;
   placeholder?: string;
   required?: boolean;
+  groupBy?: (option: T) => string; // เพิ่ม prop groupBy
 }
 
 function BaseAutoComplete<T extends OptionType>({
@@ -24,6 +26,7 @@ function BaseAutoComplete<T extends OptionType>({
   placeholder,
   options,
   required,
+  groupBy, // รับ prop groupBy
   ...rest
 }: BaseAutoCompleteProps<T>) {
   const value = options.find((opt) => opt.value === formik.values[name]) || null;
@@ -37,6 +40,7 @@ function BaseAutoComplete<T extends OptionType>({
       }}
       isOptionEqualToValue={(option, value) => option.value === value.value}
       getOptionLabel={(option) => (option.text ? String(option.text) : "")}
+      groupBy={groupBy} // เพิ่มตรงนี้
       renderInput={(params) => (
         <BaseTextField
           {...params}

@@ -4,12 +4,20 @@ import React from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
 
+export interface BusinessTypeCategory {
+  id: number;
+  nameTh: string;
+  nameEn: string;
+  isActive: boolean;
+}
+
 export interface BusinessType {
   id: number;
   nameTh: string;
   nameEn: string;
   isActive: boolean;
   businessTypeCategoryId: number;
+  businessTypeCategories?: BusinessTypeCategory;
 }
 
 export interface BusinessTypeContextProps {

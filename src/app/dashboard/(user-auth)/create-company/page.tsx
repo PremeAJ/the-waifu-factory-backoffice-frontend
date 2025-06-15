@@ -5,7 +5,7 @@ import CreateCompanyForm from "@/components/dashboard/user-auth/create-company/C
 import { AddressProvider } from "@/context/Master/AddressContext";
 import { BusinessTypeProvider } from "@/context/Master/BusinessTypeContext";
 
-const FormWizard = () => {
+const createCompanyPage = () => {
   return (
     <PageContainer title="สร้างบริษัท" description="สร้างบริษัทใหม่เพื่อเริ่มใช้งานระบบ">
       <Breadcrumb title="สร้างบริษัท" subtitle="สร้างบริษัทใหม่เพื่อเริ่มใช้งานระบบ" />
@@ -18,4 +18,4 @@ const FormWizard = () => {
   );
 };
 
-export default FormWizard;
+export default createCompanyPage;
