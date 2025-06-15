@@ -6,7 +6,6 @@ import ParentCard from "@/components/shared/ParentCard";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import BaseTextField from "@/components/base/BaseTextField";
-import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import BaseButton from "@/components/base/BaseButton";
 import Address from "@/components/forms/AddressForm";
 import { UserContext } from "@/context/UserContext";
@@ -55,7 +54,6 @@ const CreateCompanyForm = () => {
   const { user } = useContext(UserContext);
   const { users } = user || {};
   const { email } = users || {};
-  console.log("🚀 ~ CreateCompanyForm ~ email:", email)
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [useAccountEmail, setUseAccountEmail] = useState(false);
@@ -134,17 +132,6 @@ const CreateCompanyForm = () => {
                 }}
               />
             </Grid>
-            {/* <Grid size={{ xs: 12 }}>
-              <BaseTextField
-                name="companyAddress"
-                label="ที่อยู่บริษัท"
-                formik={formik}
-                required
-                fullWidth
-                multiline
-                rows={3}
-              />
-            </Grid> */}
             <Address formik={formik} />
           </Grid>
         );
@@ -185,13 +172,7 @@ const CreateCompanyForm = () => {
               name="agree"
               label="ยอมรับเงื่อนไขการใช้งาน"
               formik={formik}
-              sx={{ mt: 2 }}
             />
-            {formik.touched.agree && formik.errors.agree && (
-              <Typography color="error" variant="caption">
-                {formik.errors.agree}
-              </Typography>
-            )}
           </Box>
         );
       default:
@@ -214,9 +195,7 @@ const CreateCompanyForm = () => {
             <Stack spacing={2} mt={3}>
               <Alert severity="success">สร้างบริษัทสำเร็จ!</Alert>
               <Box textAlign="right">
-                <BaseButton onClick={handleReset} variant="contained" color="error">
-                  สร้างใหม่
-                </BaseButton>
+                <BaseButton onClick={handleReset} variant="contained" color="error" label="สร้างใหม่"/>
               </Box>
             </Stack>
           ) : (
