@@ -12,11 +12,11 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [showDialog, setShowDialog] = useState(false);
   const { user: authUser, isLoading: authLoading } = useContext(AuthContext);
   const { user: appUser, loading: appUserLoading } = useContext(UserContext);
-  const [sessionChecked, setSessionChecked] = useState(false);
+  // const [sessionChecked, setSessionChecked] = useState(false);
   // useEffect(() => {
   //   getSession?.().finally(() => setSessionChecked(true));
   // }, []);
-  const isLoading = authLoading || appUserLoading || !sessionChecked;
+  const isLoading = authLoading || appUserLoading;
   const user = appUser && authUser;
 
   useEffect(() => {
