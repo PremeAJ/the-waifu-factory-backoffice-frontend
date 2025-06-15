@@ -2,21 +2,14 @@ import React, { useContext, useEffect } from "react";
 import { Grid } from "@mui/material";
 import BaseAutoComplete from "@/components/base/BaseAutoComplete";
 import { AddressContext } from "@/context/Master/AddressContext";
+import BaseTextField from "../base/BaseTextField";
 
 interface AddressZoneProps {
   formik: any;
 }
 
 const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
-  const {
-    provinces,
-    districts,
-    subdistricts,
-    zipcode,
-    setProvinceId,
-    setDistrictId,
-    setSubdistrictId,
-  } = useContext(AddressContext);
+  const { provinces, districts, subdistricts, zipcode, setProvinceId, setDistrictId, setSubdistrictId } = useContext(AddressContext);
 
   // เมื่อเปลี่ยนจังหวัด ให้ล้างค่าอำเภอ, ตำบล, รหัสไปรษณีย์
   useEffect(() => {
@@ -41,13 +34,11 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
 
   return (
     <React.Fragment>
+      <Grid size={{ xs: 12 }}>
+        <BaseTextField name="companyAddress" label="ที่อยู่บริษัท" formik={formik} required fullWidth multiline rows={3} />
+      </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <BaseAutoComplete
-          name="provinceId"
-          label="จังหวัด"
-          options={provinces.map((p) => ({ value: p.id, text: p.nameTh }))}
-          formik={formik}
-        />
+        <BaseAutoComplete name="provinceId" label="จังหวัด" options={provinces.map((p) => ({ value: p.id, text: p.nameTh }))} formik={formik} />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <BaseAutoComplete

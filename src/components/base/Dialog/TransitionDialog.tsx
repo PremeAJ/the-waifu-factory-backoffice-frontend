@@ -2,7 +2,7 @@
 import React from "react";
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import BaseButton from "../../base/BaseButton";
+import BaseButton from "../BaseButton";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & { children: React.ReactElement }, ref: React.Ref<unknown>) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -28,7 +28,7 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
   title,
   content,
   confirmText = "ตกลง",
-  cancelText = "ยกเลิก",
+  cancelText,
   onConfirm,
   onClose,
   confirmColor = "primary",

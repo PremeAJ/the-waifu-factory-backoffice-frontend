@@ -27,7 +27,7 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   },
   // ปิด hover เมื่อ disabled
   "& .Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
-    borderColor: theme.palette.grey[200],
+    borderColor: theme.palette.grey[300],
   },
   "& .MuiOutlinedInput-root.Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],

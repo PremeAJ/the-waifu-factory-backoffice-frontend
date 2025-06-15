@@ -1,5 +1,5 @@
 import React from "react";
-import TransitionDialog from "@/components/ui-components/dialog/TransitionDialog";
+import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
 import { minWidth } from "@mui/system";
 
 interface ConfirmSignOutDialogProps {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Stepper, Step, StepLabel, Typography, FormControlLabel, Alert, Stack, Grid } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
 import { useFormik } from "formik";
@@ -9,6 +9,8 @@ import BaseTextField from "@/components/base/BaseTextField";
 import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import BaseButton from "@/components/base/BaseButton";
 import Address from "@/components/forms/AddressForm";
+import { UserContext } from "@/context/UserContext";
+import BaseCheckBox from "@/components/base/BaseCheckBox";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
@@ -50,8 +52,13 @@ const initialValues = {
 };
 
 const CreateCompanyForm = () => {
+  const { user } = useContext(UserContext);
+  const { users } = user || {};
+  const { email } = users || {};
+  console.log("🚀 ~ CreateCompanyForm ~ email:", email)
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [useAccountEmail, setUseAccountEmail] = useState(false);
 
   const formik = useFormik({
     initialValues,
@@ -63,6 +70,12 @@ const CreateCompanyForm = () => {
       // TODO: ส่งข้อมูลไป backend
     },
   });
+
+  useEffect(() => {
+    if (useAccountEmail) {
+      formik.setFieldValue("companyEmail", email || "", false);
+    }
+  }, [useAccountEmail, email]);
 
   const handleNext = async () => {
     const errs = await formik.validateForm();
@@ -89,14 +102,49 @@ const CreateCompanyForm = () => {
         return (
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField name="companyName" label="ชื่อบริษัท" formik={formik} required fullWidth />
+              <BaseTextField
+                name="companyName"
+                label="ชื่อบริษัท"
+                formik={formik}
+                required
+                fullWidth
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <BaseTextField name="companyEmail" label="อีเมลบริษัท" type="email" formik={formik} required fullWidth />
+              <BaseTextField
+                name="companyEmail"
+                label="อีเมลบริษัท"
+                type="email"
+                formik={formik}
+                required
+                fullWidth
+                disabled={useAccountEmail}
+              />
+              <BaseCheckBox
+                name="useAccountEmail"
+                label="ใช้อีเมลเดียวกับบัญชี"
+                checked={useAccountEmail}
+                onChange={e => {
+                  setUseAccountEmail(e.target.checked);
+                  if (e.target.checked) {
+                    formik.setFieldValue("companyEmail", email || "", false);
+                  } else {
+                    formik.setFieldValue("companyEmail", "", false);
+                  }
+                }}
+              />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <BaseTextField name="companyAddress" label="ที่อยู่บริษัท" formik={formik} required fullWidth multiline rows={3} />
-            </Grid>
+            {/* <Grid size={{ xs: 12 }}>
+              <BaseTextField
+                name="companyAddress"
+                label="ที่อยู่บริษัท"
+                formik={formik}
+                required
+                fullWidth
+                multiline
+                rows={3}
+              />
+            </Grid> */}
             <Address formik={formik} />
           </Grid>
         );
@@ -133,9 +181,10 @@ const CreateCompanyForm = () => {
               <br />
               <b>เบอร์โทรศัพท์:</b> {formik.values.contactPhone}
             </Typography>
-            <FormControlLabel
-              control={<CustomCheckbox checked={formik.values.agree} onChange={formik.handleChange} name="agree" onBlur={formik.handleBlur} />}
+            <BaseCheckBox
+              name="agree"
               label="ยอมรับเงื่อนไขการใช้งาน"
+              formik={formik}
               sx={{ mt: 2 }}
             />
             {formik.touched.agree && formik.errors.agree && (
