@@ -83,7 +83,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <BaseAutoComplete
-          name="zipcode"
+          name="zipcodeId"
           label="รหัสไปรษณีย์"
           options={zipcode.map((item: any) => ({ value: item.id, text: item.zipcode }))}
           formik={formik}

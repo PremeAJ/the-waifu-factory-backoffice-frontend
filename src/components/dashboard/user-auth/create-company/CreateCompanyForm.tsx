@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Stepper, Step, StepLabel, Alert, Stack } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
 import { useFormik } from "formik";
@@ -10,6 +10,7 @@ import CompanyInfoStep from "./step/CompanyInfoStep";
 import ContactInfoStep from "./step/ContactInfoStep";
 import ConfirmStep from "./step/ConfirmStep";
 import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
+import { ConsentContext } from "@/context/Master/ConsentContext";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
@@ -24,7 +25,7 @@ const initialValues = {
   provinceId: undefined,
   districtId: undefined,
   subdistrictId: undefined,
-  zipcode: undefined,
+  zipcodeId: undefined,
   businessTypeId: undefined,
   taxId: "", // เพิ่มตรงนี้
 };
@@ -40,7 +41,7 @@ const stepSchemas = [
     provinceId: Yup.number().typeError("กรุณาเลือกจังหวัด").required("กรุณาเลือกจังหวัด"),
     districtId: Yup.number().typeError("กรุณาเลือกอำเภอ").required("กรุณาเลือกอำเภอ"),
     subdistrictId: Yup.number().typeError("กรุณาเลือกตำบล").required("กรุณาเลือกตำบล"),
-    zipcode: Yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
+    zipcodeId: Yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
     businessTypeId: Yup.number().typeError("กรุณาเลือกประเภทร้านค้า").required("กรุณาเลือกประเภทร้านค้า"),
     taxId: Yup.string()
       .matches(/^\d{13}$/, "เลขประจำตัวผู้เสียภาษีต้องมี 13 หลัก")
@@ -52,13 +53,13 @@ const stepSchemas = [
     contactEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลผู้ติดต่อ"),
     contactPhone: Yup.string().required("กรุณากรอกเบอร์โทรศัพท์"),
   }),
-  Yup.object({
-    agree: Yup.boolean().oneOf([true], "กรุณายอมรับเงื่อนไขการใช้งาน"),
-  }),
+  // Yup.object({
+  //   agree: Yup.boolean().oneOf([true], "กรุณายอมรับเงื่อนไขการใช้งาน"),
+  // }),
 ];
 
 const CreateCompanyForm = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(2);
   const [submitted, setSubmitted] = useState(false);
 
   // เพิ่ม state สำหรับ dialog

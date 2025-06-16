@@ -4,6 +4,7 @@ import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import CreateCompanyForm from "@/components/dashboard/user-auth/create-company/CreateCompanyForm";
 import { AddressProvider } from "@/context/Master/AddressContext";
 import { BusinessTypeProvider } from "@/context/Master/BusinessTypeContext";
+import { ConsentProvider } from "@/context/Master/ConsentContext";
 
 const createCompanyPage = () => {
   return (
@@ -11,7 +12,9 @@ const createCompanyPage = () => {
       <Breadcrumb title="สร้างบริษัท" subtitle="สร้างบริษัทใหม่เพื่อเริ่มใช้งานระบบ" />
       <AddressProvider>
         <BusinessTypeProvider>
-          <CreateCompanyForm />
+          <ConsentProvider>
+            <CreateCompanyForm />
+          </ConsentProvider>
         </BusinessTypeProvider>
       </AddressProvider>
     </PageContainer>

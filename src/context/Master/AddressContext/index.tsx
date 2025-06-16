@@ -10,12 +10,14 @@ export interface ProvinceType {
 }
 export interface DistrictType {
   id: number;
-  name: string;
+  nameTh: string;
+  nameEn?: string;
   provinceId: number;
 }
 export interface SubdistrictType {
   id: number;
-  name: string;
+  nameTh: string;
+  nameEn?: string;
   districtId: number;
 }
 export interface ZipcodeType {

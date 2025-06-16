@@ -17,7 +17,7 @@ interface ConsentContextProps {
   getConsentData: (type: string) => void;
 }
 
-const ConsentContext = createContext<ConsentContextProps>({
+export const ConsentContext = createContext<ConsentContextProps>({
   consentData: null,
   isLoading: false,
   error: "",

@@ -4,7 +4,7 @@ import { Checkbox, CheckboxProps, FormControlLabel } from "@mui/material";
 
 interface BaseCheckBoxProps extends Omit<CheckboxProps, "name"> {
   name: string;
-  label?: string;
+  label?: string | React.ReactNode; // <-- เปลี่ยนตรงนี้
   formik?: any;
   labelPlacement?: "end" | "start" | "top" | "bottom";
 }
