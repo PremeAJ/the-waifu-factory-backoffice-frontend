@@ -89,7 +89,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     const response = await supabaseSignOut();
     setUser(null);
-    // setUserFromContext(null);
     setIsLoading(false);
     return response;
   };
