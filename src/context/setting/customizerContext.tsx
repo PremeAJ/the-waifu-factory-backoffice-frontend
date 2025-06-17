@@ -49,11 +49,6 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   const [error, setError] = useState<Error | null>(null);
   const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
-  useEffect(() => {
-    const lang = Cookies.get("lang") ?? config.isLanguage;
-    setIsLanguage(lang);
-  }, []);
-
   const [activeDir, setActiveDir] = useState<string>(config.activeDir);
   const [activeMode, setActiveMode] = useState<string>(config.activeMode);
   const [activeTheme, setActiveTheme] = useState<string>(config.activeTheme);

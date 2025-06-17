@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useContext, useEffect } from "react";
 import { Avatar, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { CustomizerContext } from "@/context/setting/customizerContext";
@@ -39,10 +39,9 @@ const Language = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const open = Boolean(anchorEl);
-  const { isLanguage, setIsLanguage } = useContext(CustomizerContext);
+  const { isLanguage, setIsLanguage, updateAppearance } = useContext(CustomizerContext);
 
-  const currentLang =
-    Languages.find((_lang) => _lang.value === isLanguage) || Languages[1];
+  const currentLang = Languages.find((_lang) => _lang.value === isLanguage) || Languages[1];
   const { i18n } = useTranslation();
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -65,11 +64,7 @@ const Language = () => {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <Avatar
-          src={currentLang.icon}
-          alt={currentLang.value}
-          sx={{ width: 20, height: 20 }}
-        />
+        <Avatar src={currentLang.icon} alt={currentLang.value} sx={{ width: 20, height: 20 }} />
       </IconButton>
       <Menu
         id="long-menu"
@@ -87,16 +82,13 @@ const Language = () => {
             key={index}
             sx={{ py: 2, px: 3 }}
             onClick={() => {
-              setIsLanguage(option.value);   // เปลี่ยน context
+              setIsLanguage(option.value);
+              updateAppearance({ isLanguage: option.value });
               setAnchorEl(null);
             }}
           >
             <Stack direction="row" spacing={1} alignItems="center">
-              <Avatar
-                src={option.icon}
-                alt={option.icon}
-                sx={{ width: 20, height: 20 }}
-              />
+              <Avatar src={option.icon} alt={option.icon} sx={{ width: 20, height: 20 }} />
               <Typography> {option.flagname}</Typography>
             </Stack>
           </MenuItem>
