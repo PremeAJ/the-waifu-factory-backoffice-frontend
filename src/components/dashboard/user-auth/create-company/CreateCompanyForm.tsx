@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Stepper, Step, StepLabel, Alert, Stack } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
 import { useFormik } from "formik";
@@ -11,6 +11,8 @@ import ContactInfoStep from "./step/ContactInfoStep";
 import ConfirmStep from "./step/ConfirmStep";
 import { UserContext } from "@/context/UserContext";
 import { ConsentContext } from "@/context/Master/ConsentContext";
+import { CompanyContext, CompanyType } from "@/context/CompanyContext";
+import { useRouter } from "next/navigation";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
@@ -45,28 +47,28 @@ const stepSchemas = [
 const CreateCompanyForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null); // เพิ่ม state error
   const { getConsentData } = useContext(ConsentContext);
+  const { createCompany } = useContext(CompanyContext);
   const termsOfService = getConsentData("terms_of_service");
   // เพิ่ม state สำหรับ dialog
   const [openDialog, setOpenDialog] = useState(false);
   const { user } = useContext(UserContext);
   const { users, firstName, lastName } = user || {};
   const { email, phone } = users || {};
-  // mockup content ยาว ๆ
-  const longContent = (
-    <Box sx={{ minWidth: 400 }}>
-      <h3>ข้อกำหนดและเงื่อนไข</h3>
-      <p>
-        {Array.from({ length: 50 }).map((_, i) => (
-          <span key={i}>
-            ข้อความตัวอย่างเนื้อหายาว ๆ สำหรับทดสอบการ scroll ใน dialog (บรรทัดที่ {i + 1})<br />
-          </span>
-        ))}
-      </p>
-    </Box>
-  );
+  const router = useRouter();
 
-  const initialValues = {
+  // useEffect สำหรับนำทางไปยังหน้า Dashboard
+  useEffect(() => {
+    if (submitted) {
+      const timer = setTimeout(() => {
+        router.push("/dashboard");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitted, router]);
+
+  const initialValues: Omit<CompanyType, "id"> = {
     companyName: "",
     companyEmail: "",
     companyAddress: "",
@@ -74,11 +76,11 @@ const CreateCompanyForm = () => {
     contactEmail: email || "",
     contactPhone: phone || "",
     consent: [], // เปลี่ยนจาก false เป็น []
-    provinceId: undefined,
-    districtId: undefined,
-    subdistrictId: undefined,
-    zipcodeId: undefined,
-    businessTypeId: undefined,
+    provinceId: null,
+    districtId: null,
+    subdistrictId: null,
+    zipcodeId: null,
+    businessTypeId: null,
     taxId: "", // เพิ่มตรงนี้
   };
 
@@ -86,11 +88,15 @@ const CreateCompanyForm = () => {
     initialValues,
     validationSchema: stepSchemas[activeStep],
     enableReinitialize: true,
-    onSubmit: (values) => {
-      setSubmitted(true);
-      setActiveStep(steps.length);
-      console.log("🚀 ~ CreateCompanyForm ~ values:", values);
-      // TODO: ส่งข้อมูลไป backend
+    onSubmit: async (data) => {
+      setSubmitError(null);
+      try {
+        await createCompany(data);
+        setSubmitted(true);
+        setActiveStep(steps.length);
+      } catch (err: any) {
+        setSubmitError(err?.message || "เกิดข้อผิดพลาดในการสร้างบริษัท");
+      }
     },
   });
 
@@ -139,14 +145,18 @@ const CreateCompanyForm = () => {
           </Stepper>
           {activeStep === steps.length ? (
             <Stack spacing={2} mt={3}>
-              <Alert severity="success">สร้างบริษัทสำเร็จ!</Alert>
-              <Box textAlign="right">
-                <BaseButton onClick={handleReset} variant="contained" color="error" label="สร้างใหม่" fullWidth={false} />
-              </Box>
+              <Alert severity="success">
+                สร้างบริษัทสำเร็จ! กำลังนำคุณไปยังหน้า Dashboard...
+              </Alert>
             </Stack>
           ) : (
             <>
               <Box mt={3}>{renderStep(activeStep)}</Box>
+              {submitError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {submitError}
+                </Alert>
+              )}
               <Box display="flex" flexDirection="row" mt={3}>
                 <BaseButton fullWidth={false} color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} label="กลับ" />
                 <Box flex="1 1 auto" />

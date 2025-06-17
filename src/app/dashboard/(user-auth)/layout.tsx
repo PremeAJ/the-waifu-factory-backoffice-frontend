@@ -6,6 +6,7 @@ import React, { useContext } from "react";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import AuthGuard from "./authGuard";
 import Header from "@/components/layout/header/DashboardUserHeader";
+import { CompanyProvider } from "@/context/CompanyContext";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -28,30 +29,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const theme = useTheme();
 
   return (
-    <AuthGuard>
-      <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-        <title>Modernize NextJs</title>
-        <PageWrapper
-          className="page-wrapper"
-          sx={{
-            ...(isCollapse === "mini-sidebar" && {
-              [theme.breakpoints.up("lg")]: {
-                ml: `87px`,
-              },
-            }),
-          }}
-        >
-          <Header />
-          <Container
+    <CompanyProvider>
+      <AuthGuard>
+        <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
+          <title>Modernize NextJs</title>
+          <PageWrapper
+            className="page-wrapper"
             sx={{
-              pt: "30px",
-              maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
+              ...(isCollapse === "mini-sidebar" && {
+                [theme.breakpoints.up("lg")]: {
+                  ml: `87px`,
+                },
+              }),
             }}
           >
-            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
-          </Container>
-        </PageWrapper>
-      </MainWrapper>
-    </AuthGuard>
+            <Header />
+            <Container
+              sx={{
+                pt: "30px",
+                maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
+              }}
+            >
+              <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
+            </Container>
+          </PageWrapper>
+        </MainWrapper>
+      </AuthGuard>
+    </CompanyProvider>
   );
 }

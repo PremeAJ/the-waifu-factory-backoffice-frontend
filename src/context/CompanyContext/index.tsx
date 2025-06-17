@@ -1,129 +1,83 @@
 "use client";
-import React, { createContext, useState, useEffect } from "react";
-import useSWR, { mutate } from "swr";
-import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
-import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdatePhone, supabaseVerifyOtp } from "@/utils/supabase/server";
-import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
-import { VerifyOtpParams } from "@supabase/supabase-js";
-import { SettingProfile, userType } from "./type";
+import React, { createContext, useState, useEffect, useContext } from "react";
+import useSWR from "swr";
+import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
+import { UserContext } from "../UserContext";
 
-export type UserContextType = {
-  user: userType | null;
-  setUser: React.Dispatch<React.SetStateAction<userType | null>>; // เพิ่ม setUser
-  syncUser: () => {};
-  updateUser: (payload: SettingProfile) => {};
-  uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};
-  checkExistEmail: (email: string) => Promise<boolean>;
-  updateUserEmail: (newEmail: string) => Promise<any>;
+export interface CompanyType {
+  id: string;
+  companyName: string;
+  companyEmail: string;
+  companyAddress: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  consent: { id: string; accepted: boolean }[];
+  provinceId: number | null;
+  districtId: number | null;
+  subdistrictId: number | null;
+  zipcodeId: number | null;
+  businessTypeId: number | null;
+  taxId: string;
+  // เพิ่ม field อื่นๆ ตามที่ API ส่งกลับมา
+}
+
+export type CompanyContextType = {
+  company: CompanyType | null;
+  setCompany: React.Dispatch<React.SetStateAction<CompanyType | null>>;
   loading: boolean;
   error: Error | null;
-  updateUserPhone: (newPhone: string) => Promise<any>;
-  verifyPhoneOtp: (phone: string, token: string) => Promise<any>;
+  createCompany: (payload: Omit<CompanyType, "id">) => Promise<any>;
+  refreshCompany: () => void;
 };
 
-// สร้าง Context
-export const UserContext = createContext<UserContextType>({} as UserContextType);
+export const CompanyContext = createContext<CompanyContextType>({} as CompanyContextType);
 
-// ค่าเริ่มต้น
-const initialConfig = {
-  user: null,
-  loading: true,
-  error: null,
-};
+export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const {userMutate} = useContext(UserContext)
+  const [company, setCompany] = useState<CompanyType | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // State Management
-  const [user, setUser] = useState<userType | null>(initialConfig.user);
-  const [loading, setLoading] = useState<boolean>(initialConfig.loading);
-  const [error, setError] = useState<Error | null>(initialConfig.error);
-
-  // Fetch Data
-  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate } = useSWR("/api/users/me", getFetcher);
+  // ดึงข้อมูลบริษัทของ user ปัจจุบัน (ถ้ามี)
+  const { data, isLoading, error: swrError, mutate } = useSWR("/api/company/me", getFetcher, {
+    refreshInterval: 60000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   useEffect(() => {
-    if (usersData) {
-      setUser(usersData?.data);
-      setLoading(isUsersLoading);
-    } else if (usersError) {
-      setError(usersError);
-      setLoading(isUsersLoading);
-    }
-  }, [usersData, usersError]);
+    if (data?.data) setCompany(data.data);
+    setLoading(isLoading);
+    if (swrError) setError(swrError);
+  }, [data, isLoading, swrError]);
 
-  const syncUser = async () => {
+  // ฟังก์ชันสร้างบริษัทใหม่
+  const createCompany = async (payload: Omit<CompanyType, "id">) => {
+    setLoading(true);
+    setError(null);
     try {
-      await userMutate(postFetcher("/api/users/ensure", {}));
-    } catch (error: any) {}
+      await postFetcher("/api/company", payload);
+      await mutate(); // refresh ข้อมูลบริษัท
+      await userMutate(); // refresh ข้อมูลผู้ใช้
+      setLoading(false);
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+      throw new Error(process.env.NODE_ENV === 'development' && err || "เกิดข้อผิดพลาดในการสร้างบริษัท กรุณาลองใหม่อีกครั้ง");
+    }
   };
 
-  async function uploadAvatar(file: File | Blob | ArrayBuffer | string) {
-    try {
-      file = await reduceImageFileSize(file, 800 * 1024);
-      const payload: UploadFileType = {
-        file,
-        bucket: "avatars",
-        path: `users/${user?.id}/avatar`,
-        ext: "png",
-        contentType: "image/png",
-      };
-      const newAvatarUrl = await supabaseUploadFile(payload);
-      await userMutate(patchFetcher("/api/users/avatar", { avatarUrl: newAvatarUrl }));
-      return null;
-    } catch (error) {}
-  }
+  const refreshCompany = () => mutate();
 
-  async function updateUser(payload: SettingProfile) {
-    try {
-      await userMutate(patchFetcher("/api/users/me", payload));
-    } catch (error: any) {
-      return error.message;
-    }
-  }
-
-  async function updateUserEmail(newEmail: string) {
-    const response = await supabaseUpdateEmail(newEmail);
-    return response;
-  }
-
-  async function checkExistEmail(email: string) {
-    try {
-      // เพิ่มการ encode email ก่อนส่งไป API
-      const encodedEmail = encodeURIComponent(email);
-      const response = await getFetcher(`/api/users/email/${encodedEmail}/exists`);
-      return response.data.exists;
-    } catch (error: any) {
-      setError(error);
-      return false;
-    }
-  }
-
-  async function updateUserPhone(newPhone: string) {
-    const response = await supabaseUpdatePhone(newPhone);
-    return response;
-  }
-
-  async function verifyPhoneOtp(phone: string, token: string) {
-    const payload: VerifyOtpParams = { phone, token, type: "phone_change" };
-    const response = await supabaseVerifyOtp(payload);
-    if (!response.error) {
-      await userMutate();
-    }
-    return response;
-  }
-
-  const value: UserContextType = {
-    user,
-    error,
+  const value: CompanyContextType = {
+    company,
+    setCompany,
     loading,
-    setUser,
-    syncUser,
-    updateUser,
-    uploadAvatar,
-    verifyPhoneOtp,
-    checkExistEmail,
-    updateUserEmail,
-    updateUserPhone,
+    error,
+    createCompany,
+    refreshCompany,
   };
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  return <CompanyContext.Provider value={value}>{children}</CompanyContext.Provider>;
 };

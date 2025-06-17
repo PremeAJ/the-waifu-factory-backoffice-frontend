@@ -41,6 +41,7 @@ export type UserContextType = {
   uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};
   checkExistEmail: (email: string) => Promise<boolean>;
   updateUserEmail: (newEmail: string) => Promise<any>;
+  userMutate: () => Promise<any>;
   loading: boolean;
   error: Error | null;
   updateUserPhone: (newPhone: string) => Promise<any>;
@@ -63,8 +64,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate, } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher, {
     refreshInterval: 60000, // รีเฟรชทุก 60 วินาที
-    revalidateOnFocus: false, // ไม่ revalidate เมื่อ focus
-    revalidateOnReconnect: false, // ไม่ revalidate เมื่อ reconnect
+    // revalidateOnFocus: false, // ไม่ revalidate เมื่อ focus
+    // revalidateOnReconnect: false, // ไม่ revalidate เมื่อ reconnect
   });
   useEffect(() => {
     if (!session && !authIsLoading) {
@@ -147,6 +148,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser,
     syncUser,
     updateUser,
+    userMutate,
     uploadAvatar,
     verifyPhoneOtp,
     checkExistEmail,
