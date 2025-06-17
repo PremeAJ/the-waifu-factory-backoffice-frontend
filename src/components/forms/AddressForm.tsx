@@ -57,6 +57,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           formik={formik}
           required
           placeholder="เลือกจังหวัด"
+          orderBy={(a, b) => a.text.localeCompare(b.text)}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -68,6 +69,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           disabled={!formik.values.provinceId}
           required
           placeholder="เลือกอำเภอ"
+          orderBy={(a, b) => a.text.localeCompare(b.text)}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -79,6 +81,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           disabled={!formik.values.districtId}
           required
           placeholder="เลือกตำบล"
+          orderBy={(a, b) => a.text.localeCompare(b.text)}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -90,6 +93,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           disabled={!formik.values.subdistrictId}
           required
           placeholder="เลือกรหัสไปรษณีย์"
+          orderBy={(a, b) => a.text.localeCompare(b.text)}
         />
       </Grid>
     </React.Fragment>

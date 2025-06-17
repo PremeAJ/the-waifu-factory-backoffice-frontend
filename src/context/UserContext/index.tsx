@@ -33,6 +33,12 @@ export interface SettingProfile {
   phone?: string;
 }
 
+export interface CompanyListItem {
+  id: string;
+  companyName: string;
+  // เพิ่ม field อื่นๆ ตามที่ API ส่งกลับมา
+}
+
 export type UserContextType = {
   user: userType | null;
   setUser: React.Dispatch<React.SetStateAction<userType | null>>; 
@@ -46,6 +52,9 @@ export type UserContextType = {
   error: Error | null;
   updateUserPhone: (newPhone: string) => Promise<any>;
   verifyPhoneOtp: (phone: string, token: string) => Promise<any>;
+  companyList: CompanyListItem[];
+  companyListLoading: boolean;
+  companyListError: Error | null;
 };
 
 export const UserContext = createContext<UserContextType>({} as UserContextType);
@@ -63,10 +72,16 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
   const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate, } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher, {
-    refreshInterval: 60000, // รีเฟรชทุก 60 วินาที
-    // revalidateOnFocus: false, // ไม่ revalidate เมื่อ focus
-    // revalidateOnReconnect: false, // ไม่ revalidate เมื่อ reconnect
+    refreshInterval: 60000,
   });
+  const { data: companyListData, isLoading: companyListLoading, error: companyListError, } = useSWR(session && !authIsLoading ? "/api/users/me/company-list" : null, getFetcher,
+    {
+      refreshInterval: 180000,
+      revalidateOnFocus: false, 
+      revalidateOnReconnect: false, 
+    }
+  );
+
   useEffect(() => {
     if (!session && !authIsLoading) {
       setLoading(false);
@@ -82,8 +97,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const syncUser = async () => {
     try {
-      await postFetcher("/api/users/ensure", {}); // รอสร้าง user เสร็จจริง
-      await userMutate(); // fetch /api/users/me ใหม่หลังจากนั้น
+      await postFetcher("/api/users/ensure", {});
+      await userMutate();
     } catch (error: any) {}
   };
 
@@ -154,6 +169,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkExistEmail,
     updateUserEmail,
     updateUserPhone,
+    companyList: companyListData?.data || [],
+    companyListLoading,
+    companyListError,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

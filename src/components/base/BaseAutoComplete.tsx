@@ -6,7 +6,7 @@ import BaseTextField from "./BaseTextField";
 interface OptionType {
   value: any;
   text: string;
-  group?: string; // เพิ่ม field สำหรับ group
+  group?: string;
 }
 
 interface BaseAutoCompleteProps<T = OptionType, Multiple extends boolean | undefined = false>
@@ -16,7 +16,8 @@ interface BaseAutoCompleteProps<T = OptionType, Multiple extends boolean | undef
   label?: string;
   placeholder?: string;
   required?: boolean;
-  groupBy?: (option: T) => string; // เพิ่ม prop groupBy
+  groupBy?: (option: T) => string;
+  orderBy?: (a: T, b: T) => number; // เพิ่ม prop นี้
 }
 
 function BaseAutoComplete<T extends OptionType>({
@@ -26,21 +27,23 @@ function BaseAutoComplete<T extends OptionType>({
   placeholder,
   options,
   required,
-  groupBy, // รับ prop groupBy
+  groupBy,
+  orderBy, // รับ prop นี้
   ...rest
 }: BaseAutoCompleteProps<T>) {
   const value = options.find((opt) => opt.value === formik.values[name]) || null;
+  const sortedOptions = orderBy ? [...options].sort(orderBy) : options;
 
   return (
     <Autocomplete
-      options={options}
+      options={sortedOptions}
       value={value}
       onChange={(_, newValue) => {
         formik.setFieldValue(name, newValue ? newValue.value : "");
       }}
       isOptionEqualToValue={(option, value) => option.value === value.value}
       getOptionLabel={(option) => (option.text ? String(option.text) : "")}
-      groupBy={groupBy} // เพิ่มตรงนี้
+      groupBy={groupBy}
       renderInput={(params) => (
         <BaseTextField
           {...params}
@@ -49,6 +52,7 @@ function BaseAutoComplete<T extends OptionType>({
           placeholder={placeholder}
           formik={formik}
           required={required}
+          autoComplete="off"
         />
       )}
       {...rest}
