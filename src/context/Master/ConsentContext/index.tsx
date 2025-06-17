@@ -1,45 +1,48 @@
 "use client";
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode } from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
 
 export interface ConsentType {
-  id: number;
+  id: string;
   type: string;
-  content: string;
+  text: string;
+  detailTh: string;
+  detailEn: string;
+  version: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
   // เพิ่ม field อื่นๆ ตามที่ API ส่งกลับมา
 }
 
 interface ConsentContextProps {
-  consentData: ConsentType | null;
+  consents: ConsentType[];
   isLoading: boolean;
   error: string;
-  getConsentData: (type: string) => void;
+  getConsentData: (type: string) => ConsentType | undefined;
 }
 
 export const ConsentContext = createContext<ConsentContextProps>({
-  consentData: null,
+  consents: [],
   isLoading: false,
   error: "",
-  getConsentData: () => {},
+  getConsentData: () => undefined,
 });
 
 export const ConsentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [type, setType] = useState<string | null>(null);
+  const { data, isLoading, error } = useSWR("/api/master/consent", getFetcher);
 
-  const { data, isLoading, error } = useSWR(
-    type ? [`/api/master/consent/${type}`] : null,
-    getFetcher
-  );
+  const consents: ConsentType[] = data?.data || [];
 
-  const getConsentData = (consentType: string) => {
-    setType(consentType);
+  const getConsentData = (type: string) => {
+    return consents.find((consent) => consent.type === type);
   };
 
   return (
     <ConsentContext.Provider
       value={{
-        consentData: data?.data || null,
+        consents,
         isLoading,
         error: error?.message || "",
         getConsentData,

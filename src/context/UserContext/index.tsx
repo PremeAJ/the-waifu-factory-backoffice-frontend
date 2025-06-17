@@ -61,7 +61,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<Error | null>(initialConfig.error);
   const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
-  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate, } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher);
+  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate, } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher, {
+    refreshInterval: 60000, // รีเฟรชทุก 60 วินาที
+    revalidateOnFocus: false, // ไม่ revalidate เมื่อ focus
+    revalidateOnReconnect: false, // ไม่ revalidate เมื่อ reconnect
+  });
   useEffect(() => {
     if (!session && !authIsLoading) {
       setLoading(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Box, Stepper, Step, StepLabel, Alert, Stack } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
 import { useFormik } from "formik";
@@ -9,26 +9,10 @@ import BaseButton from "@/components/base/BaseButton";
 import CompanyInfoStep from "./step/CompanyInfoStep";
 import ContactInfoStep from "./step/ContactInfoStep";
 import ConfirmStep from "./step/ConfirmStep";
-import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
+import { UserContext } from "@/context/UserContext";
 import { ConsentContext } from "@/context/Master/ConsentContext";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
-
-const initialValues = {
-  companyName: "",
-  companyEmail: "",
-  companyAddress: "",
-  contactName: "",
-  contactEmail: "",
-  contactPhone: "",
-  agree: false,
-  provinceId: undefined,
-  districtId: undefined,
-  subdistrictId: undefined,
-  zipcodeId: undefined,
-  businessTypeId: undefined,
-  taxId: "", // เพิ่มตรงนี้
-};
 
 const stepSchemas = [
   Yup.object({
@@ -54,17 +38,20 @@ const stepSchemas = [
     contactPhone: Yup.string().required("กรุณากรอกเบอร์โทรศัพท์"),
   }),
   // Yup.object({
-  //   agree: Yup.boolean().oneOf([true], "กรุณายอมรับเงื่อนไขการใช้งาน"),
+  //   consent: Yup.boolean().oneOf([true], "กรุณายอมรับเงื่อนไขการใช้งาน"),
   // }),
 ];
 
 const CreateCompanyForm = () => {
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-
+  const { getConsentData } = useContext(ConsentContext);
+  const termsOfService = getConsentData("terms_of_service");
   // เพิ่ม state สำหรับ dialog
   const [openDialog, setOpenDialog] = useState(false);
-
+  const { user } = useContext(UserContext);
+  const { users, firstName, lastName } = user || {};
+  const { email, phone } = users || {};
   // mockup content ยาว ๆ
   const longContent = (
     <Box sx={{ minWidth: 400 }}>
@@ -79,6 +66,22 @@ const CreateCompanyForm = () => {
     </Box>
   );
 
+  const initialValues = {
+    companyName: "",
+    companyEmail: "",
+    companyAddress: "",
+    contactName: `${firstName} ${lastName}` || "",
+    contactEmail: email || "",
+    contactPhone: phone || "",
+    consent: [], // เปลี่ยนจาก false เป็น []
+    provinceId: undefined,
+    districtId: undefined,
+    subdistrictId: undefined,
+    zipcodeId: undefined,
+    businessTypeId: undefined,
+    taxId: "", // เพิ่มตรงนี้
+  };
+
   const formik = useFormik({
     initialValues,
     validationSchema: stepSchemas[activeStep],
@@ -86,7 +89,7 @@ const CreateCompanyForm = () => {
     onSubmit: (values) => {
       setSubmitted(true);
       setActiveStep(steps.length);
-      console.log("🚀 ~ CreateCompanyForm ~ values:", values)
+      console.log("🚀 ~ CreateCompanyForm ~ values:", values);
       // TODO: ส่งข้อมูลไป backend
     },
   });
@@ -138,64 +141,32 @@ const CreateCompanyForm = () => {
             <Stack spacing={2} mt={3}>
               <Alert severity="success">สร้างบริษัทสำเร็จ!</Alert>
               <Box textAlign="right">
-                <BaseButton onClick={handleReset} variant="contained" color="error" label="สร้างใหม่" />
+                <BaseButton onClick={handleReset} variant="contained" color="error" label="สร้างใหม่" fullWidth={false} />
               </Box>
             </Stack>
           ) : (
             <>
               <Box mt={3}>{renderStep(activeStep)}</Box>
               <Box display="flex" flexDirection="row" mt={3}>
-                <BaseButton
-                  fullWidth={false}
-                  color="inherit"
-                  variant="contained"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  label="กลับ"
-                />
+                <BaseButton fullWidth={false} color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} label="กลับ" />
                 <Box flex="1 1 auto" />
                 {activeStep < steps.length - 1 ? (
-                  <BaseButton
-                    fullWidth={false}
-                    onClick={handleNext}
-                    variant="contained"
-                    color="secondary"
-                    label="ถัดไป"
-                  />
+                  <BaseButton fullWidth={false} onClick={handleNext} variant="contained" color="secondary" label="ถัดไป" />
                 ) : (
                   <BaseButton
                     fullWidth={false}
                     type="submit"
                     variant="contained"
                     color="success"
-                    disabled={!formik.values.agree}
+                    disabled={!formik.values.consent.find((c: any) => c.id === termsOfService?.id && c.accepted)}
                     label="ยืนยัน"
                   />
                 )}
-                {/* ปุ่มสำหรับเปิด dialog ทดสอบ */}
-                {/* <BaseButton
-                  fullWidth={false}
-                  variant="outlined"
-                  color="primary"
-                  label="ดูเงื่อนไข"
-                  sx={{ ml: 2 }}
-                  onClick={() => setOpenDialog(true)}
-                /> */}
               </Box>
             </>
           )}
         </Box>
       </form>
-      {/* Dialog พร้อม scroll */}
-      {/* <TransitionDialog
-        open={openDialog}
-        title="ข้อกำหนดและเงื่อนไข"
-        content={longContent}
-        onConfirm={() => setOpenDialog(false)}
-        onClose={() => setOpenDialog(false)}
-        confirmText="ปิด"
-        scrolling={true}
-      /> */}
     </ParentCard>
   );
 };

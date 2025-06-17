@@ -21,7 +21,8 @@ interface TransitionDialogProps {
   icon?: string;
   iconSize?: number;
   fullScreen?: boolean;
-  scrolling?: boolean; // เพิ่ม prop นี้
+  scrolling?: boolean;
+  htmlContent?: boolean; // เพิ่ม prop นี้
 }
 
 const TransitionDialog: React.FC<TransitionDialogProps> = ({
@@ -38,6 +39,7 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
   iconSize = 60,
   fullScreen = false,
   scrolling = false,
+  htmlContent = false, // เพิ่ม default
 }) => (
   <Dialog
     open={open}
@@ -64,7 +66,13 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
       {title}
     </DialogTitle>
     <DialogContent dividers={scrolling}>
-      {typeof content === "string" ? (
+      {typeof content === "string" && htmlContent ? (
+        <DialogContentText
+          id="alert-dialog-slide-description"
+          sx={{ textAlign: "center" }}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      ) : typeof content === "string" ? (
         <DialogContentText id="alert-dialog-slide-description" sx={{ textAlign: "center" }}>
           {content}
         </DialogContentText>

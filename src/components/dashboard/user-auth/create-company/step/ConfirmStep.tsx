@@ -7,9 +7,25 @@ import { getDisplayName } from "@/utils/function/object/getDisplayName";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import BaseLinkButton from "@/components/base/BaseLinkButton";
+import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
+import { I18nString } from "@/utils/i18n/I18nString";
 
 const ConfirmStep = ({ formik }: any) => {
-  const { consentData, getConsentData } = useContext(ConsentContext);
+  const {
+    provinceId,
+    districtId,
+    subdistrictId,
+    zipcodeId,
+    companyName,
+    companyEmail,
+    taxId,
+    companyAddress,
+    contactName,
+    contactEmail,
+    contactPhone,
+  } = formik.values;
+  const { getConsentData } = useContext(ConsentContext);
+  const termsOfService = getConsentData("terms_of_service");
   const { provinces, districts, subdistricts, zipcode: zipcodes } = useContext(AddressContext);
   const { isLanguage } = useContext(CustomizerContext);
 
@@ -17,14 +33,16 @@ const ConfirmStep = ({ formik }: any) => {
   const [openDialog, setOpenDialog] = useState(false);
 
   // แปลง id เป็นชื่อ
-  const province = getDisplayName(provinces, "id", formik.values.provinceId, "nameTh", "nameEn", isLanguage);
-  const district = getDisplayName(districts, "id", formik.values.districtId, "nameTh", "nameEn", isLanguage);
-  const subdistrict = getDisplayName(subdistricts, "id", formik.values.subdistrictId, "nameTh", "nameEn", isLanguage);
-  const zipcode = getDisplayName(zipcodes, "id", formik.values.zipcodeId, "zipcode", "zipcode", isLanguage);
+  const province = getDisplayName(provinces, "id", provinceId, "nameTh", "nameEn", isLanguage);
+  const district = getDisplayName(districts, "id", districtId, "nameTh", "nameEn", isLanguage);
+  const subdistrict = getDisplayName(subdistricts, "id", subdistrictId, "nameTh", "nameEn", isLanguage);
+  const zipcode = getDisplayName(zipcodes, "id", zipcodeId, "zipcode", "zipcode", isLanguage);
 
   useEffect(() => {
     getConsentData("terms_of_service");
   }, []);
+
+  const consentId = termsOfService?.id;
 
   return (
     <Box pt={2}>
@@ -41,31 +59,31 @@ const ConfirmStep = ({ formik }: any) => {
               <Typography variant="subtitle2" color="text.secondary">
                 ชื่อบริษัท
               </Typography>
-              <Typography fontWeight="bold">{formik.values.companyName || "-"}</Typography>
+              <Typography fontWeight="bold">{companyName || "-"}</Typography>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="subtitle2" color="text.secondary">
                 อีเมลบริษัท
               </Typography>
-              <Typography fontWeight="bold">{formik.values.companyEmail || "-"}</Typography>
+              <Typography fontWeight="bold">{companyEmail || "-"}</Typography>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="subtitle2" color="text.secondary">
                 เลขประจำตัวผู้เสียภาษี
               </Typography>
-              <Typography fontWeight="bold">{formik.values.taxId || "-"}</Typography>
+              <Typography fontWeight="bold">{taxId || "-"}</Typography>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="subtitle2" color="text.secondary">
                 ที่อยู่บริษัท
               </Typography>
               <Typography fontWeight="bold">
-                {formik.values.companyAddress || "-"}
+                {companyAddress || "-"}
                 <br />
-                {subdistrict && `ตำบล${subdistrict} `}
-                {district && `อำเภอ${district} `}
-                {province && `จังหวัด${province} `}
-                {zipcode && `${zipcode} `}
+                {subdistrictId && `ตำบล${subdistrict} `}
+                {districtId && `อำเภอ${district} `}
+                {provinceId && `จังหวัด${province} `}
+                {zipcodeId && `${zipcode} `}
               </Typography>
             </Grid>
           </Grid>
@@ -85,28 +103,66 @@ const ConfirmStep = ({ formik }: any) => {
               <Typography variant="subtitle2" color="text.secondary">
                 ชื่อผู้ติดต่อ
               </Typography>
-              <Typography fontWeight="bold">{formik.values.contactName || "-"}</Typography>
+              <Typography fontWeight="bold">{contactName || "-"}</Typography>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="subtitle2" color="text.secondary">
                 อีเมลผู้ติดต่อ
               </Typography>
-              <Typography fontWeight="bold">{formik.values.contactEmail || "-"}</Typography>
+              <Typography fontWeight="bold">{contactEmail || "-"}</Typography>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="subtitle2" color="text.secondary">
                 เบอร์โทรศัพท์
               </Typography>
-              <Typography fontWeight="bold">{formik.values.contactPhone || "-"}</Typography>
+              <Typography fontWeight="bold">{contactPhone || "-"}</Typography>
             </Grid>
           </Grid>
         </CardContent>
       </Card>
 
       <Divider sx={{ my: 2 }} />
-      <BaseCheckBox name="agree" formik={formik} />
-      <BaseLinkButton onClick={() => setOpenDialog(true)} label="อ่านเงื่อนไขการใช้งาน" />
-      
+      <BaseCheckBox
+        name="consent"
+        checked={!!formik.values.consent.find((c: any) => c.id === consentId && c.accepted)}
+        onChange={(e: any) => {
+          if (consentId) {
+            if (e.target.checked) {
+              const arr = formik.values.consent.filter((c: any) => c.id !== consentId);
+              formik.setFieldValue("consent", [...arr, { id: consentId, accepted: true }]);
+            } else {
+              const arr = formik.values.consent.filter((c: any) => c.id !== consentId);
+              formik.setFieldValue("consent", arr);
+            }
+          }
+        }}
+        label="ยอมรับ"
+      />
+      <BaseLinkButton onClick={() => setOpenDialog(true)} label="ข้อกำหนดและเงื่อนไข" />
+
+      <TransitionDialog
+        open={openDialog}
+        title="ข้อกำหนดและเงื่อนไข"
+        content={I18nString(isLanguage, termsOfService?.detailTh, termsOfService?.detailEn) || "ไม่มีข้อมูลเงื่อนไขการใช้งาน"}
+        onConfirm={() => {
+          if (consentId) {
+            const arr = formik.values.consent.filter((c: any) => c.id !== consentId);
+            formik.setFieldValue("consent", [...arr, { id: consentId, accepted: true }]);
+          }
+          setOpenDialog(false);
+        }}
+        onClose={() => {
+          if (consentId) {
+            const arr = formik.values.consent.filter((c: any) => c.id !== consentId);
+            formik.setFieldValue("consent", arr);
+          }
+          setOpenDialog(false);
+        }}
+        confirmText="ยอมรับ"
+        cancelText="ยกเลิก"
+        scrolling
+        htmlContent
+      />
     </Box>
   );
 };
