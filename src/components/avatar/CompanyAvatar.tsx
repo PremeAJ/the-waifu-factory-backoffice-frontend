@@ -7,14 +7,16 @@ type CompanyAvatarProps = {
   size?: number;
 };
 
-const width = 24;
-const height = 24;
+const iconSize = {
+  width: 24,
+  height: 24
+}
 
 const iconMap: Record<number, React.ReactNode> = {
-  1: <IconToolsKitchen2 width={width} height={height} />,
-  2: <IconCoffee width={width} height={height} />,
-  3: <IconBaguette width={width} height={height} />,
-  4: <IconBubbleTea2 width={width} height={height} />,
+  1: <IconToolsKitchen2 {...iconSize} />,
+  2: <IconCoffee {...iconSize} />,
+  3: <IconBaguette {...iconSize} />,
+  4: <IconBubbleTea2 {...iconSize} />,
 };
 
 const CompanyAvatar = ({ businessTypeId, imageUrl, size = 40 }: CompanyAvatarProps) => (
@@ -27,7 +29,7 @@ const CompanyAvatar = ({ businessTypeId, imageUrl, size = 40 }: CompanyAvatarPro
       height: size,
     }}
   >
-    {!imageUrl && (iconMap[businessTypeId ?? -1] || <IconBuildingCommunity width={24} height={24} />)}
+    {!imageUrl && (iconMap[businessTypeId ?? -1] || <IconBuildingCommunity {...iconSize} />)}
   </Avatar>
 );
 

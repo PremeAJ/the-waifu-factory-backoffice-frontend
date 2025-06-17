@@ -19,7 +19,7 @@ export interface userType {
   permissionId: string | null;
   companyId: string | null;
   activeCompanyId: string | null;
-  hasReceivedTrial: string | null
+  hasReceivedTrial: string | null;
   users: {
     email: string;
     phone: string | null;
@@ -33,28 +33,40 @@ export interface SettingProfile {
   phone?: string;
 }
 
-export interface CompanyListItem {
+export interface Company {
   id: string;
-  companyName: string;
-  // เพิ่ม field อื่นๆ ตามที่ API ส่งกลับมา
+  name: string;
+  logoUrl: string | null;
+  businessTypeId: number;
+}
+
+export interface Role {
+  nameTh: string;
+  nameEn: string;
+}
+
+export interface CompanyListItem {
+  companies: Company;
+  roles: Role;
 }
 
 export type UserContextType = {
-  user: userType | null;
-  setUser: React.Dispatch<React.SetStateAction<userType | null>>; 
+  setUser: React.Dispatch<React.SetStateAction<userType | null>>;
   syncUser: () => {};
   updateUser: (payload: SettingProfile) => {};
+  userMutate: () => Promise<any>;
   uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};
+  verifyPhoneOtp: (phone: string, token: string) => Promise<any>;
+  updateUserPhone: (newPhone: string) => Promise<any>;
   checkExistEmail: (email: string) => Promise<boolean>;
   updateUserEmail: (newEmail: string) => Promise<any>;
-  userMutate: () => Promise<any>;
-  loading: boolean;
+  setActiveCompany: (companyId: string) => Promise<any>;
+  user: userType | null;
   error: Error | null;
-  updateUserPhone: (newPhone: string) => Promise<any>;
-  verifyPhoneOtp: (phone: string, token: string) => Promise<any>;
+  loading: boolean;
   companyList: CompanyListItem[];
-  companyListLoading: boolean;
   companyListError: Error | null;
+  companyListLoading: boolean;
 };
 
 export const UserContext = createContext<UserContextType>({} as UserContextType);
@@ -71,16 +83,23 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<Error | null>(initialConfig.error);
   const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
-  const { data: usersData, isLoading: isUsersLoading, error: usersError, mutate: userMutate, } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher, {
+  const {
+    data: usersData,
+    isLoading: isUsersLoading,
+    error: usersError,
+    mutate: userMutate,
+  } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher, {
     refreshInterval: 60000,
   });
-  const { data: companyListData, isLoading: companyListLoading, error: companyListError, } = useSWR(session && !authIsLoading ? "/api/users/me/company-list" : null, getFetcher,
-    {
-      refreshInterval: 180000,
-      revalidateOnFocus: false, 
-      revalidateOnReconnect: false, 
-    }
-  );
+  const {
+    data: companyListData,
+    isLoading: companyListLoading,
+    error: companyListError,
+  } = useSWR(session && !authIsLoading ? "/api/users/me/company-list" : null, getFetcher, {
+    refreshInterval: 180000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   useEffect(() => {
     if (!session && !authIsLoading) {
@@ -126,6 +145,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  const setActiveCompany = async (companyId: string) => {
+    try {
+      await patchFetcher("/api/users/me/active-company", { companyId });
+      await userMutate();
+    } catch (error: any) {}
+  };
+
   async function updateUserEmail(newEmail: string) {
     const response = await supabaseUpdateEmail(newEmail);
     return response;
@@ -169,9 +195,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkExistEmail,
     updateUserEmail,
     updateUserPhone,
-    companyList: companyListData?.data || [],
-    companyListLoading,
+    setActiveCompany,
     companyListError,
+    companyListLoading,
+    companyList: companyListData?.data || [],
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
