@@ -19,7 +19,8 @@ export interface CompanyType {
   zipcodeId: number | null;
   businessTypeId: number | null;
   taxId: string;
-  // เพิ่ม field อื่นๆ ตามที่ API ส่งกลับมา
+  name: string;
+  logoUrl: string;
 }
 
 export type CompanyContextType = {
@@ -39,7 +40,6 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // ดึงข้อมูลบริษัทของ user ปัจจุบัน (ถ้ามี)
   const { data, isLoading, error: swrError, mutate } = useSWR("/api/company/me", getFetcher, {
     refreshInterval: 60000,
     revalidateOnFocus: false,
@@ -52,14 +52,13 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (swrError) setError(swrError);
   }, [data, isLoading, swrError]);
 
-  // ฟังก์ชันสร้างบริษัทใหม่
   const createCompany = async (payload: Omit<CompanyType, "id">) => {
     setLoading(true);
     setError(null);
     try {
       await postFetcher("/api/company", payload);
-      await mutate(); // refresh ข้อมูลบริษัท
-      await userMutate(); // refresh ข้อมูลผู้ใช้
+      await mutate(); 
+      await userMutate(); 
       setLoading(false);
     } catch (err: any) {
       setError(err.message);
