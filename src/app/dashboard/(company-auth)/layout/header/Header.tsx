@@ -28,6 +28,16 @@ const Header = () => {
   // drawer
   const { setIsCollapse, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
 
+  // const AppBarStyled = styled(AppBar)(({ theme }) => ({
+  //   boxShadow: "none",
+  //   background: theme.palette.background.paper,
+  //   justifyContent: "center",
+  //   backdropFilter: "blur(4px)",
+  //   [theme.breakpoints.up("lg")]: {
+  //     minHeight: TopbarHeight,
+  //   },
+  // }));
+  
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: "none",
     background:
