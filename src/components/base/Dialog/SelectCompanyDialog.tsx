@@ -19,7 +19,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
 
   const handleSelect = (companyId: string) => {
     if (companyId === "addAccount") {
-      router.push("/dashboard/create-company");
+      router.push("/pricing");
     } else {
       setActiveCompany(companyId);
       router.push("/dashboard");

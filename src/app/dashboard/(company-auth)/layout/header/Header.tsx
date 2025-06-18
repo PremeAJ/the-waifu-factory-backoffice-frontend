@@ -30,9 +30,14 @@ const Header = () => {
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: "none",
-    background: theme.palette.background.paper,
+    background:
+      theme.palette.mode === "dark"
+        ? "rgba(30, 30, 30, 0.6)"
+        : "rgba(255, 255, 255, 0.6)", // ปรับความโปร่งใส
     justifyContent: "center",
-    backdropFilter: "blur(4px)",
+    backdropFilter: "blur(20px)", // เพิ่มความเบลอ
+    WebkitBackdropFilter: "blur(20px)", // รองรับ Safari
+    borderBottom: "1px solid rgba(255,255,255,0.18)", // เส้นขอบบางๆแบบ iOS
     [theme.breakpoints.up("lg")]: {
       minHeight: TopbarHeight,
     },
