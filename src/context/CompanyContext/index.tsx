@@ -19,8 +19,8 @@ export interface CompanyType {
   zipcodeId: number | null;
   businessTypeId: number | null;
   taxId: string;
-  name: string;
-  logoUrl: string;
+  name?: string;
+  logoUrl?: string;
 }
 
 export type CompanyContextType = {
