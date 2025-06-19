@@ -1,17 +1,20 @@
 import CompanyAvatar from "@/components/avatar/CompanyAvatar";
 import SelectCompanyDialog from "@/components/base/Dialog/SelectCompanyDialog";
-import { CompanyContext } from "@/context/CompanyContext";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import { UserContext } from "@/context/UserContext";
-import { Avatar, Box, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material";
+import { I18nString } from "@/utils/i18n/I18nString";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import { IconTransfer } from "@tabler/icons-react";
 import { useContext, useState } from "react";
 
 export const Profile = () => {
+  const { isLanguage } = useContext(CustomizerContext);
   const { user } = useContext(UserContext);
-  const { company } = useContext(CompanyContext);
-  const { name, logoUrl, businessTypeId } = company || {};
-  const { firstName, avatarUrl } = user || {};
+  const { companies } = user || {};
+  const { name, logoUrl, businessTypeId, companyUsers } = companies || {};
+  const { roles, branches } = companyUsers?.[0] || {};
+  const { nameTh: roleNameTh, nameEn: roleNameEN } = roles || {};
+  const { nameTh: branchNameTh, nameEn: branchNameEN } = branches || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const { isSidebarHover, isCollapse } = useContext(CustomizerContext);
   const hideMenu = lgUp ? isCollapse == "mini-sidebar" && !isSidebarHover : "";
@@ -37,13 +40,15 @@ export const Profile = () => {
         onMouseLeave={() => setHovered(false)}
       >
         {hideMenu ? (
-          <CompanyAvatar businessTypeId={businessTypeId || 0} imageUrl={logoUrl} />
+          <CompanyAvatar businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
         ) : (
           <>
-            <CompanyAvatar businessTypeId={businessTypeId || 0} imageUrl={logoUrl} />
-            <Box>
-              <Typography variant="h6">{name}</Typography>
-              <Typography variant="caption">Designer</Typography>
+            <CompanyAvatar businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
+            <Box sx={{ maxWidth: 120, overflow: "hidden", pl: 0.5 }}>
+              <Typography variant="h6" noWrap>
+                {name}
+              </Typography>
+              <Typography variant="caption">สาขา {I18nString(isLanguage, branchNameTh, branchNameEN)}</Typography>
             </Box>
           </>
         )}

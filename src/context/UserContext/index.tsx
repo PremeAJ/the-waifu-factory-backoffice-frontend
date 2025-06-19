@@ -24,6 +24,22 @@ export interface userType {
     email: string;
     phone: string | null;
   };
+  companies: {
+    id: string;
+    name: string;
+    logoUrl: string | null;
+    businessTypeId: number;
+    companyUsers: {
+      roles: {
+        nameTh: string;
+        nameEn: string;
+      };
+      branches: {
+        nameTh: string;
+        nameEn: string;
+      };
+    }[];
+  };
 }
 export interface SettingProfile {
   firstName?: string;
@@ -55,6 +71,7 @@ export type UserContextType = {
   syncUser: () => {};
   updateUser: (payload: SettingProfile) => {};
   userMutate: () => Promise<any>;
+  companyListMutate: () => Promise<any>;
   uploadAvatar: (file: File | Blob | ArrayBuffer | string) => {};
   verifyPhoneOtp: (phone: string, token: string) => Promise<any>;
   updateUserPhone: (newPhone: string) => Promise<any>;
@@ -88,18 +105,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading: isUsersLoading,
     error: usersError,
     mutate: userMutate,
-  } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher, {
-    refreshInterval: 60000,
-  });
+  } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher, {});
   const {
     data: companyListData,
     isLoading: companyListLoading,
     error: companyListError,
-  } = useSWR(session && !authIsLoading ? "/api/users/me/company-list" : null, getFetcher, {
-    refreshInterval: 180000,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+    mutate: companyListMutate,
+  } = useSWR(session && !authIsLoading ? "/api/users/me/company-list" : null, getFetcher, {});
 
   useEffect(() => {
     if (!session && !authIsLoading) {
@@ -149,6 +161,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await patchFetcher("/api/users/me/active-company", { companyId });
       await userMutate();
+      await companyListMutate();
     } catch (error: any) {}
   };
 
@@ -196,6 +209,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateUserEmail,
     updateUserPhone,
     setActiveCompany,
+    companyListMutate,
     companyListError,
     companyListLoading,
     companyList: companyListData?.data || [],

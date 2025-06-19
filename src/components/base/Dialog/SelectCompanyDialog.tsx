@@ -10,29 +10,22 @@ interface SelectCompanyDialogProps {
   onClose?: () => void;
 }
 
-const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
-  open,
-  onClose,
-}) => {
+const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose }) => {
   const { companyList, setActiveCompany } = useContext(UserContext);
   const router = useRouter();
 
-  const handleSelect = (companyId: string) => {
+  const handleSelect = async (companyId: string) => {
     if (companyId === "addAccount") {
       router.push("/pricing");
     } else {
-      setActiveCompany(companyId);
+      await setActiveCompany(companyId);
       router.push("/dashboard");
     }
     if (onClose) onClose();
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      disableEscapeKeyDown
-    >
+    <Dialog open={open} onClose={onClose} disableEscapeKeyDown>
       <DialogTitle>เลือกบริษัทที่ต้องการใช้งาน</DialogTitle>
       <List sx={{ pt: 0 }}>
         {companyList.map((company) => (

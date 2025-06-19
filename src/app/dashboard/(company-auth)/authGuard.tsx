@@ -22,7 +22,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       router.replace("/dashboard/auth/login");
     } else if (!isLoading && !appUser) {
       setShowDialog(true);
-    } else if (appUser && (!appUser.activeCompanyId)) {
+    } else if (appUser && (!appUser.companies)) {
       setShowCompanyDialog(true);
     } else if (!isLoading && user) {
       setIsAuthenticated(true);

@@ -29,45 +29,30 @@ export type CompanyContextType = {
   loading: boolean;
   error: Error | null;
   createCompany: (payload: Omit<CompanyType, "id">) => Promise<any>;
-  refreshCompany: () => void;
 };
 
 export const CompanyContext = createContext<CompanyContextType>({} as CompanyContextType);
 
 export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const {userMutate} = useContext(UserContext)
+  const { userMutate, companyListMutate } = useContext(UserContext);
   const [company, setCompany] = useState<CompanyType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-
-  const { data, isLoading, error: swrError, mutate } = useSWR("/api/company/me", getFetcher, {
-    refreshInterval: 60000,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
-
-  useEffect(() => {
-    if (data?.data) setCompany(data.data);
-    setLoading(isLoading);
-    if (swrError) setError(swrError);
-  }, [data, isLoading, swrError]);
 
   const createCompany = async (payload: Omit<CompanyType, "id">) => {
     setLoading(true);
     setError(null);
     try {
       await postFetcher("/api/company", payload);
-      await mutate(); 
-      await userMutate(); 
+      await userMutate();
+      await companyListMutate();
       setLoading(false);
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
-      throw new Error(process.env.NODE_ENV === 'development' && err || "เกิดข้อผิดพลาดในการสร้างบริษัท กรุณาลองใหม่อีกครั้ง");
+      throw new Error((process.env.NODE_ENV === "development" && err) || "เกิดข้อผิดพลาดในการสร้างบริษัท กรุณาลองใหม่อีกครั้ง");
     }
   };
-
-  const refreshCompany = () => mutate();
 
   const value: CompanyContextType = {
     company,
@@ -75,7 +60,6 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     loading,
     error,
     createCompany,
-    refreshCompany,
   };
 
   return <CompanyContext.Provider value={value}>{children}</CompanyContext.Provider>;
