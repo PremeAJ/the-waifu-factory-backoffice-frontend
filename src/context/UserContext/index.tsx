@@ -6,6 +6,7 @@ import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdate
 import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
 import { VerifyOtpParams } from "@supabase/supabase-js";
 import { AuthContext } from "../AuthContext";
+import { useRouter } from "next/navigation";
 
 export interface userType {
   id: string;
@@ -159,9 +160,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const setActiveCompany = async (companyId: string) => {
     try {
+      setLoading(true);
       await patchFetcher("/api/users/me/active-company", { companyId });
       await userMutate();
       await companyListMutate();
+      setLoading(false);
     } catch (error: any) {}
   };
 

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Dialog, DialogTitle, List, ListItemButton, ListItemAvatar, Avatar, ListItemText } from "@mui/material";
+import { Dialog, DialogTitle, List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
 import CompanyAvatar from "@/components/avatar/CompanyAvatar";
 import { UserContext } from "@/context/UserContext";
@@ -11,7 +11,8 @@ interface SelectCompanyDialogProps {
 }
 
 const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose }) => {
-  const { companyList, setActiveCompany } = useContext(UserContext);
+  const { companyList, setActiveCompany, user } = useContext(UserContext);
+  const { companies } = user || {};
   const router = useRouter();
 
   const handleSelect = async (companyId: string) => {
@@ -28,14 +29,37 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
     <Dialog open={open} onClose={onClose} disableEscapeKeyDown>
       <DialogTitle>เลือกบริษัทที่ต้องการใช้งาน</DialogTitle>
       <List sx={{ pt: 0 }}>
-        {companyList.map((company) => (
-          <ListItemButton onClick={() => handleSelect(company.companies.id)} key={company.companies.id}>
-            <ListItemAvatar>
-              <CompanyAvatar businessTypeId={company.companies.businessTypeId} />
-            </ListItemAvatar>
-            <ListItemText primary={company.companies.name} />
-          </ListItemButton>
-        ))}
+        {companyList.map((company) => {
+          const isActive = companies?.id === company.companies.id;
+          return (
+            <ListItemButton
+              onClick={() => !isActive && handleSelect(company.companies.id)}
+              key={company.companies.id}
+              disabled={isActive}
+              selected={isActive}
+              sx={isActive ? { opacity: 0.7, cursor: "not-allowed" } : {}}
+            >
+              <ListItemAvatar>
+                <CompanyAvatar businessTypeId={company.companies.businessTypeId} />
+              </ListItemAvatar>
+              <ListItemText
+                primary={
+                  <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {company.companies.name}
+                    {isActive && (
+                      <Chip
+                        label="กำลังใช้งาน"
+                        color="primary"
+                        size="small"
+                        sx={{ ml: 1 }}
+                      />
+                    )}
+                  </span>
+                }
+              />
+            </ListItemButton>
+          );
+        })}
         <ListItemButton autoFocus onClick={() => handleSelect("addAccount")}>
           <ListItemAvatar>
             <Avatar>
@@ -50,3 +74,4 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
 };
 
 export default SelectCompanyDialog;
+

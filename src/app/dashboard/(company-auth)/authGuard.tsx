@@ -16,24 +16,25 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user: appUser, loading: appUserLoading } = useContext(UserContext);
   const isLoading = authLoading || appUserLoading;
   const user = appUser && authUser;
-
+  
   useEffect(() => {
     if (!isLoading && !authUser) {
       router.replace("/dashboard/auth/login");
     } else if (!isLoading && !appUser) {
       setShowDialog(true);
-    } else if (appUser && (!appUser.companies)) {
+    } else if (appUser && !appUser.companies) {
       setShowCompanyDialog(true);
     } else if (!isLoading && user) {
       setIsAuthenticated(true);
     }
   }, [pathname, isLoading, user, appUser]);
-
+  
   const handleDialogClose = () => {
     setShowDialog(false);
     router.replace("/dashboard/auth/login");
   };
-
+  
+  if (isLoading) return <Loading />;
   return (
     <>
       <TransitionDialog

@@ -52,7 +52,6 @@ const CreateCompanyForm = () => {
   const { createCompany } = useContext(CompanyContext);
   const termsOfService = getConsentData("terms_of_service");
   // เพิ่ม state สำหรับ dialog
-  const [openDialog, setOpenDialog] = useState(false);
   const { user } = useContext(UserContext);
   const { users, firstName, lastName } = user || {};
   const { email, phone } = users || {};
@@ -75,13 +74,13 @@ const CreateCompanyForm = () => {
     contactName: `${firstName} ${lastName}` || "",
     contactEmail: email || "",
     contactPhone: phone || "",
-    consent: [], // เปลี่ยนจาก false เป็น []
+    consent: [], 
     provinceId: null,
     districtId: null,
     subdistrictId: null,
     zipcodeId: null,
     businessTypeId: null,
-    taxId: "", // เพิ่มตรงนี้
+    taxId: "", 
   };
 
   const formik = useFormik({
@@ -111,12 +110,6 @@ const CreateCompanyForm = () => {
 
   const handleBack = () => {
     setActiveStep((prev) => prev - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setSubmitted(false);
-    formik.resetForm();
   };
 
   const renderStep = (step: number) => {

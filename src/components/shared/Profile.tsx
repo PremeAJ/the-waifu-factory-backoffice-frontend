@@ -2,11 +2,13 @@ import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } from "@mui/material";
 import * as dropdownData from "../../app/dashboard/(company-auth)/layout/header/data";
-import { IconMail } from "@tabler/icons-react";
+import { IconMail, IconUser } from "@tabler/icons-react";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
 import BaseButton from "../base/BaseButton";
 import ConfirmSignOutDialog from "@/components/auth/dialog/ConfirmSignOutDialog";
+import { CustomizerContext } from "@/context/setting/customizerContext";
+import { I18nString } from "@/utils/i18n/I18nString";
 
 interface ProfileProps {
   loading?: boolean;
@@ -14,7 +16,12 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   const { signOut } = useContext(AuthContext);
-  const { user, loading: loadingContext } = useContext(UserContext);
+  const { isLanguage } = useContext(CustomizerContext);
+  const { user } = useContext(UserContext);
+  const { companies } = user || {};
+  const { companyUsers } = companies || {};
+  const { roles } = companyUsers?.[0] || {};
+  const { nameTh: roleNameTh, nameEn: roleNameEn } = roles || {};
   const loading = loadingProp;
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
 
@@ -58,8 +65,6 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
       return <IconComponent size={24} stroke={1.5} />;
     }
   };
-
-  // --- Skeleton UI ---
   if (loading) {
     return (
       <Box>
@@ -170,12 +175,39 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
               {firstName || lastName ? `${firstName ?? ""} ${lastName ?? ""}`.trim() : "-"}
             </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              Designer
+            <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
+              <IconUser width={15} height={15} />
+              <Box sx={{ maxWidth: 160, overflow: "hidden" }}>
+                <Typography
+                  variant="body2"
+                  noWrap
+                  sx={{
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    maxWidth: "100%",
+                    display: "block",
+                  }}
+                >
+                  {I18nString(isLanguage, roleNameTh, roleNameEn)}
+                </Typography>
+              </Box>
             </Typography>
             <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
               <IconMail width={15} height={15} />
-              {email ?? "-"}
+              <Box sx={{ maxWidth: 160, overflow: "hidden" }}>
+                <Typography
+                  variant="body2"
+                  noWrap
+                  sx={{
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    maxWidth: "100%",
+                    display: "block",
+                  }}
+                >
+                  {email || "-"}
+                </Typography>
+              </Box>
             </Typography>
           </Box>
         </Stack>
