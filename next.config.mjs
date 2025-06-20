@@ -15,7 +15,10 @@ const nextConfig = {
       "images.unsplash.com",
       "yalamarketplace.com",
       "assets.tops.co.th",
-      "www.maggi.co.th"
+      "www.maggi.co.th",
+      "www.coca-cola.com",
+      "img.wongnai.com",
+      "www.sgethai.com"
     ],
   },
 };
