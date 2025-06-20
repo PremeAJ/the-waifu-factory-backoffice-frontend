@@ -8,9 +8,14 @@ import { useRouter } from "next/navigation";
 interface SelectCompanyDialogProps {
   open: boolean;
   onClose?: () => void;
+  disableBackdropClose?: boolean; // เพิ่ม prop นี้
 }
 
-const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose }) => {
+const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
+  open,
+  onClose,
+  disableBackdropClose = false,
+}) => {
   const { companyList, setActiveCompany, user } = useContext(UserContext);
   const { companies } = user || {};
   const router = useRouter();
@@ -26,7 +31,16 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
   };
 
   return (
-    <Dialog open={open} onClose={onClose} disableEscapeKeyDown>
+    <Dialog
+      open={open}
+      onClose={(event, reason) => {
+        if (disableBackdropClose && (reason === "backdropClick" || reason === "escapeKeyDown")) {
+          return;
+        }
+        if (onClose) onClose();
+      }}
+      disableEscapeKeyDown={disableBackdropClose}
+    >
       <DialogTitle>เลือกบริษัทที่ต้องการใช้งาน</DialogTitle>
       <List sx={{ pt: 0 }}>
         {companyList.map((company) => {

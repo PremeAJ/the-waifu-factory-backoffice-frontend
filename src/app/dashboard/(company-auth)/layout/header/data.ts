@@ -95,10 +95,10 @@ const appsLink: appsLinkType[] = [
     avatar: "/images/svgs/icon-scan-barcode.svg",
     color: "#2196F3",
   },
-  {
-    href: "/apps/ecommerce/shop",
-    title: "eCommerce App",
-    subtext: "New stock available",
+   {
+    href: "/app/pos",
+    title: "Order",
+    subtext: "Creat Order",
     avatar: "/images/svgs/icon-dd-cart.svg",
     color: "#FF9800", 
   },

@@ -11,6 +11,12 @@ const nextConfig = {
   reactStrictMode: false,
   images: {
     unoptimized: false,
+    domains: [
+      "images.unsplash.com",
+      "yalamarketplace.com",
+      "assets.tops.co.th",
+      "www.maggi.co.th"
+    ],
   },
 };
 

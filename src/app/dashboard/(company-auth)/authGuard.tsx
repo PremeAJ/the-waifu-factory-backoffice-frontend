@@ -46,7 +46,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         onClose={handleDialogClose}
         confirmColor="primary"
       />
-      <SelectCompanyDialog open={showCompanyDialog} onClose={() => setShowCompanyDialog(false)} />
+      <SelectCompanyDialog open={showCompanyDialog} onClose={() => setShowCompanyDialog(false)} disableBackdropClose/>
       {(isAuthenticated && children) || <Loading />}
     </>
   );
