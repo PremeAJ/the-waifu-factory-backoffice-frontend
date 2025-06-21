@@ -175,7 +175,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
               {firstName || lastName ? `${firstName ?? ""} ${lastName ?? ""}`.trim() : "-"}
             </Typography>
-            <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
+            {companies && <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
               <IconUser width={15} height={15} />
               <Box sx={{ maxWidth: 160, overflow: "hidden" }}>
                 <Typography
@@ -191,7 +191,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
                   {I18nString(isLanguage, roleNameTh, roleNameEn)}
                 </Typography>
               </Box>
-            </Typography>
+            </Typography>}
             <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
               <IconMail width={15} height={15} />
               <Box sx={{ maxWidth: 160, overflow: "hidden" }}>
