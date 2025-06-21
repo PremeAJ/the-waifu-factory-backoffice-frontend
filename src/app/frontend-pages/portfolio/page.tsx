@@ -4,7 +4,6 @@ import HomePageHeader from "../../../components/layout/header/HomePageHeader";
 import C2a from "../../../components/frontend-pages/shared/c2a";
 import Footer from "../../../components/layout/footer/FllowUsFooter";
 import Banner from "../../../components/frontend-pages/portfolio/Banner";
-import ScrollToTop from "../../../components/shared/scroll-to-top";
 import GalleryCard from "@/components/apps/userprofile/gallery/GalleryCard";
 import { Box, Container } from "@mui/material";
 import { UserDataProvider } from "@/context/UserDataContext/index";
@@ -22,7 +21,6 @@ const PricingPage = () => {
     </Box>
     <C2a />
     <Footer />
-    <ScrollToTop />
    </PageContainer>
   </UserDataProvider>
  );

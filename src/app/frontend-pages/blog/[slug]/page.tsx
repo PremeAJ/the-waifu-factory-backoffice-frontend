@@ -14,7 +14,6 @@ import { IconEye, IconMessage2, IconPoint } from "@tabler/icons-react";
 import PageContainer from "@/components/container/PageContainer";
 import C2a from "@/components/frontend-pages/shared/c2a";
 import Footer from "@/components/layout/footer/FllowUsFooter";
-import ScrollToTop from "@/components/shared/scroll-to-top";
 import HeaderAlert from "@/components/layout/header/HeaderAlert";
 import HomePageHeader from "@/components/layout/header/HomePageHeader";
 import Banner from "@/components/frontend-pages/blog/banner";
@@ -131,7 +130,6 @@ export default async function Post({ params }: any) {
         </Container>
         <C2a />
         <Footer />
-        <ScrollToTop />
       </PageContainer>
     </>
   );

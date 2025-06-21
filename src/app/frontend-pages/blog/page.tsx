@@ -6,7 +6,6 @@ import HomePageHeader from "../../../components/layout/header/HomePageHeader";
 import C2a from "../../../components/frontend-pages/shared/c2a";
 import Footer from "../../../components/layout/footer/FllowUsFooter";
 import Banner from "../../../components/frontend-pages/blog/banner";
-import ScrollToTop from "../../../components/shared/scroll-to-top";
 
 const BlogPage = () => {
   return (
@@ -18,7 +17,6 @@ const BlogPage = () => {
         <BlogList />
         <C2a />
         <Footer />
-        <ScrollToTop />
       </PageContainer>
     </>
   );

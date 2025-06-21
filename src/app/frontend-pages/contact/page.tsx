@@ -6,7 +6,6 @@ import C2a from "../../../components/frontend-pages/shared/c2a";
 import Footer from "../../../components/layout/footer/FllowUsFooter";
 import Banner from "../../../components/frontend-pages/contact/banner";
 import Form from "../../../components/frontend-pages/contact/form";
-import ScrollToTop from "../../../components/shared/scroll-to-top";
 
 const Contact = () => {
   return (
@@ -17,7 +16,6 @@ const Contact = () => {
       <Form />
       <C2a />
       <Footer />
-      <ScrollToTop />
     </PageContainer>
   );
 };

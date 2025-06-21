@@ -12,7 +12,6 @@ import Pricing from '../../../components/pages/pricing';
 import FAQ from '../../../components/frontend-pages/homepage/faq';
 import C2a from '../../../components/frontend-pages/shared/c2a';
 import Footer from '../../../components/layout/footer/FllowUsFooter';
-import ScrollToTop from '../../../components/shared/scroll-to-top';
 
 const HomePage = () => {
   return (
@@ -30,7 +29,6 @@ const HomePage = () => {
       <FAQ />
       <C2a />
       <Footer />
-      <ScrollToTop />
     </PageContainer>
   );
 };

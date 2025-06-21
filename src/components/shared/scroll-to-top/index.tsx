@@ -1,21 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
 import { IconArrowUp } from "@tabler/icons-react";
 import { Fab } from "@mui/material";
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
-
-  // Function to handle scroll to top
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth", // Smooth scrolling
+      behavior: "smooth",
     });
   };
 
-  // Function to handle showing/hiding the button on scroll
   const toggleVisibility = () => {
     if (window.pageYOffset > 300) {
       setIsVisible(true);
@@ -34,16 +30,17 @@ const ScrollToTop = () => {
 
   return (
     <>
-      {" "}
       {isVisible ? (
         <Fab
           color="primary"
           size="medium"
           onClick={scrollToTop}
           sx={{
+            bgcolor:"blue",
             position: "fixed",
             bottom: 16,
             right: 16,
+            zIndex: 9999,
           }}
         >
           <IconArrowUp />

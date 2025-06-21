@@ -9,7 +9,6 @@ import Footer from "../../../components/layout/footer/FllowUsFooter";
 import Banner from "../../../components/frontend-pages/about/banner";
 import Process from "../../../components/frontend-pages/about/process";
 import KeyMetric from "../../../components/frontend-pages/about/key-metric";
-import ScrollToTop from "../../../components/shared/scroll-to-top";
 
 const About = () => {
   return (
@@ -24,7 +23,6 @@ const About = () => {
       <Pricing />
       <C2a />
       <Footer />
-      <ScrollToTop />
     </PageContainer>
   );
 };

@@ -5,7 +5,6 @@ import Pricing from '../../../components/pages/pricing';
 import C2a from '../../../components/frontend-pages/shared/c2a';
 import Footer from '../../../components/layout/footer/FllowUsFooter';
 import Banner from '../../../components/frontend-pages/pricing/Banner';
-import ScrollToTop from '../../../components/shared/scroll-to-top';
 
 const PricingPage = () => {
     return (
@@ -16,7 +15,6 @@ const PricingPage = () => {
             <Pricing />
             <C2a />
             <Footer />
-            <ScrollToTop />
         </PageContainer>
     );
 };
