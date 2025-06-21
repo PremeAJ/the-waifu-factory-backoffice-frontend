@@ -12,6 +12,7 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
         alignItems: "flex-start",
         maxHeight: isMobile ? "none" : "calc(100vh - 180px)",
         overflow: isMobile ? "visible" : "auto",
+        userSelect: "none",
       }}
     >
       {filteredProducts.map((product: any) => {
@@ -49,6 +50,7 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
                   alignItems: "center",
                   justifyContent: "center",
                   position: "relative",
+                  borderRadius: 0,
                 }}
               >
                 <Image
