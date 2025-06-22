@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Grid,
@@ -38,6 +38,9 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import Badge from "@mui/material/Badge";
+import Sidebar from "./sidebar/Sidebar";
+import { CustomizerContext } from "@/context/setting/customizerContext";
+import SidebarOpenButton from "@/components/shared/FloatingButtons/SidebarOpenButton";
 
 export default function POSPage() {
   const [search, setSearch] = useState("");
@@ -91,9 +94,12 @@ export default function POSPage() {
   };
 
   const total = order.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const { setIsMobileSidebar } = useContext(CustomizerContext);
 
   return (
     <>
+<SidebarOpenButton onClick={() => setIsMobileSidebar(true)} />
+    <Sidebar />
       {/* เพิ่ม ref หรือ id ให้แต่ละ section */}
       <Grid container spacing={2} sx={{ height: isMobile ? "auto" : "100vh", pb: isMobile ? 7 : 0 }}>
         <Grid

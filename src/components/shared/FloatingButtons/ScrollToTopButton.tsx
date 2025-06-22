@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { IconArrowUp } from "@tabler/icons-react";
-import { Fab } from "@mui/material";
+import BaseFab from "@/components/base/BaseFab";
 
-const ScrollToTop = () => {
+const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
   const scrollToTop = () => {
     window.scrollTo({
@@ -31,22 +31,18 @@ const ScrollToTop = () => {
   return (
     <>
       {isVisible ? (
-        <Fab
+        <BaseFab
+          fadeDirection="up"
           color="primary"
           size="medium"
           onClick={scrollToTop}
-          sx={{
-            position: "fixed",
-            bottom: 16,
-            right: 16,
-            zIndex: 9999,
-          }}
+          sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 9999 }}
         >
           <IconArrowUp />
-        </Fab>
+        </BaseFab>
       ) : null}
     </>
   );
 };
 
-export default ScrollToTop;
+export default ScrollToTopButton;

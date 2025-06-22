@@ -5,9 +5,9 @@ import "./global.css";
 import { CustomizerContextProvider } from "../context/setting/customizerContext";
 import Header from "./header";
 import { Metadata, Viewport } from "next";
-import MobileBackButton from "../components/shared/MobileBackButton";
-import ScrollToTop from "../components/shared/scroll-to-top";
+import ScrollToTopButton from "../components/shared/FloatingButtons/ScrollToTopButton";
 import { AuthProvider } from "@/context/AuthContext";
+import MobileBackButton from "@/components/shared/FloatingButtons/MobileBackButton";
 export const metadata: Metadata = {
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
 };
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <NextTopLoader color="#5D87FF" />
             <MyApp>
               <MobileBackButton />
-              <ScrollToTop />
+              <ScrollToTopButton />
               {children}
             </MyApp>
           </body>
