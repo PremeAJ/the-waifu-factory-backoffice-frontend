@@ -31,7 +31,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <CompanyProvider>
         <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-          <title>Modernize NextJs</title>
           <Sidebar />
           <PageWrapper
             className="page-wrapper"

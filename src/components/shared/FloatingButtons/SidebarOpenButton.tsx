@@ -12,7 +12,6 @@ type SidebarOpenButtonProps = {
 };
 
 const SidebarOpenButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) => {
-  const theme = useTheme();
   const isMobile = useIsMobile();
   const { isMobileSidebar } = useContext(CustomizerContext);
   if (isMobileSidebar || !isMobile) return null;

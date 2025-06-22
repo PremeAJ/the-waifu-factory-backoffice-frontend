@@ -5,6 +5,7 @@ import BaseFab from "@/components/base/BaseFab";
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -22,25 +23,34 @@ const ScrollToTopButton = () => {
 
   useEffect(() => {
     window.addEventListener("scroll", toggleVisibility);
-
     return () => {
       window.removeEventListener("scroll", toggleVisibility);
     };
   }, []);
 
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (isVisible) setShow(true);
+  }, [isVisible]);
+
+  const handleExited = () => setShow(false);
+
   return (
     <>
-      {isVisible ? (
+      {show && (
         <BaseFab
           fadeDirection="up"
           color="primary"
           size="medium"
           onClick={scrollToTop}
           sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 9999 }}
+          open={isVisible}
+          onExited={handleExited}
         >
           <IconArrowUp />
         </BaseFab>
-      ) : null}
+      )}
     </>
   );
 };

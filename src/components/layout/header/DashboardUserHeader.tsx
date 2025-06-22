@@ -1,5 +1,6 @@
 import Language from "@/components/shared/Language/Language";
 import Profile from "@/components/shared/Profile";
+import AppBarStyled from "@/components/styled/AppBarStyled";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import config from "@/context/setting/config";
 import { UserContext } from "@/context/UserContext";
@@ -14,15 +15,6 @@ const Header = () => {
   const { loading, user } = useContext(UserContext);
   const TopbarHeight = config.topbarHeight;
 
-  const AppBarStyled = styled(AppBar)(({ theme }) => ({
-    boxShadow: "none",
-    background: theme.palette.background.paper,
-    justifyContent: "center",
-    backdropFilter: "blur(4px)",
-    [theme.breakpoints.up("lg")]: {
-      minHeight: TopbarHeight,
-    },
-  }));
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
     width: "100%",
     color: theme.palette.text.secondary,

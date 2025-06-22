@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Fab, { FabProps } from "@mui/material/Fab";
 import { keyframes } from "@emotion/react";
 
@@ -23,11 +23,32 @@ const fadeInMap: Record<FadeDirection, ReturnType<typeof keyframes>> = {
   `,
 };
 
+const fadeOutMap: Record<FadeDirection, ReturnType<typeof keyframes>> = {
+  up: keyframes`
+    from { opacity: 1; transform: translateY(0) scale(1);}
+    to { opacity: 0; transform: translateY(24px) scale(0.8);}
+  `,
+  down: keyframes`
+    from { opacity: 1; transform: translateY(0) scale(1);}
+    to { opacity: 0; transform: translateY(-24px) scale(0.8);}
+  `,
+  left: keyframes`
+    from { opacity: 1; transform: translateX(0) scale(1);}
+    to { opacity: 0; transform: translateX(-24px) scale(0.8);}
+  `,
+  right: keyframes`
+    from { opacity: 1; transform: translateX(0) scale(1);}
+    to { opacity: 0; transform: translateX(24px) scale(0.8);}
+  `,
+};
+
 export interface BaseFabProps extends FabProps {
   children: React.ReactNode;
   sx?: object;
   animation?: boolean;
   fadeDirection?: FadeDirection;
+  open?: boolean; // เพิ่ม prop นี้
+  onExited?: () => void; // callback เมื่อ fade out เสร็จ
 }
 
 const BaseFab: React.FC<BaseFabProps> = ({
@@ -35,30 +56,57 @@ const BaseFab: React.FC<BaseFabProps> = ({
   sx,
   animation = true,
   fadeDirection = "up",
+  open = true,
+  onExited,
   ...rest
-}) => (
-  <Fab
-    size="medium"
-    color="primary"
-    {...rest}
-    sx={{
-      backdropFilter: "blur(16px)",
-      WebkitBackdropFilter: "blur(16px)",
-      backgroundColor: (theme) => theme.palette.primary.main + "CC",
-      border: "1px solid rgba(255,255,255,0.3)",
-      boxShadow: "0 4px 30px rgba(0,0,0,0.1)",
-      color: "#fff",
-      "&:hover": {
-        backgroundColor: (theme) => theme.palette.primary.main,
-      },
-      animation: animation
-        ? `${fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)`
-        : undefined,
-      ...sx,
-    }}
-  >
-    {children}
-  </Fab>
-);
+}) => {
+  const [visible, setVisible] = useState(open);
+  const [exiting, setExiting] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setVisible(true);
+      setExiting(false);
+    } else if (visible) {
+      setExiting(true);
+    }
+  }, [open]);
+
+  const handleAnimationEnd = () => {
+    if (exiting) {
+      setVisible(false);
+      setExiting(false);
+      onExited?.();
+    }
+  };
+
+  if (!visible) return null;
+
+  return (
+    <Fab
+      size="medium"
+      color="primary"
+      {...rest}
+      sx={{
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        backgroundColor: (theme) => theme.palette.primary.main + "CC",
+        border: "1px solid rgba(255,255,255,0.3)",
+        boxShadow: "0 4px 30px rgba(0,0,0,0.1)",
+        color: "#fff",
+        "&:hover": {
+          backgroundColor: (theme) => theme.palette.primary.main,
+        },
+        animation: animation
+          ? `${exiting ? fadeOutMap[fadeDirection] : fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)`
+          : undefined,
+        ...sx,
+      }}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      {children}
+    </Fab>
+  );
+};
 
 export default BaseFab;
