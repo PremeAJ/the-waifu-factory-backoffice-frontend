@@ -7,6 +7,8 @@ import { CustomizerContext } from "@/context/setting/customizerContext";
 import AuthGuard from "./authGuard";
 import Header from "@/components/layout/header/DashboardUserHeader";
 import { CompanyProvider } from "@/context/CompanyContext";
+import Sidebar from "./setting/layout/sidebar/Sidebar";
+import { usePathname } from "next/navigation";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -27,12 +29,15 @@ const PageWrapper = styled("div")(() => ({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const { isLayout, activeMode, isCollapse } = useContext(CustomizerContext);
   const theme = useTheme();
+  const path = usePathname();
+  const settingsPath = path.includes("/setting");
 
   return (
     <CompanyProvider>
       <AuthGuard>
         <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
           <title>Modernize NextJs</title>
+          {settingsPath && <Sidebar />}
           <PageWrapper
             className="page-wrapper"
             sx={{

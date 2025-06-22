@@ -23,13 +23,13 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "บัญชีของฉัน",
     icon: IconUser,
-    href: "/setting/account/profile",
+    href: "/dashboard/setting/account/profile",
     children: [
       {
         id: uniqueId(),
         title: "ข้อมูลส่วนตัว",
         icon: IconHome,
-        href: "/setting/account/profile",
+        href: "/dashboard/setting/account/profile",
       },
       {
         id: uniqueId(),
@@ -43,12 +43,6 @@ const Menuitems: NavGroup[] = [
         icon: IconKey,
         href: "/setting/account/security",
       },
-      // {
-      //   id: uniqueId(),
-      //   title: "หมายเลขโทรศัพท์",
-      //   icon: IconDeviceMobile,
-      //   href: "/setting/account/phone",
-      // },
     ],
   },
   {
@@ -59,7 +53,7 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "การแสดงผล",
     icon: IconPalette,
-    href: "/setting/appearance",
+    href: "/dashboard/setting/appearance",
   },
   {
     id: uniqueId(),
