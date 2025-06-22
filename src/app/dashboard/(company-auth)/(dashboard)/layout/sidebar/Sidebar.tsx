@@ -3,7 +3,7 @@ import Drawer from "@mui/material/Drawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import SidebarItems from "./SidebarItems";
-import Logo from "../../../../../components/shared/logo/Logo";
+import Logo from "../../../../../../components/shared/logo/Logo";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import config from "@/context/setting/config";
 

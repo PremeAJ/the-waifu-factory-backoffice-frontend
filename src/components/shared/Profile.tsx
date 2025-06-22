@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } from "@mui/material";
-import * as dropdownData from "../../app/dashboard/(company-auth)/layout/header/data";
+import * as dropdownData from "../../app/dashboard/(company-auth)/(dashboard)/layout/header/data";
 import { IconMail, IconUser } from "@tabler/icons-react";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
