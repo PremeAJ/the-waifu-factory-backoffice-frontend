@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconCalendarEvent, IconGridDots, IconMail, IconMessages, IconSearch, IconX } from "@tabler/icons-react";
+import { IconApps, IconCalendarEvent, IconGridDots, IconMail, IconMessages, IconSearch, IconX } from "@tabler/icons-react";
 import {
   Box,
   Typography,
@@ -28,7 +28,6 @@ const MobileRightSidebar = () => {
 
   const cartContent = (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      {/* Search Bar */}
       <Box px={3} pt={2} pb={2}>
         <TextField
           fullWidth
@@ -114,7 +113,7 @@ const MobileRightSidebar = () => {
           }),
         }}
       >
-        <IconGridDots size="21" stroke="1.5" />
+        <IconApps size="21" stroke="1.5" />
       </IconButton>
 
       {/* Apps Drawer */}
