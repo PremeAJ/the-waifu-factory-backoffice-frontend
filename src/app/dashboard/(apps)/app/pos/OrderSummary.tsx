@@ -52,7 +52,12 @@ export default function OrderSummary({ order, addToOrder, removeFromOrder, setOr
                   <IconButton size="small" onClick={() => addToOrder(item)} disabled={isOutOfStock}>
                     <AddIcon />
                   </IconButton>
-                  <IconButton size="small" color="error" onClick={() => setOrder((prev: any) => prev.filter((o: any) => o.id !== item.id))} sx={{ ml: 1 }}>
+                  <IconButton
+                    size="small"
+                    color="error"
+                    onClick={() => setOrder((prev: any) => prev.filter((o: any) => o.id !== item.id))}
+                    sx={{ ml: 1 }}
+                  >
                     <CloseIcon fontSize="small" />
                   </IconButton>
                 </Box>
@@ -78,9 +83,8 @@ export default function OrderSummary({ order, addToOrder, removeFromOrder, setOr
             sx={{ mt: 2, fontSize: isMobile ? 14 : 16, py: isMobile ? 1 : 2 }}
             disabled={order.length === 0}
             onClick={() => alert("ยืนยันออเดอร์!")}
-          >
-            ยืนยันออเดอร์
-          </BaseButton>
+            label="ยืนยันออเดอร์"
+          />
         </Box>
       </CardContent>
     </Card>

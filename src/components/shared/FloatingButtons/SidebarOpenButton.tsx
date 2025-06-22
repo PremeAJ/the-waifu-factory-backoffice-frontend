@@ -3,6 +3,8 @@ import React, { useContext } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import BaseFab from "@/components/base/BaseFab";
+import { useMediaQuery, useTheme } from "@mui/material";
+import useIsMobile from "@/utils/breakpoints/isMobile";
 
 type SidebarOpenButtonProps = {
   onClick: () => void;
@@ -10,9 +12,10 @@ type SidebarOpenButtonProps = {
 };
 
 const SidebarOpenButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) => {
+  const theme = useTheme();
+  const isMobile = useIsMobile();
   const { isMobileSidebar } = useContext(CustomizerContext);
-
-  if (isMobileSidebar) return null;
+  if (isMobileSidebar || !isMobile) return null;
 
   return (
     <BaseFab

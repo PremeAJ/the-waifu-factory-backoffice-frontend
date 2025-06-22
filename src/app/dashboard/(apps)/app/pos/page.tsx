@@ -1,36 +1,9 @@
 "use client";
 import React, { useContext, useState } from "react";
-import {
-  Box,
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  IconButton,
-  Divider,
-  TextField,
-  InputAdornment,
-  List,
-  ListItemButton,
-  ListItemText,
-  Collapse,
-  Paper,
-  useTheme,
-  useMediaQuery,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+import { Grid, Card, CardContent, Typography, TextField, InputAdornment, useTheme, useMediaQuery } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import CloseIcon from "@mui/icons-material/Close"; // เพิ่ม import
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Image from "next/image";
-import BlockIcon from "@mui/icons-material/Block"; // เพิ่ม icon สำหรับสินค้าหมด
+
 import { categories, products } from "./dataMock";
-import SidebarCategory from "./SidebarCategory";
 import ProductList from "./ProductList";
 import OrderSummary from "./OrderSummary";
 import BottomNavigation from "@mui/material/BottomNavigation";
@@ -38,9 +11,10 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import Badge from "@mui/material/Badge";
-import Sidebar from "./sidebar/Sidebar";
+import Sidebar from "./category/Sidebar";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import SidebarOpenButton from "@/components/shared/FloatingButtons/SidebarOpenButton";
+import useIsMobile from "@/utils/breakpoints/isMobile";
 
 export default function POSPage() {
   const [search, setSearch] = useState("");
@@ -48,11 +22,8 @@ export default function POSPage() {
   const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(null);
   const [openCategory, setOpenCategory] = useState<{ [key: number]: boolean }>({});
   const [order, setOrder] = useState<{ id: number; name: string; price: number; qty: number; image: string }[]>([]);
-  const [mobileTab, setMobileTab] = useState(0); // 0 = product, 1 = order
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  // Handle expand/collapse
+  const isMobile = useIsMobile();
   const handleToggleCategory = (catId: number) => {
     setOpenCategory((prev) => ({
       ...prev,
@@ -60,7 +31,6 @@ export default function POSPage() {
     }));
   };
 
-  // Filter products
   const filteredProducts = products.filter((p) => {
     if (selectedCategory === 0) {
       return p.name.toLowerCase().includes(search.toLowerCase());
@@ -68,17 +38,14 @@ export default function POSPage() {
     if (selectedSubCategory) {
       return p.categoryId === selectedSubCategory && p.name.toLowerCase().includes(search.toLowerCase());
     }
-    // ถ้าเลือก category หลัก ให้แสดงสินค้าทั้งหมดใน category นั้นและ subcategory
     const cat = categories.find((c) => c.id === selectedCategory);
     const subIds = cat?.children?.map((c) => c.id) || [];
     return (p.categoryId === selectedCategory || subIds.includes(p.categoryId)) && p.name.toLowerCase().includes(search.toLowerCase());
   });
 
-  // ปรับ addToOrder ให้เช็ค stock
-  const addToOrder = (product: typeof products[0]) => {
-    // นับจำนวนที่เลือกใน order
+  const addToOrder = (product: (typeof products)[0]) => {
     const inOrder = order.find((item) => item.id === product.id)?.qty || 0;
-    if (product.stock !== undefined && inOrder >= product.stock) return; // ถ้าของหมดหรือเกิน stock ห้ามเพิ่ม
+    if (product.stock !== undefined && inOrder >= product.stock) return;
 
     setOrder((prev) => {
       const exist = prev.find((item) => item.id === product.id);
@@ -98,40 +65,23 @@ export default function POSPage() {
 
   return (
     <>
-<SidebarOpenButton onClick={() => setIsMobileSidebar(true)} />
-    <Sidebar />
-      {/* เพิ่ม ref หรือ id ให้แต่ละ section */}
-      <Grid container spacing={2} sx={{ height: isMobile ? "auto" : "100vh", pb: isMobile ? 7 : 0 }}>
-        <Grid
-          id="category"
-          size={{ xs: 12, sm: 3, md: 2 }}
-          sx={{
-            height: isMobile ? "auto" : "100%",
-            order: isMobile ? 1 : 0,
-            mb: isMobile ? 2 : 0,
-          }}
-        >
-          <Paper sx={{ height: "100%", p: 2, bgcolor: "grey.50" }}>
-            <Typography variant="h6" gutterBottom>
-              หมวดหมู่
-            </Typography>
-            <SidebarCategory
-              categories={categories}
-              selectedCategory={selectedCategory}
-              selectedSubCategory={selectedSubCategory}
-              openCategory={openCategory}
-              setSelectedCategory={setSelectedCategory}
-              setSelectedSubCategory={setSelectedSubCategory}
-              handleToggleCategory={handleToggleCategory}
-              isMobile={isMobile}
-            />
-          </Paper>
-        </Grid>
+      <SidebarOpenButton onClick={() => setIsMobileSidebar(true)} />
+      <Sidebar />
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          height: isMobile ? "auto" : "100vh",
+          pb: isMobile ? 7 : 0,
+          ml: isMobile ? 0 : "269px",
+        }}
+      >
         <Grid
           id="product"
-          size={{ xs: 12, sm: 9, md: 7 }}
+          size={isMobile ? 12 : 9}
           sx={{
             order: isMobile ? 2 : 0,
+            transition: (theme) => theme.transitions.create("margin-left"),
           }}
         >
           <Card sx={{ display: "flex", flexDirection: "column", height: isMobile ? "auto" : "100%" }}>
@@ -154,18 +104,13 @@ export default function POSPage() {
                 }}
                 sx={{ mb: 2 }}
               />
-              <ProductList
-                filteredProducts={filteredProducts}
-                order={order}
-                addToOrder={addToOrder}
-                isMobile={isMobile}
-              />
+              <ProductList filteredProducts={filteredProducts} order={order} addToOrder={addToOrder} isMobile={isMobile} />
             </CardContent>
           </Card>
         </Grid>
         <Grid
           id="order"
-          size={{ xs: 12, md: 3 }}
+          size={isMobile ? 12 : 3}
           sx={{
             height: isMobile ? "auto" : "100%",
             order: isMobile ? 3 : 0,
@@ -182,7 +127,6 @@ export default function POSPage() {
           />
         </Grid>
       </Grid>
-      {/* Bottom Navigation สำหรับ mobile */}
       {isMobile && (
         <BottomNavigation
           showLabels
@@ -194,6 +138,7 @@ export default function POSPage() {
             zIndex: 1200,
             borderTop: "1px solid #eee",
             bgcolor: "#fff",
+            justifyContent: "space-around",
           }}
         >
           <BottomNavigationAction

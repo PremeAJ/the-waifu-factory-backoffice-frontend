@@ -96,7 +96,7 @@ const appsLink: appsLinkType[] = [
     color: "#2196F3",
   },
    {
-    href: "/app/pos",
+    href: "/dashboard/app/pos",
     title: "Order",
     subtext: "Creat Order",
     avatar: "/images/svgs/icon-dd-cart.svg",

@@ -15,9 +15,6 @@ import { CustomizerContext } from "@/context/setting/customizerContext";
 import { useTranslation } from "react-i18next";
 import { ItemType } from "@/utils/types/layout/sidebar";
 
-
-
-
 export default function NavItem({
   item,
   level,

@@ -19,7 +19,7 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
         const inOrder = order.find((item: any) => item.id === product.id)?.qty || 0;
         const isOutOfStock = product.stock !== undefined && product.stock - inOrder <= 0;
         return (
-          <Grid size={{ xs: 4, sm: 4, md: 3, lg: 3, xl: 2 }} key={product.id}>
+          <Grid size={{ xs: 4, sm: 3, md: 2 }} key={product.id}>
             <Card
               variant="outlined"
               onClick={() => !isOutOfStock && addToOrder(product)}

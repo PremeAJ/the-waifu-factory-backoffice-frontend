@@ -75,7 +75,7 @@ const Header = () => {
             <Language />
             <Cart />
             <Notifications />
-            {lgDown ? <MobileRightSidebar /> : null}
+           <MobileRightSidebar /> 
             {!lgDown && (
               <Box display="flex" flexDirection="column" alignItems="flex-end" mr={1} sx={{ cursor: "default" }}>
                 <Typography variant="subtitle1" fontWeight="bold" noWrap>

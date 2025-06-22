@@ -24,12 +24,8 @@ const SidebarItems = () => {
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
         {Menuitems.map((item) => {
-          // {/********SubHeader**********/}
           if (item.subheader) {
             return <NavGroup item={item} hideMenu={hideMenu} key={item.subheader} />;
-
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
           } else if (item.children) {
             return (
               <NavCollapse
@@ -42,8 +38,6 @@ const SidebarItems = () => {
                 onClick={() => setIsMobileSidebar(!isMobileSidebar)}
               />
             );
-
-            // {/********If Sub No Menu**********/}
           } else {
             return (
               <NavItem

@@ -8,12 +8,10 @@ import config from "@/context/setting/config";
 
 import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import { useContext } from "react";
-import Logo from "@/components/shared/logo/Logo";
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } =
-    useContext(CustomizerContext);
+  const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
 
@@ -43,9 +41,6 @@ const Sidebar = () => {
             }),
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar for desktop */}
-          {/* ------------------------------------------- */}
           <Drawer
             anchor="left"
             open
@@ -64,27 +59,14 @@ const Sidebar = () => {
               },
             }}
           >
-            {/* ------------------------------------------- */}
-            {/* Sidebar Box */}
-            {/* ------------------------------------------- */}
             <Box
               sx={{
                 height: "100%",
               }}
             >
-              {/* ------------------------------------------- */}
-              {/* Logo */}
-              {/* ------------------------------------------- */}
-              <Box px={3}>
-                <Logo />
-              </Box>
               <Scrollbar sx={{ height: "calc(100% - 190px)" }}>
-                {/* ------------------------------------------- */}
-                {/* Sidebar Items */}
-                {/* ------------------------------------------- */}
                 <SidebarItems />
               </Scrollbar>
-              {/* <Profile /> */}
             </Box>
           </Drawer>
         </Box>
@@ -104,15 +86,6 @@ const Sidebar = () => {
             },
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Logo */}
-          {/* ------------------------------------------- */}
-          <Box px={2}>
-            <Logo />
-          </Box>
-          {/* ------------------------------------------- */}
-          {/* Sidebar For Mobile */}
-          {/* ------------------------------------------- */}
           <SidebarItems />
         </Drawer>
       )}
