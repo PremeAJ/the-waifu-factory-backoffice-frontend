@@ -18,6 +18,7 @@ import Navigation from "./Navigation";
 import Notifications from "./Notification";
 import Search from "./Search";
 import { Box, Typography } from "@mui/material";
+import AppBarStyled from "@/components/styled/AppBarStyled";
 
 const Header = () => {
   const { loading, user } = useContext(UserContext);
@@ -29,17 +30,6 @@ const Header = () => {
   const lgDown = useMediaQuery((theme) => theme.breakpoints.down("lg"));
   const TopbarHeight = config.topbarHeight;
   const { setIsCollapse, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
-  const AppBarStyled = styled(AppBar)(({ theme }) => ({
-    boxShadow: "none",
-    background: theme.palette.mode === "dark" ? "rgba(30, 30, 30, 0.6)" : "rgba(255, 255, 255, 0.6)", // ปรับความโปร่งใส
-    justifyContent: "center",
-    backdropFilter: "blur(20px)", // เพิ่มความเบลอ
-    WebkitBackdropFilter: "blur(20px)", // รองรับ Safari
-    borderBottom: "1px solid rgba(255,255,255,0.18)", // เส้นขอบบางๆแบบ iOS
-    [theme.breakpoints.up("lg")]: {
-      minHeight: TopbarHeight,
-    },
-  }));
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
     width: "100%",
     color: theme.palette.text.secondary,

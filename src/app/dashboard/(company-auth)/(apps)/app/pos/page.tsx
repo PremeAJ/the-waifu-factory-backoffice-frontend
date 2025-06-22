@@ -136,8 +136,7 @@ export default function POSPage() {
             left: 0,
             right: 0,
             zIndex: 1200,
-            borderTop: "1px solid #eee",
-            bgcolor: "#fff",
+            borderTop: "1px solid primary.main",
             justifyContent: "space-around",
           }}
         >

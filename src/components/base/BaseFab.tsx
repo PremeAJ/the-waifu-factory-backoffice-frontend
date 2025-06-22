@@ -51,15 +51,7 @@ export interface BaseFabProps extends FabProps {
   onExited?: () => void; // callback เมื่อ fade out เสร็จ
 }
 
-const BaseFab: React.FC<BaseFabProps> = ({
-  children,
-  sx,
-  animation = true,
-  fadeDirection = "up",
-  open = true,
-  onExited,
-  ...rest
-}) => {
+const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeDirection = "up", open = true, onExited, ...rest }) => {
   const [visible, setVisible] = useState(open);
   const [exiting, setExiting] = useState(false);
 
@@ -88,18 +80,16 @@ const BaseFab: React.FC<BaseFabProps> = ({
       color="primary"
       {...rest}
       sx={{
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        backgroundColor: (theme) => theme.palette.primary.main + "CC",
+        backdropFilter: "blur(5px)",
+        WebkitBackdropFilter: "blur(5px)",
+        backgroundColor: (theme) => theme.palette.primary.main + "90",
         border: "1px solid rgba(255,255,255,0.3)",
         boxShadow: "0 4px 30px rgba(0,0,0,0.1)",
         color: "#fff",
         "&:hover": {
           backgroundColor: (theme) => theme.palette.primary.main,
         },
-        animation: animation
-          ? `${exiting ? fadeOutMap[fadeDirection] : fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)`
-          : undefined,
+        animation: animation ? `${exiting ? fadeOutMap[fadeDirection] : fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)` : undefined,
         ...sx,
       }}
       onAnimationEnd={handleAnimationEnd}
