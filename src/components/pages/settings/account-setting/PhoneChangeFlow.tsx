@@ -116,12 +116,11 @@ const PhoneChangeFlow: React.FC<PhoneChangeFlowProps> = ({ open, onClose, curren
         content={
           <Box>
             <Typography variant="body2" color="textSecondary" mb={2}>
-              {currentPhone 
+              {currentPhone
                 ? "กรุณากรอกหมายเลขโทรศัพท์ใหม่ที่ต้องการเปลี่ยน ระบบจะส่งรหัส OTP ไปยังหมายเลขใหม่"
-                : "กรุณากรอกหมายเลขโทรศัพท์ของคุณ ระบบจะส่งรหัส OTP เพื่อยืนยัน"
-              }
+                : "กรุณากรอกหมายเลขโทรศัพท์ของคุณ ระบบจะส่งรหัส OTP เพื่อยืนยัน"}
             </Typography>
-            
+
             {currentPhone && (
               <Box sx={{ backgroundColor: "#f8f9fa", p: 2, borderRadius: 2, mb: 2 }}>
                 <Typography variant="body2" color="textSecondary">
@@ -132,13 +131,12 @@ const PhoneChangeFlow: React.FC<PhoneChangeFlowProps> = ({ open, onClose, curren
 
             <BaseTextField
               name="newPhone"
-              label={currentPhone ? "หมายเลขโทรศัพท์ใหม่" : "หมายเลขโทรศัพท์"}
               type="tel"
               value={newPhone}
               onChange={(e) => setNewPhone(e.target.value)}
               error={!!phoneError}
               helperText={phoneError}
-              fullWidth
+              sx={{ minWidth: 340 }}
               placeholder={currentPhone ? "กรุณากรอกหมายเลขโทรศัพท์ใหม่" : "กรุณากรอกหมายเลขโทรศัพท์"}
               startAdornment={
                 <InputAdornment position="start">
@@ -167,7 +165,7 @@ const PhoneChangeFlow: React.FC<PhoneChangeFlowProps> = ({ open, onClose, curren
             <Typography variant="body1" mb={2}>
               เราได้ส่งรหัส OTP ไปยัง
             </Typography>
-            
+
             <Box sx={{ backgroundColor: "#f8f9fa", p: 2, borderRadius: 2, mb: 3 }}>
               <Typography variant="h6" color="primary" fontWeight="bold">
                 {newPhone}
@@ -179,24 +177,21 @@ const PhoneChangeFlow: React.FC<PhoneChangeFlowProps> = ({ open, onClose, curren
               label="รหัส OTP (6 หลัก)"
               type="tel"
               value={otpCode}
-              onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
               error={!!otpError}
               helperText={otpError}
               fullWidth
               placeholder="123456"
               inputProps={{
                 maxLength: 6,
-                style: { textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.5em' }
+                style: { textAlign: "center", fontSize: "1.5rem", letterSpacing: "0.5em" },
               }}
             />
 
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2" color="textSecondary">
                 ไม่ได้รับรหัส OTP?{" "}
-                <span 
-                  style={{ color: theme.palette.primary.main, cursor: "pointer", textDecoration: "underline" }}
-                  onClick={handleResendOtp}
-                >
+                <span style={{ color: theme.palette.primary.main, cursor: "pointer", textDecoration: "underline" }} onClick={handleResendOtp}>
                   ส่งใหม่อีกครั้ง
                 </span>
               </Typography>

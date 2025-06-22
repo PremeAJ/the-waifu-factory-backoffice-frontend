@@ -10,7 +10,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     return <Loading />;
   }
   if (!user) {
-    // redirect("/dashboard");
     return <Error404 />;
   }
 

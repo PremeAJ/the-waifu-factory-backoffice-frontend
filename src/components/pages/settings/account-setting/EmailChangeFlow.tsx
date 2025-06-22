@@ -86,17 +86,16 @@ const EmailChangeFlow: React.FC<EmailChangeFlowProps> = ({ open, onClose, curren
         content={
           <Box>
             <Typography variant="body2" color="textSecondary" mb={2}>
-              กรุณากรอกอีเมลใหม่ที่ต้องการเปลี่ยน ระบบจะส่งลิงก์ยืนยันไปยังอีเมลใหม่
+              กรอกอีเมลใหม่เพื่อรับลิงก์ยืนยัน
             </Typography>
             <BaseTextField
+              sx={{ minWidth: 340 }}
               name="newEmail"
-              label="อีเมลใหม่"
               type="email"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               error={!!emailError}
               helperText={emailError}
-              fullWidth
               placeholder="กรุณากรอกอีเมลใหม่"
               startAdornment={
                 <InputAdornment position="start">
