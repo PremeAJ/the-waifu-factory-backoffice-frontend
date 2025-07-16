@@ -4,10 +4,10 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import BaseFab from "@/components/base/BaseFab";
 import { useEffect, useState } from "react";
 
-const isStandalone = () =>
-  typeof window !== "undefined" &&
-  (window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as any).standalone);
+// const isStandalone = () =>
+//   typeof window !== "undefined" &&
+//   (window.matchMedia("(display-mode: standalone)").matches ||
+//     (window.navigator as any).standalone);
 
 const basePath = ["/", "/dashboard"];
 
@@ -18,7 +18,7 @@ const MobileBackButton = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (isStandalone() && !basePath.includes(pathname)) {
+    if (!basePath.includes(pathname)) {
       setShow(true);
       setVisible(true);
     } else {
