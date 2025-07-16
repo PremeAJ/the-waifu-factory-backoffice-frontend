@@ -47,8 +47,8 @@ export interface BaseFabProps extends FabProps {
   sx?: object;
   animation?: boolean;
   fadeDirection?: FadeDirection;
-  open?: boolean; // เพิ่ม prop นี้
-  onExited?: () => void; // callback เมื่อ fade out เสร็จ
+  open?: boolean;
+  onExited?: () => void;
 }
 
 const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeDirection = "up", open = true, onExited, ...rest }) => {
@@ -61,16 +61,16 @@ const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeD
       setExiting(false);
     } else if (visible) {
       setExiting(true);
+      // ใช้ setTimeout แทน onAnimationEnd เพื่อให้แน่ใจว่า animation จบแล้ว
+      const timer = setTimeout(() => {
+        setVisible(false);
+        setExiting(false);
+        onExited?.();
+      }, 500); // 500ms ตรงกับ animation duration
+      
+      return () => clearTimeout(timer);
     }
-  }, [open]);
-
-  const handleAnimationEnd = () => {
-    if (exiting) {
-      setVisible(false);
-      setExiting(false);
-      onExited?.();
-    }
-  };
+  }, [open, visible, onExited]);
 
   if (!visible) return null;
 
@@ -92,7 +92,6 @@ const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeD
         animation: animation ? `${exiting ? fadeOutMap[fadeDirection] : fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)` : undefined,
         ...sx,
       }}
-      onAnimationEnd={handleAnimationEnd}
     >
       {children}
     </Fab>
