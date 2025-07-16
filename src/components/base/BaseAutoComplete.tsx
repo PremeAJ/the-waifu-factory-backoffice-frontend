@@ -28,7 +28,7 @@ function BaseAutoComplete<T extends OptionType>({
   options,
   required,
   groupBy,
-  orderBy, // รับ prop นี้
+  orderBy, 
   ...rest
 }: BaseAutoCompleteProps<T>) {
   const value = options.find((opt) => opt.value === formik.values[name]) || null;
