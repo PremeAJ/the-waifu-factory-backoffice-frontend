@@ -61,12 +61,11 @@ const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeD
       setExiting(false);
     } else if (visible) {
       setExiting(true);
-      // ใช้ setTimeout แทน onAnimationEnd เพื่อให้แน่ใจว่า animation จบแล้ว
       const timer = setTimeout(() => {
         setVisible(false);
         setExiting(false);
         onExited?.();
-      }, 500); // 500ms ตรงกับ animation duration
+      }, 500); 
       
       return () => clearTimeout(timer);
     }
