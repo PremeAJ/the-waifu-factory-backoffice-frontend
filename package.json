@@ -82,7 +82,7 @@
     "slick-carousel": "^1.8.1",
     "stylis-plugin-rtl": "^2.1.1",
     "swr": "^2.3.0",
-    "ua-parser-js": "^2.0.3",
+    "ua-parser-js": "^2.0.4",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -94,6 +94,7 @@
     "@types/react-big-calendar": "^1.15.0",
     "@types/react-slick": "^0.23.13",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/ua-parser-js": "^0.7.39",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "typescript": "5.6.2"

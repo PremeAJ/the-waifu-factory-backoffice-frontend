@@ -12,10 +12,12 @@ import Frameworks from '@/components/landingpage/frameworks/Frameworks';
 import OtherFramework from '@/components/landingpage/other-framework/OtherFramework';
 import LandingPageHeader from '@/components/layout/header/LandingPageHeader';
 import Testimonial from '@/components/landingpage/testimonial/Testimonial';
+import AddToHomeScreen from '@/components/addToHomeScreen';
 
 export default function Landingpage() {
   return (
     <PageContainer title="Home" description="Meow Som Home">
+      <AddToHomeScreen/>
       <LandingPageHeader />
       <Banner />
       <DemoSlider />
