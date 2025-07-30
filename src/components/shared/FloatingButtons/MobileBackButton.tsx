@@ -4,12 +4,12 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import BaseFab from "@/components/base/BaseFab";
 import { useEffect, useState } from "react";
 
-// const isStandalone = () =>
-//   typeof window !== "undefined" &&
-//   (window.matchMedia("(display-mode: standalone)").matches ||
-//     (window.navigator as any).standalone);
-
-const basePath = ["/", "/dashboard"];
+const basePath = [
+  "/", 
+  "/auth/callback", 
+  "/dashboard", 
+  "/dashboard/auth/callback", 
+  "/dashboard/auth/login"];
 
 const MobileBackButton = () => {
   const router = useRouter();
