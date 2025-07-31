@@ -1,6 +1,6 @@
 import React from 'react';
 import BlogCard from '../blog-card/BlogCard';
-import { getAllPosts } from "@/utils/markdown";
+import { getAllPosts } from "@/common/utils/markdown";
 import { Container, Grid } from '@mui/material';
 
 const BlogList = () => {

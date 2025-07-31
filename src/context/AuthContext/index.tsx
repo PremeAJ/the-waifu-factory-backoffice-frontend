@@ -15,14 +15,14 @@ import {
   supabaseSignUpWithEmail,
   supabaseSetSession,
   supabaseVerifyOtp,
-} from "@/utils/supabase/server";
+} from "@/common/utils/supabase/server";
 import {
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
   User,
   VerifyOtpParams,
 } from "@supabase/supabase-js";
-import { supabaseSignInWithGoogle } from "@/utils/supabase/client";
+import { supabaseSignInWithGoogle } from "@/common/utils/supabase/client";
 type AuthContextType = {
   isLoading: boolean;
   user: User | null; // เพิ่ม user type

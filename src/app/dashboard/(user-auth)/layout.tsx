@@ -9,7 +9,7 @@ import Header from "@/components/layout/header/DashboardUserHeader";
 import { CompanyProvider } from "@/context/CompanyContext";
 import Sidebar from "./setting/layout/sidebar/Sidebar";
 import { usePathname } from "next/navigation";
-import useIsMobile from "@/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",

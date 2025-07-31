@@ -6,10 +6,10 @@ import {
   profiledataType,
   Reply,
   Comment,
-} from "@/utils/types/apps/userProfile";
+} from "@/common/utils/types/apps/userProfile";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import useSWR from "swr";
-import { GallaryType, userType } from "@/utils/types/apps/users";
+import { GallaryType, userType } from "@/common/utils/types/apps/users";
 
 // Define context type
 export type UserDataContextType = {

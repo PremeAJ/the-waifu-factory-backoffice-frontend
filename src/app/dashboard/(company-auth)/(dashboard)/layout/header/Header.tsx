@@ -6,7 +6,6 @@ import { styled } from "@mui/material/styles";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 import AppBarStyled from "@/components/styled/AppBarStyled";
-import Cart from "./Cart";
 import IconButton from "@mui/material/IconButton";
 import Language from "@/components/shared/Language/Language";
 import MobileRightSidebar from "./MobileRightSidebar";
@@ -48,7 +47,6 @@ const Header = () => {
           <Box flexGrow={1} />
           <Stack spacing={1} direction="row" alignItems="center">
             <Language />
-            <Cart />
             <Notifications />
            <MobileRightSidebar /> 
             {!lgDown && (

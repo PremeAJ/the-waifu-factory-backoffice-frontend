@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/common/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 async function handleRequest(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {

@@ -13,7 +13,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { styled, useTheme } from '@mui/material/styles';
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import { useTranslation } from "react-i18next";
-import { ItemType } from "@/utils/types/layout/sidebar";
+import { ItemType } from "@/common/utils/types/layout/sidebar";
 
 
 

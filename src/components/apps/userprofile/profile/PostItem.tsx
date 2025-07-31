@@ -16,7 +16,7 @@ import { IconCircle, IconMessage2, IconShare, IconThumbUp } from '@tabler/icons-
 import uniqueId from 'lodash/uniqueId';
 import PostComments from './PostComments';
 import BlankCard from '../../../shared/BlankCard';
-import { Comment as CommentType, PostType } from '../../../../utils/types/apps/userProfile';
+import { Comment as CommentType, PostType } from '../../../../common/utils/types/apps/userProfile';
 import { UserDataContext } from '@/context/UserDataContext';
 import { CustomizerContext } from '@/context/setting/customizerContext';
 

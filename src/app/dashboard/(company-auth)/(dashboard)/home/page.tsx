@@ -2,15 +2,15 @@ import Breadcrumb from '@/components/shared/breadcrumb/Breadcrumb';
 import PageContainer from '@/components/container/PageContainer';
 import BlogListing from '@/components/apps/blog/BlogListing';
 import { BlogProvider } from '@/context/BlogContext/index';
-const Blog = () => {
+const Home = () => {
   return (
     <BlogProvider>
-      <PageContainer title="Blog" description="this is Blog">
-        <Breadcrumb title="Blog app" subtitle="Get the latest news" />
+      <PageContainer title="Home" description="this is Home">
+        <Breadcrumb title="Home" subtitle="Get the latest news" />
         <BlogListing />
       </PageContainer>
     </BlogProvider>
   );
 };
 
-export default Blog;
+export default Home;

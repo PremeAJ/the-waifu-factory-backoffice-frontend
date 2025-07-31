@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useEffect } from 'react';
 
-import { ProductType } from '@/utils/types/apps/eCommerce';
+import { ProductType } from '@/common/utils/types/apps/eCommerce';
 import { deleteFetcher, getFetcher, postFetcher, putFetcher } from '@/app/api/globalFetcher';
 import useSWR from 'swr';
 

@@ -1,4 +1,4 @@
-import { TodoCategory } from "@/utils/types/apps/kanban";
+import { TodoCategory } from "@/common/utils/types/apps/kanban";
 
 export const KanbanData: TodoCategory[] = [
   {

@@ -1,7 +1,7 @@
 "use client"
 import React from "react";
 import "./global.css";
-import { ThemeSettings } from "@/utils/theme/Theme";
+import { ThemeSettings } from "@/common/utils/theme/Theme";
 
 export default function Header() {
   const theme = ThemeSettings();

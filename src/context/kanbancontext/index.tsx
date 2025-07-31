@@ -3,7 +3,7 @@
 "use client"
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 
-import { TodoCategory } from '@/utils/types/apps/kanban';
+import { TodoCategory } from '@/common/utils/types/apps/kanban';
 import useSWR from 'swr';
 import { deleteFetcher, getFetcher, postFetcher } from '@/app/api/globalFetcher';
 

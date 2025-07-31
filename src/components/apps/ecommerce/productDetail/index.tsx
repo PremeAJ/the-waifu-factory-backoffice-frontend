@@ -23,7 +23,7 @@ import {
 
 import { IconCheck, IconMinus, IconPlus } from "@tabler/icons-react";
 import AlertCart from "../productCart/AlertCart";
-import { ProductType } from "../../../../utils/types/apps/eCommerce";
+import { ProductType } from "../../../../common/utils/types/apps/eCommerce";
 import { ProductContext } from "@/context/Ecommercecontext/index";
 
 const ProductDetail = () => {

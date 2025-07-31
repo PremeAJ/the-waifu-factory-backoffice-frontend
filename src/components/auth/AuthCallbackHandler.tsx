@@ -2,7 +2,7 @@
 import { useEffect, useContext } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AuthContext } from "@/context/AuthContext";
-import { supabaseGetSession } from "@/utils/supabase/client";
+import { supabaseGetSession } from "@/common/utils/supabase/client";
 import { UserContext } from "@/context/UserContext";
 import Loading from "@/app/loading";
 import { CustomizerContext } from "@/context/setting/customizerContext";

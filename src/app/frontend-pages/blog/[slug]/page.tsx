@@ -1,6 +1,6 @@
 import BlankCard from "@/components/shared/BlankCard";
-import { getAllPosts, getPostBySlug } from "@/utils/markdown";
-import markdownToHtml from "@/utils/markdownToHtml";
+import { getAllPosts, getPostBySlug } from "@/common/utils/markdown";
+import markdownToHtml from "@/common/utils/markdownToHtml";
 import { CardContent, Container, Divider } from "@mui/material";
 import { format } from "date-fns";
 import Typography from "@mui/material/Typography";

@@ -30,7 +30,7 @@ import {
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import CustomSelect from "@/components/forms/theme-elements/CustomSelect";
 import CustomTextField from "@/components/forms/theme-elements/CustomTextField";
-import { InvoiceList, order } from "@/utils/types/apps/invoice";
+import { InvoiceList, order } from "@/common/utils/types/apps/invoice";
 
 const CreateInvoice = () => {
   const { addInvoice, invoices } = useContext(InvoiceContext);

@@ -10,7 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import BlankCard from '../../shared/BlankCard';
-import { ContactType } from '../../../utils/types/apps/contact';
+import { ContactType } from '../../../common/utils/types/apps/contact';
 import { IconPencil, IconStar, IconTrash, IconDeviceFloppy } from '@tabler/icons-react';
 import Scrollbar from '../../custom-scroll/Scrollbar';
 import Image from 'next/image';

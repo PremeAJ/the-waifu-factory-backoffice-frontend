@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import { IconCheck } from "@tabler/icons-react";
-import { LightThemeColors } from "@/utils/theme/LightThemeColors";
+import { LightThemeColors } from "@/common/utils/theme/LightThemeColors";
 import StyledBox from "../StyledBox";
 import { useContext } from "react";
 import { CustomizerContext } from "@/context/setting/customizerContext";

@@ -4,7 +4,7 @@ import BaseAutoComplete from "@/components/base/BaseAutoComplete";
 import { AddressContext } from "@/context/Master/AddressContext";
 import BaseTextField from "../base/BaseTextField";
 import { CustomizerContext } from "@/context/setting/customizerContext";
-import { I18nString } from "@/utils/i18n/I18nString";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 
 interface AddressZoneProps {
   formik: any;

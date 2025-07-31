@@ -4,7 +4,7 @@ import { Grid, Pagination } from '@mui/material';
 import BlogCard from './BlogCard';
 import { orderBy } from 'lodash';
 import BlogFeaturedCard from './BlogFeaturedCard';
-import { BlogPostType } from '../../../utils/types/apps/blog';
+import { BlogPostType } from '../../../common/utils/types/apps/blog';
 import { BlogContext } from "@/context/BlogContext/index";
 
 const BlogListing = () => {
@@ -41,8 +41,8 @@ const BlogListing = () => {
       {featuredPosts.map((post, index) => {
         return <BlogFeaturedCard index={index} post={post} key={post.title} />;
       })}
-      {blogPosts.map((post) => {
-        return <BlogCard post={post} key={post.id} />;
+      {blogPosts.map((post, index) => {
+        return <BlogCard post={post} key={index} />;
       })}
       <Grid
         mt={3}

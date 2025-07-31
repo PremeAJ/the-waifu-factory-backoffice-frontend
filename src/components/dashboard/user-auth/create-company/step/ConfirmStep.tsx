@@ -3,12 +3,12 @@ import { Box, Typography, Grid, Divider, Card, CardContent, Stack, Link } from "
 import BaseCheckBox from "@/components/base/BaseCheckBox";
 import { ConsentContext } from "@/context/Master/ConsentContext";
 import { AddressContext } from "@/context/Master/AddressContext";
-import { getDisplayName } from "@/utils/function/object/getDisplayName";
+import { getDisplayName } from "@/common/utils/function/object/getDisplayName";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import BaseLinkButton from "@/components/base/BaseLinkButton";
 import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
-import { I18nString } from "@/utils/i18n/I18nString";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 
 const ConfirmStep = ({ formik }: any) => {
   const {

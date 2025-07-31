@@ -5,7 +5,7 @@ import Image from "next/image";
 import BlankCard from "../../shared/BlankCard";
 import { UserContext } from "@/context/UserContext";
 import { PlanContext } from "@/context/Master/PlanContext";
-import { I18nString } from "@/utils/i18n/I18nString";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Skeleton from "@mui/material/Skeleton";

@@ -2,7 +2,7 @@
 import CustomSocialButton from "@/components/forms/theme-elements/CustomSocialButton";
 import { Stack } from "@mui/system";
 import { Avatar, Box } from "@mui/material";
-import { signInType } from "@/utils/types/auth/auth";
+import { signInType } from "@/common/utils/types/auth/auth";
 import { AuthContext } from "@/context/AuthContext";
 import { useContext } from "react";
 

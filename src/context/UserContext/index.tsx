@@ -2,8 +2,8 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import useSWR from "swr";
 import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
-import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdatePhone, supabaseVerifyOtp } from "@/utils/supabase/server";
-import reduceImageFileSize from "@/utils/function/file/reduceImageFileSize";
+import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdatePhone, supabaseVerifyOtp } from "@/common/utils/supabase/server";
+import reduceImageFileSize from "@/common/utils/function/file/reduceImageFileSize";
 import { VerifyOtpParams } from "@supabase/supabase-js";
 import { AuthContext } from "../AuthContext";
 import { useRouter } from "next/navigation";

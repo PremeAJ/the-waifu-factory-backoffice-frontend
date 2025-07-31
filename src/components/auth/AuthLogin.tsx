@@ -9,7 +9,7 @@ import * as yup from "yup";
 import BaseTextField from "@/components/base/BaseTextField";
 import { AuthContext } from "@/context/AuthContext";
 import { useFormik } from "formik";
-import { emailValidator, requiredPasswordSchema } from "@/utils/validator/yup";
+import { emailValidator, requiredPasswordSchema } from "@/common/utils/validator/yup";
 import { useTranslation } from "react-i18next";
 import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
 import { IconLock, IconMail } from "@tabler/icons-react";

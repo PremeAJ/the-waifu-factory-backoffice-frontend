@@ -47,7 +47,6 @@ const ProductDetails = () => {
             )}
           />
 
-          {/* <CustomTextField id="p_cat" fullWidth /> */}
           <Typography variant="body2" mb={2}>
             Add product to a category.
           </Typography>

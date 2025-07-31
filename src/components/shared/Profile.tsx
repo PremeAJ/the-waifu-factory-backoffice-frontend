@@ -8,7 +8,7 @@ import { UserContext } from "@/context/UserContext";
 import BaseButton from "../base/BaseButton";
 import ConfirmSignOutDialog from "@/components/auth/dialog/ConfirmSignOutDialog";
 import { CustomizerContext } from "@/context/setting/customizerContext";
-import { I18nString } from "@/utils/i18n/I18nString";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 
 interface ProfileProps {
   loading?: boolean;

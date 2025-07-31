@@ -15,7 +15,7 @@ import { IconDotsVertical, IconSearch, IconPlus } from "@tabler/icons-react";
 import { format } from "date-fns";
 
 import BlankCard from "@/components/shared/BlankCard";
-import { GallaryType } from "@/utils/types/apps/users";
+import { GallaryType } from "@/common/utils/types/apps/users";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/context/UserContext";
 

@@ -24,7 +24,7 @@ import {
 import { format, isValid, parseISO } from "date-fns";
 import Link from "next/link";
 import Logo from "@/components/shared/logo/Logo";
-import { InvoiceList } from "@/utils/types/apps/invoice";
+import { InvoiceList } from "@/common/utils/types/apps/invoice";
 
 const InvoiceDetail = () => {
   const { invoices } = useContext(InvoiceContext);

@@ -7,7 +7,7 @@ import Address from "@/components/forms/AddressForm";
 import { BusinessTypeContext } from "@/context/Master/BusinessTypeContext";
 import { UserContext } from "@/context/UserContext";
 import { CustomizerContext } from "@/context/setting/customizerContext";
-import { I18nString } from "@/utils/i18n/I18nString";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 
 const CompanyInfoStep = ({ formik }: any) => {
   const { businessTypes, isLoading: businessTypeLoading } = useContext(BusinessTypeContext);

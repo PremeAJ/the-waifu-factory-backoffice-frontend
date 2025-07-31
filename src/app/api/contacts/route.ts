@@ -1,4 +1,4 @@
-import type { ContactType } from "@/utils/types/apps/contact";
+import type { ContactType } from "@/common/utils/types/apps/contact";
 import { Chance } from "chance";
 import { NextResponse } from "next/server";
 

@@ -17,7 +17,7 @@ import Image from "next/image";
 import { EmailContext } from "@/context/EmailContext";
 
 import dynamic from 'next/dynamic';
-import { AttachType } from "@/utils/types/apps/email";
+import { AttachType } from "@/common/utils/types/apps/email";
 
 const TiptapEditor = dynamic(() => import('@/components/forms/form-tiptap/TiptapEditor'), {
   ssr: false,

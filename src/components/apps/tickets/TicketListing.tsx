@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 
 import { IconTrash } from '@tabler/icons-react';
-import { TicketType } from '../../../utils/types/apps/ticket';
+import { TicketType } from '../../../common/utils/types/apps/ticket';
 import { TicketContext } from '@/context/TicketContext';
 
 const TicketListing = () => {

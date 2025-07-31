@@ -27,7 +27,7 @@ import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import CustomSelect from "@/components/forms/theme-elements/CustomSelect";
 import CustomTextField from "@/components/forms/theme-elements/CustomTextField";
 import { IconSquareRoundedPlus, IconTrash } from "@tabler/icons-react";
-import { InvoiceList, order } from "@/utils/types/apps/invoice";
+import { InvoiceList, order } from "@/common/utils/types/apps/invoice";
 
 const EditInvoicePage = () => {
   const { invoices, updateInvoice } = useContext(InvoiceContext);

@@ -26,7 +26,7 @@ import {
   IconAd2,
 } from '@tabler/icons-react';
 import { Stack } from '@mui/system';
-import { ProductFiterType } from '../../../../utils/types/apps/eCommerce';
+import { ProductFiterType } from '../../../../common/utils/types/apps/eCommerce';
 import { CustomizerContext } from '@/context/setting/customizerContext';
 
 

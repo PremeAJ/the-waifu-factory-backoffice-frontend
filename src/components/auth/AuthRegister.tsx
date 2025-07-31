@@ -17,7 +17,7 @@ import {
   firstNameSchema,
   lastNameSchema,
   passwordSchema,
-} from "@/utils/validator/yup";
+} from "@/common/utils/validator/yup";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { AuthContext } from "@/context/AuthContext";

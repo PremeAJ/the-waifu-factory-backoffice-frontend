@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import { Grid, Card, CardContent, Typography, TextField, InputAdornment, useTheme, useMediaQuery } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-import { categories, products } from "./dataMock";
+import { categories, products } from "../../../../../../common/constants/products/dataMock";
 import ProductList from "./ProductList";
 import OrderSummary from "./OrderSummary";
 import BottomNavigation from "@mui/material/BottomNavigation";
@@ -14,7 +14,7 @@ import Badge from "@mui/material/Badge";
 import Sidebar from "./category/Sidebar";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import SidebarOpenButton from "@/components/shared/FloatingButtons/SidebarOpenButton";
-import useIsMobile from "@/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 export default function POSPage() {
   const [search, setSearch] = useState("");

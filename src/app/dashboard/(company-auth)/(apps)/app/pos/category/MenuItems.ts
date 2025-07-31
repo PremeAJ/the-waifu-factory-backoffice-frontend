@@ -11,7 +11,7 @@ import {
   IconIceCream,
   IconCircle,
 } from "@tabler/icons-react";
-import { NavGroup } from "@/utils/types/layout/sidebar";
+import { NavGroup } from "@/common/utils/types/layout/sidebar";
 
 const Menuitems: NavGroup[] = [
   {
