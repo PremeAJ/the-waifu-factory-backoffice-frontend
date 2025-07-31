@@ -2,9 +2,9 @@
 import React, { useContext } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { CustomizerContext } from "@/context/setting/customizerContext";
-import BaseFab from "@/components/base/BaseFab";
 import { useMediaQuery, useTheme } from "@mui/material";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import BaseFab from "../base/BaseFab";
 
 type SidebarOpenButtonProps = {
   onClick: () => void;

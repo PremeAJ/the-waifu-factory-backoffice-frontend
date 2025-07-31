@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import { IconApps, IconAppsFilled } from "@tabler/icons-react";
-import BaseFab from "@/components/base/BaseFab";
 import { useAppShortcut } from "@/context/AppShortcutContext";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import BaseFab from "../base/BaseFab";
 
 const AppShortcutButton = () => {
   const { toggle, isOpen } = useAppShortcut();

@@ -13,7 +13,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import Badge from "@mui/material/Badge";
 import Sidebar from "./category/Sidebar";
 import { CustomizerContext } from "@/context/setting/customizerContext";
-import SidebarOpenButton from "@/components/shared/FloatingButtons/SidebarOpenButton";
+import SidebarOpenButton from "@/common/components/floating/SidebarOpenButton";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 export default function POSPage() {

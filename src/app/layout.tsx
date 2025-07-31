@@ -5,9 +5,9 @@ import "./global.css";
 import { CustomizerContextProvider } from "../context/setting/customizerContext";
 import Header from "./header";
 import { Metadata, Viewport } from "next";
-import ScrollToTopButton from "../components/shared/FloatingButtons/ScrollToTopButton";
+import ScrollToTopButton from "../common/components/floating/ScrollToTopButton";
 import { AuthProvider } from "@/context/AuthContext";
-import MobileBackButton from "@/components/shared/FloatingButtons/MobileBackButton";
+import MobileBackButton from "@/common/components/floating/MobileBackButton";
 export const metadata: Metadata = {
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
 };

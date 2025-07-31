@@ -5,10 +5,10 @@ import * as dropdownData from "../../app/dashboard/(company-auth)/(dashboard)/la
 import { IconMail, IconUser } from "@tabler/icons-react";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
-import BaseButton from "../base/BaseButton";
 import ConfirmSignOutDialog from "@/components/auth/dialog/ConfirmSignOutDialog";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
+import BaseButton from "@/common/components/base/BaseButton";
 
 interface ProfileProps {
   loading?: boolean;

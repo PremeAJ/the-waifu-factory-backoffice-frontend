@@ -1,8 +1,8 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { IconArrowLeft } from "@tabler/icons-react";
-import BaseFab from "@/components/base/BaseFab";
 import { useEffect, useState } from "react";
+import BaseFab from "../base/BaseFab";
 
 const basePath = [
   "/", 

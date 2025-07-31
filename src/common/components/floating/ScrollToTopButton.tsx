@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { IconArrowUp } from "@tabler/icons-react";
-import BaseFab from "@/components/base/BaseFab";
+import BaseFab from "../base/BaseFab";
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);

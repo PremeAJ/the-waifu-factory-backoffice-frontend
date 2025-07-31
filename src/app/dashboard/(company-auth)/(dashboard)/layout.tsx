@@ -7,7 +7,7 @@ import Header from "./layout/header/Header";
 import Sidebar from "./layout/sidebar/Sidebar";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import { CompanyProvider } from "@/context/CompanyContext";
-import AppShortcutButton from "@/components/shared/FloatingButtons/AppShortcutButton";
+import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
 import { AppShortcutProvider } from "@/context/AppShortcutContext";
 
 const MainWrapper = styled("div")(() => ({

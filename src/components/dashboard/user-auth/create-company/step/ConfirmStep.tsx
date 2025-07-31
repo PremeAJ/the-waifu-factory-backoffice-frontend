@@ -7,7 +7,7 @@ import { getDisplayName } from "@/common/utils/function/object/getDisplayName";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import BaseLinkButton from "@/components/base/BaseLinkButton";
-import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
+import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 
 const ConfirmStep = ({ formik }: any) => {

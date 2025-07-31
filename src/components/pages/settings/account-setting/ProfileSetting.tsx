@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { removeUndefinedAndNull } from "@/common/utils/function/object/object-cleaner";
 import EmailChangeFlow from "./EmailChangeFlow";
 import PhoneChangeFlow from "./PhoneChangeFlow";
-import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
+import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import BaseTextField from "@/components/base/BaseTextField";
 import BaseButton from "@/components/base/BaseButton";
 import BaseLabel from "@/components/base/BaseLabel";

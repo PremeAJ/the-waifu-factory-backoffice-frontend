@@ -3,7 +3,7 @@ import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/m
 import { IconAlertTriangle, IconInfoCircle, IconMail } from "@tabler/icons-react";
 import { UserContext } from "@/context/UserContext";
 import { emailRegex } from "@/common/utils/validator/regex";
-import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
+import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import BaseTextField from "@/components/base/BaseTextField";
 
 interface EmailChangeFlowProps {

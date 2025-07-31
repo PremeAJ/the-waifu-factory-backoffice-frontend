@@ -3,8 +3,8 @@ import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
-import SelectCompanyDialog from "@/components/base/Dialog/SelectCompanyDialog";
+import TransitionDialog from "@/common/components/dialog/TransitionDialog";
+import SelectCompanyDialog from "@/common/components/dialog/SelectCompanyDialog";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();

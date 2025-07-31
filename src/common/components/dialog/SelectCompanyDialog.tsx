@@ -4,7 +4,7 @@ import { IconPlus } from "@tabler/icons-react";
 import CompanyAvatar from "@/components/avatar/CompanyAvatar";
 import { UserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
-import TransitionDialog from "@/components/base/Dialog/TransitionDialog";
+import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 interface SelectCompanyDialogProps {
