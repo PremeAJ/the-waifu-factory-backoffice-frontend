@@ -14,10 +14,10 @@ import { removeUndefinedAndNull } from "@/common/utils/function/object/object-cl
 import EmailChangeFlow from "./EmailChangeFlow";
 import PhoneChangeFlow from "./PhoneChangeFlow";
 import TransitionDialog from "@/common/components/dialog/TransitionDialog";
-import BaseTextField from "@/components/base/BaseTextField";
-import BaseButton from "@/components/base/BaseButton";
-import BaseLabel from "@/components/base/BaseLabel";
 import AvatarCropDialog from "@/components/ui-components/dialog/AvatarCropDialog";
+import BaseLabel from "@/common/components/base/BaseLabel";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import BaseButton from "@/common/components/base/BaseButton";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,

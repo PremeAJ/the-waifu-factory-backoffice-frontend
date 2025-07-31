@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Grid } from "@mui/material";
-import BaseTextField from "@/components/base/BaseTextField";
-import BaseCheckBox from "@/components/base/BaseCheckBox";
-import BaseAutoComplete from "@/components/base/BaseAutoComplete";
 import Address from "@/components/forms/AddressForm";
 import { BusinessTypeContext } from "@/context/Master/BusinessTypeContext";
 import { UserContext } from "@/context/UserContext";
 import { CustomizerContext } from "@/context/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import BaseCheckBox from "@/common/components/base/BaseCheckBox";
+import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 
 const CompanyInfoStep = ({ formik }: any) => {
   const { businessTypes, isLoading: businessTypeLoading } = useContext(BusinessTypeContext);

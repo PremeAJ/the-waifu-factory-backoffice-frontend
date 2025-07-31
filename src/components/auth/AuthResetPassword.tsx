@@ -1,7 +1,5 @@
 "use client";
 import { Alert, InputAdornment, Stack } from "@mui/material";
-import BaseTextField from "@/components/base/BaseTextField";
-import BaseButton from "@/components/base/BaseButton";
 import { useTranslation } from "react-i18next";
 import { useContext, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
@@ -12,6 +10,8 @@ import { ResetPasswordType } from "@/common/utils/supabase/server";
 import { useRouter } from "next/navigation";
 import { set } from "lodash";
 import { IconLock } from "@tabler/icons-react";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import BaseButton from "@/common/components/base/BaseButton";
 
 // สร้าง type สำหรับ status
 type ResetPasswordStatus =

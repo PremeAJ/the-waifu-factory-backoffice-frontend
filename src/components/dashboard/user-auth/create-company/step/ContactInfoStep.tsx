@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid } from "@mui/material";
-import BaseTextField from "@/components/base/BaseTextField";
+import BaseTextField from "@/common/components/base/BaseTextField";
 
 const ContactInfoStep = ({ formik }: any) => (
   <Grid container spacing={2}>

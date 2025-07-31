@@ -1,7 +1,5 @@
 "use client";
 import { Alert, InputAdornment, Stack } from "@mui/material";
-import BaseTextField from "@/components/base/BaseTextField";
-import BaseButton from "@/components/base/BaseButton";
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
@@ -11,6 +9,8 @@ import * as yup from "yup";
 import { ResetPasswordForEmailType } from "@/common/utils/supabase/server";
 import Turnstile from "react-turnstile";
 import { IconMail } from "@tabler/icons-react";
+import BaseButton from "@/common/components/base/BaseButton";
+import BaseTextField from "@/common/components/base/BaseTextField";
 
 const validationSchema = yup.object({
   email: emailValidator,

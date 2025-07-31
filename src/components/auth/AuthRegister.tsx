@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import AuthSocialButtons from "./AuthSocialButtons";
-import BaseTextField from "@/components/base/BaseTextField";
 import {
   confirmPasswordSchema,
   emailValidator,
@@ -27,6 +26,7 @@ import Language from "@/components/shared/Language/Language";
 import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 import Turnstile from "react-turnstile";
 import { IconLock, IconMail } from "@tabler/icons-react";
+import BaseTextField from "@/common/components/base/BaseTextField";
 
 const validationSchema = yup.object({
   email: emailValidator,

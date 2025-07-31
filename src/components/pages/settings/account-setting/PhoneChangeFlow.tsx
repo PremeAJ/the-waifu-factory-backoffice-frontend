@@ -4,7 +4,7 @@ import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/m
 import { IconAlertTriangle, IconInfoCircle, IconDeviceMobile, IconCheck } from "@tabler/icons-react";
 import { UserContext } from "@/context/UserContext";
 import { phoneRegex } from "@/common/utils/validator/regex";
-import BaseTextField from "@/components/base/BaseTextField";
+import BaseTextField from "@/common/components/base/BaseTextField";
 import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 
 interface PhoneChangeFlowProps {

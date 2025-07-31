@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Typography, Grid, Divider, Card, CardContent, Stack, Link } from "@mui/material";
-import BaseCheckBox from "@/components/base/BaseCheckBox";
-import { ConsentContext } from "@/context/Master/ConsentContext";
+import { Box, Typography, Grid, Card, CardContent, Stack, Divider } from "@mui/material";
 import { AddressContext } from "@/context/Master/AddressContext";
-import { getDisplayName } from "@/common/utils/function/object/getDisplayName";
+import { ConsentContext } from "@/context/Master/ConsentContext";
 import { CustomizerContext } from "@/context/setting/customizerContext";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import BaseLinkButton from "@/components/base/BaseLinkButton";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
+import { getDisplayName } from "@/common/utils/function/object/getDisplayName";
 import { I18nString } from "@/common/utils/i18n/I18nString";
+import BaseCheckBox from "@/common/components/base/BaseCheckBox";
+import BaseLinkButton from "@/common/components/base/BaseLinkButton";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 
 const ConfirmStep = ({ formik }: any) => {
   const {

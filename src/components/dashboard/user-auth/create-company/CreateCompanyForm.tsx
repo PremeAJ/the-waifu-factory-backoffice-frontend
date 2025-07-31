@@ -5,7 +5,6 @@ import { Box, Stepper, Step, StepLabel, Alert, Stack } from "@mui/material";
 import ParentCard from "@/components/shared/ParentCard";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import BaseButton from "@/components/base/BaseButton";
 import CompanyInfoStep from "./step/CompanyInfoStep";
 import ContactInfoStep from "./step/ContactInfoStep";
 import ConfirmStep from "./step/ConfirmStep";
@@ -13,6 +12,7 @@ import { UserContext } from "@/context/UserContext";
 import { ConsentContext } from "@/context/Master/ConsentContext";
 import { CompanyContext, CompanyType } from "@/context/CompanyContext";
 import { useRouter } from "next/navigation";
+import BaseButton from "@/common/components/base/BaseButton";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 

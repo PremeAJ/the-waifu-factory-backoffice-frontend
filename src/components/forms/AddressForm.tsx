@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from "react";
-import { Grid } from "@mui/material";
-import BaseAutoComplete from "@/components/base/BaseAutoComplete";
 import { AddressContext } from "@/context/Master/AddressContext";
-import BaseTextField from "../base/BaseTextField";
 import { CustomizerContext } from "@/context/setting/customizerContext";
+import { Grid } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
+import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
+import BaseTextField from "@/common/components/base/BaseTextField";
 
 interface AddressZoneProps {
   formik: any;
