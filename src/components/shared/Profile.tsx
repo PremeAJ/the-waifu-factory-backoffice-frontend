@@ -3,10 +3,10 @@ import Link from "next/link";
 import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } from "@mui/material";
 import * as dropdownData from "../../app/dashboard/(company-auth)/(dashboard)/layout/header/data";
 import { IconMail, IconUser } from "@tabler/icons-react";
-import { AuthContext } from "@/context/AuthContext";
-import { UserContext } from "@/context/UserContext";
+import { AuthContext } from "@/common/contexts/AuthContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import ConfirmSignOutDialog from "@/components/auth/dialog/ConfirmSignOutDialog";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseButton from "@/common/components/base/BaseButton";
 

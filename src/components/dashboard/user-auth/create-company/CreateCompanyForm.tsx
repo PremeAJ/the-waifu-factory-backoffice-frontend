@@ -8,9 +8,9 @@ import * as Yup from "yup";
 import CompanyInfoStep from "./step/CompanyInfoStep";
 import ContactInfoStep from "./step/ContactInfoStep";
 import ConfirmStep from "./step/ConfirmStep";
-import { UserContext } from "@/context/UserContext";
-import { ConsentContext } from "@/context/Master/ConsentContext";
-import { CompanyContext, CompanyType } from "@/context/CompanyContext";
+import { UserContext } from "@/common/contexts/UserContext";
+import { ConsentContext } from "@/common/contexts/Master/ConsentContext";
+import { CompanyContext, CompanyType } from "@/common/contexts/CompanyContext";
 import { useRouter } from "next/navigation";
 import BaseButton from "@/common/components/base/BaseButton";
 

@@ -6,7 +6,7 @@ import Image from "next/image";
 import AuthResetPassword from "../../../components/auth/AuthResetPassword";
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AuthContext } from "@/context/AuthContext";
+import { AuthContext } from "@/common/contexts/AuthContext";
 
 export default function ResetPassword() {
   const { verifyOtp } = useContext(AuthContext);

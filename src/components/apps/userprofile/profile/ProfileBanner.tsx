@@ -20,7 +20,7 @@ import {
 import ProfileTab from "./ProfileTab";
 import BlankCard from "../../../shared/BlankCard";
 import { useContext } from "react";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 
 const ProfileBanner = () => {
   const ProfileImage = styled(Box)(() => ({

@@ -18,7 +18,7 @@ import PostComments from './PostComments';
 import BlankCard from '../../../shared/BlankCard';
 import { Comment as CommentType, PostType } from '../../../../common/utils/types/apps/userProfile';
 import { UserDataContext } from '@/context/UserDataContext';
-import { CustomizerContext } from '@/context/setting/customizerContext';
+import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
 
 
 interface Props {

@@ -1,7 +1,7 @@
 import CompanyAvatar from "@/components/avatar/CompanyAvatar";
 import SelectCompanyDialog from "@/common/components/dialog/SelectCompanyDialog";
-import { CustomizerContext } from "@/context/setting/customizerContext";
-import { UserContext } from "@/context/UserContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import { IconTransfer } from "@tabler/icons-react";

@@ -27,7 +27,7 @@ import {
 } from '@tabler/icons-react';
 import { Stack } from '@mui/system';
 import { ProductFiterType } from '../../../../common/utils/types/apps/eCommerce';
-import { CustomizerContext } from '@/context/setting/customizerContext';
+import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
 
 
 const ProductFilter = () => {

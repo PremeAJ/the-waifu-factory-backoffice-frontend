@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { IconApps, IconAppsFilled } from "@tabler/icons-react";
-import { useAppShortcut } from "@/context/AppShortcutContext";
+import { useAppShortcut } from "@/common/contexts/AppShortcutContext";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import BaseFab from "../base/BaseFab";
 

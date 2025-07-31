@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { IconAlertTriangle, IconInfoCircle, IconMail } from "@tabler/icons-react";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import { emailRegex } from "@/common/utils/validator/regex";
 import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import BaseTextField from "@/common/components/base/BaseTextField";

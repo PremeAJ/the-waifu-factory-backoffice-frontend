@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, Grid, Card, CardContent, Stack, Divider } from "@mui/material";
-import { AddressContext } from "@/context/Master/AddressContext";
-import { ConsentContext } from "@/context/Master/ConsentContext";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { AddressContext } from "@/common/contexts/Master/AddressContext";
+import { ConsentContext } from "@/common/contexts/Master/ConsentContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { getDisplayName } from "@/common/utils/function/object/getDisplayName";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseCheckBox from "@/common/components/base/BaseCheckBox";

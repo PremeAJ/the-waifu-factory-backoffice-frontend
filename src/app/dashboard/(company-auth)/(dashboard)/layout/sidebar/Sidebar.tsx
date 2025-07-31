@@ -4,8 +4,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import SidebarItems from "./SidebarItems";
 import Logo from "../../../../../../components/shared/logo/Logo";
-import { CustomizerContext } from "@/context/setting/customizerContext";
-import config from "@/context/setting/config";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import config from "@/common/contexts/setting/config";
 
 import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import { Profile } from "./SidebarProfile/Profile";

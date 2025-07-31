@@ -16,7 +16,7 @@ import Social from "@/components/dashboard/user-auth/modern/Social";
 import SellingProducts from "@/components/dashboard/user-auth/modern/SellingProducts";
 import WeeklyStats from "@/components/dashboard/user-auth/modern/WeeklyStats";
 import TopPerformers from "@/components/dashboard/user-auth/modern/TopPerformers";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 
 
 export default function Dashboard() {

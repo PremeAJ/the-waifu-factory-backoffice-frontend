@@ -2,7 +2,7 @@
 import { Alert, InputAdornment, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/context/AuthContext";
+import { AuthContext } from "@/common/contexts/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator } from "@/common/utils/validator/yup";
 import * as yup from "yup";

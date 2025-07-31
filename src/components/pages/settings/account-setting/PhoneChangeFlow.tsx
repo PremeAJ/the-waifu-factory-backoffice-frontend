@@ -2,7 +2,7 @@
 import React, { useState, useContext } from "react";
 import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { IconAlertTriangle, IconInfoCircle, IconDeviceMobile, IconCheck } from "@tabler/icons-react";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import { phoneRegex } from "@/common/utils/validator/regex";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import TransitionDialog from "@/common/components/dialog/TransitionDialog";

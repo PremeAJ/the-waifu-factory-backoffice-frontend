@@ -20,8 +20,8 @@ import {
   IconMoon,
 } from "@tabler/icons-react";
 import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
-import { CustomizerContext } from "@/context/setting/customizerContext";
-import { UserContext } from "@/context/UserContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import Menuitems from "./sidebar/MenuItems"; // นำเข้า Menuitems 
 
 const MobileSettingsList = () => {

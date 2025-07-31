@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
-import { AddressContext } from "@/context/Master/AddressContext";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { AddressContext } from "@/common/contexts/Master/AddressContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { Grid } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";

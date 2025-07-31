@@ -1,4 +1,4 @@
-import config from "@/context/setting/config";
+import config from "@/common/contexts/setting/config";
 import { AppBar, styled } from "@mui/material";
 const TopbarHeight = config.topbarHeight;
 

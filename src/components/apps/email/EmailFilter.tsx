@@ -20,7 +20,7 @@ import {
   IconFolder,
   IconNote,
 } from '@tabler/icons-react';
-import { CustomizerContext } from '@/context/setting/customizerContext';
+import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
 import { usePathname } from 'next/navigation';
 import { mutate } from 'swr';
 

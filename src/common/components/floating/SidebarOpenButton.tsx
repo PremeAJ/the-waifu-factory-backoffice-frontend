@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { useMediaQuery, useTheme } from "@mui/material";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import BaseFab from "../base/BaseFab";

@@ -1,6 +1,6 @@
 import Loading from "@/app/loading";
-import { AuthContext } from "@/context/AuthContext";
-import { UserContext } from "@/context/UserContext";
+import { AuthContext } from "@/common/contexts/AuthContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import TransitionDialog from "@/common/components/dialog/TransitionDialog";

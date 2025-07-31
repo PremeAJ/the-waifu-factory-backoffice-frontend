@@ -2,9 +2,9 @@ import React from "react";
 import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import CreateCompanyForm from "@/components/dashboard/user-auth/create-company/CreateCompanyForm";
-import { AddressProvider } from "@/context/Master/AddressContext";
-import { BusinessTypeProvider } from "@/context/Master/BusinessTypeContext";
-import { ConsentProvider } from "@/context/Master/ConsentContext";
+import { AddressProvider } from "@/common/contexts/Master/AddressContext";
+import { BusinessTypeProvider } from "@/common/contexts/Master/BusinessTypeContext";
+import { ConsentProvider } from "@/common/contexts/Master/ConsentContext";
 
 const createCompanyPage = () => {
   return (

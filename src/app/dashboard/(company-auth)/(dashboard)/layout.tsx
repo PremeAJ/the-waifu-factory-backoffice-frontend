@@ -5,10 +5,10 @@ import { styled, useTheme } from "@mui/material/styles";
 import React, { useContext } from "react";
 import Header from "./layout/header/Header";
 import Sidebar from "./layout/sidebar/Sidebar";
-import { CustomizerContext } from "@/context/setting/customizerContext";
-import { CompanyProvider } from "@/context/CompanyContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { CompanyProvider } from "@/common/contexts/CompanyContext";
 import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
-import { AppShortcutProvider } from "@/context/AppShortcutContext";
+import { AppShortcutProvider } from "@/common/contexts/AppShortcutContext";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",

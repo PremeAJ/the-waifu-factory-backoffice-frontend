@@ -2,7 +2,7 @@ import PageContainer from "@/components/container/PageContainer";
 import LandingPageHeader from "../../components/layout/header/LandingPageHeader";
 import Pricing from "@/components/pages/pricing";
 import Footer from "@/components/layout/footer/FllowUsFooter";
-import { PlanProvider } from "@/context/Master/PlanContext";
+import { PlanProvider } from "@/common/contexts/Master/PlanContext";
 
 const PricingPage = () => {
   return (

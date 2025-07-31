@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import Address from "@/components/forms/AddressForm";
-import { BusinessTypeContext } from "@/context/Master/BusinessTypeContext";
-import { UserContext } from "@/context/UserContext";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { BusinessTypeContext } from "@/common/contexts/Master/BusinessTypeContext";
+import { UserContext } from "@/common/contexts/UserContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseCheckBox from "@/common/components/base/BaseCheckBox";

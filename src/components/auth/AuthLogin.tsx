@@ -6,7 +6,7 @@ import Link from "next/link";
 import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import AuthSocialButtons from "./AuthSocialButtons";
 import * as yup from "yup";
-import { AuthContext } from "@/context/AuthContext";
+import { AuthContext } from "@/common/contexts/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator, requiredPasswordSchema } from "@/common/utils/validator/yup";
 import { useTranslation } from "react-i18next";

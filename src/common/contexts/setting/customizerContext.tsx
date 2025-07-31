@@ -141,35 +141,37 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   return (
     <CustomizerContext.Provider
       value={{
-        updateAppearance,
         activeDir,
-        setActiveDir,
-        activeMode,
-        setActiveMode,
-        activeTheme,
-        setActiveTheme,
         activeLayout,
-        setActiveLayout,
-        isCardShadow,
-        setIsCardShadow,
-        isLayout,
-        setIsLayout,
-        isBorderRadius,
-        setIsBorderRadius,
-        isCollapse,
-        setIsCollapse,
-        isLanguage,
-        setIsLanguage,
-        isSidebarHover,
-        setIsSidebarHover,
-        isMobileSidebar,
-        setIsMobileSidebar,
+        activeMode,
+        activeTheme,
         appearanceMutate,
-        loading,
         error,
+        isBorderRadius,
+        isCardShadow,
+        isCollapse,
+        isLanguage,
+        isLayout,
+        isMobileSidebar,
+        isSidebarHover,
+        loading,
+        setActiveDir,
+        setActiveLayout,
+        setActiveMode,
+        setActiveTheme,
+        setIsBorderRadius,
+        setIsCardShadow,
+        setIsCollapse,
+        setIsLanguage,
+        setIsLayout,
+        setIsMobileSidebar,
+        setIsSidebarHover,
+        updateAppearance,
       }}
     >
       {children}
     </CustomizerContext.Provider>
   );
 };
+
+export const useCustomize = () => useContext(CustomizerContext);

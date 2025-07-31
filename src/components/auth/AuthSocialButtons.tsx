@@ -3,7 +3,7 @@ import CustomSocialButton from "@/components/forms/theme-elements/CustomSocialBu
 import { Stack } from "@mui/system";
 import { Avatar, Box } from "@mui/material";
 import { signInType } from "@/common/utils/types/auth/auth";
-import { AuthContext } from "@/context/AuthContext";
+import { AuthContext } from "@/common/contexts/AuthContext";
 import { useContext } from "react";
 
 const AuthSocialButtons = ({ title, isDashboard = false }: signInType) => {

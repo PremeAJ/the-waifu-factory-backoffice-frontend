@@ -7,7 +7,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import "@/common/utils/i18n/i18n";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { UserProvider } from "../context/UserContext";
+import { UserProvider } from "../common/contexts/UserContext";
 import "./global.css";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {

@@ -12,7 +12,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import Badge from "@mui/material/Badge";
 import Sidebar from "./category/Sidebar";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import SidebarOpenButton from "@/common/components/floating/SidebarOpenButton";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 

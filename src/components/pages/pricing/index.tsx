@@ -3,8 +3,8 @@ import React, { useContext } from "react";
 import { Box, Grid, Typography, Container } from "@mui/material";
 import PricingCard from "./PricingCard";
 import PaymentMethods from "./PaymentMethods";
-import { PlanContext } from "@/context/Master/PlanContext";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { PlanContext } from "@/common/contexts/Master/PlanContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 
 const Pricing = () => {
   const { isLoading: IsPlanLoading } = useContext(PlanContext);

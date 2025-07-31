@@ -1,8 +1,8 @@
 "use client";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
-import config from "@/context/setting/config";
+import config from "@/common/contexts/setting/config";
 import Image from "next/image";
 import { useContext } from "react";
 import { usePathname } from "next/navigation";

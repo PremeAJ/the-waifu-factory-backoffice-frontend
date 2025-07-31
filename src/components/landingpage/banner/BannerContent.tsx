@@ -11,7 +11,7 @@ import { IconRocket } from "@tabler/icons-react";
 
 // third party
 import { motion } from "framer-motion";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 
 const StyledButton = styled(Button)(() => ({
   padding: "13px 48px",

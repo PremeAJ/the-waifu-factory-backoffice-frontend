@@ -2,7 +2,7 @@
 import { Card } from '@mui/material';
 import React, { useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { CustomizerContext } from '@/context/setting/customizerContext';
+import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
 
 type Props = {
   className?: string;

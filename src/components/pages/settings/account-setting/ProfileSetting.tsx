@@ -5,7 +5,7 @@ import { Grid, Typography, useMediaQuery } from "@mui/material";
 import * as yup from "yup";
 import { Stack, useTheme } from "@mui/system";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import { useFormik } from "formik";
 import { firstNameSchemaNotRequired, lastNameSchemaNotRequired, nickNameSchemaNotRequired } from "@/common/utils/validator/yup";
 import { IconPencil, IconMail, IconDeviceMobile } from "@tabler/icons-react";

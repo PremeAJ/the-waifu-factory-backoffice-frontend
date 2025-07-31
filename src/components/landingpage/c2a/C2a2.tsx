@@ -8,8 +8,8 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
-import { AuthContext } from "@/context/AuthContext";
-import { UserContext } from "@/context/UserContext";
+import { AuthContext } from "@/common/contexts/AuthContext";
+import { UserContext } from "@/common/contexts/UserContext";
 
 const StyledButton = styled(Button)(({ theme }) => ({
   padding: "13px 34px",

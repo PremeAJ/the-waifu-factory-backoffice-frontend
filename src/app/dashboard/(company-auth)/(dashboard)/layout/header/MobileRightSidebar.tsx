@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useAppShortcut } from "@/context/AppShortcutContext";
+import { useAppShortcut } from "@/common/contexts/AppShortcutContext";
 import AppLinks from "./AppLinks";
 import Link from "next/link";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";

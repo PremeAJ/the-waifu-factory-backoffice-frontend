@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { DialogTitle, List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
 import CompanyAvatar from "@/components/avatar/CompanyAvatar";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";

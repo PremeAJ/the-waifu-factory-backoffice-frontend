@@ -19,7 +19,7 @@ import {
 } from "@/common/utils/validator/yup";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
-import { AuthContext } from "@/context/AuthContext";
+import { AuthContext } from "@/common/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import Language from "@/components/shared/Language/Language";

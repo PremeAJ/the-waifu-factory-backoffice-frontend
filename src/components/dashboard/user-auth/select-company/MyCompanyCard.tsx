@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import BlankCard from "@/components/shared/BlankCard";
 import { GallaryType } from "@/common/utils/types/apps/users";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 
 const MyCompanyCard = () => {
   const { user } = useContext(UserContext)

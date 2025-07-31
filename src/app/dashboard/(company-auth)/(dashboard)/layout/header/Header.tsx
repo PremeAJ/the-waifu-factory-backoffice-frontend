@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import { CustomizerContext } from "@/context/setting/customizerContext";
+import { CustomizerContext, useCustomize } from "@/common/contexts/setting/customizerContext";
 import { IconMenu2 } from "@tabler/icons-react";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import { styled } from "@mui/material/styles";
 import { useContext } from "react";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 import AppBarStyled from "@/components/styled/AppBarStyled";
 import IconButton from "@mui/material/IconButton";
 import Language from "@/components/shared/Language/Language";
@@ -22,7 +22,7 @@ const Header = () => {
   const { nameTh: roleNameTh, nameEn: roleNameEN } = roles || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const lgDown = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const { setIsCollapse, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { setIsCollapse, isCollapse, isMobileSidebar, setIsMobileSidebar } = useCustomize()
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
     width: "100%",
     color: theme.palette.text.secondary,

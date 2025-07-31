@@ -15,7 +15,7 @@ import CustomSelect from "../../forms/theme-elements/CustomSelect";
 
 // images
 import { Stack } from "@mui/system";
-import { UserContext } from "@/context/UserContext";
+import { UserContext } from "@/common/contexts/UserContext";
 
 // locations
 const locations = [
