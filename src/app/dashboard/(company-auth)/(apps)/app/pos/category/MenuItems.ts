@@ -69,7 +69,6 @@ const Menuitems: NavGroup[] = [
     title: "ขนม",
     icon: IconBread,
     href: "#",
-    children: [],
   },
 ];
 

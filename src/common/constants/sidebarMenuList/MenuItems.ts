@@ -13,10 +13,22 @@ import {
   IconAperture,
   IconSettings,
   IconLockAccess,
+  IconHome,
+  IconCategory,
 } from "@tabler/icons-react";
 import { NavGroup } from "@/common/utils/types/layout/sidebar";
 
 const Menuitems: NavGroup[] = [
+    {
+    navlabel: true,
+    subheader: "หน้าหลัก",
+  },
+    {
+    id: uniqueId(),
+    title: "หน้าหลัก",
+    icon: IconHome,
+    href: "/dashboard/home",
+  },
   {
     navlabel: true,
     subheader: "ภาพรวม",
@@ -62,9 +74,17 @@ const Menuitems: NavGroup[] = [
   },
   {
     id: uniqueId(),
-    title: "สินค้า/สต็อก",
+    title: "สินค้า / สต็อก",
     icon: IconBox,
-    href: "/pos/products",
+    href: "/dashboard/pos/products",
+     children: [
+      {
+        id: uniqueId(),
+        title: "หมวดหมู่สินค้า",
+        icon: IconCategory,
+        href: "/dashboard/pos/categories",
+      },
+    ],
   },
   {
     id: uniqueId(),

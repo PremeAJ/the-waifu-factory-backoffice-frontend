@@ -1,30 +1,24 @@
 import React, { useState } from "react";
-import { IconApps, IconCalendarEvent, IconGridDots, IconMail, IconMessages, IconSearch, IconX } from "@tabler/icons-react";
+import { IconApps, IconSearch, IconX } from "@tabler/icons-react";
 import {
   Box,
-  Typography,
+  Divider,
   Drawer,
   IconButton,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  TextField,
   InputAdornment,
-  Divider,
+  TextField,
+  Typography,
 } from "@mui/material";
 
-import Link from "next/link";
+import { useAppShortcut } from "@/context/AppShortcutContext";
 import AppLinks from "./AppLinks";
+import Link from "next/link";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 const MobileRightSidebar = () => {
-  const [showDrawer, setShowDrawer] = useState(false);
-  const [open, setOpen] = React.useState(true);
+  const { isOpen, open, close } = useAppShortcut();
   const [searchApp, setSearchApp] = useState("");
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
+  const isMobile = useIsMobile();
 
   const cartContent = (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
@@ -36,19 +30,21 @@ const MobileRightSidebar = () => {
           onChange={(e) => setSearchApp(e.target.value)}
           size="small"
           variant="outlined"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconSearch size={18} stroke={1.5} />
-              </InputAdornment>
-            ),
-            endAdornment: searchApp && (
-              <InputAdornment position="end">
-                <IconButton size="small" onClick={() => setSearchApp("")}>
-                  <IconX size={14} />
-                </IconButton>
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconSearch size={18} stroke={1.5} />
+                </InputAdornment>
+              ),
+              endAdornment: searchApp && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => setSearchApp("")}>
+                    <IconX size={14} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{
             "& .MuiOutlinedInput-root": {
@@ -57,20 +53,16 @@ const MobileRightSidebar = () => {
           }}
         />
       </Box>
-
-      {/* Apps Grid */}
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         <Box px={3} pb={3}>
           <Typography variant="subtitle2" color="textSecondary" fontWeight={500} mb={2}>
             Applications
           </Typography>
-          <AppLinks searchApp={searchApp} /> {/* ส่ง searchTerm เข้าไป */}
+          <AppLinks searchApp={searchApp} />
         </Box>
 
         <Divider />
-
-        {/* Frequently Used Apps */}
-        <Box px={3} pt={2}>
+        {/* <Box px={3} pt={2}>
           <Typography variant="subtitle2" color="textSecondary" fontWeight={500} mb={2}>
             Frequently Used
           </Typography>
@@ -96,35 +88,27 @@ const MobileRightSidebar = () => {
               <ListItemText primary="Email" />
             </ListItemButton>
           </List>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );
 
   return (
     <Box>
-      <IconButton
-        size="large"
-        color="inherit"
-        onClick={() => setShowDrawer(true)}
-        sx={{
-          ...(showDrawer && {
-            color: "primary.main",
-          }),
-        }}
-      >
-        <IconApps size="21" stroke="1.5" />
-      </IconButton>
-
-      {/* Apps Drawer */}
+      {!isMobile && (
+        <IconButton size="large" color="inherit" onClick={open} sx={{ ...(isOpen && { color: "primary.main" }) }}>
+          <IconApps size="21" stroke="1.5" />
+        </IconButton>
+      )}
       <Drawer
-        anchor="right"
-        open={showDrawer}
-        onClose={() => setShowDrawer(false)}
+        anchor={isMobile ? "bottom" : "right"}
+        open={isOpen}
+        onClose={close}
         slotProps={{
           paper: {
             sx: {
-              width: { xs: "100%", sm: "350px" },
+              width: isMobile ? "100%" : { xs: "100%", sm: "350px" },
+              height: isMobile ? "60%" : "100%",
               maxWidth: "100%",
             },
           },
@@ -134,12 +118,10 @@ const MobileRightSidebar = () => {
           <Typography variant="h5" fontWeight={600}>
             Apps
           </Typography>
-          <IconButton onClick={() => setShowDrawer(false)}>
+          <IconButton onClick={close}>
             <IconX size={18} />
           </IconButton>
         </Box>
-
-        {/* component */}
         {cartContent}
       </Drawer>
     </Box>

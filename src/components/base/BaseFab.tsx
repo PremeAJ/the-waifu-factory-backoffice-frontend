@@ -81,7 +81,7 @@ const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeD
       sx={{
         backdropFilter: "blur(5px)",
         WebkitBackdropFilter: "blur(5px)",
-        backgroundColor: (theme) => theme.palette.primary.main + "90",
+        backgroundColor: (theme) => theme.palette.primary.main,
         border: "1px solid rgba(255,255,255,0.3)",
         boxShadow: "0 4px 30px rgba(0,0,0,0.1)",
         color: "#fff",
