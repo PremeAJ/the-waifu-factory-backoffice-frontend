@@ -1,12 +1,22 @@
-import { styled, TextField, TextFieldProps, InputAdornment, useTheme } from "@mui/material";
 import React, { useState } from "react";
+import {
+  styled,
+  TextField,
+  TextFieldProps,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 interface StyledProps {
   expanded?: boolean;
 }
-const StyledSearchField = styled(TextField, { shouldForwardProp: (prop) => prop !== "expanded" })<StyledProps>(({ theme, expanded }) => {
+const StyledSearchField = styled(
+  TextField,
+  { shouldForwardProp: (prop) => prop !== "expanded" }
+)<StyledProps>(({ theme, expanded }) => {
   const outerRadius = theme.shape.borderRadius * 3;
   return {
     position: "fixed",
@@ -51,10 +61,19 @@ interface BaseSearchFieldProps extends Omit<TextFieldProps, "variant"> {
   value: string;
 }
 
-const BaseSearchField: React.FC<BaseSearchFieldProps> = ({ value, onSearchChange, placeholder = "ค้นหาสินค้า", ...rest }) => {
+const BaseSearchField: React.FC<BaseSearchFieldProps> = ({
+  value,
+  onSearchChange,
+  placeholder = "ค้นหา",
+  ...rest
+}) => {
   const isMobile = useIsMobile();
   const [focused, setFocused] = useState(false);
   const expanded = isMobile && focused;
+
+  const handleClear = () => {
+    onSearchChange("");
+  };
 
   return (
     <StyledSearchField
@@ -73,6 +92,17 @@ const BaseSearchField: React.FC<BaseSearchFieldProps> = ({ value, onSearchChange
               <SearchIcon />
             </InputAdornment>
           ),
+          endAdornment: value ? (
+            <InputAdornment position="end">
+              <IconButton
+                size="small"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={handleClear}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </InputAdornment>
+          ) : undefined,
           ...rest.InputProps,
         },
       }}

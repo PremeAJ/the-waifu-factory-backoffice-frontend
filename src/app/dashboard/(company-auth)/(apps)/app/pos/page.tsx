@@ -3,20 +3,20 @@ import React, { useContext, useState } from "react";
 import { Grid, Card, CardContent, Typography, TextField, InputAdornment, useTheme, useMediaQuery } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-import ProductList from "./ProductList";
-import OrderSummary from "./OrderSummary";
+import { categories, products } from "@/common/constants/products/dataMock";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import Badge from "@mui/material/Badge";
+import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import OrderSummary from "./OrderSummary";
+import ProductList from "./ProductList";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import StorefrontIcon from "@mui/icons-material/Storefront";
-import Badge from "@mui/material/Badge";
 import Sidebar from "./category/Sidebar";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import SidebarOpenButton from "@/common/components/floating/SidebarOpenButton";
+import StorefrontIcon from "@mui/icons-material/Storefront";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import BaseSearchField from "@/common/components/base/BaseSearchField";
-import { useSidebarState } from "@/common/contexts/SidebarStateContext";
-import { categories, products } from "@/common/constants/products/dataMock";
+import CategoryButton from "@/common/components/floating/CategoryButton";
 
 export default function POSPage() {
   const [openCategory, setOpenCategory] = useState<{ [key: number]: boolean }>({});
@@ -24,7 +24,6 @@ export default function POSPage() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(null);
-  const { appShortcutisOpen } = useSidebarState();
   const isMobile = useIsMobile();
   const theme = useTheme();
   const handleToggleCategory = (catId: number) => {
@@ -62,13 +61,12 @@ export default function POSPage() {
   const removeFromOrder = (productId: number) => {
     setOrder((prev) => prev.map((item) => (item.id === productId ? { ...item, qty: item.qty - 1 } : item)).filter((item) => item.qty > 0));
   };
-
   const total = order.reduce((sum, item) => sum + item.price * item.qty, 0);
   const { setIsMobileSidebar } = useContext(CustomizerContext);
 
   return (
     <>
-      <SidebarOpenButton onClick={() => setIsMobileSidebar(true)} />
+      <CategoryButton onClick={() => setIsMobileSidebar(true)} />
       <Sidebar />
       <Grid
         container

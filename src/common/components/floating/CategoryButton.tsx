@@ -10,7 +10,7 @@ type SidebarOpenButtonProps = {
   sx?: object;
 };
 
-const SidebarOpenButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) => {
+const CategoryButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) => {
   const isMobile = useIsMobile();
   const { isMobileSidebar } = useContext(CustomizerContext);
   if (isMobileSidebar || !isMobile) return null;
@@ -34,4 +34,4 @@ const SidebarOpenButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) =>
   );
 };
 
-export default SidebarOpenButton;
+export default CategoryButton;
