@@ -122,7 +122,7 @@ export default function POSPage() {
             bottom: 0,
             left: 0,
             right: 0,
-            zIndex: 1200,
+            zIndex: 99,
             borderTop: "1px solid primary.main",
             justifyContent: "space-around",
           }}

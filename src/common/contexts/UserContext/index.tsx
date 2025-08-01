@@ -145,7 +145,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         contentType: "image/png",
       };
       const newAvatarUrl = await supabaseUploadFile(payload);
-      await userMutate(patchFetcher("/api/users/avatar", { avatarUrl: newAvatarUrl }));
+      await patchFetcher("/api/users/avatar", { avatarUrl: newAvatarUrl });
+      await userMutate();
       return null;
     } catch (error) {}
   }

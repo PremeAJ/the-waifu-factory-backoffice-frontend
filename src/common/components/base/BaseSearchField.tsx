@@ -54,8 +54,7 @@ interface BaseSearchFieldProps extends Omit<TextFieldProps, "variant"> {
 const BaseSearchField: React.FC<BaseSearchFieldProps> = ({ value, onSearchChange, placeholder = "ค้นหาสินค้า", ...rest }) => {
   const isMobile = useIsMobile();
   const [focused, setFocused] = useState(false);
-  const isDirty = value?.length > 0;
-  const expanded = isMobile && (focused || isDirty);
+  const expanded = isMobile && focused;
 
   return (
     <StyledSearchField
