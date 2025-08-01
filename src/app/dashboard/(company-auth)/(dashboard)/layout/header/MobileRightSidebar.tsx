@@ -10,13 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useAppShortcut } from "@/common/contexts/AppShortcutContext";
 import AppLinks from "./AppLinks";
 import Link from "next/link";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 
 const MobileRightSidebar = () => {
-  const { isOpen, open, close } = useAppShortcut();
+  const { appShortcutisOpen, openAppShortcut, closeAppShortcut } = useSidebarState();
   const [searchApp, setSearchApp] = useState("");
   const isMobile = useIsMobile();
 
@@ -62,33 +62,6 @@ const MobileRightSidebar = () => {
         </Box>
 
         <Divider />
-        {/* <Box px={3} pt={2}>
-          <Typography variant="subtitle2" color="textSecondary" fontWeight={500} mb={2}>
-            Frequently Used
-          </Typography>
-          <List disablePadding>
-            <ListItemButton component={Link} href="/apps/chats" sx={{ borderRadius: 1, mb: 0.5 }}>
-              <ListItemIcon sx={{ minWidth: 35 }}>
-                <IconMessages size="21" stroke="1.5" />
-              </ListItemIcon>
-              <ListItemText primary="Chats" />
-            </ListItemButton>
-
-            <ListItemButton component={Link} href="/apps/calendar" sx={{ borderRadius: 1, mb: 0.5 }}>
-              <ListItemIcon sx={{ minWidth: 35 }}>
-                <IconCalendarEvent size="21" stroke="1.5" />
-              </ListItemIcon>
-              <ListItemText primary="Calendar" />
-            </ListItemButton>
-
-            <ListItemButton component={Link} href="/apps/email" sx={{ borderRadius: 1, mb: 0.5 }}>
-              <ListItemIcon sx={{ minWidth: 35 }}>
-                <IconMail size="21" stroke="1.5" />
-              </ListItemIcon>
-              <ListItemText primary="Email" />
-            </ListItemButton>
-          </List>
-        </Box> */}
       </Box>
     </Box>
   );
@@ -96,14 +69,14 @@ const MobileRightSidebar = () => {
   return (
     <Box>
       {!isMobile && (
-        <IconButton size="large" color="inherit" onClick={open} sx={{ ...(isOpen && { color: "primary.main" }) }}>
+        <IconButton size="large" color="inherit" onClick={openAppShortcut} sx={{ ...(appShortcutisOpen && { color: "primary.main" }) }}>
           <IconApps size="21" stroke="1.5" />
         </IconButton>
       )}
       <Drawer
         anchor={isMobile ? "bottom" : "right"}
-        open={isOpen}
-        onClose={close}
+        open={appShortcutisOpen}
+        onClose={closeAppShortcut}
         slotProps={{
           paper: {
             sx: {
@@ -118,7 +91,7 @@ const MobileRightSidebar = () => {
           <Typography variant="h5" fontWeight={600}>
             Apps
           </Typography>
-          <IconButton onClick={close}>
+          <IconButton onClick={closeAppShortcut}>
             <IconX size={18} />
           </IconButton>
         </Box>

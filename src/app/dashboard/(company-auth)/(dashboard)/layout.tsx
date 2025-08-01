@@ -8,7 +8,7 @@ import Sidebar from "./layout/sidebar/Sidebar";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { CompanyProvider } from "@/common/contexts/CompanyContext";
 import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
-import { AppShortcutProvider } from "@/common/contexts/AppShortcutContext";
+import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <CompanyProvider>
-      <AppShortcutProvider>
+      <SidebarStateProvider>
         <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
           <Sidebar />
           <PageWrapper
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Container>
           </PageWrapper>
         </MainWrapper>
-      </AppShortcutProvider>
+      </SidebarStateProvider>
     </CompanyProvider>
   );
 }

@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import { IconApps, IconAppsFilled } from "@tabler/icons-react";
-import { useAppShortcut } from "@/common/contexts/AppShortcutContext";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import BaseFab from "../base/BaseFab";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 
 const AppShortcutButton = () => {
-  const { toggle, isOpen } = useAppShortcut();
+  const { toggleAppShortcut, appShortcutisOpen } = useSidebarState();
   const isMobile = useIsMobile();
 
   return (
@@ -14,7 +14,7 @@ const AppShortcutButton = () => {
       animation={false}
       color="primary"
       size="large"
-      onClick={toggle}
+      onClick={toggleAppShortcut}
       sx={{
         position: "fixed",
         bottom: 16,
@@ -24,7 +24,7 @@ const AppShortcutButton = () => {
       }}
       open={isMobile}
     >
-      {isOpen ? <IconAppsFilled /> : <IconApps />}
+      {appShortcutisOpen ? <IconAppsFilled /> : <IconApps />}
     </BaseFab>
   );
 };
