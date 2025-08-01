@@ -1,4 +1,5 @@
 // project imports
+import { borderRadius } from "@mui/system";
 import "./DefaultColors";
 import { Theme } from "@mui/material/styles";
 
@@ -157,11 +158,7 @@ const components: any = (theme: Theme) => {
       styleOverrides: {
         root: {
           boxShadow: "none",
-        },
-        sizeSmall: {
-          width: 30,
-          height: 30,
-          minHeight: 30,
+          borderRadius: theme.shape.borderRadius, 
         },
       },
     },

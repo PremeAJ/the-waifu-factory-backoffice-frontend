@@ -1,10 +1,9 @@
 "use client";
 import React, { useContext } from "react";
-import MenuIcon from "@mui/icons-material/Menu";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { useMediaQuery, useTheme } from "@mui/material";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import BaseFab from "../base/BaseFab";
+import { IconCategory } from "@tabler/icons-react";
 
 type SidebarOpenButtonProps = {
   onClick: () => void;
@@ -19,24 +18,18 @@ const SidebarOpenButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) =>
   return (
     <BaseFab
       fadeDirection="right"
-      aria-label="open sidebar"
       size="medium"
       onClick={onClick}
       sx={{
         position: "fixed",
-        zIndex: 9999,
+        zIndex: 100,
         top: 16,
-        left: 16,
+        right: 16,
         ...sx,
       }}
       animation
     >
-      <MenuIcon
-        sx={{
-          transition: "transform 0.2s",
-          "&:active": { transform: "rotate(90deg) scale(1.2)" },
-        }}
-      />
+      <IconCategory />
     </BaseFab>
   );
 };

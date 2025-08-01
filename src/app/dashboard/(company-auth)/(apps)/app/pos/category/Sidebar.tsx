@@ -33,7 +33,7 @@ const Sidebar = () => {
       {!lgUp ? (
         <Box
           sx={{
-            zIndex: 100,
+            zIndex: 2000,
             width: toggleWidth,
             flexShrink: 0,
             ...(isCollapse == "mini-sidebar" && {
@@ -82,6 +82,7 @@ const Sidebar = () => {
                 width: SidebarWidth,
                 border: "0 !important",
                 boxShadow: (theme) => theme.shadows[8],
+                zIndex:2000
               },
             },
           }}

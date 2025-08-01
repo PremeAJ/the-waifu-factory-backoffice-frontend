@@ -33,7 +33,7 @@ const MobileBackButton = () => {
   return (
     <BaseFab
       fadeDirection="left"
-      sx={{ position: "fixed", bottom: 16, left: 16, zIndex: 9999 }}
+      sx={{ position: "fixed", bottom: 16, left: 16, zIndex: 100 }}
       onClick={() => router.back()}
       aria-label="back"
       open={visible}

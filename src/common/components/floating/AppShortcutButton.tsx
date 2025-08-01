@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
-import { IconApps, IconAppsFilled } from "@tabler/icons-react";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import BaseFab from "../base/BaseFab";
+import { IconGridDots } from "@tabler/icons-react";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import BaseFab from "../base/BaseFab";
+import React from "react";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 const AppShortcutButton = () => {
-  const { toggleAppShortcut, appShortcutisOpen } = useSidebarState();
+  const { toggleAppShortcut } = useSidebarState();
   const isMobile = useIsMobile();
 
   return (
@@ -20,11 +20,11 @@ const AppShortcutButton = () => {
         bottom: 16,
         left: "50%",
         transform: "translateX(-50%)",
-        zIndex: 9999,
+        zIndex: 100,
       }}
       open={isMobile}
     >
-      {appShortcutisOpen ? <IconAppsFilled /> : <IconApps />}
+      <IconGridDots />
     </BaseFab>
   );
 };

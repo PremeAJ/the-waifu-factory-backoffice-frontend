@@ -7,13 +7,13 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 export default function SidebarCategory({
   categories,
-  selectedCategory,
-  selectedSubCategory,
-  openCategory,
-  setSelectedCategory,
-  setSelectedSubCategory,
   handleToggleCategory,
   isMobile,
+  openCategory,
+  selectedCategory,
+  selectedSubCategory,
+  setSelectedCategory,
+  setSelectedSubCategory,
 }: any) {
   return (
     <List sx={{ display: "flex", flexDirection: isMobile ? "row" : "column", overflowX: isMobile ? "auto" : "visible" }}>

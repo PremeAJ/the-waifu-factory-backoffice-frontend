@@ -3,7 +3,6 @@ import React, { useContext, useState } from "react";
 import { Grid, Card, CardContent, Typography, TextField, InputAdornment, useTheme, useMediaQuery } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-import { categories, products } from "../../../../../../common/constants/products/dataMock";
 import ProductList from "./ProductList";
 import OrderSummary from "./OrderSummary";
 import BottomNavigation from "@mui/material/BottomNavigation";
@@ -15,15 +14,19 @@ import Sidebar from "./category/Sidebar";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import SidebarOpenButton from "@/common/components/floating/SidebarOpenButton";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import BaseSearchField from "@/common/components/base/BaseSearchField";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import { categories, products } from "@/common/constants/products/dataMock";
 
 export default function POSPage() {
+  const [openCategory, setOpenCategory] = useState<{ [key: number]: boolean }>({});
+  const [order, setOrder] = useState<{ id: number; name: string; price: number; qty: number; image: string }[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(null);
-  const [openCategory, setOpenCategory] = useState<{ [key: number]: boolean }>({});
-  const [order, setOrder] = useState<{ id: number; name: string; price: number; qty: number; image: string }[]>([]);
-  const theme = useTheme();
+  const { appShortcutisOpen } = useSidebarState();
   const isMobile = useIsMobile();
+  const theme = useTheme();
   const handleToggleCategory = (catId: number) => {
     setOpenCategory((prev) => ({
       ...prev,
@@ -74,6 +77,7 @@ export default function POSPage() {
           height: isMobile ? "auto" : "100vh",
           pb: isMobile ? 7 : 0,
           ml: isMobile ? 0 : "269px",
+          mt: 5,
         }}
       >
         <Grid
@@ -86,24 +90,7 @@ export default function POSPage() {
         >
           <Card sx={{ display: "flex", flexDirection: "column", height: isMobile ? "auto" : "100%" }}>
             <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              <Typography variant="h5" gutterBottom>
-                สินค้าทั้งหมด
-              </Typography>
-              <TextField
-                placeholder="ค้นหาสินค้า"
-                size="small"
-                fullWidth
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ mb: 2 }}
-              />
+              <BaseSearchField value={search} onSearchChange={setSearch} sx={{ mb: 2 }} />
               <ProductList filteredProducts={filteredProducts} order={order} addToOrder={addToOrder} isMobile={isMobile} />
             </CardContent>
           </Card>

@@ -6,9 +6,6 @@ import {
   IconGlass,
   IconBowl,
   IconBread,
-  IconCake,
-  IconCookie,
-  IconIceCream,
   IconCircle,
 } from "@tabler/icons-react";
 import { NavGroup } from "@/common/utils/types/layout/sidebar";

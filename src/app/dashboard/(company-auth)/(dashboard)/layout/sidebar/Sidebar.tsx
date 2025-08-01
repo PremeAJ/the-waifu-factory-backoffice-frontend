@@ -1,22 +1,19 @@
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles";
-import SidebarItems from "./SidebarItems";
-import Logo from "../../../../../../components/shared/logo/Logo";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import config from "@/common/contexts/setting/config";
-
-import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import { Profile } from "./SidebarProfile/Profile";
 import { useContext } from "react";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import config from "@/common/contexts/setting/config";
+import Drawer from "@mui/material/Drawer";
+import Scrollbar from "@/components/custom-scroll/Scrollbar";
+import SidebarItems from "./SidebarItems";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 const Sidebar = () => {
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
+  const isMobie = useIsMobile()
   const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
-
   const theme = useTheme();
   const toggleWidth = isCollapse == "mini-sidebar" && !isSidebarHover ? MiniSidebarWidth : SidebarWidth;
 
@@ -32,7 +29,7 @@ const Sidebar = () => {
 
   return (
     <>
-      {!lgUp ? (
+      {!isMobie ? (
         <Box
           sx={{
             zIndex: 100,
@@ -43,9 +40,6 @@ const Sidebar = () => {
             }),
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar for desktop */}
-          {/* ------------------------------------------- */}
           <Drawer
             anchor="left"
             open
@@ -64,24 +58,13 @@ const Sidebar = () => {
               },
             }}
           >
-            {/* ------------------------------------------- */}
-            {/* Sidebar Box */}
-            {/* ------------------------------------------- */}
             <Box
               sx={{
                 height: "100%",
+                mt: 8,
               }}
             >
-              {/* ------------------------------------------- */}
-              {/* Logo */}
-              {/* ------------------------------------------- */}
-              <Box px={3}>
-                <Logo />
-              </Box>
               <Scrollbar sx={{ height: "calc(100% - 190px)" }}>
-                {/* ------------------------------------------- */}
-                {/* Sidebar Items */}
-                {/* ------------------------------------------- */}
                 <SidebarItems />
               </Scrollbar>
               <Profile />
@@ -104,15 +87,6 @@ const Sidebar = () => {
             },
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Logo */}
-          {/* ------------------------------------------- */}
-          <Box px={2}>
-            <Logo />
-          </Box>
-          {/* ------------------------------------------- */}
-          {/* Sidebar For Mobile */}
-          {/* ------------------------------------------- */}
           <SidebarItems />
           <Profile />
         </Drawer>
