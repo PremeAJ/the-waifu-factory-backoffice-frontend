@@ -7,7 +7,6 @@ import Header from "./header";
 import { Metadata, Viewport } from "next";
 import ScrollToTopButton from "../common/components/floating/ScrollToTopButton";
 import { AuthProvider } from "@/common/contexts/AuthContext";
-import MobileBackButton from "@/common/components/floating/MobileBackButton";
 import ActionButton from "@/common/components/floating/ActionButton";
 export const metadata: Metadata = {
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
@@ -32,7 +31,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <NextTopLoader color="#5D87FF" />
             <MyApp>
               <ActionButton/>
-              {/* <MobileBackButton /> */}
               <ScrollToTopButton />
               {children}
             </MyApp>

@@ -32,7 +32,7 @@ const Sidebar = () => {
       {!isMobie ? (
         <Box
           sx={{
-            zIndex: 100,
+            zIndex: 99,
             width: toggleWidth,
             flexShrink: 0,
             ...(isCollapse == "mini-sidebar" && {

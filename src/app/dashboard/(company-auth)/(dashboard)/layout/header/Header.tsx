@@ -34,7 +34,7 @@ const Header = () => {
             <Language />
             <Notifications />
            <MobileRightSidebar /> 
-            {!lgDown && (
+            {/* {!lgDown && ( */}
               <Box display="flex" flexDirection="column" alignItems="flex-end" mr={1} sx={{ cursor: "default" }}>
                 <Typography variant="subtitle1" fontWeight="bold" noWrap>
                   {firstName}
@@ -43,7 +43,7 @@ const Header = () => {
                   {roleNameTh}
                 </Typography>
               </Box>
-            )}
+            {/* )} */}
             <Profile loading={loading || !user} />
           </Stack>
         </ToolbarStyled>

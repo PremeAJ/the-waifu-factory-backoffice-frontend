@@ -5,18 +5,22 @@ import { useEffect, useState } from "react";
 import BaseFab from "../base/BaseFab";
 import { useCustomize } from "@/common/contexts/setting/customizerContext";
 
-const basePath = ["/", "/auth/callback", "/dashboard/auth"];
+const hideButton = ["/", "/auth/callback", "/dashboard/auth/callback", "/dashboard/auth/login", "/auth/login"];
+const manualBackPrefixes = ["/auth","/dashboard/auth", "/dashboard/setting"];
 
 const ActionButton = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const allowBack = pathname.split("/").length > 3 || pathname === "/dashboard/setting";
+  const allowBack =
+    pathname.split("/").length > 3 ||
+    manualBackPrefixes.some((prefix) => pathname.startsWith(prefix));
+
   const [show, setShow] = useState(false);
   const [visible, setVisible] = useState(false);
   const { isMobileSidebar, setIsMobileSidebar } = useCustomize();
 
   useEffect(() => {
-    if (!basePath.includes(pathname)) {
+    if (!hideButton.includes(pathname)) {
       setShow(true);
       setVisible(true);
     } else {
@@ -32,8 +36,10 @@ const ActionButton = () => {
     <BaseFab
       fadeDirection="left"
       sx={{ position: "fixed", top: 16, left: 16, zIndex: 100 }}
-      onClick={() => (allowBack ? router.back() : setIsMobileSidebar(!isMobileSidebar))}
-      aria-label="back"
+      onClick={() =>
+        allowBack ? router.back() : setIsMobileSidebar(!isMobileSidebar)
+      }
+      aria-label="action"
       open={visible}
       onExited={handleExited}
     >

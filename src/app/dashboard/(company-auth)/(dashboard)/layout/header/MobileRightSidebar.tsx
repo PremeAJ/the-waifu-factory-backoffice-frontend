@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconApps, IconSearch, IconX } from "@tabler/icons-react";
+import {  IconGridDots, IconSearch, IconX } from "@tabler/icons-react";
 import {
   Box,
   Divider,
@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 
 import AppLinks from "./AppLinks";
-import Link from "next/link";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 
@@ -70,7 +69,7 @@ const MobileRightSidebar = () => {
     <Box>
       {!isMobile && (
         <IconButton size="large" color="inherit" onClick={openAppShortcut} sx={{ ...(appShortcutisOpen && { color: "primary.main" }) }}>
-          <IconApps size="21" stroke="1.5" />
+          <IconGridDots size="21" stroke="1.5" />
         </IconButton>
       )}
       <Drawer
