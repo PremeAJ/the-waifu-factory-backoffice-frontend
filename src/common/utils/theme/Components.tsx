@@ -158,7 +158,7 @@ const components: any = (theme: Theme) => {
       styleOverrides: {
         root: {
           boxShadow: "none",
-          borderRadius: theme.shape.borderRadius, 
+          // borderRadius: theme.shape.borderRadius, 
         },
       },
     },
