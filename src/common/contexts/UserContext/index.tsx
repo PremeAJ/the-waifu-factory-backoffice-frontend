@@ -221,3 +221,4 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
+export const useUser = () => useContext(UserContext);
