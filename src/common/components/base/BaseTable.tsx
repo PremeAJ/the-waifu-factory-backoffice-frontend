@@ -12,6 +12,8 @@ import {
   IconButton,
   Chip,
   Checkbox,
+  TableContainer, // <-- Import
+  Paper,          // <-- Import
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -82,72 +84,74 @@ const BaseTable = ({
 
   return (
     <Box>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell padding="none" sx={{ width: 40 }} />
-            {enableSelection && (
-              <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={selectedItems.length > 0 && selectedItems.length < data.length}
-                  checked={data.length > 0 && selectedItems.length === data.length}
-                  onChange={handleSelectAll}
-                />
-              </TableCell>
-            )}
-            {headers.map((header) => (
-              <TableCell key={header.key} align={header.align || "left"}>
-                {header.label}
-              </TableCell>
-            ))}
-            {actions && <TableCell align="center">Actions</TableCell>}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {paginatedData.map((item) => (
-            <React.Fragment key={item.id}>
-              <TableRow hover>
-                <TableCell padding="none" sx={{ width: 40 }} align="center">
-                  {item.subItems && item.subItems.length > 0 && (
-                    <IconButton size="small" onClick={() => toggleRow(item.id)}>
-                      {openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                  )}
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell padding="none" sx={{ width: 40 }} />
+              {enableSelection && (
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    indeterminate={selectedItems.length > 0 && selectedItems.length < data.length}
+                    checked={data.length > 0 && selectedItems.length === data.length}
+                    onChange={handleSelectAll}
+                  />
                 </TableCell>
-                {enableSelection && (
-                  <TableCell padding="checkbox">
-                    <Checkbox checked={selectedItems.includes(item.id)} onChange={() => handleSelect(item.id)} />
-                  </TableCell>
-                )}
-                {headers.map((header) => (
-                  <TableCell key={header.key} align={header.align || "left"}>
-                    {renderCell(header, item)}
-                  </TableCell>
-                ))}
-                {actions && <TableCell align="center">{actions(item)}</TableCell>}
-              </TableRow>
-              {/* Sub-rows */}
-              {openRows[item.id] &&
-                item.subItems?.map((subItem) => (
-                  <TableRow key={subItem.id} hover sx={{ backgroundColor: "rgba(0, 0, 0, 0.02)" }}>
-                    <TableCell padding="none" />
-                    {enableSelection && (
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={selectedItems.includes(subItem.id)} onChange={() => handleSelect(subItem.id)} />
-                      </TableCell>
+              )}
+              {headers.map((header) => (
+                <TableCell key={header.key} align={header.align || "left"}>
+                  {header.label}
+                </TableCell>
+              ))}
+              {actions && <TableCell align="center">Actions</TableCell>}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedData.map((item) => (
+              <React.Fragment key={item.id}>
+                <TableRow hover>
+                  <TableCell padding="none" sx={{ width: 40 }} align="center">
+                    {item.subItems && item.subItems.length > 0 && (
+                      <IconButton size="small" onClick={() => toggleRow(item.id)}>
+                        {openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                      </IconButton>
                     )}
-                    {headers.map((header) => (
-                      <TableCell key={header.key} align={header.align || "left"} sx={{ pl: header.key === headers[0].key ? 4 : undefined }}>
-                        {renderCell(header, subItem)}
-                      </TableCell>
-                    ))}
-                    {actions && <TableCell align="center">{actions(subItem)}</TableCell>}
-                  </TableRow>
-                ))}
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
+                  </TableCell>
+                  {enableSelection && (
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={selectedItems.includes(item.id)} onChange={() => handleSelect(item.id)} />
+                    </TableCell>
+                  )}
+                  {headers.map((header) => (
+                    <TableCell key={header.key} align={header.align || "left"}>
+                      {renderCell(header, item)}
+                    </TableCell>
+                  ))}
+                  {actions && <TableCell align="center">{actions(item)}</TableCell>}
+                </TableRow>
+                {/* Sub-rows */}
+                {openRows[item.id] &&
+                  item.subItems?.map((subItem) => (
+                    <TableRow key={subItem.id} hover sx={{ backgroundColor: "rgba(0, 0, 0, 0.02)" }}>
+                      <TableCell padding="none" />
+                      {enableSelection && (
+                        <TableCell padding="checkbox">
+                          <Checkbox checked={selectedItems.includes(subItem.id)} onChange={() => handleSelect(subItem.id)} />
+                        </TableCell>
+                      )}
+                      {headers.map((header) => (
+                        <TableCell key={header.key} align={header.align || "left"} sx={{ pl: header.key === headers[0].key ? 4 : undefined }}>
+                          {renderCell(header, subItem)}
+                        </TableCell>
+                      ))}
+                      {actions && <TableCell align="center">{actions(subItem)}</TableCell>}
+                    </TableRow>
+                  ))}
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <TablePagination
         component="div"
         count={data.length}
