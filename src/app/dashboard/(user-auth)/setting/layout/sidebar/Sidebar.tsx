@@ -55,6 +55,7 @@ const Sidebar = () => {
             slotProps={{
               paper: {
                 sx: {
+                  mt: 8,
                   transition: theme.transitions.create("width", {
                     duration: theme.transitions.duration.shortest,
                   }),
@@ -75,9 +76,9 @@ const Sidebar = () => {
               {/* ------------------------------------------- */}
               {/* Logo */}
               {/* ------------------------------------------- */}
-              <Box px={3}>
+              {/* <Box px={3}>
                 <Logo />
-              </Box>
+              </Box> */}
               <Scrollbar sx={{ height: "calc(100% - 190px)" }}>
                 {/* ------------------------------------------- */}
                 {/* Sidebar Items */}
