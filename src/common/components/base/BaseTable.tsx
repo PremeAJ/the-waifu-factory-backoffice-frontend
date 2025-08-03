@@ -31,8 +31,8 @@ interface DataItem extends Record<string, any> {
   subItems?: DataItem[];
 }
 
-interface BaseTableProps {
-  headers: TableHeader[];
+interface BaseTableProps<T extends readonly TableHeader[]> { // <--- 1. เปลี่ยนเป็น Generic
+  headers: T; // <--- 2. ใช้ Generic Type T
   data: DataItem[];
   actions?: (item: DataItem) => React.ReactNode;
   enableSelection?: boolean;
@@ -40,13 +40,13 @@ interface BaseTableProps {
 }
 
 // --- Component ---
-const BaseTable = ({
+const BaseTable = <T extends readonly TableHeader[]>({ // <--- 3. ประกาศ Generic ที่ Component
   headers,
   data,
   actions,
   enableSelection = false,
   onSelectionChange,
-}: BaseTableProps) => {
+}: BaseTableProps<T>) => { // <--- 4. ใช้ Generic ที่ Props
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openRows, setOpenRows] = useState<Record<string, boolean>>({});

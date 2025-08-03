@@ -2,6 +2,7 @@
 import { borderRadius } from "@mui/system";
 import "./DefaultColors";
 import { Theme } from "@mui/material/styles";
+import zIndex from "@mui/material/styles/zIndex";
 
 const components: any = (theme: Theme) => {
   return {

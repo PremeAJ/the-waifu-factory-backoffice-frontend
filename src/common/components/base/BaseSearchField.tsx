@@ -103,7 +103,6 @@ const BaseSearchField: React.FC<BaseSearchFieldProps> = ({
               </IconButton>
             </InputAdornment>
           ) : undefined,
-          ...rest.InputProps,
         },
       }}
       {...rest}

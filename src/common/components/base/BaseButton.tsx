@@ -1,7 +1,7 @@
 import Button, { ButtonProps } from "@mui/material/Button";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { IconPencil, IconX, IconDeviceFloppy } from "@tabler/icons-react";
+import { IconPencil, IconX, IconDeviceFloppy, IconCircleDashedPlus } from "@tabler/icons-react";
 
 interface PresetButtonConfig {
   label: string;
@@ -11,7 +11,7 @@ interface PresetButtonConfig {
   icon?: React.ReactNode;
 }
 
-type PresetType = "default" | "save" | "cancel" | "edit";
+type PresetType = "default" | "save" | "cancel" | "edit" | "add";
 interface BaseButtonProps extends ButtonProps {
   label?: string;
   preset?: PresetType;
@@ -45,12 +45,18 @@ const presetMap: Record<PresetType, PresetButtonConfig> = {
     size: "large",
     icon: <IconPencil size={20} />,
   },
+  add: {
+    label: "Add",
+    color: "primary",
+    variant: "contained",
+    size: "large",
+    icon: <IconCircleDashedPlus size={20} />,
+  },
 };
 
 const BaseButton = ({ label, preset = "default", ...rest }: BaseButtonProps) => {
   const { t } = useTranslation();
 
-  // ถ้า label ถูกส่งมาใช้ label นั้น, ถ้าไม่ส่งมาใช้ label จาก presetMap และแปลด้วย t
   const displayLabel = label ?? t(`button.${preset}`, presetMap[preset].label);
 
   return (

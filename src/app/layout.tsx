@@ -1,13 +1,14 @@
-import React from "react";
-import MyApp from "./app";
-import NextTopLoader from "nextjs-toploader";
 import "./global.css";
-import { CustomizerContextProvider } from "../common/contexts/setting/customizerContext";
-import Header from "./header";
-import { Metadata, Viewport } from "next";
-import ScrollToTopButton from "../common/components/floating/ScrollToTopButton";
 import { AuthProvider } from "@/common/contexts/AuthContext";
+import { CustomizerContextProvider } from "../common/contexts/setting/customizerContext";
+import { Metadata, Viewport } from "next";
 import ActionButton from "@/common/components/floating/ActionButton";
+import { ThemeAwareTopLoader } from "@/common/components/ThemeAwareComponents";
+import Header from "./header";
+import MyApp from "./app";
+import React from "react";
+import ScrollToTopButton from "../common/components/floating/ScrollToTopButton";
+
 export const metadata: Metadata = {
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
 };
@@ -28,11 +29,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Header />
           </head>
           <body>
-            <NextTopLoader color="#5D87FF" />
             <MyApp>
-              <ActionButton/>
-              <ScrollToTopButton />
               {children}
+              <ThemeAwareTopLoader />
+              <ActionButton />
+              <ScrollToTopButton />
             </MyApp>
           </body>
         </html>

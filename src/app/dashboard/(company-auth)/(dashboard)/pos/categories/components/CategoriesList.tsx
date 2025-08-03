@@ -1,77 +1,68 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import { Box, Chip, IconButton, Link, Stack, TextField, Tooltip } from "@mui/material";
+import { IconEdit, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
-import {
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Link,
-  Stack,
-  TextField,
-  Tooltip,
-} from "@mui/material";
-import {
-  IconEdit,
-  IconEye,
-  IconSearch,
-  IconTrash,
-} from "@tabler/icons-react";
-import BaseTable from "@/common/components/base/BaseTable"; // <--- Import
+import BaseButton from "@/common/components/base/BaseButton";
+import BaseTable from "@/common/components/base/BaseTable";
+import React, { useState, useMemo } from "react";
+import TransitionDialog from "@/common/components/dialog/TransitionDialog";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import BaseSearchField from "@/common/components/base/BaseSearchField";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import CategoryButton from "@/common/components/floating/CategoryButton";
+import zIndex from "@mui/material/styles/zIndex";
 
 function CategoriesList() {
-  const { categories, deleteCategory } = useCategories();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const { categories, deleteCategory } = useCategories();
+  const isMobile = useIsMobile();
 
-  const filteredData = useMemo(
-    () => {
-      const allCategories = categories.flatMap((cat) => [
-        { ...cat, subItems: cat.subCategories },
-        ...cat.subCategories.map((sub) => ({ ...sub, parentId: cat.id })),
-      ]);
+  const filteredData: any = useMemo(() => {
+    if (!searchTerm) {
+      return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
+    }
 
-      return categories
-        .filter(
-          (cat) =>
-            cat.nameTh.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (cat.nameEn || "").toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .map((cat) => ({ ...cat, subItems: cat.subCategories }));
-    },
-    [categories, searchTerm]
-  );
+    const lowercasedSearchTerm = searchTerm.toLowerCase();
 
-  const headers = [
-    { key: "nameTh", label: "Name (TH)", align: "center" as const },
-    { key: "nameEn", label: "Name (EN)", align: "center" as const },
+    return categories
+      .map((cat) => {
+        const parentMatches =
+          cat.nameTh.toLowerCase().includes(lowercasedSearchTerm) || (cat.nameEn || "").toLowerCase().includes(lowercasedSearchTerm);
+
+        const matchingSubCategories = cat.subCategories.filter(
+          (sub) => sub.nameTh.toLowerCase().includes(lowercasedSearchTerm) || (sub.nameEn || "").toLowerCase().includes(lowercasedSearchTerm)
+        );
+
+        if (parentMatches) {
+          return { ...cat, subItems: cat.subCategories };
+        }
+
+        if (matchingSubCategories.length > 0) {
+          return { ...cat, subItems: matchingSubCategories };
+        }
+
+        return null;
+      })
+      .filter(Boolean);
+  }, [categories, searchTerm]);
+
+  const headers: any = [
+    { key: "nameTh", label: "Name (TH)", align: "center" },
+    { key: "nameEn", label: "Name (EN)", align: "center" },
     {
       key: "isActive",
       label: "Active",
-      align: "center" as const,
-      render: (isActive: boolean) => (
-        <Chip
-          label={isActive ? "Active" : "Inactive"}
-          color={isActive ? "success" : "default"}
-          size="small"
-        />
-      ),
+      align: "center",
+      render: (isActive: boolean) => <Chip label={isActive ? "Active" : "Inactive"} color={isActive ? "success" : "default"} size="small" />,
     },
   ];
 
   const tableActions = (item: any) => (
     <>
       <Tooltip title="Edit">
-        <IconButton
-          component={Link}
-          href={`/dashboard/pos/categories/edit/${item.id}`}
-          color="primary"
-        >
+        <IconButton component={Link} href={`/dashboard/pos/categories/edit/${item.id}`} color="primary">
           <IconEdit width={22} />
         </IconButton>
       </Tooltip>
@@ -99,55 +90,36 @@ function CategoriesList() {
 
   return (
     <Box>
-      <Stack direction="row" spacing={2} mb={2}>
-        <TextField
-          size="small"
-          placeholder="Search categories"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{ endAdornment: <IconSearch size={16} /> }}
-        />
-        {selectedItems.length > 0 && (
-          <Button
-            color="error"
-            onClick={() => setOpenDeleteDialog(true)}
-            startIcon={<IconTrash width={18} />}
-          >
-            Delete ({selectedItems.length})
-          </Button>
+      
+      <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
+        {isMobile ? (
+          <BaseSearchField value={searchTerm} onSearchChange={setSearchTerm} sx={{ zIndex: 9999 }} />
+        ) : (
+          <BaseTextField
+            fullWidth={false}
+            name="search"
+            placeholder="Search categories"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            startAdornment={<IconSearch size={16} />}
+          />
         )}
-        <Button
-          variant="contained"
-          component={Link}
-          href="/dashboard/pos/categories/create"
-        >
-          New Category
-        </Button>
+
+        <BaseButton variant="contained" href="/dashboard/pos/categories/create" fullWidth={false} preset="add" label="Add Category" />
       </Stack>
 
-      <BaseTable
-        headers={headers}
-        data={filteredData}
-        actions={tableActions}
-        enableSelection={true}
-        onSelectionChange={setSelectedItems}
-      />
+      <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} onSelectionChange={setSelectedItems} />
 
-      <Dialog
-        open={openDeleteDialog}
+      <TransitionDialog
+        cancelText="Cancel"
+        confirmColor="error"
+        confirmText="Delete"
+        content="Are you sure you want to delete the selected categories?"
         onClose={() => setOpenDeleteDialog(false)}
-      >
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete the selected categories?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-          <Button color="error" onClick={handleConfirmDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onConfirm={handleConfirmDelete}
+        open={openDeleteDialog}
+        title="Confirm Delete"
+      />
     </Box>
   );
 }
