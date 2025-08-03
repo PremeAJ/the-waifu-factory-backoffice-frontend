@@ -35,7 +35,7 @@ const Sidebar = () => {
       {!lgUp ? (
         <Box
           sx={{
-            zIndex: 100,
+            zIndex: 99,
             width: toggleWidth,
             flexShrink: 0,
             ...(isCollapse == "mini-sidebar" && {
@@ -97,6 +97,8 @@ const Sidebar = () => {
           slotProps={{
             paper: {
               sx: {
+                mt:8,
+                zIndex: 99,
                 width: SidebarWidth,
                 border: "0 !important",
                 boxShadow: (theme) => theme.shadows[8],
@@ -107,9 +109,9 @@ const Sidebar = () => {
           {/* ------------------------------------------- */}
           {/* Logo */}
           {/* ------------------------------------------- */}
-          <Box px={2}>
-            <Logo />
-          </Box>
+          {/* <Box px={2}> */}
+            {/* <Logo /> */}
+          {/* </Box> */}
           {/* ------------------------------------------- */}
           {/* Sidebar For Mobile */}
           {/* ------------------------------------------- */}
