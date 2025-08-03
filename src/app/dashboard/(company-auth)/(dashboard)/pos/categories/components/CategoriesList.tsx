@@ -1,6 +1,6 @@
 "use client";
 import { Box, Chip, IconButton, Link, Stack, TextField, Tooltip } from "@mui/material";
-import { IconEdit, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconCircleDashedPlus, IconEdit, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseTable from "@/common/components/base/BaseTable";
@@ -9,8 +9,8 @@ import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseSearchField from "@/common/components/base/BaseSearchField";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import CategoryButton from "@/common/components/floating/CategoryButton";
-import zIndex from "@mui/material/styles/zIndex";
+import router from "next/router";
+import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
 
 function CategoriesList() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -90,7 +90,6 @@ function CategoriesList() {
 
   return (
     <Box>
-      
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
           <BaseSearchField value={searchTerm} onSearchChange={setSearchTerm} sx={{ zIndex: 9999 }} />
@@ -105,11 +104,20 @@ function CategoriesList() {
           />
         )}
 
-        <BaseButton variant="contained" href="/dashboard/pos/categories/create" fullWidth={false} preset="add" label="Add Category" />
+        {isMobile ? (
+          <BaseFloatingButton
+            color="primary"
+            aria-label="add category"
+            icon={<IconCircleDashedPlus />}
+            onClick={() => router.push("/dashboard/pos/categories/create")}
+            sx={{ zIndex: 9998}}
+          />
+        ) : (
+          <BaseButton variant="contained" href="/dashboard/pos/categories/create" fullWidth={false} preset="add" label="Add Category" />
+        )}
       </Stack>
 
       <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} onSelectionChange={setSelectedItems} />
-
       <TransitionDialog
         cancelText="Cancel"
         confirmColor="error"
