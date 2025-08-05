@@ -11,9 +11,21 @@ import React, { useState, useMemo } from "react";
 import router from "next/router";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import BaseDialog from "@/common/components/base/BaseDialog";
+import CategoryDialog from "./CategoryDialog";
+
+type DialogState = {
+  open: boolean;
+  type: "create" | "edit";
+  categoryId?: string | null;
+};
 
 function CategoriesList() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [dialogState, setDialogState] = useState<DialogState>({
+    open: false,
+    type: "create",
+    categoryId: null,
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { categories, deleteCategory } = useCategories();
@@ -50,7 +62,10 @@ function CategoriesList() {
   const headers: any = [
     { key: "nameTh", label: "Name (TH)", align: "center" },
     { key: "nameEn", label: "Name (EN)", align: "center" },
-    { key: "isActive", label: "Active", align: "center",
+    {
+      key: "isActive",
+      label: "Active",
+      align: "center",
       render: (isActive: boolean) => <Chip label={isActive ? "Active" : "Inactive"} color={isActive ? "success" : "default"} size="small" />,
     },
   ];
@@ -58,7 +73,16 @@ function CategoriesList() {
   const tableActions = (item: any) => (
     <>
       <Tooltip title="Edit">
-        <IconButton component={Link} href={`/dashboard/pos/categories/edit/${item.id}`} color="primary">
+        <IconButton
+          onClick={() => {
+            setDialogState({
+              open: true,
+              type: "edit",
+              categoryId: item.id,
+            });
+          }}
+          color="primary"
+        >
           <IconEdit width={22} />
         </IconButton>
       </Tooltip>
@@ -84,6 +108,14 @@ function CategoriesList() {
     setOpenDeleteDialog(false);
   };
 
+  const handleCloseDialog = () => {
+    setDialogState({
+      open: false,
+      type: "create",
+      categoryId: null,
+    });
+  };
+
   return (
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
@@ -102,12 +134,32 @@ function CategoriesList() {
         )}
 
         {isMobile ? (
-          <BaseFloatingButton icon={<IconPlus />} onClick={() => router.push("/dashboard/pos/categories/create")} />
+          <BaseFloatingButton
+            icon={<IconPlus />}
+            onClick={() => setDialogState({ open: true, type: "create" })}
+          />
         ) : (
-          <BaseButton variant="contained" href="/dashboard/pos/categories/create" fullWidth={false} preset="add" label="Add Category" />
+          <BaseButton
+            variant="contained"
+            onClick={() => setDialogState({ open: true, type: "create" })}
+            fullWidth={false}
+            preset="add"
+            label="Add Category"
+          />
         )}
       </Stack>
+
       <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} />
+
+      {/* Category Dialog (Create/Edit) */}
+      <CategoryDialog
+        open={dialogState.open}
+        onClose={handleCloseDialog}
+        type={dialogState.type}
+        categoryId={dialogState.categoryId}
+      />
+
+      {/* Delete Confirmation Dialog */}
       <BaseDialog
         cancelText="Cancel"
         confirmColor="error"

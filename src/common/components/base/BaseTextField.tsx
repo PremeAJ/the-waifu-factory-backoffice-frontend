@@ -113,7 +113,6 @@ const BaseTextField = ({
   };
 
   const getEndAdornment = () => {
-    // ถ้ามี manual endAdornment ให้ใช้ตัวนั้น
     if (endAdornment) return endAdornment;
     
     if (type === "password") {
@@ -131,7 +130,6 @@ const BaseTextField = ({
       );
     }
     
-    // ถ้าเป็น type search และมีค่า ให้ใส่ปุ่มล้าง
     if (type === "search") {
       const currentValue = formik?.values[name] || rest.value || "";
       if (currentValue) {

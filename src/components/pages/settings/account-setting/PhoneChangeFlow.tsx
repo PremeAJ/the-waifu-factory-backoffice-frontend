@@ -182,9 +182,10 @@ const PhoneChangeFlow: React.FC<PhoneChangeFlowProps> = ({ open, onClose, curren
               helperText={otpError}
               fullWidth
               placeholder="123456"
-              inputProps={{
-                maxLength: 6,
-                style: { textAlign: "center", fontSize: "1.5rem", letterSpacing: "0.5em" },
+              slotProps={{
+                input: {
+                  style: { textAlign: "center", fontSize: "1.5rem", letterSpacing: "0.5em" },
+                },
               }}
             />
 

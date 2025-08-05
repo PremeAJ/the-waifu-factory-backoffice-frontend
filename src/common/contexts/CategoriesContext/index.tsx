@@ -44,6 +44,9 @@ export interface UpdateCategoryDto {
   isActive?: boolean;
 }
 
+export interface CategoryDetailType extends CategoryType {
+}
+
 export type CategoriesContextType = {
   categories: CategoryType[];
   dropdown: CategoryDropdownType[];
@@ -51,6 +54,7 @@ export type CategoriesContextType = {
   error: Error | null;
   categoriesMutate: () => Promise<any>;
   dropdownMutate: () => Promise<any>;
+  getCategoryById: (id: string) => Promise<CategoryDetailType>;
   createCategory: (payload: CreateCategoryDto) => Promise<any>;
   updateCategory: (id: string, payload: UpdateCategoryDto) => Promise<any>;
   deleteCategory: (id: string) => Promise<any>;
@@ -72,6 +76,15 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     isLoading: dropdownLoading,
     mutate: dropdownMutate,
   } = useSWR("/api/categories/dropdown", getFetcher);
+
+  const getCategoryById = async (id: string): Promise<CategoryDetailType> => {
+    try {
+      const response = await getFetcher(`/api/categories/${id}`);
+      return response.data;
+    } catch (err: any) {
+      throw err;
+    }
+  };
 
   const createCategory = async (payload: CreateCategoryDto) => {
     try {
@@ -110,6 +123,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     error: categoriesError || dropdownError || null,
     categoriesMutate,
     dropdownMutate,
+    getCategoryById,
     createCategory,
     updateCategory,
     deleteCategory,

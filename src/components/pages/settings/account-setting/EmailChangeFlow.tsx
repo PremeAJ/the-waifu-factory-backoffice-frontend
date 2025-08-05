@@ -113,7 +113,6 @@ const EmailChangeFlow: React.FC<EmailChangeFlowProps> = ({ open, onClose, curren
         fullScreen={isMobile}
       />
 
-      {/* Dialog แจ้งส่งอีเมลยืนยันสำเร็จ */}
       <BaseDialog
         open={open && step === "sent"}
         icon="/images/breadcrumb/emailSv.png"

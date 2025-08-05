@@ -3,7 +3,7 @@ import { AuthProvider } from "@/common/contexts/AuthContext";
 import { CustomizerContextProvider } from "../common/contexts/setting/customizerContext";
 import { Metadata, Viewport } from "next";
 import ActionButton from "@/common/components/floating/ActionButton";
-import { ThemeAwareTopLoader } from "@/common/components/ThemeAwareComponents";
+import { ThemeAwareTopLoader } from "@/common/components/main/ThemeAwareComponents";
 import Header from "./header";
 import MyApp from "./app";
 import React from "react";
