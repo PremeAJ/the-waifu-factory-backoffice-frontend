@@ -118,7 +118,7 @@ const BaseTable = <T extends readonly TableHeader[]>({ headers, data, actions, e
   return (
     <Box>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }}>
+        <Table >
           <TableHead
             sx={{
               bgcolor: theme.palette.primary.main,

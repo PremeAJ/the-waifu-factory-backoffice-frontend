@@ -60,15 +60,19 @@ function CategoriesList() {
   }, [categories, searchTerm]);
 
   const headers: any = [
-    { key: "nameTh", label: "Name (TH)", align: "left", width:'30%' },
-    { key: "nameEn", label: "Name (EN)", align: "left",width:'30%' },
-    {
-      key: "isActive",
-      label: "Active",
-      align: "center",
-      width:'20%',
-      render: (isActive: boolean) => <Chip label={isActive ? "Active" : "Inactive"} color={isActive ? "success" : "default"} size="small" />,
-    },
+    { key: "nameTh", label: "Name (TH)", align: "left", width: "30%" },
+    ...(!isMobile
+      ? [
+          { key: "nameEn", label: "Name (EN)", align: "left", width: "30%" },
+          {
+            key: "isActive",
+            label: "Active",
+            align: "center",
+            width: "20%",
+            render: (isActive: boolean) => <Chip label={isActive ? "Active" : "Inactive"} color={isActive ? "success" : "default"} size="small" />,
+          },
+        ]
+      : []),
   ];
 
   const tableActions = (item: any) => (
@@ -135,10 +139,7 @@ function CategoriesList() {
         )}
 
         {isMobile ? (
-          <BaseFloatingButton
-            icon={<IconPlus />}
-            onClick={() => setDialogState({ open: true, type: "create" })}
-          />
+          <BaseFloatingButton icon={<IconPlus />} onClick={() => setDialogState({ open: true, type: "create" })} />
         ) : (
           <BaseButton
             variant="contained"
@@ -150,12 +151,7 @@ function CategoriesList() {
         )}
       </Stack>
       <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} />
-      <CategoryDialog
-        open={dialogState.open}
-        onClose={handleCloseDialog}
-        type={dialogState.type}
-        categoryId={dialogState.categoryId}
-      />
+      <CategoryDialog open={dialogState.open} onClose={handleCloseDialog} type={dialogState.type} categoryId={dialogState.categoryId} />
       <BaseDialog
         cancelText="Cancel"
         confirmColor="error"
