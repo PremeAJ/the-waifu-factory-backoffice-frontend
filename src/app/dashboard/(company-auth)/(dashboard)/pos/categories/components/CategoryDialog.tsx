@@ -36,9 +36,13 @@ const validationSchema = yup.object({
 const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, categoryId }) => {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
+  const [categoryData, setCategoryData] = useState<any>(null);
 
   const { categories, createCategory, updateCategory, getCategoryById } = useCategories();
   const isMobile = useIsMobile();
+
+  // เช็คว่ามี subcategories หรือไม่
+  const hasSubCategories = categoryData?.subCategories?.length > 0;
 
   // สร้าง options สำหรับ BaseDropdown
   const parentCategoryOptions = useMemo(() => {
@@ -79,12 +83,13 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           nameTh: values.nameTh,
           nameEn: values.nameEn || undefined,
           isActive: values.isActive,
-          parent: values.parent || null,
+          parent: hasSubCategories ? undefined : (values.parent || null),
         });
       }
 
       // Reset form and close dialog
       formik.resetForm();
+      setCategoryData(null);
       onClose();
     } catch (error: any) {
       const errorMessage = type === "create" 
@@ -111,17 +116,21 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   // Fetch category data when editing
   useEffect(() => {
     const fetchCategoryData = async () => {
-      if (type !== "edit" || !open || !categoryId) return;
+      if (type !== "edit" || !open || !categoryId) {
+        setCategoryData(null);
+        return;
+      }
 
       setFetchLoading(true);
       try {
-        const categoryData = await getCategoryById(categoryId);
+        const fetchedCategoryData = await getCategoryById(categoryId);
+        setCategoryData(fetchedCategoryData);
         
         formik.setValues({
-          nameTh: categoryData.nameTh,
-          nameEn: categoryData.nameEn || "",
-          parent: categoryData.parent || "",
-          isActive: categoryData.isActive,
+          nameTh: fetchedCategoryData.nameTh,
+          nameEn: fetchedCategoryData.nameEn || "",
+          parent: fetchedCategoryData.parent || "",
+          isActive: fetchedCategoryData.isActive,
         });
       } catch (error: any) {
         formik.setStatus(error.message || "เกิดข้อผิดพลาดในการโหลดข้อมูลหมวดหมู่");
@@ -135,6 +144,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   const handleClose = () => {
     formik.resetForm();
     formik.setStatus(undefined);
+    setCategoryData(null);
     onClose();
   };
 
@@ -187,6 +197,12 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                   label="หมวดหมู่หลัก"
                   options={parentCategoryOptions}
                   showEmptyOption
+                  disabled={type === "edit" && hasSubCategories}
+                  tooltip={
+                    type === "edit" && hasSubCategories 
+                      ? "ไม่สามารถเปลี่ยนหมวดหมู่หลักได้เนื่องจากมีหมวดหมู่ย่อยอยู่"
+                      : undefined
+                  }
                   emptyOptionText={
                     type === "create" 
                       ? "ไม่มี (สร้างเป็นหมวดหมู่หลัก)"

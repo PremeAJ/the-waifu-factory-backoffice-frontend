@@ -8,10 +8,10 @@ import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import React, { useState, useMemo } from "react";
-import router from "next/router";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import CategoryDialog from "./CategoryDialog";
+import { width } from "@mui/system";
 
 type DialogState = {
   open: boolean;
@@ -60,12 +60,13 @@ function CategoriesList() {
   }, [categories, searchTerm]);
 
   const headers: any = [
-    { key: "nameTh", label: "Name (TH)", align: "center" },
-    { key: "nameEn", label: "Name (EN)", align: "center" },
+    { key: "nameTh", label: "Name (TH)", align: "left", width:'30%' },
+    { key: "nameEn", label: "Name (EN)", align: "left",width:'30%' },
     {
       key: "isActive",
       label: "Active",
       align: "center",
+      width:'20%',
       render: (isActive: boolean) => <Chip label={isActive ? "Active" : "Inactive"} color={isActive ? "success" : "default"} size="small" />,
     },
   ];
