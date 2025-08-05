@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, CircularProgress, Grid } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useCategories } from "@/common/contexts/CategoriesContext";
@@ -37,7 +37,6 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [categoryData, setCategoryData] = useState<any>(null);
-
   const { categories, createCategory, updateCategory, getCategoryById } = useCategories();
   const isMobile = useIsMobile();
 
@@ -83,7 +82,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           nameTh: values.nameTh,
           nameEn: values.nameEn || undefined,
           isActive: values.isActive,
-          parent: hasSubCategories ? undefined : (values.parent || null),
+          parent: hasSubCategories ? undefined : values.parent || null,
         });
       }
 
@@ -92,9 +91,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       setCategoryData(null);
       onClose();
     } catch (error: any) {
-      const errorMessage = type === "create" 
-        ? "เกิดข้อผิดพลาดในการสร้างหมวดหมู่"
-        : "เกิดข้อผิดพลาดในการอัปเดตหมวดหมู่";
+      const errorMessage = type === "create" ? "เกิดข้อผิดพลาดในการสร้างหมวดหมู่" : "เกิดข้อผิดพลาดในการอัปเดตหมวดหมู่";
       formik.setStatus(error.message || errorMessage);
     }
 
@@ -125,7 +122,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       try {
         const fetchedCategoryData = await getCategoryById(categoryId);
         setCategoryData(fetchedCategoryData);
-        
+
         formik.setValues({
           nameTh: fetchedCategoryData.nameTh,
           nameEn: fetchedCategoryData.nameEn || "",
@@ -163,15 +160,12 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       open={open}
       title={dialogProps.title}
       content={
-        <Box sx={{ minWidth: 400 }}>
-          {fetchLoading ? (
-            <Box sx={{ textAlign: "center", py: 4 }}>
-              กำลังโหลดข้อมูล...
-            </Box>
-          ) : (
+        <Box>
+          {
             <Grid container spacing={2}>
-              <Grid size={6}>
+              <Grid size={isMobile ? 12 : 6}>
                 <BaseTextField
+                  loading={fetchLoading}
                   formik={formik}
                   name="nameTh"
                   label="ชื่อหมวดหมู่ (ภาษาไทย)"
@@ -180,8 +174,9 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                 />
               </Grid>
 
-              <Grid size={6}>
+              <Grid size={isMobile ? 12 : 6}>
                 <BaseTextField
+                  loading={fetchLoading}
                   formik={formik}
                   name="nameEn"
                   label="ชื่อหมวดหมู่ (ภาษาอังกฤษ)"
@@ -189,48 +184,31 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                 />
               </Grid>
 
-              <Grid size={6}>
-                {/* Parent Category Dropdown */}
+              <Grid size={isMobile ? 12 : 6}>
                 <BaseDropdown
+                  loading={fetchLoading}
                   formik={formik}
                   name="parent"
                   label="หมวดหมู่หลัก"
                   options={parentCategoryOptions}
                   showEmptyOption
                   disabled={type === "edit" && hasSubCategories}
-                  tooltip={
-                    type === "edit" && hasSubCategories 
-                      ? "ไม่สามารถเปลี่ยนหมวดหมู่หลักได้เนื่องจากมีหมวดหมู่ย่อยอยู่"
-                      : undefined
-                  }
-                  emptyOptionText={
-                    type === "create" 
-                      ? "ไม่มี (สร้างเป็นหมวดหมู่หลัก)"
-                      : "ไม่มี (เป็นหมวดหมู่หลัก)"
-                  }
+                  tooltip={type === "edit" && hasSubCategories ? "ไม่สามารถเปลี่ยนหมวดหมู่หลักได้เนื่องจากมีหมวดหมู่ย่อยอยู่" : undefined}
+                  emptyOptionText={type === "create" ? "ไม่มี (สร้างเป็นหมวดหมู่หลัก)" : "ไม่มี (เป็นหมวดหมู่หลัก)"}
                 />
               </Grid>
 
-              <Grid size={6}>
-                {/* Status Dropdown */}
-                <BaseDropdown
-                  formik={formik}
-                  name="isActive"
-                  label="สถานะ"
-                  options={statusOptions}
-                  required
-                />
+              <Grid size={isMobile ? 12 : 6}>
+                <BaseDropdown loading={fetchLoading} formik={formik} name="isActive" label="สถานะ" options={statusOptions} required />
               </Grid>
 
               {formik.status && (
                 <Grid size={12}>
-                  <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>
-                    {formik.status}
-                  </Box>
+                  <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>{formik.status}</Box>
                 </Grid>
               )}
             </Grid>
-          )}
+          }
         </Box>
       }
       confirmText={dialogProps.confirmText}

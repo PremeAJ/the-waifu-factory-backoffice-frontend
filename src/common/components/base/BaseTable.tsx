@@ -14,6 +14,7 @@ import {
   Checkbox,
   TableContainer,
   Paper,
+  useTheme,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -41,31 +42,20 @@ interface BaseTableProps<T extends readonly TableHeader[]> {
 }
 
 // --- Component ---
-const BaseTable = <T extends readonly TableHeader[]>({
-  headers,
-  data,
-  actions,
-  enableSelection = false,
-  onSelectionChange,
-}: BaseTableProps<T>) => {
+const BaseTable = <T extends readonly TableHeader[]>({ headers, data, actions, enableSelection = false, onSelectionChange }: BaseTableProps<T>) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-
-  const paginatedData = useMemo(
-    () => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [data, page, rowsPerPage]
-  );
+  const theme = useTheme();
+  const paginatedData = useMemo(() => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [data, page, rowsPerPage]);
 
   const toggleRow = (id: string) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleSelect = (id: string) => {
-    const newSelected = selectedItems.includes(id)
-      ? selectedItems.filter((item) => item !== id)
-      : [...selectedItems, id];
+    const newSelected = selectedItems.includes(id) ? selectedItems.filter((item) => item !== id) : [...selectedItems, id];
     setSelectedItems(newSelected);
     onSelectionChange?.(newSelected);
   };
@@ -79,8 +69,8 @@ const BaseTable = <T extends readonly TableHeader[]>({
   // Helper function สำหรับสร้าง sx props สำหรับ width
   const getColumnWidth = (header: TableHeader) => ({
     ...(header.width && { width: header.width }),
-    ...(typeof header.width === 'string' && header.width.includes('%') && { width: header.width }),
-    ...(typeof header.width === 'number' && { width: `${header.width}px` }),
+    ...(typeof header.width === "string" && header.width.includes("%") && { width: header.width }),
+    ...(typeof header.width === "number" && { width: `${header.width}px` }),
   });
 
   const renderCell = (header: TableHeader, item: DataItem) => {
@@ -92,7 +82,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
 
   const renderRow = (item: DataItem, isSubItem = false) => (
     <TableRow key={item.id} hover sx={isSubItem ? { backgroundColor: "rgba(0, 0, 0, 0.02)" } : {}}>
-      <TableCell align="center">
+      <TableCell size="small" align="center">
         {!isSubItem && item.subItems && item.subItems.length > 0 && (
           <IconButton size="small" onClick={() => toggleRow(item.id)}>
             {openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -100,15 +90,16 @@ const BaseTable = <T extends readonly TableHeader[]>({
         )}
       </TableCell>
       {enableSelection && (
-        <TableCell padding="checkbox">
+        <TableCell size="small" padding="checkbox">
           <Checkbox checked={selectedItems.includes(item.id)} onChange={() => handleSelect(item.id)} />
         </TableCell>
       )}
       {headers.map((header) => (
-        <TableCell 
-          key={header.key} 
+        <TableCell
+          size="small"
+          key={header.key}
           align={header.align || "left"}
-          sx={{ 
+          sx={{
             ...getColumnWidth(header),
             ...(isSubItem && header.key === headers[0].key && { pl: 4 }),
           }}
@@ -117,7 +108,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
         </TableCell>
       ))}
       {actions && (
-        <TableCell align="center">
+        <TableCell size="small" align="center">
           {actions(item)}
         </TableCell>
       )}
@@ -128,11 +119,22 @@ const BaseTable = <T extends readonly TableHeader[]>({
     <Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
-          <TableHead>
+          <TableHead
+            sx={{
+              bgcolor: theme.palette.primary.main,
+              "& .MuiTableCell-root": {
+                color: theme.palette.primary.contrastText,
+                fontWeight: "bold",
+              },
+              "& .MuiCheckbox-root": {
+                color: theme.palette.primary.contrastText,
+              },
+            }}
+          >
             <TableRow>
-              <TableCell padding="none" sx={{ width: 40 }} />
+              <TableCell size="small" padding="none" sx={{ width: 40, border: 0 }} />
               {enableSelection && (
-                <TableCell padding="checkbox">
+                <TableCell size="small" padding="checkbox" sx={{ border: 0 }}>
                   <Checkbox
                     indeterminate={selectedItems.length > 0 && selectedItems.length < data.length}
                     checked={data.length > 0 && selectedItems.length === data.length}
@@ -141,15 +143,15 @@ const BaseTable = <T extends readonly TableHeader[]>({
                 </TableCell>
               )}
               {headers.map((header) => (
-                <TableCell 
-                  key={header.key} 
-                  align={header.align || "left"}
-                  sx={getColumnWidth(header)}
-                >
+                <TableCell size="small" key={header.key} align={header.align || "left"} sx={{ ...getColumnWidth(header), border: 0 }}>
                   {header.label}
                 </TableCell>
               ))}
-              {actions && <TableCell align="center">Actions</TableCell>}
+              {actions && (
+                <TableCell size="small" align="center" sx={{ border: 0 }}>
+                  Actions
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { FormControl, Select, MenuItem, SelectProps, Tooltip } from "@mui/material";
+import { FormControl, Select, MenuItem, SelectProps, Tooltip, Skeleton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BaseLabel from "./BaseLabel";
 
@@ -24,6 +24,7 @@ interface BaseDropdownProps extends Omit<SelectProps, "onChange" | "value"> {
   orderBy?: (a: OptionType, b: OptionType) => number;
   showEmptyOption?: boolean;
   emptyOptionText?: string;
+  loading?: boolean; // <-- 1. เพิ่ม prop loading
 }
 
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
@@ -68,6 +69,8 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
   showEmptyOption = false,
   emptyOptionText = "-- กรุณาเลือก --",
   fullWidth = true,
+  loading = false, // <-- 2. Destructure loading prop
+  size, // <-- 3. Destructure size prop
   ...rest
 }) => {
   // จัดเรียง options ถ้ามี orderBy
@@ -108,6 +111,16 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
   // Error state
   const hasError = formik?.touched[name] && Boolean(formik.errors[name]);
   const helperText = formik?.touched[name] && formik.errors[name];
+
+  // 4. เพิ่ม Logic การแสดง Skeleton
+  if (loading) {
+    return (
+      <>
+        {label && <BaseLabel>{label}</BaseLabel>}
+        <Skeleton variant="rectangular" width={fullWidth ? "100%" : undefined} height={44} sx={{ borderRadius: 1 }} />
+      </>
+    );
+  }
 
   return (
     <>

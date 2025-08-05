@@ -149,18 +149,13 @@ function CategoriesList() {
           />
         )}
       </Stack>
-
       <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} />
-
-      {/* Category Dialog (Create/Edit) */}
       <CategoryDialog
         open={dialogState.open}
         onClose={handleCloseDialog}
         type={dialogState.type}
         categoryId={dialogState.categoryId}
       />
-
-      {/* Delete Confirmation Dialog */}
       <BaseDialog
         cancelText="Cancel"
         confirmColor="error"

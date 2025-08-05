@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { TextField, TextFieldProps, IconButton, InputAdornment, Tooltip } from "@mui/material";
+import { TextField, TextFieldProps, IconButton, InputAdornment, Tooltip, Skeleton } from "@mui/material";
 import { IconEye, IconEyeOff, IconSearch, IconX } from "@tabler/icons-react";
 import BaseLabel from "./BaseLabel";
 
@@ -13,7 +13,8 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   startAdornment?: React.ReactNode;
   endAdornment?: React.ReactNode;
   required?: boolean;
-  tooltip?: string; 
+  tooltip?: string;
+  loading?: boolean; // <-- 1. เพิ่ม prop loading
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -55,18 +56,43 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const BaseTextField = ({ 
-  name, 
-  label, 
-  placeholder, 
-  formik, 
-  startAdornment, 
+const BaseTextField = ({
+  name,
+  label,
+  placeholder,
+  formik,
+  startAdornment,
   endAdornment,
-  type, 
-  required, 
-  tooltip, 
-  ...rest 
+  type,
+  required,
+  tooltip,
+  loading = false, 
+  ...rest
 }: CustomTextFieldProps) => {
+  if (loading) {
+    const skeleton = (
+      <Skeleton variant="rectangular" width="100%" height={44} sx={{ borderRadius: 1 }} />
+    );
+
+    return (
+      <>
+        {label && (
+          <BaseLabel>
+            {label}
+            {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
+          </BaseLabel>
+        )}
+        {tooltip ? (
+          <Tooltip title={tooltip} placement="bottom-start">
+            <span style={{ display: "block" }}>{skeleton}</span>
+          </Tooltip>
+        ) : (
+          skeleton
+        )}
+      </>
+    );
+  }
+
   const [showPassword, setShowPassword] = useState(false);
 
   let helperText = null;
