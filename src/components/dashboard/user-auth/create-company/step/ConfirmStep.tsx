@@ -8,7 +8,7 @@ import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseCheckBox from "@/common/components/base/BaseCheckBox";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
+import BaseDialog from "@/common/components/base/BaseDialog";
 
 const ConfirmStep = ({ formik }: any) => {
   const {
@@ -140,7 +140,7 @@ const ConfirmStep = ({ formik }: any) => {
       />
       <BaseLinkButton onClick={() => setOpenDialog(true)} label="ข้อกำหนดและเงื่อนไข" />
 
-      <TransitionDialog
+      <BaseDialog
         open={openDialog}
         title="ข้อกำหนดและเงื่อนไข"
         content={I18nString(isLanguage, termsOfService?.detailTh, termsOfService?.detailEn) || "ไม่มีข้อมูลเงื่อนไขการใช้งาน"}

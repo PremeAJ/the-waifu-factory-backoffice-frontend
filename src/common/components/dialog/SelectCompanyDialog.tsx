@@ -4,7 +4,7 @@ import { IconPlus } from "@tabler/icons-react";
 import CompanyAvatar from "@/components/avatar/CompanyAvatar";
 import { UserContext } from "@/common/contexts/UserContext";
 import { useRouter } from "next/navigation";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
+import BaseDialog from "../base/BaseDialog";
 
 interface SelectCompanyDialogProps {
   open: boolean;
@@ -83,7 +83,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
   };
 
   return (
-    <TransitionDialog
+    <BaseDialog
       open={open}
       title="เลือกบริษัทที่ต้องการใช้งาน"
       content={companyListContent}

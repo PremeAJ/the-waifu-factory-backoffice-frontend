@@ -13,11 +13,11 @@ import { useTranslation } from "react-i18next";
 import { removeUndefinedAndNull } from "@/common/utils/function/object/object-cleaner";
 import EmailChangeFlow from "./EmailChangeFlow";
 import PhoneChangeFlow from "./PhoneChangeFlow";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import AvatarCropDialog from "@/components/ui-components/dialog/AvatarCropDialog";
 import BaseLabel from "@/common/components/base/BaseLabel";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseButton from "@/common/components/base/BaseButton";
+import BaseDialog from "@/common/components/base/BaseDialog";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -211,7 +211,7 @@ const AccountTab = () => {
       />
 
       {/* Cancel Confirmation Dialog */}
-      <TransitionDialog
+      <BaseDialog
         open={showCancelDialog}
         title="ยืนยันการยกเลิก"
         content="หากยืนยันยกเลิก การเปลี่ยนแปลงทั้งหมดจะไม่ถูกบันทึก"

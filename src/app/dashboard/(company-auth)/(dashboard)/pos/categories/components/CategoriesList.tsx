@@ -9,8 +9,8 @@ import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import React, { useState, useMemo } from "react";
 import router from "next/router";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import BaseDialog from "@/common/components/base/BaseDialog";
 
 function CategoriesList() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -108,7 +108,7 @@ function CategoriesList() {
         )}
       </Stack>
       <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} />
-      <TransitionDialog
+      <BaseDialog
         cancelText="Cancel"
         confirmColor="error"
         confirmText="Delete"

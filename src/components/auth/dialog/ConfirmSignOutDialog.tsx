@@ -1,6 +1,5 @@
 import React from "react";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
-import { minWidth } from "@mui/system";
+import BaseDialog from "@/common/components/base/BaseDialog";
 
 interface ConfirmSignOutDialogProps {
   open: boolean;
@@ -15,7 +14,7 @@ const ConfirmSignOutDialog: React.FC<ConfirmSignOutDialogProps> = ({
   onClose,
   loading = false,
 }) => (
-  <TransitionDialog
+  <BaseDialog
     open={open}
     title="ออกจากระบบ"
     content="คุณต้องการออกจากระบบใช่หรือไม่?"

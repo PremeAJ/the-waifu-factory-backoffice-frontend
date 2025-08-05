@@ -5,7 +5,7 @@ import { IconAlertTriangle, IconInfoCircle, IconDeviceMobile, IconCheck } from "
 import { UserContext } from "@/common/contexts/UserContext";
 import { phoneRegex } from "@/common/utils/validator/regex";
 import BaseTextField from "@/common/components/base/BaseTextField";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
+import BaseDialog from "@/common/components/base/BaseDialog";
 
 interface PhoneChangeFlowProps {
   open: boolean;
@@ -110,7 +110,7 @@ const PhoneChangeFlow: React.FC<PhoneChangeFlowProps> = ({ open, onClose, curren
   return (
     <>
       {/* Dialog สำหรับกรอกหมายเลขโทรศัพท์ใหม่ */}
-      <TransitionDialog
+      <BaseDialog
         open={open && step === "input"}
         title={currentPhone ? "เปลี่ยนหมายเลขโทรศัพท์" : "เพิ่มหมายเลขโทรศัพท์"}
         content={
@@ -155,7 +155,7 @@ const PhoneChangeFlow: React.FC<PhoneChangeFlowProps> = ({ open, onClose, curren
       />
 
       {/* Dialog สำหรับยืนยัน OTP */}
-      <TransitionDialog
+      <BaseDialog
         open={open && step === "verify"}
         icon="/images/breadcrumb/otpSv.png"
         iconSize={100}

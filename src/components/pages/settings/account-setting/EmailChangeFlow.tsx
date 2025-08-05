@@ -3,8 +3,8 @@ import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/m
 import { IconAlertTriangle, IconInfoCircle, IconMail } from "@tabler/icons-react";
 import { UserContext } from "@/common/contexts/UserContext";
 import { emailRegex } from "@/common/utils/validator/regex";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 import BaseTextField from "@/common/components/base/BaseTextField";
+import BaseDialog from "@/common/components/base/BaseDialog";
 
 interface EmailChangeFlowProps {
   open: boolean;
@@ -80,7 +80,7 @@ const EmailChangeFlow: React.FC<EmailChangeFlowProps> = ({ open, onClose, curren
   return (
     <>
       {/* Dialog สำหรับกรอกอีเมลใหม่ */}
-      <TransitionDialog
+      <BaseDialog
         open={open && step === "input"}
         title="เปลี่ยนอีเมล"
         content={
@@ -114,7 +114,7 @@ const EmailChangeFlow: React.FC<EmailChangeFlowProps> = ({ open, onClose, curren
       />
 
       {/* Dialog แจ้งส่งอีเมลยืนยันสำเร็จ */}
-      <TransitionDialog
+      <BaseDialog
         open={open && step === "sent"}
         icon="/images/breadcrumb/emailSv.png"
         iconSize={100}

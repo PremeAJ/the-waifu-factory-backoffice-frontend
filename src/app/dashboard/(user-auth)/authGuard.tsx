@@ -1,9 +1,9 @@
 import Loading from "@/app/loading";
+import BaseDialog from "@/common/components/base/BaseDialog";
 import { AuthContext } from "@/common/contexts/AuthContext";
 import { UserContext } from "@/common/contexts/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <TransitionDialog
+      <BaseDialog
         open={showDialog}
         title="เกิดข้อผิดพลาด"
         content="Session ของคุณหมดอายุหรือไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบใหม่"

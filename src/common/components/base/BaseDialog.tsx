@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import BaseButton from "@/common/components/base/BaseButton";
 
@@ -8,7 +8,7 @@ const Transition = React.forwardRef(function Transition(props: TransitionProps &
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-interface TransitionDialogProps {
+interface BaseDialogProps {
   open: boolean;
   title: string;
   content: string | React.ReactNode;
@@ -25,7 +25,7 @@ interface TransitionDialogProps {
   htmlContent?: boolean;
 }
 
-const TransitionDialog: React.FC<TransitionDialogProps> = ({
+const BaseDialog: React.FC<BaseDialogProps> = ({
   open,
   title,
   content,
@@ -49,7 +49,6 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
     aria-describedby="alert-dialog-slide-description"
     fullScreen={fullScreen}
     scroll={scrolling ? "paper" : undefined}
- 
   >
     <DialogContent
       dividers={scrolling}
@@ -133,4 +132,4 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
   </Dialog>
 );
 
-export default TransitionDialog;
+export default BaseDialog;
