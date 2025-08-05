@@ -20,7 +20,6 @@ const AppShortcutButton = () => {
         bottom: 16,
         left: "50%",
         transform: "translateX(-50%)",
-        zIndex: 100,
       }}
       open={isMobile}
     >

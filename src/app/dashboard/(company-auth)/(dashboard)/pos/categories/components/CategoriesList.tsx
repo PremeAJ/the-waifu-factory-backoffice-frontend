@@ -1,16 +1,16 @@
 "use client";
-import { Box, Chip, IconButton, Link, Stack, TextField, Tooltip } from "@mui/material";
-import { IconCircleDashedPlus, IconEdit, IconSearch, IconTrash } from "@tabler/icons-react";
+import { Box, Chip, IconButton, Link, Stack, Tooltip } from "@mui/material";
+import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseButton from "@/common/components/base/BaseButton";
-import BaseTable from "@/common/components/base/BaseTable";
-import React, { useState, useMemo } from "react";
-import TransitionDialog from "@/common/components/dialog/TransitionDialog";
-import BaseTextField from "@/common/components/base/BaseTextField";
-import BaseSearchField from "@/common/components/base/BaseSearchField";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import router from "next/router";
 import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
+import BaseSearchField from "@/common/components/base/BaseSearchField";
+import BaseTable from "@/common/components/base/BaseTable";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import React, { useState, useMemo } from "react";
+import router from "next/router";
+import TransitionDialog from "@/common/components/dialog/TransitionDialog";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 function CategoriesList() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -23,7 +23,6 @@ function CategoriesList() {
     if (!searchTerm) {
       return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
     }
-
     const lowercasedSearchTerm = searchTerm.toLowerCase();
 
     return categories
@@ -51,10 +50,7 @@ function CategoriesList() {
   const headers: any = [
     { key: "nameTh", label: "Name (TH)", align: "center" },
     { key: "nameEn", label: "Name (EN)", align: "center" },
-    {
-      key: "isActive",
-      label: "Active",
-      align: "center",
+    { key: "isActive", label: "Active", align: "center",
       render: (isActive: boolean) => <Chip label={isActive ? "Active" : "Inactive"} color={isActive ? "success" : "default"} size="small" />,
     },
   ];
@@ -92,7 +88,7 @@ function CategoriesList() {
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
-          <BaseSearchField value={searchTerm} onSearchChange={setSearchTerm} sx={{ zIndex: 9999 }} />
+          <BaseSearchField value={searchTerm} onSearchChange={setSearchTerm} />
         ) : (
           <BaseTextField
             fullWidth={false}
@@ -100,24 +96,18 @@ function CategoriesList() {
             placeholder="Search categories"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            startAdornment={<IconSearch size={16} />}
+            sx={{ width: 300 }}
+            type="search"
           />
         )}
 
         {isMobile ? (
-          <BaseFloatingButton
-            color="primary"
-            aria-label="add category"
-            icon={<IconCircleDashedPlus />}
-            onClick={() => router.push("/dashboard/pos/categories/create")}
-            sx={{ zIndex: 9998}}
-          />
+          <BaseFloatingButton icon={<IconPlus />} onClick={() => router.push("/dashboard/pos/categories/create")} />
         ) : (
           <BaseButton variant="contained" href="/dashboard/pos/categories/create" fullWidth={false} preset="add" label="Add Category" />
         )}
       </Stack>
-
-      <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} onSelectionChange={setSelectedItems} />
+      <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} />
       <TransitionDialog
         cancelText="Cancel"
         confirmColor="error"

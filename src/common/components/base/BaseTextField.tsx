@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { TextField, TextFieldProps, IconButton, InputAdornment, Tooltip } from "@mui/material";
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import { IconEye, IconEyeOff, IconSearch, IconX } from "@tabler/icons-react";
 import BaseLabel from "./BaseLabel";
 
 interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
@@ -11,8 +11,9 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   placeholder?: string;
   formik?: any;
   startAdornment?: React.ReactNode;
+  endAdornment?: React.ReactNode;
   required?: boolean;
-  tooltip?: string; // เพิ่มตรงนี้
+  tooltip?: string; 
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -27,14 +28,12 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],
   },
-  // ปิด hover เมื่อ disabled
   "& .Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],
   },
   "& .MuiOutlinedInput-root.Mui-disabled:hover .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],
   },
-  // ปิดลูกตาของ browser
   "& input[type=password]": {
     "&::-ms-reveal": {
       display: "none",
@@ -43,9 +42,31 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
       display: "none",
     },
   },
+  "& input[type=search]": {
+    "&::-webkit-search-cancel-button": {
+      display: "none",
+    },
+    "&::-webkit-search-decoration": {
+      display: "none",
+    },
+    "&::-ms-clear": {
+      display: "none",
+    },
+  },
 }));
 
-const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type, required, tooltip, ...rest }: CustomTextFieldProps) => {
+const BaseTextField = ({ 
+  name, 
+  label, 
+  placeholder, 
+  formik, 
+  startAdornment, 
+  endAdornment,
+  type, 
+  required, 
+  tooltip, 
+  ...rest 
+}: CustomTextFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   let helperText = null;
@@ -66,16 +87,69 @@ const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type,
     event.preventDefault();
   };
 
+  const handleClearSearch = () => {
+    if (formik) {
+      formik.setFieldValue(name, "");
+    } else if (rest.onChange) {
+      // สำหรับกรณีที่ไม่ใช้ formik
+      rest.onChange({ target: { name, value: "" } } as any);
+    }
+  };
+
+  const getStartAdornment = () => {
+    // ถ้ามี manual startAdornment ให้ใช้ตัวนั้น
+    if (startAdornment) return startAdornment;
+    
+    // ถ้าเป็น type search ให้ใส่ search icon
+    if (type === "search") {
+      return (
+        <InputAdornment position="start">
+          <IconSearch size={20} />
+        </InputAdornment>
+      );
+    }
+    
+    return null;
+  };
+
   const getEndAdornment = () => {
+    // ถ้ามี manual endAdornment ให้ใช้ตัวนั้น
+    if (endAdornment) return endAdornment;
+    
     if (type === "password") {
       return (
         <InputAdornment position="end">
-          <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword} edge="end">
+          <IconButton 
+            aria-label="toggle password visibility" 
+            onClick={handleClickShowPassword} 
+            onMouseDown={handleMouseDownPassword} 
+            edge="end"
+          >
             {showPassword ? <IconEyeOff width={20} /> : <IconEye width={20} />}
           </IconButton>
         </InputAdornment>
       );
     }
+    
+    // ถ้าเป็น type search และมีค่า ให้ใส่ปุ่มล้าง
+    if (type === "search") {
+      const currentValue = formik?.values[name] || rest.value || "";
+      if (currentValue) {
+        return (
+          <InputAdornment position="end">
+            <IconButton 
+              aria-label="clear search" 
+              onClick={handleClearSearch}
+              edge="end"
+              size="small"
+            >
+              <IconX size={16} />
+            </IconButton>
+          </InputAdornment>
+        );
+      }
+    }
+    
     return null;
   };
 
@@ -95,9 +169,9 @@ const BaseTextField = ({ name, label, placeholder, formik, startAdornment, type,
       autoComplete={type === "password" ? "new-password" : undefined}
       slotProps={{
         input: {
-          startAdornment: startAdornment,
+          startAdornment: getStartAdornment(),
           endAdornment: getEndAdornment(),
-          ...(rest.InputProps || {}),
+          ...(rest.slotProps?.input || {}),
         },
       }}
       {...rest}

@@ -5,15 +5,15 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import BaseFab from "../base/BaseFab";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 
 const hideButton = ["/", "/auth/callback", "/dashboard/auth/callback", "/dashboard/auth/login", "/auth/login"];
-const manualBackPrefixes = ["/auth", "/dashboard/auth", "/dashboard/setting"];
 
 const ActionButton = () => {
   const isMobie = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
-  const allowBack = pathname.split("/").length > 3 || manualBackPrefixes.some((prefix) => pathname.startsWith(prefix));
+  const isSubMenu = useIsSubMenu()
 
   const [show, setShow] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -42,13 +42,13 @@ const ActionButton = () => {
   return (
     <BaseFab
       fadeDirection="left"
-      sx={{ position: "fixed", top: 16, left: 16, zIndex: 100 }}
-      onClick={() => (allowBack ? router.back() : sidebarAction())}
+      sx={{ position: "fixed", top: 16, left: 16, }}
+      onClick={() => (isSubMenu ? router.back() : sidebarAction())}
       aria-label="action"
       open={visible}
       onExited={handleExited}
     >
-      {allowBack ? <IconArrowLeft /> : <IconMenu2 />}
+      {isSubMenu ? <IconArrowLeft /> : <IconMenu2 />}
     </BaseFab>
   );
 };

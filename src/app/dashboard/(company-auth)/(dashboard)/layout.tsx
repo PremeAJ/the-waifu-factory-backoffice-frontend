@@ -1,14 +1,16 @@
 "use client";
+import { CompanyProvider } from "@/common/contexts/CompanyContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
+import { styled, useTheme } from "@mui/material/styles";
+import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { styled, useTheme } from "@mui/material/styles";
-import React, { useContext } from "react";
 import Header from "./layout/header/Header";
+import React, { useContext } from "react";
 import Sidebar from "./layout/sidebar/Sidebar";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { CompanyProvider } from "@/common/contexts/CompanyContext";
-import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
-import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -17,18 +19,20 @@ const MainWrapper = styled("div")(() => ({
 }));
 
 const PageWrapper = styled("div")(() => ({
+  backgroundColor: "transparent",
   display: "flex",
+  flexDirection: "column",
   flexGrow: 1,
   paddingBottom: "60px",
-  flexDirection: "column",
-  zIndex: 1,
   width: "100%",
-  backgroundColor: "transparent",
+  zIndex: 1,
 }));
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const { isLayout, activeMode, isCollapse } = useContext(CustomizerContext);
   const theme = useTheme();
+  const isMobile = useIsMobile();
+  const isSubMenu = useIsSubMenu();
 
   return (
     <CompanyProvider>
@@ -45,12 +49,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               }),
             }}
           >
-            <Header />
+            {isMobile && isSubMenu ? null : <Header />}
             <AppShortcutButton />
             <Container
               sx={{
                 pt: "30px",
                 maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
+                mt:isMobile && isSubMenu ? 6 : undefined
               }}
             >
               <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>

@@ -5,7 +5,6 @@ import CompanyAvatar from "@/components/avatar/CompanyAvatar";
 import { UserContext } from "@/common/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import TransitionDialog from "@/common/components/dialog/TransitionDialog";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 interface SelectCompanyDialogProps {
   open: boolean;
@@ -32,7 +31,6 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
     if (onClose) onClose();
   };
 
-  // สร้างเนื้อหา list บริษัท
   const companyListContent = (
     <List sx={{ pt: 0 }}>
       {companyList.map((company) => {

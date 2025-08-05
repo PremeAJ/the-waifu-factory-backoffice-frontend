@@ -22,7 +22,6 @@ const CategoryButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) => {
       onClick={onClick}
       sx={{
         position: "fixed",
-        zIndex: 100,
         top: 16,
         right: 16,
         ...sx,

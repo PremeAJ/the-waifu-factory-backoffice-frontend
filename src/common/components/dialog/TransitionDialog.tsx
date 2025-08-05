@@ -49,6 +49,7 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
     aria-describedby="alert-dialog-slide-description"
     fullScreen={fullScreen}
     scroll={scrolling ? "paper" : undefined}
+ 
   >
     <DialogContent
       dividers={scrolling}
@@ -58,6 +59,7 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
+        minWidth:350
       }}
     >
       <DialogTitle sx={{ textAlign: "center", pb: icon ? 1 : 2 }}>
@@ -93,7 +95,9 @@ const TransitionDialog: React.FC<TransitionDialogProps> = ({
               gap: 2,
               padding: 3,
             }
-          : {}
+          : {
+            margin:1
+          }
       }
     >
       {fullScreen ? (

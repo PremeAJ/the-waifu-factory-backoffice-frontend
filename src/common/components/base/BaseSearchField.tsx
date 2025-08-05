@@ -36,7 +36,7 @@ const StyledSearchField = styled(
     }),
 
     [theme.breakpoints.down("sm")]: {
-      width: expanded ? "90vw" : "50vw",
+      width: expanded ? "60vw" : "40vw",
     },
     "& .MuiOutlinedInput-root": {
       borderRadius: outerRadius,
