@@ -37,12 +37,12 @@ function CategoriesList() {
     { key: "nameTh", label: "Name (TH)", align: "left", width: "30%" },
     ...(!isMobile
       ? [
-          { 
-            key: "nameEn", 
-            label: "Name (EN)", 
-            align: "left", 
+          {
+            key: "nameEn",
+            label: "Name (EN)",
+            align: "left",
             width: "30%",
-            render: (value: string) => value || "-"
+            render: (value: string) => value || "-",
           },
           {
             key: "isActive",
@@ -55,35 +55,39 @@ function CategoriesList() {
       : []),
   ];
 
-  const tableActions = (item: any) => (
-    <>
-      <Tooltip title="Edit">
-        <IconButton
-          onClick={() => {
-            setDialogState({
-              open: true,
-              type: "edit",
-              categoryId: item.id,
-            });
-          }}
-          color="primary"
-        >
-          <IconEdit width={22} />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Delete">
-        <IconButton
-          onClick={() => {
-            setSelectedItems([item.id]);
-            setOpenDeleteDialog(true);
-          }}
-          color="error"
-        >
-          <IconTrash width={22} />
-        </IconButton>
-      </Tooltip>
-    </>
-  );
+  const tableActions = (item: any) => {
+    console.log("🚀 ~ tableActions ~ item:", item);
+    return (
+      <>
+        <Tooltip title="Edit">
+          <IconButton
+            onClick={() => {
+              setDialogState({
+                open: true,
+                type: "edit",
+                categoryId: item.id,
+              });
+            }}
+            color="primary"
+          >
+            <IconEdit width={22} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete">
+          <IconButton
+            disabled={item?.subItems?.length > 0}
+            onClick={() => {
+              setSelectedItems([item.id]);
+              setOpenDeleteDialog(true);
+            }}
+            color="error"
+          >
+            <IconTrash width={22} />
+          </IconButton>
+        </Tooltip>
+      </>
+    );
+  };
 
   const handleConfirmDelete = async () => {
     for (const id of selectedItems) {
@@ -102,12 +106,12 @@ function CategoriesList() {
   };
 
   const handlePageChange = (event: unknown, newPage: number) => {
-    setPage(newPage + 1); 
+    setPage(newPage + 1);
   };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPerPage(parseInt(event.target.value, 10));
-    setPage(1); 
+    setPage(1);
   };
 
   return (

@@ -3,7 +3,7 @@ import { AuthContext } from "@/common/contexts/AuthContext";
 import { UserContext } from "@/common/contexts/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import SelectCompanyDialog from "@/common/components/dialog/SelectCompanyDialog";
+import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 import BaseDialog from "@/common/components/base/BaseDialog";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {

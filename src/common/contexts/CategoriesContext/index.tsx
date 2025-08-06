@@ -5,12 +5,13 @@ import useSWR from "swr";
 import { getFetcher, postFetcher, patchFetcher, deleteFetcher } from "@/app/api/globalFetcher";
 import { defaultPageOptions } from "@/common/interface/paginate";
 import { CategoriesContextType, CategoryDetailType, CreateCategoryDto, UpdateCategoryDto } from "./interfaces/categories";
-
+import { useError } from "@/common/contexts/ErrorContext";
 
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
 
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const endpoint = "/api/categories";
+  const { showError } = useError();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [search, setSearch] = useState("");
@@ -70,6 +71,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       const response = await getFetcher(`${endpoint}/${id}`);
       return response.data;
     } catch (err: any) {
+      showError(err, "Failed to fetch category");
       throw err;
     }
   };
@@ -80,9 +82,10 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await postFetcher(endpoint, payload);
       await categoriesMutate();
       await dropdownMutate();
-      setIsLoading(false);
     } catch (err: any) {
-      throw err;
+      showError(err, "Failed to create category");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -92,9 +95,10 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await patchFetcher(`${endpoint}/${id}`, payload);
       await categoriesMutate();
       await dropdownMutate();
-      setIsLoading(false);
     } catch (err: any) {
-      throw err;
+      showError(err, "Failed to update category");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -104,9 +108,10 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await deleteFetcher(`${endpoint}/${id}`, {});
       await categoriesMutate();
       await dropdownMutate();
-      setIsLoading(false);
     } catch (err: any) {
-      throw err;
+      showError(err, "Failed to delete category");
+    } finally {
+      setIsLoading(false);
     }
   };
 

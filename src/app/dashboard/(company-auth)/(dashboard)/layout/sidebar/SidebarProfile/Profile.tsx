@@ -1,5 +1,5 @@
 import CompanyAvatar from "@/components/avatar/CompanyAvatar";
-import SelectCompanyDialog from "@/common/components/dialog/SelectCompanyDialog";
+import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { UserContext } from "@/common/contexts/UserContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";

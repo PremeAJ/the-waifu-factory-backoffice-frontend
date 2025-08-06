@@ -9,6 +9,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { UserProvider } from "../common/contexts/UserContext";
 import "./global.css";
+import { ErrorProvider } from "@/common/contexts/ErrorContext";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   if (process.env.NODE_ENV === "production") {
@@ -26,7 +27,9 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
           <UserProvider>
             <Analytics />
             <SpeedInsights />
+            <ErrorProvider>
             {children}
+              </ErrorProvider>
           </UserProvider>
       </ThemeProvider>
     </AppRouterCacheProvider>
