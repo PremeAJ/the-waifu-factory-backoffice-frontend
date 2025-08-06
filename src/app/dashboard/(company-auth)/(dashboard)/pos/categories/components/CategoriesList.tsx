@@ -1,17 +1,16 @@
 "use client";
-import { Box, Chip, IconButton, Link, Stack, Tooltip } from "@mui/material";
+import { Box, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseButton from "@/common/components/base/BaseButton";
+import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
 import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
+import CategoryDialog from "./CategoryDialog";
 import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import BaseDialog from "@/common/components/base/BaseDialog";
-import CategoryDialog from "./CategoryDialog";
-import { width } from "@mui/system";
 
 type DialogState = {
   open: boolean;
@@ -26,44 +25,25 @@ function CategoriesList() {
     type: "create",
     categoryId: null,
   });
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const { categories, deleteCategory } = useCategories();
+  const { loading, categories, search, setSearch, isActive, setIsActive, pageOptions, setPage, setPerPage, deleteCategory } = useCategories();
   const isMobile = useIsMobile();
 
-  const filteredData: any = useMemo(() => {
-    if (!searchTerm) {
-      return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
-    }
-    const lowercasedSearchTerm = searchTerm.toLowerCase();
-
-    return categories
-      .map((cat) => {
-        const parentMatches =
-          cat.nameTh.toLowerCase().includes(lowercasedSearchTerm) || (cat.nameEn || "").toLowerCase().includes(lowercasedSearchTerm);
-
-        const matchingSubCategories = cat.subCategories.filter(
-          (sub) => sub.nameTh.toLowerCase().includes(lowercasedSearchTerm) || (sub.nameEn || "").toLowerCase().includes(lowercasedSearchTerm)
-        );
-
-        if (parentMatches) {
-          return { ...cat, subItems: cat.subCategories };
-        }
-
-        if (matchingSubCategories.length > 0) {
-          return { ...cat, subItems: matchingSubCategories };
-        }
-
-        return null;
-      })
-      .filter(Boolean);
-  }, [categories, searchTerm]);
+  const tableData: any = useMemo(() => {
+    return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
+  }, [categories]);
 
   const headers: any = [
     { key: "nameTh", label: "Name (TH)", align: "left", width: "30%" },
     ...(!isMobile
       ? [
-          { key: "nameEn", label: "Name (EN)", align: "left", width: "30%" },
+          { 
+            key: "nameEn", 
+            label: "Name (EN)", 
+            align: "left", 
+            width: "30%",
+            render: (value: string) => value || "-"
+          },
           {
             key: "isActive",
             label: "Active",
@@ -121,21 +101,32 @@ function CategoriesList() {
     });
   };
 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setPage(newPage + 1); 
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPerPage(parseInt(event.target.value, 10));
+    setPage(1); 
+  };
+
   return (
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
-          <BaseSearchField value={searchTerm} onSearchChange={setSearchTerm} />
+          <BaseSearchField value={search} onSearchChange={setSearch} />
         ) : (
-          <BaseTextField
-            fullWidth={false}
-            name="search"
-            placeholder="Search categories"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{ width: 300 }}
-            type="search"
-          />
+          <Stack direction="row" spacing={2} alignItems="center">
+            <BaseTextField
+              fullWidth={false}
+              name="search"
+              placeholder="Search categories"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              sx={{ width: 300 }}
+              type="search"
+            />
+          </Stack>
         )}
 
         {isMobile ? (
@@ -150,7 +141,20 @@ function CategoriesList() {
           />
         )}
       </Stack>
-      <BaseTable headers={headers} data={filteredData} actions={tableActions} enableSelection={false} />
+      <BaseTable
+        loading={loading}
+        headers={headers}
+        data={tableData}
+        actions={tableActions}
+        enableSelection={false}
+        pagination={{
+          total: pageOptions.total || 0,
+          page: (pageOptions.page || 1) - 1,
+          rowsPerPage: pageOptions?.perPage || 5,
+          onPageChange: handlePageChange,
+          onRowsPerPageChange: handleRowsPerPageChange,
+        }}
+      />
       <CategoryDialog open={dialogState.open} onClose={handleCloseDialog} type={dialogState.type} categoryId={dialogState.categoryId} />
       <BaseDialog
         cancelText="Cancel"

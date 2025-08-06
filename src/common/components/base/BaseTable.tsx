@@ -10,11 +10,11 @@ import {
   TableRow,
   TablePagination,
   IconButton,
-  Chip,
   Checkbox,
   TableContainer,
   Paper,
   useTheme,
+  Skeleton,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -24,7 +24,7 @@ interface TableHeader {
   key: string;
   label: string;
   align?: "left" | "center" | "right";
-  width?: string | number; // เพิ่ม width prop
+  width?: string | number;
   render?: (value: any, row: DataItem) => React.ReactNode;
 }
 
@@ -39,16 +39,35 @@ interface BaseTableProps<T extends readonly TableHeader[]> {
   actions?: (item: DataItem) => React.ReactNode;
   enableSelection?: boolean;
   onSelectionChange?: (selectedIds: string[]) => void;
+  loading?: boolean;
+  pagination?: {
+    total: number;
+    page: number;
+    rowsPerPage: number;
+    onPageChange: (event: unknown, newPage: number) => void;
+    onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  };
 }
 
 // --- Component ---
-const BaseTable = <T extends readonly TableHeader[]>({ headers, data, actions, enableSelection = false, onSelectionChange }: BaseTableProps<T>) => {
+const BaseTable = <T extends readonly TableHeader[]>({
+  headers,
+  data,
+  actions,
+  enableSelection = false,
+  onSelectionChange,
+  loading = false,
+  pagination,
+}: BaseTableProps<T>) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const theme = useTheme();
-  const paginatedData = useMemo(() => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [data, page, rowsPerPage]);
+
+  const paginatedData = pagination
+    ? data
+    : useMemo(() => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [data, page, rowsPerPage]);
 
   const toggleRow = (id: string) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -66,7 +85,6 @@ const BaseTable = <T extends readonly TableHeader[]>({ headers, data, actions, e
     onSelectionChange?.(newSelected);
   };
 
-  // Helper function สำหรับสร้าง sx props สำหรับ width
   const getColumnWidth = (header: TableHeader) => ({
     ...(header.width && { width: header.width }),
     ...(typeof header.width === "string" && header.width.includes("%") && { width: header.width }),
@@ -80,9 +98,52 @@ const BaseTable = <T extends readonly TableHeader[]>({ headers, data, actions, e
     return item[header.key];
   };
 
+  // Render loading skeleton rows
+  const renderLoadingRows = () => {
+    const skeletonCount = pagination?.rowsPerPage || rowsPerPage;
+    return Array.from({ length: skeletonCount }, (_, index) => (
+      <TableRow key={`skeleton-${index}`}>
+        <TableCell size="small" padding="none" sx={{ width: 40 }} />
+        {enableSelection && (
+          <TableCell size="small" padding="checkbox">
+            <Skeleton variant="rectangular" width={20} height={20} />
+          </TableCell>
+        )}
+        {headers.map((header) => (
+          <TableCell size="small" key={header.key} align={header.align || "left"} sx={getColumnWidth(header)}>
+            <Skeleton variant="text" width="80%" />
+          </TableCell>
+        ))}
+        {actions && (
+          <TableCell size="small" align="center">
+            <Skeleton variant="rectangular" width={80} height={32} />
+          </TableCell>
+        )}
+      </TableRow>
+    ));
+  };
+
+  // Render empty state
+  const renderEmptyState = () => (
+    <TableRow>
+      <TableCell
+        colSpan={headers.length + (enableSelection ? 1 : 0) + (actions ? 1 : 0) + 1}
+        align="center"
+        sx={{ py: 8 }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+          <Box sx={{ color: "text.secondary", fontSize: "1.2rem" }}>ไม่พบข้อมูล</Box>
+          <Box sx={{ color: "text.disabled", fontSize: "0.875rem" }}>
+            ลองเปลี่ยนเงื่อนไขการค้นหา หรือรีเฟรชหน้าใหม่
+          </Box>
+        </Box>
+      </TableCell>
+    </TableRow>
+  );
+
   const renderRow = (item: DataItem, isSubItem = false) => (
     <TableRow key={item.id} hover sx={isSubItem ? { backgroundColor: "rgba(0, 0, 0, 0.02)" } : {}}>
-      <TableCell size="small" align="center">
+      <TableCell size="small" padding="none" sx={{ width: 40 }} align="center">
         {!isSubItem && item.subItems && item.subItems.length > 0 && (
           <IconButton size="small" onClick={() => toggleRow(item.id)}>
             {openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -118,7 +179,7 @@ const BaseTable = <T extends readonly TableHeader[]>({ headers, data, actions, e
   return (
     <Box>
       <TableContainer component={Paper}>
-        <Table >
+        <Table>
           <TableHead
             sx={{
               bgcolor: theme.palette.primary.main,
@@ -136,6 +197,7 @@ const BaseTable = <T extends readonly TableHeader[]>({ headers, data, actions, e
               {enableSelection && (
                 <TableCell size="small" padding="checkbox" sx={{ border: 0 }}>
                   <Checkbox
+                    disabled={loading}
                     indeterminate={selectedItems.length > 0 && selectedItems.length < data.length}
                     checked={data.length > 0 && selectedItems.length === data.length}
                     onChange={handleSelectAll}
@@ -155,27 +217,36 @@ const BaseTable = <T extends readonly TableHeader[]>({ headers, data, actions, e
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.map((item) => (
-              <React.Fragment key={item.id}>
-                {renderRow(item)}
-                {/* Sub-rows */}
-                {openRows[item.id] && item.subItems?.map((subItem) => renderRow(subItem, true))}
-              </React.Fragment>
-            ))}
+            {loading ? (
+              renderLoadingRows()
+            ) : paginatedData.length === 0 ? (
+              renderEmptyState()
+            ) : (
+              paginatedData.map((item) => (
+                <React.Fragment key={item.id}>
+                  {renderRow(item)}
+                  {openRows[item.id] && item.subItems?.map((subItem) => renderRow(subItem, true))}
+                </React.Fragment>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         component="div"
-        count={data.length}
-        page={page}
-        onPageChange={(_, newPage) => setPage(newPage)}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={(e) => {
-          setRowsPerPage(parseInt(e.target.value, 10));
-          setPage(0);
-        }}
+        count={pagination?.total || data.length}
+        page={pagination?.page || page}
+        onPageChange={pagination?.onPageChange || ((_, newPage) => setPage(newPage))}
+        rowsPerPage={pagination?.rowsPerPage || rowsPerPage}
+        onRowsPerPageChange={
+          pagination?.onRowsPerPageChange ||
+          ((e) => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          })
+        }
         rowsPerPageOptions={[5, 10, 25]}
+        disabled={loading}
       />
     </Box>
   );

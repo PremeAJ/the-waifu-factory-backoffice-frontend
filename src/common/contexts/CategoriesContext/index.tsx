@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
 import useSWR from "swr";
 import { getFetcher, postFetcher, patchFetcher, deleteFetcher } from "@/app/api/globalFetcher";
+import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 
 export interface CategoryType {
   id: string;
@@ -44,55 +45,91 @@ export interface UpdateCategoryDto {
   isActive?: boolean;
 }
 
-export interface PaginationMeta {
-  page: number;
-  perPage: number;
-  total: number;
-  totalPages: number;
-}
-
 export interface CategoryDetailType extends CategoryType {
 }
 
 export type CategoriesContextType = {
   categories: CategoryType[];
-  pageOptions?: PaginationMeta;
+  categoriesMutate: () => Promise<any>;
+  createCategory: (payload: CreateCategoryDto) => Promise<any>;
+  deleteCategory: (id: string) => Promise<any>;
+  dropdown: CategoryDropdownType[];
+  dropdownMutate: () => Promise<any>;
+  error: Error | null;
+  getCategoryById: (id: string) => Promise<CategoryDetailType>;
+  isActive: boolean | null;
+  loading: boolean;
+  pageOptions: PageOptions;
+  search: string;
+  setIsActive: (isActive: boolean | null) => void;
   setPage: (page: number) => void;
   setPerPage: (perPage: number) => void;
-  dropdown: CategoryDropdownType[];
-  loading: boolean;
-  error: Error | null;
-  categoriesMutate: () => Promise<any>;
-  dropdownMutate: () => Promise<any>;
-  getCategoryById: (id: string) => Promise<CategoryDetailType>;
-  createCategory: (payload: CreateCategoryDto) => Promise<any>;
+  setSearch: (search: string) => void;
   updateCategory: (id: string, payload: UpdateCategoryDto) => Promise<any>;
-  deleteCategory: (id: string) => Promise<any>;
 };
 
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
 
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const endpoint = "/api/categories";
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(5);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [isActive, setIsActive] = useState<boolean | null>(null);
+
+  // Debounce search input
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearch(search);
+      // Reset to first page when search changes
+      if (search !== debouncedSearch) {
+        setPage(1);
+      }
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timeoutId);
+  }, [search]);
+
+  const categoriesUrl = useMemo(() => {
+    const queryParams = new URLSearchParams();
+    queryParams.set('page', page.toString());
+    queryParams.set('perPage', perPage.toString());
+    if (debouncedSearch && debouncedSearch.trim()) {
+      queryParams.set('search', debouncedSearch.trim());
+    }
+    if (isActive !== null) {
+      queryParams.set('isActive', isActive.toString());
+    }
+    
+    return `${endpoint}?${queryParams.toString()}`;
+  }, [page, perPage, debouncedSearch, isActive]);
 
   const {
     data: categoriesData,
     error: categoriesError,
     isLoading: categoriesLoading,
     mutate: categoriesMutate,
-  } = useSWR(`/api/categories?page=${page}&perPage=${perPage}`, getFetcher);
+  } = useSWR(categoriesUrl, getFetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 2000, // ป้องกัน duplicate requests ภายใน 2 วินาที
+  });
 
   const {
     data: dropdownData,
     error: dropdownError,
     isLoading: dropdownLoading,
     mutate: dropdownMutate,
-  } = useSWR("/api/categories/dropdown", getFetcher);
+  } = useSWR(`${endpoint}/dropdown`, getFetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 300000, // dropdown ไม่ค่อยเปลี่ยน cache 5 นาที
+  });
 
   const getCategoryById = async (id: string): Promise<CategoryDetailType> => {
     try {
-      const response = await getFetcher(`/api/categories/${id}`);
+      const response = await getFetcher(`${endpoint}/${id}`);
       return response.data;
     } catch (err: any) {
       throw err;
@@ -101,7 +138,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const createCategory = async (payload: CreateCategoryDto) => {
     try {
-      await postFetcher("/api/categories", payload);
+      await postFetcher(endpoint, payload);
       await categoriesMutate();
       await dropdownMutate();
     } catch (err: any) {
@@ -111,7 +148,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const updateCategory = async (id: string, payload: UpdateCategoryDto) => {
     try {
-      await patchFetcher(`/api/categories/${id}`, payload);
+      await patchFetcher(`${endpoint}/${id}`, payload);
       await categoriesMutate();
       await dropdownMutate();
     } catch (err: any) {
@@ -121,7 +158,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const deleteCategory = async (id: string) => {
     try {
-      await deleteFetcher(`/api/categories/${id}`, {});
+      await deleteFetcher(`${endpoint}/${id}`, {});
       await categoriesMutate();
       await dropdownMutate();
     } catch (err: any) {
@@ -130,19 +167,23 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const value: CategoriesContextType = {
-    categories: categoriesData?.data || [],
-    pageOptions: categoriesData?.pageOptions,
+    categories: categoriesData?.data?.data || [],
+    categoriesMutate,
+    createCategory,
+    deleteCategory,
+    dropdown: dropdownData?.data || [],
+    dropdownMutate,
+    error: categoriesError || dropdownError || null,
+    getCategoryById,
+    isActive,
+    loading: categoriesLoading,
+    pageOptions: categoriesData?.data?.pageOptions || defaultPageOptions,
+    search,
+    setIsActive,
     setPage,
     setPerPage,
-    dropdown: dropdownData?.data || [],
-    loading: categoriesLoading || dropdownLoading,
-    error: categoriesError || dropdownError || null,
-    categoriesMutate,
-    dropdownMutate,
-    getCategoryById,
-    createCategory,
+    setSearch,
     updateCategory,
-    deleteCategory,
   };
 
   return <CategoriesContext.Provider value={value}>{children}</CategoriesContext.Provider>;
