@@ -78,15 +78,13 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isActive, setIsActive] = useState<boolean | null>(null);
 
-  // Debounce search input
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedSearch(search);
-      // Reset to first page when search changes
       if (search !== debouncedSearch) {
         setPage(1);
       }
-    }, 500); // 500ms delay
+    }, 500); 
 
     return () => clearTimeout(timeoutId);
   }, [search]);
@@ -113,7 +111,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   } = useSWR(categoriesUrl, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    dedupingInterval: 2000, // ป้องกัน duplicate requests ภายใน 2 วินาที
+    dedupingInterval: 2000, 
   });
 
   const {
@@ -124,7 +122,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   } = useSWR(`${endpoint}/dropdown`, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    dedupingInterval: 300000, // dropdown ไม่ค่อยเปลี่ยน cache 5 นาที
+    dedupingInterval: 300000, 
   });
 
   const getCategoryById = async (id: string): Promise<CategoryDetailType> => {
