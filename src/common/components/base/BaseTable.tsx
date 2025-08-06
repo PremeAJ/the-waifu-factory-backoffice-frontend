@@ -65,9 +65,12 @@ const BaseTable = <T extends readonly TableHeader[]>({
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const theme = useTheme();
 
-  const paginatedData = pagination
-    ? data
-    : useMemo(() => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [data, page, rowsPerPage]);
+  // เรียก useMemo เสมอ แล้วใช้ conditional ใน assignment
+  const slicedData = useMemo(() => {
+    return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }, [data, page, rowsPerPage]);
+
+  const paginatedData = pagination ? data : slicedData;
 
   const toggleRow = (id: string) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));

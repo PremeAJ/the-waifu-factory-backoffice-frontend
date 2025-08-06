@@ -69,9 +69,37 @@ const BaseTextField = ({
   loading = false, 
   ...rest
 }: CustomTextFieldProps) => {
+  // ✅ Hooks ต้องอยู่ที่ top level เสมอ
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Helper functions
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+  const handleClearSearch = () => {
+    if (formik) {
+      formik.setFieldValue(name, "");
+    } else if (rest.onChange) {
+      rest.onChange({ target: { name, value: "" } } as any);
+    }
+  };
+
+  // Loading state rendering
   if (loading) {
     const skeleton = (
-      <Skeleton variant="rectangular" width="100%" height={44} sx={{ borderRadius: 1 }} />
+      <Skeleton 
+        variant="rectangular" 
+        width="100%" 
+        height={56} 
+        sx={{ 
+          borderRadius: 1,
+          '&::after': {
+            animationDuration: '2s',
+          }
+        }} 
+      />
     );
 
     return (
@@ -93,8 +121,7 @@ const BaseTextField = ({
     );
   }
 
-  const [showPassword, setShowPassword] = useState(false);
-
+  // Error handling
   let helperText = null;
   if (formik?.touched[name] && formik?.errors[name]) {
     if (typeof formik.errors[name] === "string" && formik.errors[name].includes("\n")) {
@@ -107,20 +134,6 @@ const BaseTextField = ({
       helperText = formik.errors[name];
     }
   }
-
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-
-  const handleClearSearch = () => {
-    if (formik) {
-      formik.setFieldValue(name, "");
-    } else if (rest.onChange) {
-      // สำหรับกรณีที่ไม่ใช้ formik
-      rest.onChange({ target: { name, value: "" } } as any);
-    }
-  };
 
   const getStartAdornment = () => {
     // ถ้ามี manual startAdornment ให้ใช้ตัวนั้น
@@ -177,6 +190,7 @@ const BaseTextField = ({
     return null;
   };
 
+  // Render normal TextField
   const textField = (
     <StyledTextField
       fullWidth
@@ -211,7 +225,7 @@ const BaseTextField = ({
         </BaseLabel>
       )}
       {tooltip ? (
-        <Tooltip title={tooltip} placement="bottom-start" >
+        <Tooltip title={tooltip} placement="bottom-start">
           <span style={{ display: "block" }}>{textField}</span>
         </Tooltip>
       ) : (

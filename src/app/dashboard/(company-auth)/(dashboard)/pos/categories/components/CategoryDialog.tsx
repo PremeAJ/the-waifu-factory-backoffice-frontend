@@ -40,18 +40,14 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   const { categories, createCategory, updateCategory, getCategoryById } = useCategories();
   const isMobile = useIsMobile();
 
-  // เช็คว่ามี subcategories หรือไม่
   const hasSubCategories = categoryData?.subCategories?.length > 0;
 
-  // สร้าง options สำหรับ BaseDropdown
   const parentCategoryOptions = useMemo(() => {
     return categories
       .filter((cat) => {
-        // สำหรับ edit: ไม่รวมตัวเองและ subcategories
         if (type === "edit" && categoryId) {
           return !cat.parent && cat.id !== categoryId;
         }
-        // สำหรับ create: เอาแค่หมวดหมู่หลัก
         return !cat.parent;
       })
       .map((cat) => ({
@@ -60,7 +56,6 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       }));
   }, [categories, type, categoryId]);
 
-  // สร้าง options สำหรับสถานะ
   const statusOptions = [
     { value: true, text: "เปิดใช้งาน" },
     { value: false, text: "ปิดใช้งาน" },
@@ -86,7 +81,6 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
         });
       }
 
-      // Reset form and close dialog
       formik.resetForm();
       setCategoryData(null);
       onClose();
@@ -98,7 +92,6 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
     setLoading(false);
   };
 
-  // Formik setup
   const formik = useFormik({
     initialValues: {
       nameTh: "",
@@ -110,7 +103,6 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
     onSubmit: handleSubmit,
   });
 
-  // Fetch category data when editing
   useEffect(() => {
     const fetchCategoryData = async () => {
       if (type !== "edit" || !open || !categoryId) {
@@ -149,7 +141,6 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
     await formik.submitForm();
   };
 
-  // Dynamic props based on type
   const dialogProps = {
     title: type === "create" ? "เพิ่มหมวดหมู่ใหม่" : "แก้ไขหมวดหมู่",
     confirmText: type === "create" ? "สร้างหมวดหมู่" : "อัปเดตหมวดหมู่",
