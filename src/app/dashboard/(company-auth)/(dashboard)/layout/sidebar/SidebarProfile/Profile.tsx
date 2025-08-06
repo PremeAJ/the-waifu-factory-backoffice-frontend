@@ -44,7 +44,7 @@ export const Profile = () => {
         ) : (
           <>
             <CompanyAvatar businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
-            <Box sx={{ maxWidth: 120, overflow: "hidden", pl: 0.5 }}>
+            <Box sx={{ maxWidth: 120, overflow: "hidden", pl: 0.5, borderRadius:0 }}>
               <Typography variant="h6" noWrap>
                 {name}
               </Typography>
