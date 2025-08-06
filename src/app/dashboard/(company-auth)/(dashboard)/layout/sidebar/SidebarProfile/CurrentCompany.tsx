@@ -7,7 +7,7 @@ import { Box, Typography, useMediaQuery } from "@mui/material";
 import { IconTransfer } from "@tabler/icons-react";
 import { useContext, useState } from "react";
 
-export const Profile = () => {
+export const CurrentCompany = () => {
   const { isLanguage } = useContext(CustomizerContext);
   const { user } = useContext(UserContext);
   const { companies } = user || {};

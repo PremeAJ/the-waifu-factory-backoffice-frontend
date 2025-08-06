@@ -1,5 +1,4 @@
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { Profile } from "./SidebarProfile/Profile";
 import { useContext } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -8,6 +7,7 @@ import Drawer from "@mui/material/Drawer";
 import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import SidebarItems from "./SidebarItems";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import { CurrentCompany } from "./SidebarProfile/CurrentCompany";
 
 const Sidebar = () => {
   const isMobie = useIsMobile()
@@ -54,7 +54,6 @@ const Sidebar = () => {
                   }),
                   width: toggleWidth,
                   boxSizing: "border-box",
-                  // ซ่อน browser scrollbar
                   overflow: "hidden",
                 },
               },
@@ -64,14 +63,12 @@ const Sidebar = () => {
               sx={{
                 height: "100%",
                 mt: 8,
-                // ซ่อน browser scrollbar ใน container ด้วย
                 overflow: "hidden",
               }}
             >
               <Scrollbar 
                 sx={{ 
-                  height: "calc(100% - 190px)",
-                  // ตรวจสอบว่า Scrollbar component รองรับ props เหล่านี้หรือไม่
+                  height: "calc(100% - 120px)",
                   '& .simplebar-content-wrapper': {
                     overflow: 'hidden auto !important',
                   },
@@ -82,7 +79,7 @@ const Sidebar = () => {
               >
                 <SidebarItems />
               </Scrollbar>
-              <Profile />
+              <CurrentCompany />
             </Box>
           </Drawer>
         </Box>
@@ -98,17 +95,47 @@ const Sidebar = () => {
                 width: SidebarWidth,
                 border: "0 !important",
                 boxShadow: (theme) => theme.shadows[8],
-                // ซ่อน browser scrollbar สำหรับ mobile ด้วย
-                overflow: "hidden",
+                // เปลี่ยนจาก overflow: "hidden" เป็น auto สำหรับ mobile
+                overflow: "auto",
+                // เพิ่ม webkit scrollbar styles สำหรับ mobile
+                '&::-webkit-scrollbar': {
+                  width: '4px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: 'transparent',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  background: theme.palette.grey[300],
+                  borderRadius: '2px',
+                },
+                '&::-webkit-scrollbar-thumb:hover': {
+                  background: theme.palette.grey[400],
+                },
               },
             },
           }}
         >
-          <Box sx={{ height: "100%", overflow: "hidden" }}>
-            <Scrollbar sx={{ height: "calc(100% - 190px)" }}>
+          <Box sx={{ 
+            height: "100%", 
+            display: "flex", 
+            flexDirection: "column" 
+          }}>
+            {/* สำหรับ mobile ใช้ Box ธรรมดาที่มี native scroll */}
+            <Box sx={{ 
+              flex: 1, 
+              overflow: "auto",
+              // เพิ่ม momentum scrolling สำหรับ iOS
+              WebkitOverflowScrolling: "touch",
+              // ซ่อน scrollbar บน mobile
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              '&::-webkit-scrollbar': {
+                display: 'none',
+              },
+            }}>
               <SidebarItems />
-            </Scrollbar>
-            <Profile />
+            </Box>
+            <CurrentCompany />
           </Box>
         </Drawer>
       )}

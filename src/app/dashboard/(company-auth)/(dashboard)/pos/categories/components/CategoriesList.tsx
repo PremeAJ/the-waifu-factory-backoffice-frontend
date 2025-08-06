@@ -1,8 +1,9 @@
 "use client";
-import { Box, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Box, IconButton, Stack, Tooltip } from "@mui/material";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseButton from "@/common/components/base/BaseButton";
+import BaseChip from "@/common/components/base/BaseChip"; // เพิ่ม import
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
 import BaseSearchField from "@/common/components/base/BaseSearchField";
@@ -57,7 +58,9 @@ function CategoriesList() {
             label: "Active",
             align: "center",
             width: "20%",
-            render: (isActive: boolean) => <Chip label={isActive ? "Active" : "Inactive"} color={isActive ? "success" : "default"} size="small" />,
+            render: (isActive: boolean) => (
+              <BaseChip preset={isActive ? "active" : "inactive"} />
+            ),
           },
         ]
       : []),

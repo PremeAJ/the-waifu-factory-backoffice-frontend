@@ -11,7 +11,7 @@ import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import {  renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import { useUser } from "@/common/contexts/UserContext";
-import { iconTypes } from "@/common/interface/icon";
+import { categoryNameEn, categoryNameThRequired, statusRequired, stringOptional } from "@/common/utils/validator/yup";
 
 type DialogType = "create" | "edit";
 
@@ -23,17 +23,10 @@ interface CategoryDialogProps {
 }
 
 const validationSchema = yup.object({
-  nameTh: yup
-    .string()
-    .required("กรุณากรอกชื่อหมวดหมู่ (ภาษาไทย)")
-    .min(2, "ชื่อหมวดหมู่ต้องมีอย่างน้อย 2 ตัวอักษร")
-    .max(50, "ชื่อหมวดหมู่ต้องไม่เกิน 50 ตัวอักษร"),
-  nameEn: yup
-    .string()
-    .max(50, "ชื่อหมวดหมู่ต้องไม่เกิน 50 ตัวอักษร")
-    .matches(/^[a-zA-Z0-9\s]*$/, "ชื่อภาษาอังกฤษต้องใช้ตัวอักษรภาษาอังกฤษเท่านั้น"),
-  parent: yup.string().optional(),
-  isActive: yup.boolean().required("กรุณาเลือกสถานะ"),
+  nameTh: categoryNameThRequired,
+  nameEn: categoryNameEn,
+  parent: stringOptional,
+  isActive: statusRequired,
 });
 
 const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, categoryId }) => {
