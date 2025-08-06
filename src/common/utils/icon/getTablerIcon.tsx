@@ -1,34 +1,10 @@
 import { mapBusinessType } from '@/common/constants/icon/mapBusinessType';
-import {
-  IconToolsKitchen2,
-  IconCoffee,
-  IconPizza,
-  IconCake,
-  IconMeat,
-  IconSalad,
-  IconToolsKitchen,
-  IconSoup,
-  IconFish,
-  IconGlassFull,
-  IconQuestionMark,
-} from '@tabler/icons-react';
 import { ReactElement } from 'react';
-
-const ICON_MAP: Record<string, any> = {
-  food: IconToolsKitchen2,
-  coffee: IconCoffee,
-  pizza: IconPizza,
-  cake: IconCake,
-  meat: IconMeat,
-  salad: IconSalad,
-  utensils: IconToolsKitchen,
-  soup: IconSoup,
-  fish: IconFish,
-  wine: IconGlassFull,
-};
+import * as tablerIcons from '@tabler/icons-react';
 
 export const getTablerIcon = (iconName: string) => {
-  return ICON_MAP[iconName] || IconQuestionMark;
+  const icon = (tablerIcons as any)[iconName];
+  return icon || tablerIcons.IconQuestionMark;
 };
 
 export const renderTablerIcon = (iconName: string, props?: any): ReactElement => {
@@ -37,5 +13,5 @@ export const renderTablerIcon = (iconName: string, props?: any): ReactElement =>
 };
 
 export const getIconMapByBusinessType = (businessTypeId: number) => {
-  return mapBusinessType[businessTypeId]
+  return mapBusinessType[businessTypeId] || [];
 }

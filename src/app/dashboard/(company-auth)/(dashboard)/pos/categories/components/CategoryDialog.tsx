@@ -11,6 +11,7 @@ import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import { getIconMapByBusinessType, renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import { useUser } from "@/common/contexts/UserContext";
+import { iconTypes } from "@/common/interface/icon";
 
 type DialogType = "create" | "edit";
 
@@ -65,7 +66,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
     { value: false, text: "ปิดใช้งาน" },
   ];
 
-  const iconOptions = getIconMapByBusinessType(user?.companies.businessTypeId || 0)
+  const iconOptions:iconTypes[] = getIconMapByBusinessType(user?.companies.businessTypeId || 0)
   
   const handleSubmit = async (values: any) => {
     setLoading(true);
@@ -232,6 +233,8 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                 name="icon"
                 label="Icon"
                 options={iconOptions}
+                freeSolo={false}
+                clearOnEscape
                 placeholder="Search icon..."
                 loading={fetchLoading}
                 orderBy={(a, b) => a.text.localeCompare(b.text)}

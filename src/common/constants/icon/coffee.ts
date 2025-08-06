@@ -1,7 +1,16 @@
-  export const coffee = [
+import { iconTypes } from "@/common/interface/icon";
+
+  export const coffee:iconTypes[] = [
     { 
-      value: "coffee", 
+      value: "IconCoffee", 
       text: "Coffee",
-      icon: "coffee"
     },
+    {
+      value: "IconCup",
+      text: "Cup",
+    },
+    {
+      value: "IconBread",
+      text: "Bread",
+    }
   ];
