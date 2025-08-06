@@ -16,6 +16,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isActive, setIsActive] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -75,9 +76,11 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const createCategory = async (payload: CreateCategoryDto) => {
     try {
+      setIsLoading(true);
       await postFetcher(endpoint, payload);
       await categoriesMutate();
       await dropdownMutate();
+      setIsLoading(false);
     } catch (err: any) {
       throw err;
     }
@@ -85,9 +88,11 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const updateCategory = async (id: string, payload: UpdateCategoryDto) => {
     try {
+      setIsLoading(true);
       await patchFetcher(`${endpoint}/${id}`, payload);
       await categoriesMutate();
       await dropdownMutate();
+      setIsLoading(false);
     } catch (err: any) {
       throw err;
     }
@@ -95,9 +100,11 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const deleteCategory = async (id: string) => {
     try {
+      setIsLoading(true);
       await deleteFetcher(`${endpoint}/${id}`, {});
       await categoriesMutate();
       await dropdownMutate();
+      setIsLoading(false);
     } catch (err: any) {
       throw err;
     }
@@ -113,7 +120,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     error: categoriesError || dropdownError || null,
     getCategoryById,
     isActive,
-    loading: categoriesLoading,
+    loading: categoriesLoading || isLoading,
     pageOptions: categoriesData?.data?.pageOptions || defaultPageOptions,
     search,
     setIsActive,

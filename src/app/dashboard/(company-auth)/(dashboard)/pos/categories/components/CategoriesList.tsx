@@ -157,6 +157,7 @@ function CategoriesList() {
       />
       <CategoryDialog open={dialogState.open} onClose={handleCloseDialog} type={dialogState.type} categoryId={dialogState.categoryId} />
       <BaseDialog
+        loading={loading}
         cancelText="Cancel"
         confirmColor="error"
         confirmText="Delete"
