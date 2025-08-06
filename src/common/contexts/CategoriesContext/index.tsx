@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 import useSWR from "swr";
 import { getFetcher, postFetcher, patchFetcher, deleteFetcher } from "@/app/api/globalFetcher";
 
@@ -44,11 +44,21 @@ export interface UpdateCategoryDto {
   isActive?: boolean;
 }
 
+export interface PaginationMeta {
+  page: number;
+  perPage: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface CategoryDetailType extends CategoryType {
 }
 
 export type CategoriesContextType = {
   categories: CategoryType[];
+  pageOptions?: PaginationMeta;
+  setPage: (page: number) => void;
+  setPerPage: (perPage: number) => void;
   dropdown: CategoryDropdownType[];
   loading: boolean;
   error: Error | null;
@@ -63,12 +73,15 @@ export type CategoriesContextType = {
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
 
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
   const {
     data: categoriesData,
     error: categoriesError,
     isLoading: categoriesLoading,
     mutate: categoriesMutate,
-  } = useSWR("/api/categories", getFetcher);
+  } = useSWR(`/api/categories?page=${page}&perPage=${perPage}`, getFetcher);
 
   const {
     data: dropdownData,
@@ -118,6 +131,9 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const value: CategoriesContextType = {
     categories: categoriesData?.data || [],
+    pageOptions: categoriesData?.pageOptions,
+    setPage,
+    setPerPage,
     dropdown: dropdownData?.data || [],
     loading: categoriesLoading || dropdownLoading,
     error: categoriesError || dropdownError || null,
