@@ -54,6 +54,8 @@ const Sidebar = () => {
                   }),
                   width: toggleWidth,
                   boxSizing: "border-box",
+                  // ซ่อน browser scrollbar
+                  overflow: "hidden",
                 },
               },
             }}
@@ -62,9 +64,22 @@ const Sidebar = () => {
               sx={{
                 height: "100%",
                 mt: 8,
+                // ซ่อน browser scrollbar ใน container ด้วย
+                overflow: "hidden",
               }}
             >
-              <Scrollbar sx={{ height: "calc(100% - 190px)" }}>
+              <Scrollbar 
+                sx={{ 
+                  height: "calc(100% - 190px)",
+                  // ตรวจสอบว่า Scrollbar component รองรับ props เหล่านี้หรือไม่
+                  '& .simplebar-content-wrapper': {
+                    overflow: 'hidden auto !important',
+                  },
+                  '& .simplebar-content': {
+                    paddingRight: '0 !important',
+                  }
+                }}
+              >
                 <SidebarItems />
               </Scrollbar>
               <Profile />
@@ -83,12 +98,18 @@ const Sidebar = () => {
                 width: SidebarWidth,
                 border: "0 !important",
                 boxShadow: (theme) => theme.shadows[8],
+                // ซ่อน browser scrollbar สำหรับ mobile ด้วย
+                overflow: "hidden",
               },
             },
           }}
         >
-          <SidebarItems />
-          <Profile />
+          <Box sx={{ height: "100%", overflow: "hidden" }}>
+            <Scrollbar sx={{ height: "calc(100% - 190px)" }}>
+              <SidebarItems />
+            </Scrollbar>
+            <Profile />
+          </Box>
         </Drawer>
       )}
     </>
