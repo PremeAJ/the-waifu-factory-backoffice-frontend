@@ -1,4 +1,3 @@
-import { mapBusinessType } from '@/common/constants/icon/mapBusinessType';
 import { ReactElement } from 'react';
 import * as tablerIcons from '@tabler/icons-react';
 
@@ -12,6 +11,3 @@ export const renderTablerIcon = (iconName: string, props?: any): ReactElement =>
   return <IconComponent size={16} {...props} />;
 };
 
-export const getIconMapByBusinessType = (businessTypeId: number) => {
-  return mapBusinessType[businessTypeId] || [];
-}

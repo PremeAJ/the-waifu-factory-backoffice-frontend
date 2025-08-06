@@ -45,22 +45,32 @@ export interface CategoryDetailType extends CategoryType {
   // เพิ่ม fields พิเศษสำหรับ detail ถ้าจำเป็น
 }
 
+export interface CategoryIconType {
+  value:string
+  text:string
+}
+
 export interface CategoriesContextType {
   categories: CategoryType[];
-  categoriesMutate: () => Promise<any>;
-  createCategory: (payload: CreateCategoryDto) => Promise<any>;
-  deleteCategory: (id: string) => Promise<any>;
-  dropdown: CategoryDropdownType[];
-  dropdownMutate: () => Promise<any>;
-  error: Error | null;
+  categoriesMutate: () => void;
+  createCategory: (payload: CreateCategoryDto) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
+  dropdown: CategoryType[];
+  dropdownMutate: () => void;
+  error: any;
   getCategoryById: (id: string) => Promise<CategoryDetailType>;
   isActive: boolean | null;
   loading: boolean;
   pageOptions: PageOptions;
   search: string;
-  setIsActive: (isActive: boolean | null) => void;
+  setIsActive: (value: boolean | null) => void;
   setPage: (page: number) => void;
   setPerPage: (perPage: number) => void;
   setSearch: (search: string) => void;
-  updateCategory: (id: string, payload: UpdateCategoryDto) => Promise<any>;
+  updateCategory: (id: string, payload: UpdateCategoryDto) => Promise<void>;
+
+  // เพิ่ม properties ใหม่
+  categoryIcons: CategoryIconType[];
+  categoryIconsLoading: boolean;
+  categoryIconsMutate: () => void;
 }

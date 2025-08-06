@@ -11,6 +11,7 @@ export const CategoriesContext = createContext<CategoriesContextType>({} as Cate
 
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const endpoint = "/api/categories";
+  const masterIconEndpoint = "/api/master/icon/category";
   const { showError } = useError();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
@@ -61,6 +62,17 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     isLoading: dropdownLoading,
     mutate: dropdownMutate,
   } = useSWR(`${endpoint}/dropdown`, getFetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 300000, 
+  });
+
+  const {
+    data: categoryIconsData,
+    error: categoryIconsError,
+    isLoading: categoryIconsLoading,
+    mutate: categoryIconsMutate,
+  } = useSWR(masterIconEndpoint, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 300000, 
@@ -122,7 +134,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     deleteCategory,
     dropdown: dropdownData?.data || [],
     dropdownMutate,
-    error: categoriesError || dropdownError || null,
+    error: categoriesError || dropdownError || categoryIconsError || null,
     getCategoryById,
     isActive,
     loading: categoriesLoading || isLoading,
@@ -133,6 +145,9 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setPerPage,
     setSearch,
     updateCategory,
+    categoryIcons: categoryIconsData?.data || [],
+    categoryIconsLoading,
+    categoryIconsMutate,
   };
 
   return <CategoriesContext.Provider value={value}>{children}</CategoriesContext.Provider>;

@@ -9,7 +9,7 @@ import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import { getIconMapByBusinessType, renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import {  renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import { useUser } from "@/common/contexts/UserContext";
 import { iconTypes } from "@/common/interface/icon";
 
@@ -41,7 +41,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [categoryData, setCategoryData] = useState<any>(null);
-  const { createCategory, updateCategory, getCategoryById, dropdown } = useCategories();
+  const { createCategory, updateCategory, getCategoryById, dropdown, categoryIcons } = useCategories();
   const isMobile = useIsMobile();
   const hasSubCategories = categoryData?.subCategories?.length > 0;
   const parentCategoryOptions = useMemo(() => {
@@ -65,8 +65,6 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
     { value: true, text: "เปิดใช้งาน" },
     { value: false, text: "ปิดใช้งาน" },
   ];
-
-  const iconOptions:iconTypes[] = getIconMapByBusinessType(user?.companies.businessTypeId || 0)
   
   const handleSubmit = async (values: any) => {
     setLoading(true);
@@ -232,7 +230,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                 formik={formik}
                 name="icon"
                 label="Icon"
-                options={iconOptions}
+                options={categoryIcons}
                 freeSolo={false}
                 clearOnEscape
                 placeholder="Search icon..."
