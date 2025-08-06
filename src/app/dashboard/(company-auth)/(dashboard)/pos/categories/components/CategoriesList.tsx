@@ -11,6 +11,7 @@ import BaseTextField from "@/common/components/base/BaseTextField";
 import CategoryDialog from "./CategoryDialog";
 import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 
 type DialogState = {
   open: boolean;
@@ -34,14 +35,21 @@ function CategoriesList() {
   }, [categories]);
 
   const headers: any = [
-    { key: "nameTh", label: "Name (TH)", align: "left", width: "30%" },
+    { 
+      key: "icon", 
+      label: "Icon", 
+      align: "center", 
+      width: "10%",
+      render: (iconName: string) => iconName ? renderTablerIcon(iconName) : "-"
+    },
+    { key: "nameTh", label: "Name (TH)", align: "left", width: "25%" },
     ...(!isMobile
       ? [
           {
             key: "nameEn",
             label: "Name (EN)",
             align: "left",
-            width: "30%",
+            width: "25%",
             render: (value: string) => value || "-",
           },
           {
@@ -56,7 +64,6 @@ function CategoriesList() {
   ];
 
   const tableActions = (item: any) => {
-    console.log("🚀 ~ tableActions ~ item:", item);
     return (
       <>
         <Tooltip title="Edit">

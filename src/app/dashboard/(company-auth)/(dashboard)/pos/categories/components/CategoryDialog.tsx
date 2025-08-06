@@ -7,7 +7,9 @@ import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
+import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 
 type DialogType = "create" | "edit";
 
@@ -18,7 +20,6 @@ interface CategoryDialogProps {
   categoryId?: string | null;
 }
 
-// Yup validation schema
 const validationSchema = yup.object({
   nameTh: yup
     .string()
@@ -37,28 +38,86 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [categoryData, setCategoryData] = useState<any>(null);
-  const { categories, createCategory, updateCategory, getCategoryById } = useCategories();
+  const { categories, createCategory, updateCategory, getCategoryById, dropdown } = useCategories();
   const isMobile = useIsMobile();
 
   const hasSubCategories = categoryData?.subCategories?.length > 0;
 
+  // แก้ไข parentCategoryOptions ให้ใช้ข้อมูลจาก dropdown
   const parentCategoryOptions = useMemo(() => {
-    return categories
+    if (!dropdown || dropdown.length === 0) return [];
+    
+    return dropdown
       .filter((cat) => {
+        // กรองเฉพาะหมวดหมู่หลัก (ไม่มี parent) และไม่ใช่ตัวเองในกรณี edit
         if (type === "edit" && categoryId) {
-          return !cat.parent && cat.id !== categoryId;
+          return cat.id !== categoryId; // ใน dropdown structure ทุกตัวเป็นหมวดหมู่หลักแล้ว
         }
-        return !cat.parent;
+        return true;
       })
       .map((cat) => ({
         value: cat.id,
         text: `${cat.nameTh}${cat.nameEn ? ` (${cat.nameEn})` : ""}`,
+        icon: cat.icon,
       }));
-  }, [categories, type, categoryId]);
+  }, [dropdown, type, categoryId]);
 
   const statusOptions = [
     { value: true, text: "เปิดใช้งาน" },
     { value: false, text: "ปิดใช้งาน" },
+  ];
+
+  const iconOptions = [
+    { 
+      value: "food", 
+      text: "Food",
+      icon: "food"
+    },
+    { 
+      value: "coffee", 
+      text: "Coffee",
+      icon: "coffee"
+    },
+    { 
+      value: "pizza", 
+      text: "Pizza",
+      icon: "pizza"
+    },
+    { 
+      value: "cake", 
+      text: "Cake",
+      icon: "cake"
+    },
+    { 
+      value: "meat", 
+      text: "Meat",
+      icon: "meat"
+    },
+    { 
+      value: "salad", 
+      text: "Salad",
+      icon: "salad"
+    },
+    { 
+      value: "utensils", 
+      text: "Utensils",
+      icon: "utensils"
+    },
+    { 
+      value: "soup", 
+      text: "Soup",
+      icon: "soup"
+    },
+    { 
+      value: "fish", 
+      text: "Fish",
+      icon: "fish"
+    },
+    { 
+      value: "wine", 
+      text: "Wine",
+      icon: "wine"
+    },
   ];
 
   const handleSubmit = async (values: any) => {
@@ -71,6 +130,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           nameEn: values.nameEn || undefined,
           isActive: values.isActive,
           parent: values.parent || null,
+          icon: values.icon || null,
         });
       } else if (type === "edit" && categoryId) {
         await updateCategory(categoryId, {
@@ -78,6 +138,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           nameEn: values.nameEn || undefined,
           isActive: values.isActive,
           parent: hasSubCategories ? undefined : values.parent || null,
+          icon: values.icon || null,
         });
       }
 
@@ -98,6 +159,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       nameEn: "",
       parent: "",
       isActive: true,
+      icon: "",
     },
     validationSchema,
     onSubmit: handleSubmit,
@@ -120,6 +182,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           nameEn: fetchedCategoryData.nameEn || "",
           parent: fetchedCategoryData.parent || "",
           isActive: fetchedCategoryData.isActive,
+          icon: fetchedCategoryData.icon || "",
         });
       } catch (error: any) {
         formik.setStatus(error.message || "เกิดข้อผิดพลาดในการโหลดข้อมูลหมวดหมู่");
@@ -152,54 +215,106 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       title={dialogProps.title}
       content={
         <Box>
-          {
-            <Grid container spacing={2}>
-              <Grid size={isMobile ? 12 : 6}>
-                <BaseTextField
-                  loading={fetchLoading}
-                  formik={formik}
-                  name="nameTh"
-                  label="ชื่อหมวดหมู่ (ภาษาไทย)"
-                  placeholder="กรอกชื่อหมวดหมู่"
-                  required
-                />
-              </Grid>
-
-              <Grid size={isMobile ? 12 : 6}>
-                <BaseTextField
-                  loading={fetchLoading}
-                  formik={formik}
-                  name="nameEn"
-                  label="ชื่อหมวดหมู่ (ภาษาอังกฤษ)"
-                  placeholder="Category name in English"
-                />
-              </Grid>
-
-              <Grid size={isMobile ? 12 : 6}>
-                <BaseDropdown
-                  loading={fetchLoading}
-                  formik={formik}
-                  name="parent"
-                  label="หมวดหมู่หลัก"
-                  options={parentCategoryOptions}
-                  showEmptyOption
-                  disabled={type === "edit" && hasSubCategories}
-                  tooltip={type === "edit" && hasSubCategories ? "ไม่สามารถเปลี่ยนหมวดหมู่หลักได้เนื่องจากมีหมวดหมู่ย่อยอยู่" : undefined}
-                  emptyOptionText={type === "create" ? "ไม่มี (สร้างเป็นหมวดหมู่หลัก)" : "ไม่มี (เป็นหมวดหมู่หลัก)"}
-                />
-              </Grid>
-
-              <Grid size={isMobile ? 12 : 6}>
-                <BaseDropdown loading={fetchLoading} formik={formik} name="isActive" label="สถานะ" options={statusOptions} required />
-              </Grid>
-
-              {formik.status && (
-                <Grid size={12}>
-                  <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>{formik.status}</Box>
-                </Grid>
-              )}
+          <Grid container spacing={2}>
+            <Grid size={isMobile ? 12 : 6}>
+              <BaseTextField
+                loading={fetchLoading}
+                formik={formik}
+                name="nameTh"
+                label="ชื่อหมวดหมู่ (ภาษาไทย)"
+                placeholder="กรอกชื่อหมวดหมู่"
+                required
+              />
             </Grid>
-          }
+
+            <Grid size={isMobile ? 12 : 6}>
+              <BaseTextField
+                loading={fetchLoading}
+                formik={formik}
+                name="nameEn"
+                label="ชื่อหมวดหมู่ (ภาษาอังกฤษ)"
+                placeholder="Category name in English"
+              />
+            </Grid>
+
+            <Grid size={isMobile ? 12 : 6}>
+              <BaseAutoComplete
+                formik={formik}
+                name="parent"
+                label="หมวดหมู่หลัก"
+                options={parentCategoryOptions}
+                placeholder="ค้นหาหมวดหมู่หลัก หรือปล่อยว่างเพื่อเป็นหมวดหมู่หลัก"
+                loading={fetchLoading}
+                disabled={type === "edit" && hasSubCategories}
+                freeSolo={false}
+                clearOnEscape
+                orderBy={(a, b) => a.text.localeCompare(b.text)}
+                renderOption={(props, option) => {
+                  const { key, ...otherProps } = props;
+                  return (
+                    <Box 
+                      component="li" 
+                      key={key} 
+                      {...otherProps} 
+                      display="flex" 
+                      alignItems="center" 
+                      gap={1}
+                    >
+                      {option.icon && renderTablerIcon(option.icon, { size: 16 })}
+                      {option.text}
+                    </Box>
+                  );
+                }}
+              />
+            </Grid>
+
+            <Grid size={isMobile ? 12 : 6}>
+              <BaseDropdown 
+                loading={fetchLoading} 
+                formik={formik} 
+                name="isActive" 
+                label="สถานะ" 
+                options={statusOptions} 
+                required 
+              />
+            </Grid>
+
+            <Grid size={isMobile ? 12 : 6}>
+              <BaseAutoComplete
+                formik={formik}
+                name="icon"
+                label="Icon"
+                options={iconOptions}
+                placeholder="Search icon..."
+                loading={fetchLoading}
+                orderBy={(a, b) => a.text.localeCompare(b.text)}
+                renderOption={(props, option) => {
+                  const { key, ...otherProps } = props;
+                  return (
+                    <Box 
+                      component="li" 
+                      key={key} 
+                      {...otherProps} 
+                      display="flex" 
+                      alignItems="center" 
+                      gap={1}
+                    >
+                      {renderTablerIcon(option.value, { size: 16 })}
+                      {option.text}
+                    </Box>
+                  );
+                }}
+              />
+            </Grid>
+
+            {formik.status && (
+              <Grid size={12}>
+                <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>
+                  {formik.status}
+                </Box>
+              </Grid>
+            )}
+          </Grid>
         </Box>
       }
       confirmText={dialogProps.confirmText}

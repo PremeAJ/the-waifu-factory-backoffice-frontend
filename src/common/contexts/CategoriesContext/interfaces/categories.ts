@@ -22,6 +22,7 @@ export interface CategoryDropdownType {
   id: string;
   nameTh: string;
   nameEn?: string;
+  icon?: string;
 }
 
 export interface CreateCategoryDto {

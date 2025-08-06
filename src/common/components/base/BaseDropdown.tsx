@@ -18,13 +18,14 @@ interface BaseDropdownProps extends Omit<SelectProps, "onChange" | "value"> {
   options: OptionType[];
   required?: boolean;
   tooltip?: string;
-  value?: any; // สำหรับใช้แบบ controlled component
-  onChange?: (value: any) => void; // สำหรับใช้แบบ controlled component
+  value?: any;
+  onChange?: (value: any) => void;
   groupBy?: (option: OptionType) => string;
   orderBy?: (a: OptionType, b: OptionType) => number;
   showEmptyOption?: boolean;
   emptyOptionText?: string;
-  loading?: boolean; // <-- 1. เพิ่ม prop loading
+  loading?: boolean;
+  renderOption?: (option: OptionType) => React.ReactNode; // เพิ่ม renderOption prop
 }
 
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
@@ -69,8 +70,9 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
   showEmptyOption = false,
   emptyOptionText = "-- กรุณาเลือก --",
   fullWidth = true,
-  loading = false, // <-- 2. Destructure loading prop
-  size, // <-- 3. Destructure size prop
+  loading = false,
+  size,
+  renderOption, // เพิ่ม renderOption
   ...rest
 }) => {
   // จัดเรียง options ถ้ามี orderBy
@@ -121,6 +123,11 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
       </>
     );
   }
+
+  // Function สำหรับ render option content
+  const renderOptionContent = (option: OptionType) => {
+    return renderOption ? renderOption(option) : option.text;
+  };
 
   return (
     <>
