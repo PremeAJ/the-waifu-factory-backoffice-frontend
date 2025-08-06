@@ -1,4 +1,3 @@
-import Menuitems from "../../../../../../common/constants/sidebarMenuList/MenuItems";
 import { usePathname } from "next/navigation";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -9,6 +8,7 @@ import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
 import { useContext } from "react";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
+import Menuitems from "@/common/constants/sidebarMenuList/MenuItems";
 
 const SidebarItems = () => {
   const pathname = usePathname();
@@ -24,12 +24,8 @@ const SidebarItems = () => {
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
         {Menuitems.map((item) => {
-          // {/********SubHeader**********/}
           if (item.subheader) {
             return <NavGroup item={item} hideMenu={hideMenu} key={item.subheader} />;
-
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
           } else if (item.children) {
             return (
               <NavCollapse
@@ -42,8 +38,6 @@ const SidebarItems = () => {
                 onClick={() => setIsMobileSidebar(!isMobileSidebar)}
               />
             );
-
-            // {/********If Sub No Menu**********/}
           } else {
             return (
               <NavItem

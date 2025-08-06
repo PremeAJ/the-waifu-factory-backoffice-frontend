@@ -29,7 +29,13 @@ const NavGroup = ({ item, hideMenu }: ItemType) => {
   }));
 
   return (
-    <ListSubheaderStyle>{hideMenu ? <IconDots size="14" /> : item?.subheader}</ListSubheaderStyle>
+    <ListSubheaderStyle>
+      {hideMenu
+        ? item?.subheader && item.subheader.toString().length <= 3
+          ? item.subheader
+          : <IconDots size="14" />
+        : item?.subheader}
+    </ListSubheaderStyle>
   );
 };
 
