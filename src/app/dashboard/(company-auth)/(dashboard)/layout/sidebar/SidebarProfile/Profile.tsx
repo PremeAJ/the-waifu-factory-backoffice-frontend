@@ -1,4 +1,4 @@
-import CompanyAvatar from "@/components/avatar/CompanyAvatar";
+import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { UserContext } from "@/common/contexts/UserContext";

@@ -56,7 +56,7 @@ function BaseAutoComplete<T extends OptionType>({
             {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
           </BaseLabel>
         )}
-        <Skeleton variant="rectangular" width="100%" height={56} sx={{ borderRadius: 1 }} />
+        <Skeleton variant="rectangular" width="100%" height={44} sx={{ borderRadius: 1 }} />
       </>
     );
   }

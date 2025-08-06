@@ -9,7 +9,8 @@ import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import { getIconMapByBusinessType, renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import { useUser } from "@/common/contexts/UserContext";
 
 type DialogType = "create" | "edit";
 
@@ -35,23 +36,20 @@ const validationSchema = yup.object({
 });
 
 const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, categoryId }) => {
+  const {user} = useUser();
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [categoryData, setCategoryData] = useState<any>(null);
-  const { categories, createCategory, updateCategory, getCategoryById, dropdown } = useCategories();
+  const { createCategory, updateCategory, getCategoryById, dropdown } = useCategories();
   const isMobile = useIsMobile();
-
   const hasSubCategories = categoryData?.subCategories?.length > 0;
-
-  // แก้ไข parentCategoryOptions ให้ใช้ข้อมูลจาก dropdown
   const parentCategoryOptions = useMemo(() => {
     if (!dropdown || dropdown.length === 0) return [];
     
     return dropdown
       .filter((cat) => {
-        // กรองเฉพาะหมวดหมู่หลัก (ไม่มี parent) และไม่ใช่ตัวเองในกรณี edit
         if (type === "edit" && categoryId) {
-          return cat.id !== categoryId; // ใน dropdown structure ทุกตัวเป็นหมวดหมู่หลักแล้ว
+          return cat.id !== categoryId; 
         }
         return true;
       })
@@ -67,59 +65,8 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
     { value: false, text: "ปิดใช้งาน" },
   ];
 
-  const iconOptions = [
-    { 
-      value: "food", 
-      text: "Food",
-      icon: "food"
-    },
-    { 
-      value: "coffee", 
-      text: "Coffee",
-      icon: "coffee"
-    },
-    { 
-      value: "pizza", 
-      text: "Pizza",
-      icon: "pizza"
-    },
-    { 
-      value: "cake", 
-      text: "Cake",
-      icon: "cake"
-    },
-    { 
-      value: "meat", 
-      text: "Meat",
-      icon: "meat"
-    },
-    { 
-      value: "salad", 
-      text: "Salad",
-      icon: "salad"
-    },
-    { 
-      value: "utensils", 
-      text: "Utensils",
-      icon: "utensils"
-    },
-    { 
-      value: "soup", 
-      text: "Soup",
-      icon: "soup"
-    },
-    { 
-      value: "fish", 
-      text: "Fish",
-      icon: "fish"
-    },
-    { 
-      value: "wine", 
-      text: "Wine",
-      icon: "wine"
-    },
-  ];
-
+  const iconOptions = getIconMapByBusinessType(user?.companies.businessTypeId || 0)
+  
   const handleSubmit = async (values: any) => {
     setLoading(true);
 

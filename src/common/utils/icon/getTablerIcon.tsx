@@ -1,3 +1,4 @@
+import { mapBusinessType } from '@/common/constants/icon/mapBusinessType';
 import {
   IconToolsKitchen2,
   IconCoffee,
@@ -13,7 +14,6 @@ import {
 } from '@tabler/icons-react';
 import { ReactElement } from 'react';
 
-// Icon mapping object
 const ICON_MAP: Record<string, any> = {
   food: IconToolsKitchen2,
   coffee: IconCoffee,
@@ -35,3 +35,7 @@ export const renderTablerIcon = (iconName: string, props?: any): ReactElement =>
   const IconComponent = getTablerIcon(iconName);
   return <IconComponent size={16} {...props} />;
 };
+
+export const getIconMapByBusinessType = (businessTypeId: number) => {
+  return mapBusinessType[businessTypeId]
+}

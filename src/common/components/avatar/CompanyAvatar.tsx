@@ -8,7 +8,6 @@ import {
   IconShoppingCart,
   IconBasket,
   IconBooks,
-  IconDeviceMobile,
   IconPillFilled,
   IconWashMachine,
   IconEyeClosed,

@@ -92,7 +92,7 @@ const BaseTextField = ({
       <Skeleton 
         variant="rectangular" 
         width="100%" 
-        height={56} 
+        height={44} 
         sx={{ 
           borderRadius: 1,
           '&::after': {

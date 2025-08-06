@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { DialogTitle, List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
-import CompanyAvatar from "@/components/avatar/CompanyAvatar";
+import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import { UserContext } from "@/common/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import BaseDialog from "../base/BaseDialog";
