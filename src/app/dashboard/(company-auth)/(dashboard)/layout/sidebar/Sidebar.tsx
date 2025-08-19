@@ -1,13 +1,13 @@
+import { CurrentCompany } from "./SidebarProfile/CurrentCompany";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { useContext } from "react";
 import { useTheme } from "@mui/material/styles";
+import BaseScrollbar from "@/common/components/base/BaseScrollBar";
 import Box from "@mui/material/Box";
 import config from "@/common/contexts/setting/config";
 import Drawer from "@mui/material/Drawer";
-import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import SidebarItems from "./SidebarItems";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import { CurrentCompany } from "./SidebarProfile/CurrentCompany";
 
 const Sidebar = () => {
   const isMobie = useIsMobile()
@@ -66,7 +66,7 @@ const Sidebar = () => {
                 overflow: "hidden",
               }}
             >
-              <Scrollbar 
+              <BaseScrollbar 
                 sx={{ 
                   height: "calc(100% - 120px)",
                   '& .simplebar-content-wrapper': {
@@ -78,7 +78,7 @@ const Sidebar = () => {
                 }}
               >
                 <SidebarItems />
-              </Scrollbar>
+              </BaseScrollbar>
               <CurrentCompany />
             </Box>
           </Drawer>
