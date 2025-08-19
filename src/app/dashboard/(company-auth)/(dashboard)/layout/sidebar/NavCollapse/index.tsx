@@ -1,55 +1,28 @@
-import React, { useContext, useState } from "react";
-
-
+import { Box } from "@mui/material";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-
-import { usePathname } from "next/navigation";
-
-// mui imports
-import Collapse from '@mui/material/Collapse';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import { Theme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { styled, useTheme } from '@mui/material/styles';
-
-// custom imports
-import NavItem from "../NavItem";
-import { isNull } from "lodash";
-
-// plugins
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
-import { useTranslation } from "react-i18next";
+import { isNull } from "lodash";
 import { NavCollapseProps, NavGroup } from "@/common/utils/types/layout/sidebar";
-
-
-
-// FC Component For Dropdown Menu
-export default function NavCollapse({
-  menu,
-  level,
-  pathWithoutLastPart,
-  pathDirect,
-  hideMenu,
-  onClick,
-}: NavCollapseProps) {
+import { styled, useTheme } from "@mui/material/styles";
+import { Theme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
+import Collapse from "@mui/material/Collapse";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import NavItem from "../NavItem";
+import React, { useContext, useState } from "react";
+import useMediaQuery from "@mui/material/useMediaQuery";
+export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
   const { isBorderRadius } = useContext(CustomizerContext);
   const Icon = menu?.icon;
   const theme = useTheme();
-  const pathname = usePathname();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
-
-
-  const menuIcon = Icon ? (
-    level > 1 ? <Icon stroke={1.5} size="1rem" /> : <Icon stroke={1.5} size="1.3rem" />
-  ) : null;
-
-
+  const menuIcon = Icon ? level > 1 ? <Icon stroke={1.5} size="1rem" /> : <Icon stroke={1.5} size="1.3rem" /> : null;
 
   const handleClick = () => {
     setOpen(!open);
@@ -59,11 +32,11 @@ export default function NavCollapse({
   React.useEffect(() => {
     setOpen(false);
     menu?.children?.forEach((item: NavGroup) => {
-      if (item?.href === pathname) {
+      if (item?.href === pathDirect) {
         setOpen(true);
       }
     });
-  }, [pathname, menu.children]);
+  }, [pathDirect, menu.children]);
 
   const ListItemStyled = styled(ListItemButton)(() => ({
     marginBottom: "2px",
@@ -72,21 +45,10 @@ export default function NavCollapse({
     backgroundColor: open && level < 2 ? theme.palette.primary.main : "",
     whiteSpace: "nowrap",
     "&:hover": {
-      backgroundColor:
-        pathname.includes(menu.href || '') || open
-          ? theme.palette.primary.main
-          : theme.palette.primary.light,
-      color:
-        pathname.includes(menu.href || '') || open
-          ? "white"
-          : theme.palette.primary.main,
+      backgroundColor: pathDirect.includes(menu.href || "") || open ? theme.palette.primary.main : theme.palette.primary.light,
+      color: pathDirect.includes(menu.href || "") || open ? "white" : theme.palette.primary.main,
     },
-    color:
-      open && level < 2
-        ? "white"
-        : level > 1 && open
-          ? theme.palette.primary.main
-          : theme.palette.text.secondary,
+    color: open && level < 2 ? "white" : level > 1 && open ? theme.palette.primary.main : theme.palette.text.secondary,
     borderRadius: `${isBorderRadius}px`,
   }));
 
@@ -106,25 +68,16 @@ export default function NavCollapse({
       );
     } else {
       return (
-        <NavItem
-          key={item.id}
-          item={item}
-          level={level + 1}
-          pathDirect={pathDirect}
-          hideMenu={hideMenu}
-          onClick={lgDown ? onClick : isNull}
-        />
+        <Box sx={{ ml: 2 }} key={item.id}>
+          <NavItem key={item.id} item={item} level={level + 1} pathDirect={pathDirect} hideMenu={hideMenu} onClick={lgDown ? onClick : isNull} />
+        </Box>
       );
     }
   });
 
   return (
     <>
-      <ListItemStyled
-        onClick={handleClick}
-        selected={pathWithoutLastPart === menu.href}
-        key={menu?.id}
-      >
+      <ListItemStyled onClick={handleClick} selected={pathWithoutLastPart === menu.href} key={menu?.id}>
         <ListItemIcon
           sx={{
             minWidth: "36px",
@@ -134,14 +87,8 @@ export default function NavCollapse({
         >
           {menuIcon}
         </ListItemIcon>
-        <ListItemText color="inherit">
-          {hideMenu ? "" : <>{t(`${menu.title}`)}</>}
-        </ListItemText>
-        {!open ? (
-          <IconChevronDown size="1rem" />
-        ) : (
-          <IconChevronUp size="1rem" />
-        )}
+        <ListItemText color="inherit">{hideMenu ? "" : <>{t(`${menu.title}`)}</>}</ListItemText>
+        {!open ? <IconChevronDown size="1rem" /> : <IconChevronUp size="1rem" />}
       </ListItemStyled>
       <Collapse in={open} timeout="auto">
         {submenus}

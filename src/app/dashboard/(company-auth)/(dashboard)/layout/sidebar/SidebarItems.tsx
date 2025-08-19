@@ -1,17 +1,19 @@
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { useContext } from "react";
 import { usePathname } from "next/navigation";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import NavItem from "./NavItem";
+import Menuitems from "@/common/constants/sidebarMenuList/MenuItems";
 import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
-import { useContext } from "react";
+import NavItem from "./NavItem";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
-import Menuitems from "@/common/constants/sidebarMenuList/MenuItems";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const SidebarItems = () => {
-  const pathname = usePathname();
+  const currentPath = usePathname();
+  const pathname = currentPath.split("/").slice(0, 4).join("/") || "/";
+  console.log("🚀 ~ SidebarItems ~ pathname:", pathname)
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
   const { isSidebarHover, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);

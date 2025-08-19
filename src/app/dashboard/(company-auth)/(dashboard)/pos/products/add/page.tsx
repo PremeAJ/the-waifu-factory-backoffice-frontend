@@ -1,33 +1,37 @@
-
+"use client";
 import { Button, Grid, Stack } from "@mui/material";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
-
 import GeneralCard from "@/components/apps/ecommerce/productAdd/GeneralCard";
 import MediaCard from "@/components/apps/ecommerce/productAdd/Media";
 import VariationCard from "@/components/apps/ecommerce/productAdd/VariationCard";
 import PricingCard from "@/components/apps/ecommerce/productAdd/Pricing";
-import Thumbnail from "@/components/apps/ecommerce/productAdd/Thumbnail";
 import StatusCard from "@/components/apps/ecommerce/productAdd/Status";
 import ProductDetails from "@/components/apps/ecommerce/productAdd/ProductDetails";
 import ProductTemplate from "@/components/apps/ecommerce/productAdd/ProductTemplate";
 import BlankCard from "@/components/shared/BlankCard";
 import { ProductProvider } from '@/context/Ecommercecontext/index'
+import BaseFileInput from "@/common/components/base/BaseFileInput";
+import { FileSize } from "@/common/constants/file/fileSize";
+import { fileTypeGroup } from "@/common/constants/file/fileType";
+
 const BCrumb = [
   {
-    to: "/",
-    title: "Home",
+    title: "POS",
   },
   {
+    to: "/dashboard/pos/products",
+    title: "Products",
+  },
+   {
     title: "Add Product",
   },
 ];
 
-const EcommerceAddProduct = () => {
+const AddProduct = () => {
   return (
     <ProductProvider>
       <PageContainer title="Add Product" description="this is Add Product">
-        {/* breadcrumb */}
         <Breadcrumb title="Add Product" items={BCrumb} />
         <form>
           <Grid container spacing={3}>
@@ -60,7 +64,15 @@ const EcommerceAddProduct = () => {
               }}>
               <Stack spacing={3}>
                 <BlankCard>
-                  <Thumbnail />
+                  <BaseFileInput
+                    placeholder="เลือกรูปสินค้า (JPG, PNG, สูงสุด 2MB)"
+                    multiple={true}
+                    accept={fileTypeGroup.image}
+                    maxSize={FileSize.MB2} 
+                    onChange={(files) => {
+                      console.log(files);
+                    }}
+                  />
                 </BlankCard>
 
                 <BlankCard>
@@ -93,4 +105,4 @@ const EcommerceAddProduct = () => {
   );
 };
 
-export default EcommerceAddProduct;
+export default AddProduct;
