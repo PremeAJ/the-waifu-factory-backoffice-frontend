@@ -14,6 +14,8 @@ import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
+import { Navigate } from "react-big-calendar";
+import { useRouter } from "next/navigation";
 
 type DialogState = {
   open: boolean;
@@ -22,15 +24,12 @@ type DialogState = {
 };
 
 function CategoriesList() {
+  const [dialogState, setDialogState] = useState<DialogState>({ open: false, type: "create", categoryId: null, });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [dialogState, setDialogState] = useState<DialogState>({
-    open: false,
-    type: "create",
-    categoryId: null,
-  });
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { loading, categories, search, setSearch, isActive, setIsActive, pageOptions, setPage, setPerPage, deleteCategory } = useCategories();
   const isMobile = useIsMobile();
+  const router = useRouter();
 
   const tableData: any = useMemo(() => {
     return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
@@ -134,6 +133,10 @@ function CategoriesList() {
     setPage(1);
   };
 
+  const onClickAdd = () => {
+    router.push('products/add')
+  }
+
   return (
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
@@ -158,7 +161,7 @@ function CategoriesList() {
         ) : (
           <BaseButton
             variant="contained"
-            onClick={() => setDialogState({ open: true, type: "create" })}
+            onClick={() => onClickAdd()}
             fullWidth={false}
             preset="add"
             label="Add Category"
