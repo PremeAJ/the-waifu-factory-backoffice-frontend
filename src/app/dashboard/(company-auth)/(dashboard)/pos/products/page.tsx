@@ -7,11 +7,11 @@ import CategoriesList from "./components/CategoriesList";
 import PageContainer from "@/components/container/PageContainer";
 import React from "react";
 
-const BCrumb = [{ to: "/", title: "POS" }, { title: "Categories" }];
-const CategoriesPage = () => {
+const BCrumb = [{ to: "/", title: "POS" }, { title: "Products" }];
+const ProductsPage = () => {
   return (
-    <PageContainer title="Categories" description="this is Categories">
-      <Breadcrumb title="Categories" items={BCrumb} />
+    <PageContainer title="Products" description="this is Products">
+      <Breadcrumb title="Products" items={BCrumb} />
       <BlankCard>
         <CardContent>
           <CategoriesProvider>
@@ -24,4 +24,4 @@ const CategoriesPage = () => {
     </PageContainer>
   );
 };
-export default CategoriesPage;
+export default ProductsPage;

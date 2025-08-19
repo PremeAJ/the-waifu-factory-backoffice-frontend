@@ -89,7 +89,7 @@ const Menuitems: NavGroup[] = [
         id: uniqueId(),
         title: "สินค้า",
         icon: IconBasket,
-        href: "/dashboard/pos/product",
+        href: "/dashboard/pos/products",
       },
     ],
   },
