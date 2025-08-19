@@ -13,7 +13,6 @@ export const CurrentCompany = () => {
   const { companies } = user || {};
   const { name, logoUrl, businessTypeId, companyUsers } = companies || {};
   const { roles, branches } = companyUsers?.[0] || {};
-  const { nameTh: roleNameTh, nameEn: roleNameEN } = roles || {};
   const { nameTh: branchNameTh, nameEn: branchNameEN } = branches || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const { isSidebarHover, isCollapse } = useContext(CustomizerContext);

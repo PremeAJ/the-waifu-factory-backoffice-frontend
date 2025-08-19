@@ -15,15 +15,16 @@ import {
   IconLockAccess,
   IconHome,
   IconCategory,
+  IconBasket,
 } from "@tabler/icons-react";
 import { NavGroup } from "@/common/utils/types/layout/sidebar";
 
 const Menuitems: NavGroup[] = [
-    {
+  {
     navlabel: true,
     subheader: "หน้าหลัก",
   },
-    {
+  {
     id: uniqueId(),
     title: "หน้าหลัก",
     icon: IconHome,
@@ -46,12 +47,6 @@ const Menuitems: NavGroup[] = [
     href: "/dashboard/dashboards/ecommerce",
   },
   { navlabel: true, subheader: "POS" },
-  {
-    id: uniqueId(),
-    title: "ขายหน้าร้าน",
-    icon: IconShoppingCart,
-    href: "/dashboard/app/pos",
-  },
   {
     id: uniqueId(),
     title: "ออเดอร์",
@@ -77,12 +72,24 @@ const Menuitems: NavGroup[] = [
     title: "สินค้า / สต็อก",
     icon: IconBox,
     href: "/dashboard/pos/products",
-     children: [
+    children: [
+      {
+        id: uniqueId(),
+        title: "ขายหน้าร้าน",
+        icon: IconShoppingCart,
+        href: "/dashboard/app/pos",
+      },
       {
         id: uniqueId(),
         title: "หมวดหมู่สินค้า",
         icon: IconCategory,
         href: "/dashboard/pos/categories",
+      },
+      {
+        id: uniqueId(),
+        title: "สินค้า",
+        icon: IconBasket,
+        href: "/dashboard/pos/product",
       },
     ],
   },
@@ -146,7 +153,6 @@ const Menuitems: NavGroup[] = [
     icon: IconLockAccess,
     href: "/settings/roles",
   },
-
 ];
 
 export default Menuitems;

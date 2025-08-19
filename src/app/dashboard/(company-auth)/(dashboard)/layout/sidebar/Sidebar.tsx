@@ -95,9 +95,7 @@ const Sidebar = () => {
                 width: SidebarWidth,
                 border: "0 !important",
                 boxShadow: (theme) => theme.shadows[8],
-                // เปลี่ยนจาก overflow: "hidden" เป็น auto สำหรับ mobile
                 overflow: "auto",
-                // เพิ่ม webkit scrollbar styles สำหรับ mobile
                 '&::-webkit-scrollbar': {
                   width: '4px',
                 },
@@ -120,13 +118,10 @@ const Sidebar = () => {
             display: "flex", 
             flexDirection: "column" 
           }}>
-            {/* สำหรับ mobile ใช้ Box ธรรมดาที่มี native scroll */}
             <Box sx={{ 
               flex: 1, 
               overflow: "auto",
-              // เพิ่ม momentum scrolling สำหรับ iOS
               WebkitOverflowScrolling: "touch",
-              // ซ่อน scrollbar บน mobile
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               '&::-webkit-scrollbar': {
