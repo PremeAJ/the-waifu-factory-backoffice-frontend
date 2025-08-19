@@ -39,8 +39,8 @@ export default function ForgotPassword() {
             xl: 9
           }}>
           <Box position="relative">
-            <Box px={3}>
-              <Logo />
+            <Box pb={5}>
+              {/* <Logo /> */}
             </Box>
             <Box
               alignItems="center"

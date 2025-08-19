@@ -17,7 +17,7 @@ const ActionButton = () => {
 
   const [show, setShow] = useState(false);
   const [visible, setVisible] = useState(false);
-  const { isMobileSidebar, setIsMobileSidebar, isCollapse, setIsCollapse } = useCustomize();
+  const { isMobileSidebar, setIsMobileSidebar, isCollapse, setIsCollapse, loading } = useCustomize();
 
   useEffect(() => {
     if (!hideButton.includes(pathname)) {
@@ -37,7 +37,7 @@ const ActionButton = () => {
       : setIsCollapse("full-sidebar");
   };
 
-  if (!show) return null;
+  if (!show || loading) return null;
 
   return (
     <BaseFab
