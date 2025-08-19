@@ -36,8 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const path = usePathname();
   const isMobile = useIsMobile();
   const isSubMenu = useIsSubMenu();
-
   if (ignoreLayout.includes(path)) return <>{children}</>;
+
 
   return (
     <CompanyProvider>

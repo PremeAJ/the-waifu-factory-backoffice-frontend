@@ -1,10 +1,11 @@
 import React from "react";
-import { Card, CardContent, Typography, Divider, Box, IconButton, Button } from "@mui/material";
+import { Card, CardContent, Typography, Divider, Box, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import BaseButton from "@/common/components/base/BaseButton";
+import BaseScrollbar from "@/common/components/base/BaseScrollBar";
 
 export default function OrderSummary({ order, addToOrder, removeFromOrder, setOrder, total, isMobile }: any) {
   return (
@@ -14,7 +15,7 @@ export default function OrderSummary({ order, addToOrder, removeFromOrder, setOr
           ออเดอร์ของคุณ
         </Typography>
         <Divider sx={{ mb: 2 }} />
-        <Box sx={{ flex: 1, maxHeight: isMobile ? "none" : "50vh", overflow: isMobile ? "visible" : "auto" }}>
+        <BaseScrollbar sx={{ flex: 1, maxHeight: isMobile ? "none" : "50vh", overflow: isMobile ? "visible" : "auto" }}>
           {order.map((item: any) => {
             const isOutOfStock = item.stock !== undefined && item.qty >= item.stock;
             return (
@@ -69,7 +70,7 @@ export default function OrderSummary({ order, addToOrder, removeFromOrder, setOr
               ยังไม่มีสินค้าในออเดอร์
             </Typography>
           )}
-        </Box>
+        </BaseScrollbar>
         <Box sx={{ mt: "auto" }}>
           <Divider sx={{ my: 2 }} />
           <Box display="flex" justifyContent="space-between" alignItems="center">

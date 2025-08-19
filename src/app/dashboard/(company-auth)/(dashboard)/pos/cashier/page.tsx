@@ -17,6 +17,7 @@ import Sidebar from "./category/Sidebar";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import CategoryButton from "@/common/components/floating/CategoryButton";
+import PageContainer from "@/components/container/PageContainer";
 
 export default function POSPage() {
   const [openCategory, setOpenCategory] = useState<{ [key: number]: boolean }>({});
@@ -65,7 +66,7 @@ export default function POSPage() {
   const { setIsMobileSidebar } = useContext(CustomizerContext);
 
   return (
-    <>
+    <PageContainer title="Cashier" description="this is Cashier">
       <CategoryButton onClick={() => setIsMobileSidebar(true)} />
       <Sidebar />
       <Grid
@@ -75,13 +76,13 @@ export default function POSPage() {
           height: isMobile ? "auto" : "100vh",
           pb: isMobile ? 7 : 0,
           ml: isMobile ? 0 : "269px",
-          mt: 5,
         }}
       >
         <Grid
           id="product"
           size={isMobile ? 12 : 9}
           sx={{
+            mt:5,
             order: isMobile ? 2 : 0,
             transition: (theme) => theme.transitions.create("margin-left"),
           }}
@@ -145,6 +146,6 @@ export default function POSPage() {
           />
         </BottomNavigation>
       )}
-    </>
+    </PageContainer>
   );
 }
