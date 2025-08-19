@@ -77,7 +77,7 @@ const Menuitems: NavGroup[] = [
         id: uniqueId(),
         title: "ขายหน้าร้าน",
         icon: IconShoppingCart,
-        href: "/dashboard/app/pos",
+        href: "/dashboard/pos/cashier",
       },
       {
         id: uniqueId(),

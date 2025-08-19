@@ -13,6 +13,7 @@ import CategoryDialog from "./CategoryDialog";
 import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import BaseTooltip from "@/common/components/base/BaseTooltip";
 
 type DialogState = {
   open: boolean;
@@ -69,7 +70,7 @@ function CategoriesList() {
   const tableActions = (item: any) => {
     return (
       <>
-        <Tooltip title="Edit">
+        <BaseTooltip title="แก้ไข">
           <IconButton
             onClick={() => {
               setDialogState({
@@ -82,19 +83,28 @@ function CategoriesList() {
           >
             <IconEdit width={22} />
           </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete">
-          <IconButton
-            disabled={item?.subItems?.length > 0}
-            onClick={() => {
-              setSelectedItems([item.id]);
-              setOpenDeleteDialog(true);
-            }}
-            color="error"
-          >
-            <IconTrash width={22} />
-          </IconButton>
-        </Tooltip>
+        </BaseTooltip>
+        <BaseTooltip
+          title={
+            item?.subItems?.length > 0
+              ? "ไม่สามารถลบได้ เนื่องจากมีหมวดหมู่ย่อย"
+              : "ลบ"
+          }
+        >
+          <span>
+            <IconButton
+              disabled={item?.subItems?.length > 0}
+              onClick={() => {
+                setSelectedItems([item.id]);
+                setOpenDeleteDialog(true);
+              }}
+              color="error"
+              style={item?.subItems?.length > 0 ? { pointerEvents: "none" } : undefined}
+            >
+              <IconTrash width={22} />
+            </IconButton>
+          </span>
+        </BaseTooltip>
       </>
     );
   };
