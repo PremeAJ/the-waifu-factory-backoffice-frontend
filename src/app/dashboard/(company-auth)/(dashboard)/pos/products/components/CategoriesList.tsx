@@ -157,7 +157,7 @@ function CategoriesList() {
         )}
 
         {isMobile ? (
-          <BaseFloatingButton icon={<IconPlus />} onClick={() => setDialogState({ open: true, type: "create" })} />
+          <BaseFloatingButton icon={<IconPlus />} onClick={() => onClickAdd()} />
         ) : (
           <BaseButton
             variant="contained"
