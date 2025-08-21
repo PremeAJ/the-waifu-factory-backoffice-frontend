@@ -5,6 +5,7 @@ const TopbarHeight = config.topbarHeight;
 const AppBarStyled = styled(AppBar)(({ theme }) => ({
   boxShadow: "none",
   background: theme.palette.mode === "dark" ? "rgba(30, 30, 30, 0.6)" : "rgba(255, 255, 255, 0.6)",
+  // background: theme.palette.primary.main,
   justifyContent: "center",
   backdropFilter: "blur(5px)",
   WebkitBackdropFilter: "blur(5px)",

@@ -44,7 +44,18 @@ const AddProduct = () => {
                 <BlankCard>
                   <GeneralCard />
                 </BlankCard>
-
+                <BlankCard>
+                  <BaseFileInput
+                    label="อัปโหลดภาพสินค้า"
+                    placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
+                    multiple={false}
+                    accept={fileTypeGroup.image}
+                    maxSize={FileSize.MB2}
+                    onChange={(files) => {
+                      console.log(files);
+                    }}
+                  />
+                </BlankCard>
                 <BlankCard>
                   <BaseFileInput
                     label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์)"
@@ -75,19 +86,6 @@ const AddProduct = () => {
               }}
             >
               <Stack spacing={3}>
-                <BlankCard>
-                  <BaseFileInput
-                    label="อัปโหลดภาพสินค้า"
-                    placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
-                    multiple={false}
-                    accept={fileTypeGroup.image}
-                    maxSize={FileSize.MB2}
-                    onChange={(files) => {
-                      console.log(files);
-                    }}
-                  />
-                </BlankCard>
-
                 <BlankCard>
                   <StatusCard />
                 </BlankCard>
