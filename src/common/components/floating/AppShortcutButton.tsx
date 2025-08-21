@@ -4,10 +4,12 @@ import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import BaseFab from "../base/BaseFab";
 import React from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 
 const AppShortcutButton = () => {
   const { toggleAppShortcut } = useSidebarState();
   const isMobile = useIsMobile();
+  const isSubmenu = useIsSubMenu()
 
   return (
     <BaseFab
@@ -21,7 +23,7 @@ const AppShortcutButton = () => {
         left: "50%",
         transform: "translateX(-50%)",
       }}
-      open={isMobile}
+      open={isMobile && !isSubmenu}
     >
       <IconGridDots />
     </BaseFab>
