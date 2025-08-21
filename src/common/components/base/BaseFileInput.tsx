@@ -7,20 +7,27 @@ import { useTheme } from "@mui/material/styles";
 import { useDropzone } from "react-dropzone";
 import IconButton from "@mui/material/IconButton";
 import { IconX, IconUpload } from "@tabler/icons-react";
+import BaseLabel from "./BaseLabel";
 
 interface BaseFileInputProps {
+  label?: string;
+  required?: boolean;
   placeholder?: string;
   multiple?: boolean;
   accept?: string | string[];
-  maxSize?: number; // bytes
+  maxSize?: number;
+  maxFiles?: number;
   onChange?: (files: File[]) => void;
 }
 
 const BaseFileInput: React.FC<BaseFileInputProps> = ({
+  label,
+  required = false,
   placeholder = "Drag & drop files here, or click to select files",
   multiple = false,
   accept = ["image/png", "image/jpeg", "image/jpg"],
   maxSize,
+  maxFiles,
   onChange,
 }) => {
   const theme = useTheme();
@@ -42,22 +49,27 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
         });
       }
 
+      // จำกัดจำนวนไฟล์สูงสุด
+      if (maxFiles && validFiles.length > maxFiles) {
+        validFiles = validFiles.slice(0, maxFiles);
+        errorMsg = `เลือกไฟล์ได้สูงสุด ${maxFiles} ไฟล์`;
+      }
+
       setFiles(validFiles);
       setError(errorMsg || (fileRejections.length > 0 ? "ไฟล์ไม่ถูกต้อง" : null));
       if (onChange) onChange(validFiles);
     },
-    [maxSize, onChange]
+    [maxSize, maxFiles, onChange]
   );
 
-  const normalizedAccept =
-    Array.isArray(accept)
-      ? accept.reduce((acc, type) => {
-          acc[type] = [];
-          return acc;
-        }, {} as Record<string, string[]>)
-      : typeof accept === "string"
-      ? { [accept]: [] }
-      : undefined;
+  const normalizedAccept = Array.isArray(accept)
+    ? accept.reduce((acc, type) => {
+        acc[type] = [];
+        return acc;
+      }, {} as Record<string, string[]>)
+    : typeof accept === "string"
+    ? { [accept]: [] }
+    : undefined;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -75,6 +87,11 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
 
   return (
     <Box>
+      {label && (
+        <BaseLabel sx={{ m: 2 }} required={required}>
+          {label}
+        </BaseLabel>
+      )}
       <Box
         m={2}
         fontSize="12px"
@@ -91,9 +108,7 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
         <input {...getInputProps()} />
         <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
           <IconUpload size={22} />
-          <Typography>
-            {isDragActive ? "ปล่อยไฟล์ที่นี่..." : placeholder}
-          </Typography>
+          <Typography>{isDragActive ? "ปล่อยไฟล์ที่นี่..." : placeholder}</Typography>
         </Box>
       </Box>
       {error && (
@@ -103,7 +118,7 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
       )}
       <Box m={2}>
         <Typography variant="h6" fontSize="15px">
-          Files : {files.length}
+          Files{maxFiles ? ` : (${files.length}/${maxFiles})` : ` : ${files.length}`}
         </Typography>
         {files.length === 0 ? (
           <Typography variant="body2" color="text.secondary">
@@ -140,12 +155,7 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
                 {file.name}
               </Typography>
               <Chip color="primary" label={`${Math.round(file.size / 1024)} KB`} />
-              <IconButton
-                size="small"
-                color="error"
-                onClick={() => handleRemoveFile(i)}
-                sx={{ ml: 1 }}
-              >
+              <IconButton size="small" color="error" onClick={() => handleRemoveFile(i)} sx={{ ml: 1 }}>
                 <IconX size={18} />
               </IconButton>
             </Box>

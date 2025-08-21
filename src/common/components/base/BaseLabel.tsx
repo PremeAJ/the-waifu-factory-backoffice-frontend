@@ -3,13 +3,33 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
-const BaseLabel = styled((props: any) => <Typography variant="subtitle1" fontWeight={600} {...props} component="label" htmlFor={props.htmlFor} />)(
-  () => ({
-    marginBottom: "5px",
-    marginTop: "25px",
-    display: "block",
-    textAlign: "left",
-  })
-);
+interface BaseLabelProps {
+  children: React.ReactNode;
+  htmlFor?: string;
+  required?: boolean;
+  sx?: any;
+}
+
+const BaseLabel = styled(
+  ({ children, htmlFor, required, ...props }: BaseLabelProps) => (
+    <Typography
+      variant="subtitle1"
+      fontWeight={600}
+      component="label"
+      htmlFor={htmlFor}
+      {...props}
+    >
+      {children}
+      {required && (
+        <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>
+      )}
+    </Typography>
+  )
+)(() => ({
+  marginBottom: "5px",
+  marginTop: "25px",
+  display: "block",
+  textAlign: "left",
+}));
 
 export default BaseLabel;

@@ -10,7 +10,7 @@ import StatusCard from "@/components/apps/ecommerce/productAdd/Status";
 import ProductDetails from "@/components/apps/ecommerce/productAdd/ProductDetails";
 import ProductTemplate from "@/components/apps/ecommerce/productAdd/ProductTemplate";
 import BlankCard from "@/components/shared/BlankCard";
-import { ProductProvider } from '@/context/Ecommercecontext/index'
+import { ProductProvider } from "@/context/Ecommercecontext/index";
 import BaseFileInput from "@/common/components/base/BaseFileInput";
 import { FileSize } from "@/common/constants/file/fileSize";
 import { fileTypeGroup } from "@/common/constants/file/fileType";
@@ -23,7 +23,7 @@ const BCrumb = [
     to: "/dashboard/pos/products",
     title: "Products",
   },
-   {
+  {
     title: "Add Product",
   },
 ];
@@ -37,15 +37,26 @@ const AddProduct = () => {
           <Grid container spacing={3}>
             <Grid
               size={{
-                lg: 8
-              }}>
+                lg: 8,
+              }}
+            >
               <Stack spacing={3}>
                 <BlankCard>
                   <GeneralCard />
                 </BlankCard>
 
                 <BlankCard>
-                  <MediaCard />
+                  <BaseFileInput
+                    label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์)"
+                    placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
+                    multiple={true}
+                    accept={fileTypeGroup.image}
+                    maxSize={FileSize.MB2}
+                    maxFiles={3}
+                    onChange={(files) => {
+                      console.log(files);
+                    }}
+                  />
                 </BlankCard>
 
                 <BlankCard>
@@ -60,15 +71,17 @@ const AddProduct = () => {
 
             <Grid
               size={{
-                lg: 4
-              }}>
+                lg: 4,
+              }}
+            >
               <Stack spacing={3}>
                 <BlankCard>
                   <BaseFileInput
-                    placeholder="เลือกรูปสินค้า (JPG, PNG, สูงสุด 2MB)"
-                    multiple={true}
+                    label="อัปโหลดภาพสินค้า"
+                    placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
+                    multiple={false}
                     accept={fileTypeGroup.image}
-                    maxSize={FileSize.MB2} 
+                    maxSize={FileSize.MB2}
                     onChange={(files) => {
                       console.log(files);
                     }}
@@ -86,7 +99,6 @@ const AddProduct = () => {
                 <BlankCard>
                   <ProductTemplate />
                 </BlankCard>
-
               </Stack>
             </Grid>
           </Grid>
