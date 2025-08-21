@@ -5,11 +5,11 @@ import { useContext } from "react";
 import { UserContext } from "@/common/contexts/UserContext";
 import AppBarStyled from "@/components/styled/AppBarStyled";
 import Language from "@/components/shared/Language/Language";
-import MobileRightSidebar from "./MobileRightSidebar";
-import Notifications from "./Notification";
 import Profile from "@/components/shared/Profile";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
+import Notifications from "./Notification";
+import AppShortcut from "./AppShortcu";
 const Header = () => {
   const { loading, user } = useContext(UserContext);
   const { firstName, companies } = user || {};
@@ -28,7 +28,7 @@ const Header = () => {
           <Stack spacing={1} direction="row" alignItems="center">
             <Language />
             <Notifications />
-            <MobileRightSidebar />
+            <AppShortcut />
             <Box display="flex" flexDirection="column" alignItems="flex-end" mr={1} sx={{ cursor: "default" }}>
               <Typography variant="subtitle1" fontWeight="bold" noWrap>
                 {firstName}

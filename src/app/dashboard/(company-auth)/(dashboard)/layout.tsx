@@ -10,6 +10,7 @@ import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 import { CompanyProvider } from "@/common/contexts/CompanyContext";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
+import AppShortcutDrawer from "@/common/components/shared/AppShortcutDrawer";
 import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 
@@ -38,7 +39,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const isSubMenu = useIsSubMenu();
   if (ignoreLayout.includes(path)) return <>{children}</>;
 
-
   return (
     <CompanyProvider>
       <SidebarStateProvider>
@@ -56,6 +56,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             {isMobile && isSubMenu ? null : <Header />}
             <AppShortcutButton />
+            <AppShortcutDrawer />
+
             <Container
               sx={{
                 pt: "30px",

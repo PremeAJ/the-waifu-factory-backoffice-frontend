@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import {  IconGridDots, IconSearch, IconX } from "@tabler/icons-react";
 import {
   Box,
   Divider,
@@ -9,17 +8,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
-import AppLinks from "./AppLinks";
+import { IconSearch, IconX } from "@tabler/icons-react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import AppLinks from "@/app/dashboard/(company-auth)/(dashboard)/layout/header/AppLinks";
 
-const MobileRightSidebar = () => {
-  const { appShortcutisOpen, openAppShortcut, closeAppShortcut } = useSidebarState();
+const AppShortcutDrawer = () => {
+  const { appShortcutisOpen, closeAppShortcut } = useSidebarState();
   const [searchApp, setSearchApp] = useState("");
   const isMobile = useIsMobile();
 
-  const cartContent = (
+  const appContent = (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <Box px={3} pt={2} pb={2}>
         <TextField
@@ -59,45 +58,37 @@ const MobileRightSidebar = () => {
           </Typography>
           <AppLinks searchApp={searchApp} />
         </Box>
-
         <Divider />
       </Box>
     </Box>
   );
 
   return (
-    <Box>
-      {!isMobile && (
-        <IconButton size="large" color="inherit" onClick={openAppShortcut} sx={{ ...(appShortcutisOpen && { color: "primary.main" }) }}>
-          <IconGridDots size="21" stroke="1.5" />
-        </IconButton>
-      )}
-      <Drawer
-        anchor={isMobile ? "bottom" : "right"}
-        open={appShortcutisOpen}
-        onClose={closeAppShortcut}
-        slotProps={{
-          paper: {
-            sx: {
-              width: isMobile ? "100%" : { xs: "100%", sm: "350px" },
-              height: isMobile ? "60%" : "100%",
-              maxWidth: "100%",
-            },
+    <Drawer
+      anchor={isMobile ? "bottom" : "right"}
+      open={appShortcutisOpen}
+      onClose={closeAppShortcut}
+      slotProps={{
+        paper: {
+          sx: {
+            width: isMobile ? "100%" : { xs: "100%", sm: "350px" },
+            height: isMobile ? "60%" : "100%",
+            maxWidth: "100%",
           },
-        }}
-      >
-        <Box p={2} pb={0} display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h5" fontWeight={600}>
-            Apps
-          </Typography>
-          <IconButton onClick={closeAppShortcut}>
-            <IconX size={18} />
-          </IconButton>
-        </Box>
-        {cartContent}
-      </Drawer>
-    </Box>
+        },
+      }}
+    >
+      <Box p={2} pb={0} display="flex" alignItems="center" justifyContent="space-between">
+        <Typography variant="h5" fontWeight={600}>
+          Apps
+        </Typography>
+        <IconButton onClick={closeAppShortcut}>
+          <IconX size={18} />
+        </IconButton>
+      </Box>
+      {appContent}
+    </Drawer>
   );
 };
 
-export default MobileRightSidebar;
+export default AppShortcutDrawer;
