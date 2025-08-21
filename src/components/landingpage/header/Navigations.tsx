@@ -7,12 +7,12 @@ import { Grid } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { IconChevronDown } from "@tabler/icons-react";
-import AppLinks from "@/app/dashboard/(company-auth)/(dashboard)/layout/header/AppLinks";
-import QuickLinks from "@/app/dashboard/(company-auth)/(dashboard)/layout/header/QuickLinks";
 import DemosDD from "./DemosDD";
 import { useTranslation } from "react-i18next";
 import { UserContext } from "@/common/contexts/UserContext";
 import BaseButton from "@/common/components/base/BaseButton";
+import QuickLinks from "@/app/dashboard/(company-auth)/layout/header/QuickLinks";
+import AppLinks from "@/app/dashboard/(company-auth)/layout/header/AppLinks";
 
 const Navigations = () => {
   const { t } = useTranslation();

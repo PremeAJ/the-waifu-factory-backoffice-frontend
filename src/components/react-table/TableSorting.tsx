@@ -21,10 +21,7 @@ import {
 import { Stack } from "@mui/system";
 
 import DownloadCard from "@/components/shared/DownloadCard";
-import {
-  basicsTableData,
-  BasicsTableDataType,
-} from "@/app/dashboard/(company-auth)/(dashboard)/react-tables/filter/FilterTableData";
+
 
 import {
   flexRender,
@@ -46,6 +43,7 @@ import {
   IconCheck,
   IconX,
 } from "@tabler/icons-react";
+import { BasicsTableDataType, basicsTableData } from "@/app/dashboard/(company-auth)/react-tables/filter/FilterTableData";
 
 const BCrumb = [
   {
