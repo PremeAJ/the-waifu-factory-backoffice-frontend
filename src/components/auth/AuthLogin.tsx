@@ -15,6 +15,7 @@ import { IconLock, IconMail } from "@tabler/icons-react";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useError } from "@/common/contexts/ErrorContext";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -28,6 +29,7 @@ const AuthLogin = ({ isDashboard = false }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { showError } = useError();
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const formik = useFormik({
@@ -37,30 +39,33 @@ const AuthLogin = ({ isDashboard = false }) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
+      // setError(null);
+      // try {
       setIsLoading(true);
-      setError(null);
-      try {
-        const result = await signIn("credentials", {
-          redirect: false, // ตั้งเป็น false เพื่อจัดการ redirect เอง
-          email: data.email,
-          password: data.password,
-        });
+      const result = await signIn("credentials", {
+        redirect: false, // ตั้งเป็น false เพื่อจัดการ redirect เอง
+        email: data.email,
+        password: data.password,
+      });
+      setIsLoading(false);
+      if (result?.error) showError(result?.error, "เกิดข้อผิดพลาด");
 
-        if (result?.error) {
-          // แสดง error ที่ได้รับจาก authorize function
-          setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-          formik.setFieldError("email", " ");
-          formik.setFieldError("password", " ");
-        } else if (result?.ok) {
-          // redirect เมื่อ login สำเร็จ
-          const callbackUrl = isDashboard ? `/dashboard` : "/";
-          router.push(callbackUrl);
-        }
-      } catch (e) {
-        setError("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง");
-      } finally {
-        setIsLoading(false);
-      }
+      //   if (result?.error) {
+      //     // แสดง error ที่ได้รับจาก authorize function
+      //     setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      //     formik.setFieldError("email", " ");
+      //     formik.setFieldError("password", " ");
+      //   } else if (result?.ok) {
+      //     // redirect เมื่อ login สำเร็จ
+      //     const callbackUrl = isDashboard ? `/dashboard` : "/";
+      //     router.push(callbackUrl);
+      //   }
+      // } catch (e) {
+      //   console.log("🚀 ~ AuthLogin ~ e:", e)
+      //   setError("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง");
+      // } finally {
+      //   setIsLoading(false);
+      // }
       // const userData: SignInWithPasswordCredentials = {
       //   email: data.email,
       //   password: data.password,
@@ -167,7 +172,7 @@ const AuthLogin = ({ isDashboard = false }) => {
             size="large"
             fullWidth
             type="submit"
-            loading={authIsLoading}
+            loading={isLoading}
             // disabled={!captchaToken}
           >
             {t("Page.Login.SignIn")}

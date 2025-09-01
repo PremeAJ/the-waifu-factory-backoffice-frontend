@@ -6,6 +6,7 @@ import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { Stack } from "@mui/system";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
+import { HeadersKey } from "@/common/constants/header";
 const Languages = [
   {
     flagname: "ภาษาไทย (TH)",
@@ -51,7 +52,9 @@ const Language = () => {
   };
   useEffect(() => {
     i18n.changeLanguage(isLanguage);
-    Cookies.set("lang", isLanguage);
+    Cookies.set(HeadersKey.Lang, isLanguage, {
+      path: "/",
+    });
   }, [isLanguage]);
 
   return (

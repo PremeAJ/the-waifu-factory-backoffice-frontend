@@ -1,27 +1,28 @@
-// SWR fetcher function
+import { HeadersKey } from "@/common/constants/header";
+import { Method } from "@/common/constants/method";
+import Cookies from "js-cookie";
+import { v4 as uuidv4 } from "uuid";
 
 async function handleResponse(res: Response, method: string, url: string) {
-  if (!res.ok) {
-    let errorText = "Unknown error";
-    try {
-      const data = await res.json();
-      errorText = data?.message || JSON.stringify(data) || errorText;
-    } catch {
-      try {
-        errorText = await res.text();
-      } catch {}
-    }
-    throw new Error(errorText);
-  }
-  try {
-    const data = await res.clone().json();
-  } catch {
-    const text = await res.clone().text();
-  }
   return res.json();
 }
 
-const getFetcher = (url: string | [string, Record<string, any>]) => {
+const getHeaders = async (headers?: Record<string, string>) => {
+  const deviceId = Cookies.get(HeadersKey.DeviceId) || uuidv4();
+  const lang = Cookies.get(HeadersKey.Lang) || "";
+  Cookies.set('test', 'asd');
+  const header = {
+    [HeadersKey.Lang]: lang,
+    [HeadersKey.ContentType]: "application/json",
+    [HeadersKey.Origin]: process.env.NEXT_PUBLIC_DOMAIN || "",
+    [HeadersKey.DeviceId]: deviceId,
+    ...(headers || {}),
+  };
+  console.log("🚀 ~ getHeaders ~ header:", header)
+  return header;
+};
+
+const getFetcher = async (url: string | [string, Record<string, any>], headers?: Record<string, string>) => {
   let fullUrl = "";
   let params: Record<string, any> | undefined;
 
@@ -38,37 +39,38 @@ const getFetcher = (url: string | [string, Record<string, any>]) => {
   }
 
   return fetch(fullUrl, {
-    method: "GET",
-    headers: { browserrefreshed: "false" },
-  }).then((res) => handleResponse(res, "GET", fullUrl));
+    method: Method.GET,
+    headers: { browserrefreshed: "false", ...(await getHeaders(headers)) },
+  }).then((res) => handleResponse(res, Method.GET, fullUrl));
 };
 
-const postFetcher = (url: string, arg: any) =>
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  }).then((res) => handleResponse(res, "POST", url));
+const postFetcher = async (url: string, body: any, headers?: Record<string, string>) => {
+  return fetch(url, {
+    method: Method.POST,
+    headers: await getHeaders(headers),
+    body: JSON.stringify(body),
+  }).then((res) => handleResponse(res, Method.POST, url));
+};
 
-const putFetcher = (url: string, arg: any) =>
+const putFetcher = async (url: string, body: any, headers?: Record<string, string>) =>
   fetch(url, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  }).then((res) => handleResponse(res, "PUT", url));
+    method: Method.PUT,
+    headers: await getHeaders(headers),
+    body: JSON.stringify(body),
+  }).then((res) => handleResponse(res, Method.PUT, url));
 
-const patchFetcher = (url: string, arg: any) =>
+const patchFetcher = async (url: string, body: any, headers?: Record<string, string>) =>
   fetch(url, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  }).then((res) => handleResponse(res, "PATCH", url));
+    method: Method.PATCH,
+    headers: await getHeaders(headers),
+    body: JSON.stringify(body),
+  }).then((res) => handleResponse(res, Method.PATCH, url));
 
-const deleteFetcher = (url: string, arg: any) =>
+const deleteFetcher = async (url: string, body: any, headers?: Record<string, string>) =>
   fetch(url, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  }).then((res) => handleResponse(res, "DELETE", url));
+    method: Method.DELETE,
+    headers: await getHeaders(headers),
+    body: JSON.stringify(body),
+  }).then((res) => handleResponse(res, Method.DELETE, url));
 
 export { getFetcher, postFetcher, putFetcher, deleteFetcher, patchFetcher };
