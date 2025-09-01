@@ -8,6 +8,7 @@ import Header from "./header";
 import MyApp from "./app";
 import React from "react";
 import ScrollToTopButton from "../common/components/floating/ScrollToTopButton";
+import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 
 export const metadata: Metadata = {
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
@@ -22,22 +23,24 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthProvider>
-      <CustomizerContextProvider>
-        <html lang="en" suppressHydrationWarning>
-          <head>
-            <Header />
-          </head>
-          <body>
-            <MyApp>
-              {children}
-              <ThemeAwareTopLoader />
-              <ActionButton />
-              <ScrollToTopButton />
-            </MyApp>
-          </body>
-        </html>
-      </CustomizerContextProvider>
-    </AuthProvider>
+    <NextAuthProvider>
+      <AuthProvider>
+        <CustomizerContextProvider>
+          <html lang="en" suppressHydrationWarning>
+            <head>
+              <Header />
+            </head>
+            <body>
+              <MyApp>
+                {children}
+                <ThemeAwareTopLoader />
+                <ActionButton />
+                <ScrollToTopButton />
+              </MyApp>
+            </body>
+          </html>
+        </CustomizerContextProvider>
+      </AuthProvider>
+    </NextAuthProvider>
   );
 }

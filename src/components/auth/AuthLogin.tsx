@@ -13,6 +13,8 @@ import { useTranslation } from "react-i18next";
 import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
 import { IconLock, IconMail } from "@tabler/icons-react";
 import BaseTextField from "@/common/components/base/BaseTextField";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -23,6 +25,10 @@ const AuthLogin = ({ isDashboard = false }) => {
   const { signOut, signInWithEmail, isLoading: authIsLoading } = useContext(AuthContext);
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const formik = useFormik({
     initialValues: {
@@ -31,41 +37,65 @@ const AuthLogin = ({ isDashboard = false }) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
-      const userData: SignInWithPasswordCredentials = {
-        email: data.email,
-        password: data.password,
-        options: {
-          captchaToken: captchaToken,
-        },
-      };
-      const { error } = await signInWithEmail(userData);
-      if (error) {
-        setCaptchaToken("");
-        switch (error) {
-          case "email_not_confirmed":
-            alert("กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ");
-            break;
-          case "invalid_credentials":
-            formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-            formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-            break;
-          case "over_request_rate_limit":
-            alert("คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)");
-            break;
-          case "user_banned":
-            alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
-            break;
-          case "captcha_failed":
-          case "unexpected_failure":
-            alert("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า");
-            break;
-          default:
-            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-            break;
+      setIsLoading(true);
+      setError(null);
+      try {
+        const result = await signIn("credentials", {
+          redirect: false, // ตั้งเป็น false เพื่อจัดการ redirect เอง
+          email: data.email,
+          password: data.password,
+        });
+
+        if (result?.error) {
+          // แสดง error ที่ได้รับจาก authorize function
+          setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+          formik.setFieldError("email", " ");
+          formik.setFieldError("password", " ");
+        } else if (result?.ok) {
+          // redirect เมื่อ login สำเร็จ
+          const callbackUrl = isDashboard ? `/dashboard` : "/";
+          router.push(callbackUrl);
         }
-      } else {
-        window.location.href = isDashboard ? `/dashboard/auth/callback` : "/auth/callback";
+      } catch (e) {
+        setError("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง");
+      } finally {
+        setIsLoading(false);
       }
+      // const userData: SignInWithPasswordCredentials = {
+      //   email: data.email,
+      //   password: data.password,
+      //   options: {
+      //     captchaToken: captchaToken,
+      //   },
+      // };
+      // const { error } = await signInWithEmail(userData);
+      // if (error) {
+      //   setCaptchaToken("");
+      //   switch (error) {
+      //     case "email_not_confirmed":
+      //       alert("กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ");
+      //       break;
+      //     case "invalid_credentials":
+      //       formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      //       formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      //       break;
+      //     case "over_request_rate_limit":
+      //       alert("คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)");
+      //       break;
+      //     case "user_banned":
+      //       alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
+      //       break;
+      //     case "captcha_failed":
+      //     case "unexpected_failure":
+      //       alert("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า");
+      //       break;
+      //     default:
+      //       alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+      //       break;
+      //   }
+      // } else {
+      //   window.location.href = isDashboard ? `/dashboard/auth/callback` : "/auth/callback";
+      // }
     },
   });
 
@@ -112,10 +142,7 @@ const AuthLogin = ({ isDashboard = false }) => {
           </Box>
           <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
             <FormGroup>
-              <FormControlLabel
-                control={<CustomCheckbox defaultChecked />}
-                label={t("Page.Login.RememberThisDevice")}
-              />
+              <FormControlLabel control={<CustomCheckbox defaultChecked />} label={t("Page.Login.RememberThisDevice")} />
             </FormGroup>
             <Typography
               component={Link}
@@ -131,16 +158,9 @@ const AuthLogin = ({ isDashboard = false }) => {
           </Stack>
         </Stack>
         <Box>
-          {formik.isValid && formik.dirty && (
-            <Turnstile
-              sitekey={siteKey}
-              theme="light"
-              action="login"
-              size="flexible"
-              onSuccess={setCaptchaToken}
-              language={i18n.language}
-            />
-          )}
+          {/* {formik.isValid && formik.dirty && (
+            <Turnstile sitekey={siteKey} theme="light" action="login" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
+          )} */}
           <Button
             color="primary"
             variant="contained"
@@ -148,7 +168,7 @@ const AuthLogin = ({ isDashboard = false }) => {
             fullWidth
             type="submit"
             loading={authIsLoading}
-            disabled={!captchaToken}
+            // disabled={!captchaToken}
           >
             {t("Page.Login.SignIn")}
           </Button>
