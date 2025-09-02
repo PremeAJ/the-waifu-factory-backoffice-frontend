@@ -4,7 +4,7 @@ import PageContainer from "@/components/container/PageContainer";
 import Logo from "@/components/shared/logo/Logo";
 
 import Image from "next/image";
-import AuthRegister from "../../../components/auth/AuthRegister";
+import AuthRegister from "../../../common/components/auth/AuthRegister";
 import { ServerLanguage } from "@/components/shared/Language/ServerLanguage";
 
 export default function Register() {

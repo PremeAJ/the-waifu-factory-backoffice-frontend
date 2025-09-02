@@ -2,7 +2,7 @@ import { Grid, Box, Typography } from "@mui/material";
 import PageContainer from "@/components/container/PageContainer";
 import Logo from "@/components/shared/logo/Logo";
 import Image from "next/image";
-import AuthTwoSteps from "@/components/auth/AuthTwoSteps";
+import AuthTwoSteps from "@/common/components/auth/AuthTwoSteps";
 
 export default function TwoSteps() {
   return (
