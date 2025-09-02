@@ -61,9 +61,9 @@ const CompanyInfoStep = ({ formik }: any) => {
           onChange={(event: any) => {
             setUseAccountEmail(event.target.checked);
             if (event.target.checked) {
-              formik.setFieldValue("companyEmail", email || "", false);
+              formik.setFieldValue("companyEmail", email || "", true);
             } else {
-              formik.setFieldValue("companyEmail", "", false);
+              formik.setFieldValue("companyEmail", "", true);
             }
           }}
         />

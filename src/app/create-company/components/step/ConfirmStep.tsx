@@ -123,16 +123,16 @@ const ConfirmStep = ({ formik }: any) => {
 
       <Divider sx={{ my: 2 }} />
       <BaseCheckBox
-        name="consent"
-        checked={!!formik.values.consent.find((c: any) => c.id === consentId && c.accepted)}
+        name="consents"
+        checked={!!formik.values.consents.find((c: any) => c.id === consentId && c.accepted)}
         onChange={(e: any) => {
           if (consentId) {
             if (e.target.checked) {
-              const arr = formik.values.consent.filter((c: any) => c.id !== consentId);
-              formik.setFieldValue("consent", [...arr, { id: consentId, accepted: true }]);
+              const arr = formik.values.consents.filter((c: any) => c.id !== consentId);
+              formik.setFieldValue("consents", [...arr, { id: consentId, accepted: true }]);
             } else {
-              const arr = formik.values.consent.filter((c: any) => c.id !== consentId);
-              formik.setFieldValue("consent", arr);
+              const arr = formik.values.consents.filter((c: any) => c.id !== consentId);
+              formik.setFieldValue("consents", arr);
             }
           }
         }}
@@ -146,15 +146,15 @@ const ConfirmStep = ({ formik }: any) => {
         content={I18nString(isLanguage, termsOfService?.detailTh, termsOfService?.detailEn) || "ไม่มีข้อมูลเงื่อนไขการใช้งาน"}
         onConfirm={() => {
           if (consentId) {
-            const arr = formik.values.consent.filter((c: any) => c.id !== consentId);
-            formik.setFieldValue("consent", [...arr, { id: consentId, accepted: true }]);
+            const arr = formik.values.consents.filter((c: any) => c.id !== consentId);
+            formik.setFieldValue("consents", [...arr, { id: consentId, accepted: true }]);
           }
           setOpenDialog(false);
         }}
         onClose={() => {
           if (consentId) {
-            const arr = formik.values.consent.filter((c: any) => c.id !== consentId);
-            formik.setFieldValue("consent", arr);
+            const arr = formik.values.consents.filter((c: any) => c.id !== consentId);
+            formik.setFieldValue("consents", arr);
           }
           setOpenDialog(false);
         }}

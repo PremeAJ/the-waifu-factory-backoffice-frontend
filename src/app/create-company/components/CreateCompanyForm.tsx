@@ -71,7 +71,7 @@ const CreateCompanyForm = () => {
     companyAddress: "",
     companyEmail: "",
     companyName: "",
-    consent: [],
+    consents: [],
     contactEmail: email || "",
     contactName: fullName || "",
     contactPhone: phone || "",
@@ -89,15 +89,11 @@ const CreateCompanyForm = () => {
     onSubmit: async (data) => {
       setSubmitError(null);
       try {
-        const response = await createCompany(data);
-        if (response.statusCode !== 200) {
-          showError(response.message, "เกิดข้อผิดพลาด", true)
-        } else {
-          setSubmitted(true);
-          setActiveStep(steps.length);
-        }
+        await createCompany(data);
+        setSubmitted(true);
+        setActiveStep(steps.length);
       } catch (err: any) {
-        setSubmitError(err?.message || "เกิดข้อผิดพลาดในการสร้างบริษัท");
+        showError(err?.message, "เกิดข้อผิดพลาด", true);
       }
     },
   });
@@ -146,11 +142,6 @@ const CreateCompanyForm = () => {
           ) : (
             <>
               <Box mt={3}>{renderStep(activeStep)}</Box>
-              {submitError && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {submitError}
-                </Alert>
-              )}
               <Box display="flex" flexDirection="row" mt={3}>
                 <BaseButton fullWidth={false} color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} label="กลับ" />
                 <Box flex="1 1 auto" />
@@ -162,7 +153,7 @@ const CreateCompanyForm = () => {
                     type="submit"
                     variant="contained"
                     color="success"
-                    disabled={!formik.values.consent.find((c: any) => c.id === termsOfService?.id && c.accepted)}
+                    disabled={!formik.values.consents.find((c: any) => c.id === termsOfService?.id && c.accepted)}
                     label="ยืนยัน"
                   />
                 )}

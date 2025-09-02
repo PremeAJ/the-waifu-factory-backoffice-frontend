@@ -139,8 +139,8 @@ const Navigations = () => {
       </StyledButton>
       {!session && (
         <>
-          <BaseButton label={"เข้าสู่ระบบ"} href="/auth/sign-in" fullWidth={false} variant="outlined" />
-          <BaseButton label={"เริ่มต้นใช้งาน"} href="/auth/sign-up" fullWidth={false} />
+          <BaseButton label={"เข้าสู่ระบบ"} href="/auth/sign-in" fullWidth={false} variant="outlined" size="small" />
+          <BaseButton label={"เริ่มต้นใช้งาน"} href="/auth/sign-up" fullWidth={false} size="small" />
         </>
       )}
     </>

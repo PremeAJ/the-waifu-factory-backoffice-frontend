@@ -7,7 +7,6 @@ import { authOptions } from "../auth/[...nextauth]/route";
 
 async function handleRequest(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const session = await getServerSession(authOptions);
-  console.log("🚀 ~ handleRequest ~ session:", session)
   const { path } = await context.params;
   const search = req.nextUrl.search;
   const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${path.join("/")}${search}`.replace("/authentication", "/auth");

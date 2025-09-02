@@ -1,11 +1,11 @@
 "use client";
 
-import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
 import useSWR from "swr";
-import { getFetcher, postFetcher, patchFetcher, deleteFetcher } from "@/app/api/globalFetcher";
-import { defaultPageOptions } from "@/common/interface/paginate";
-import { CategoriesContextType, CategoryDetailType, CreateCategoryDto, UpdateCategoryDto } from "./interfaces/categories";
 import { useError } from "@/common/contexts/ErrorContext";
+import { defaultPageOptions } from "@/common/interface/paginate";
+import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
+import { getFetcher, postFetcher, patchFetcher, deleteFetcher } from "@/app/api/globalFetcher";
+import { CategoriesContextType, CategoryDetailType, CreateCategoryDto, UpdateCategoryDto } from "./interfaces/categories";
 
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
 
@@ -14,11 +14,11 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const masterIconEndpoint = "/api/master/icon/category";
   const { showError } = useError();
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
   const [search, setSearch] = useState("");
+  const [perPage, setPerPage] = useState(5);
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [isActive, setIsActive] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean | null>(null);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -59,8 +59,8 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const {
     data: dropdownData,
     error: dropdownError,
-    isLoading: dropdownLoading,
     mutate: dropdownMutate,
+    isLoading: dropdownLoading,
   } = useSWR(`${endpoint}/dropdown`, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -70,8 +70,8 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const {
     data: categoryIconsData,
     error: categoryIconsError,
-    isLoading: categoryIconsLoading,
     mutate: categoryIconsMutate,
+    isLoading: categoryIconsLoading,
   } = useSWR(masterIconEndpoint, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -128,26 +128,26 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const value: CategoriesContextType = {
-    categories: categoriesData?.data?.data || [],
-    categoriesMutate,
+    search,
+    setPage,
+    isActive,
+    setSearch,
+    setPerPage,
+    setIsActive,
     createCategory,
     deleteCategory,
-    dropdown: dropdownData?.data || [],
     dropdownMutate,
-    error: categoriesError || dropdownError || categoryIconsError || null,
-    getCategoryById,
-    isActive,
-    loading: categoriesLoading || isLoading,
-    pageOptions: categoriesData?.data?.pageOptions || defaultPageOptions,
-    search,
-    setIsActive,
-    setPage,
-    setPerPage,
-    setSearch,
     updateCategory,
-    categoryIcons: categoryIconsData?.data || [],
-    categoryIconsLoading,
+    getCategoryById,
+    categoriesMutate,
     categoryIconsMutate,
+    categoryIconsLoading,
+    dropdown: dropdownData?.data || [],
+    loading: categoriesLoading || isLoading,
+    categories: categoriesData?.data?.data || [],
+    categoryIcons: categoryIconsData?.data || [],
+    pageOptions: categoriesData?.data?.pageOptions || defaultPageOptions,
+    error: categoriesError || dropdownError || categoryIconsError || null,
   };
 
   return <CategoriesContext.Provider value={value}>{children}</CategoriesContext.Provider>;

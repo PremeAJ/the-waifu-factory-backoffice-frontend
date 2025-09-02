@@ -114,7 +114,7 @@ const AuthLogin = () => {
           </Stack>
         </Stack>
         <Box>
-          {formik.isValid && formik.dirty && (
+          {formik.isValid && formik.dirty && formik.values.password.length > 6 && (
             <Turnstile sitekey={siteKey} theme="light" action="login" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
           )}
           <Button color="primary" variant="contained" size="large" fullWidth type="submit" loading={isLoading} disabled={!captchaToken}>

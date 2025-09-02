@@ -3,6 +3,7 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import useSWR from "swr";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { UserContext } from "../UserContext";
+import { useError } from "../ErrorContext";
 
 export interface CompanyType {
   id: string;
@@ -12,7 +13,7 @@ export interface CompanyType {
   contactName: string;
   contactEmail: string;
   contactPhone: string;
-  consent: { id: string; accepted: boolean }[];
+  consents: { id: string; accepted: boolean }[];
   provinceId: number | null;
   districtId: number | null;
   subdistrictId: number | null;
@@ -38,15 +39,18 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [company, setCompany] = useState<CompanyType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
+  const { showError } = useError();
 
   const createCompany = async (payload: Omit<CompanyType, "id">) => {
     setLoading(true);
     setError(null);
     try {
       const response = await postFetcher("/api/company", payload);
+      console.log("🚀 ~ createCompany ~ response:", response)
       await userMutate();
       await companyListMutate();
       setLoading(false);
+      if (response.statusCode !== 201) showError(response.message, "เกิดข้อผิดพลาด");
       return response;
     } catch (err: any) {
       setError(err.message);

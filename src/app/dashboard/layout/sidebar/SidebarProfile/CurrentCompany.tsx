@@ -1,5 +1,6 @@
 import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { UserContext } from "@/common/contexts/UserContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
@@ -11,9 +12,11 @@ export const CurrentCompany = () => {
   const { isLanguage } = useContext(CustomizerContext);
   const { user } = useContext(UserContext);
   const { companies } = user || {};
-  const { name, logoUrl, businessTypeId, companyUsers } = companies || {};
-  const { roles, branches } = companyUsers?.[0] || {};
-  const { nameTh: branchNameTh, nameEn: branchNameEN } = branches || {};
+  const { activeCompany } = useProfile();
+  const { name, logoUrl, businessTypeId, branchNameTh, branchNameEn } = activeCompany || {};
+  // const { name, logoUrl, businessTypeId, companyUsers } = companies || {};
+  // const { roles, branches } = companyUsers?.[0] || {};
+  // const { nameTh: branchNameTh, nameEn: branchNameEN } = branches || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const { isSidebarHover, isCollapse } = useContext(CustomizerContext);
   const hideMenu = lgUp ? isCollapse == "mini-sidebar" && !isSidebarHover : "";
@@ -43,11 +46,11 @@ export const CurrentCompany = () => {
         ) : (
           <>
             <CompanyAvatar businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
-            <Box sx={{ maxWidth: 120, overflow: "hidden", pl: 0.5, borderRadius:0 }}>
+            <Box sx={{ maxWidth: 120, overflow: "hidden", pl: 0.5, borderRadius: 0 }}>
               <Typography variant="h6" noWrap>
                 {name}
               </Typography>
-              <Typography variant="caption">สาขา {I18nString(isLanguage, branchNameTh, branchNameEN)}</Typography>
+              <Typography variant="caption">สาขา {I18nString(isLanguage, branchNameTh, branchNameEn)}</Typography>
             </Box>
           </>
         )}

@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
-import { DialogTitle, List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
-import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
-import { UserContext } from "@/common/contexts/UserContext";
+import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip } from "@mui/material";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import BaseDialog from "../base/BaseDialog";
+import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
+import React from "react";
 
 interface SelectCompanyDialogProps {
   open: boolean;
@@ -12,20 +13,17 @@ interface SelectCompanyDialogProps {
   disableBackdropClose?: boolean; // เพิ่ม prop นี้
 }
 
-const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
-  open,
-  onClose,
-  disableBackdropClose = false,
-}) => {
-  const { companyList, setActiveCompany, user } = useContext(UserContext);
-  const { companies } = user || {};
+const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose, disableBackdropClose = false }) => {
+  const { companyList, updateActiveCompany } = useProfile();
+  const { data: session } = useSession();
+  const { activeCompany } = session?.profile || {};
   const router = useRouter();
 
   const handleSelect = async (companyId: string) => {
     if (companyId === "addAccount") {
       router.push("/pricing");
     } else {
-      await setActiveCompany(companyId);
+      await updateActiveCompany(companyId);
       router.push("/dashboard");
     }
     if (onClose) onClose();
@@ -34,7 +32,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
   const companyListContent = (
     <List sx={{ pt: 0 }}>
       {companyList.map((company) => {
-        const isActive = companies?.id === company.companies.id;
+        const isActive = activeCompany === company.companies.id;
         return (
           <ListItemButton
             onClick={() => !isActive && handleSelect(company.companies.id)}
@@ -50,14 +48,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
               primary={
                 <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   {company.companies.name}
-                  {isActive && (
-                    <Chip
-                      label="กำลังใช้งาน"
-                      color="primary"
-                      size="small"
-                      sx={{ ml: 1 }}
-                    />
-                  )}
+                  {isActive && <Chip label="กำลังใช้งาน" color="primary" size="small" sx={{ ml: 1 }} />}
                 </span>
               }
             />
@@ -82,16 +73,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({
     if (onClose) onClose();
   };
 
-  return (
-    <BaseDialog
-      open={open}
-      title="เลือกบริษัทที่ต้องการใช้งาน"
-      content={companyListContent}
-      onClose={handleDialogClose}
-      onConfirm={() => {}}  
-    />
-  );
+  return <BaseDialog open={open} title="เลือกบริษัทที่ต้องการใช้งาน" content={companyListContent} onClose={handleDialogClose} onConfirm={() => {}} />;
 };
 
 export default SelectCompanyDialog;
-

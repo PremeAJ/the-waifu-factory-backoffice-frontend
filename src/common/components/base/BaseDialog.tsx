@@ -76,12 +76,12 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
       <DialogContent
         dividers={scrolling}
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          minWidth: 320
+          // display: "flex",
+          // flexDirection: "column",
+          // alignItems: "center",
+          // justifyContent: "center",
+          // textAlign: "center",
+          minWidth: 320,
         }}
       >
         {(icon || iconType) && (

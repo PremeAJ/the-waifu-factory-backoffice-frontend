@@ -1,19 +1,21 @@
 "use client";
-import Box from "@mui/material/Box";
-import React, { useContext } from "react";
-import Header from "./layout/header/Header";
-import { usePathname } from "next/navigation";
-import Sidebar from "./layout/sidebar/Sidebar";
-import Container from "@mui/material/Container";
-import { styled, useTheme } from "@mui/material/styles";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 import { CompanyProvider } from "@/common/contexts/CompanyContext";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
+import { styled, useTheme } from "@mui/material/styles";
+import { usePathname } from "next/navigation";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import DashboardGuard from "@/common/guards/dashboardGuard";
+import Header from "./layout/header/Header";
+import React, { useContext } from "react";
+import SessionGuard from "@/common/guards/sessionGuard";
+import Sidebar from "./layout/sidebar/Sidebar";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import AppShortcutDrawer from "@/common/components/shared/AppShortcutDrawer";
 import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import AuthGuard from "./authGuard";
+import { ProfileProvider } from "@/common/contexts/ProfileContext";
+import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
@@ -41,38 +43,42 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   if (ignoreLayout.includes(path)) return <>{children}</>;
 
   return (
-    <AuthGuard>
-      <CompanyProvider>
-        <SidebarStateProvider>
-          <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-            <Sidebar />
-            <PageWrapper
-              className="page-wrapper"
-              sx={{
-                ...(isCollapse === "mini-sidebar" && {
-                  [theme.breakpoints.up("lg")]: {
-                    ml: `87px`,
-                  },
-                }),
-              }}
-            >
-              {isMobile && isSubMenu ? null : <Header />}
-              <AppShortcutButton />
-              <AppShortcutDrawer />
+    <ProfileProvider>
+      <SessionGuard>
+        <DashboardGuard>
+          <CompanyProvider>
+            <SidebarStateProvider>
+              <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
+                <Sidebar />
+                <PageWrapper
+                  className="page-wrapper"
+                  sx={{
+                    ...(isCollapse === "mini-sidebar" && {
+                      [theme.breakpoints.up("lg")]: {
+                        ml: `87px`,
+                      },
+                    }),
+                  }}
+                >
+                  {isMobile && isSubMenu ? null : <Header />}
+                  <AppShortcutButton />
+                  <AppShortcutDrawer />
 
-              <Container
-                sx={{
-                  pt: "30px",
-                  maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
-                  mt: isMobile && isSubMenu ? 6 : undefined,
-                }}
-              >
-                <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
-              </Container>
-            </PageWrapper>
-          </MainWrapper>
-        </SidebarStateProvider>
-      </CompanyProvider>
-    </AuthGuard>
+                  <Container
+                    sx={{
+                      pt: "30px",
+                      maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
+                      mt: isMobile && isSubMenu ? 6 : undefined,
+                    }}
+                  >
+                    <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
+                  </Container>
+                </PageWrapper>
+              </MainWrapper>
+            </SidebarStateProvider>
+          </CompanyProvider>
+        </DashboardGuard>
+      </SessionGuard>
+    </ProfileProvider>
   );
 }
