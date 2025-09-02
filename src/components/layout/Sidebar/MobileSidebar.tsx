@@ -3,7 +3,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import Logo from "@/components/shared/logo/Logo";
+import Logo from "@/common/components/shared/Logo";
 import { NavLinks } from "./Navigations";
 import { Chip } from "@mui/material";
 

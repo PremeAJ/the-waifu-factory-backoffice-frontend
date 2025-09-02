@@ -1,5 +1,5 @@
 import PageContainer from "@/components/container/PageContainer";
-import LandingPageHeader from "../../components/layout/header/LandingPageHeader";
+import LandingPageHeader from "../(main-page)/components/Header";
 import Pricing from "@/components/pages/pricing";
 import Footer from "@/components/layout/footer/FllowUsFooter";
 import { PlanProvider } from "@/common/contexts/Master/PlanContext";

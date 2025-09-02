@@ -9,7 +9,7 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
-import Logo from "@/components/shared/logo/Logo";
+import Logo from "@/common/components/shared/Logo";
 import { IconMenu2 } from "@tabler/icons-react";
 import Navigations from "../Sidebar/Navigations";
 import MobileSidebar from "../Sidebar/MobileSidebar";

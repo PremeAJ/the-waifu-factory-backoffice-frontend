@@ -1,5 +1,5 @@
 import { Grid, Box, Card, Typography } from "@mui/material";
-import Logo from "@/components/shared/logo/Logo";
+import Logo from "@/common/components/shared/Logo";
 import PageContainer from "@/components/container/PageContainer";
 import AuthTwoSteps from "@/common/components/auth/AuthTwoSteps";
 

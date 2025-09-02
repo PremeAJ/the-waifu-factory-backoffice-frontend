@@ -1,23 +1,24 @@
 "use client";
-import React, { useContext } from "react";
+import { IconMenu2 } from "@tabler/icons-react";
+import { styled } from "@mui/material/styles";
+import { Theme } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
+import Language from "@/components/shared/Language/Language";
+import Logo from "@/common/components/shared/Logo";
+import MobileSidebar from "../../../components/landingpage/header/MobileSidebar";
+import Navigations from "./Navigations";
+import Profile from "@/components/shared/Profile";
+import React, { useContext } from "react";
 import Stack from "@mui/material/Stack";
-import { Theme } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { styled } from "@mui/material/styles";
-import Logo from "@/components/shared/logo/Logo";
-import Navigations from "../../landingpage/header/Navigations";
-import MobileSidebar from "../../landingpage/header/MobileSidebar";
-import { IconMenu2 } from "@tabler/icons-react";
-import Profile from "@/components/shared/Profile";
-import Language from "@/components/shared/Language/Language";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
-const LandingPageHeader = () => {
+const Header = () => {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     justifyContent: "center",
     [theme.breakpoints.up("lg")]: {
@@ -33,10 +34,7 @@ const LandingPageHeader = () => {
     color: theme.palette.text.secondary,
   }));
 
-  //   sidebar
-  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"));
-  const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
-
+  const isMobile = useIsMobile()
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -53,7 +51,7 @@ const LandingPageHeader = () => {
         <ToolbarStyled>
           <Logo />
           <Box flexGrow={1} />
-          {lgDown ? (
+          {isMobile ? (
             <IconButton
               color="inherit"
               aria-label="menu"
@@ -61,12 +59,11 @@ const LandingPageHeader = () => {
             >
               <IconMenu2 size="20" />
             </IconButton>
-          ) : null}
-          {lgUp ? (
+          ) : (
             <Stack spacing={1} direction="row" alignItems="center">
               <Navigations />
             </Stack>
-          ) : null}
+          )}
           <Box ml={2} display="flex" alignItems="center">
             <Profile />
             <Language />
@@ -94,4 +91,4 @@ const LandingPageHeader = () => {
   );
 };
 
-export default LandingPageHeader;
+export default Header;

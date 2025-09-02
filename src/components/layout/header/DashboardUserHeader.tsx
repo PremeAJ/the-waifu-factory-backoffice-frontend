@@ -1,6 +1,6 @@
 import Language from "@/components/shared/Language/Language";
 import Profile from "@/components/shared/Profile";
-import AppBarStyled from "@/components/styled/AppBarStyled";
+import AppBarStyled from "@/common/components/shared/AppBarStyled";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import config from "@/common/contexts/setting/config";
 import { UserContext } from "@/common/contexts/UserContext";

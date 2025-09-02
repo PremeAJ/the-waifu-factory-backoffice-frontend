@@ -1,20 +1,22 @@
-import { Grid, Box, Typography } from "@mui/material";
+import { Grid, Box, Stack, Typography } from "@mui/material";
 import PageContainer from "@/components/container/PageContainer";
-import Logo from "@/components/shared/logo/Logo";
+import Logo from "@/common/components/shared/Logo";
 import Image from "next/image";
-import AuthTwoSteps from "@/common/components/auth/AuthTwoSteps";
+import AuthLogin from "../../../common/components/auth/AuthLogin";
+import { ServerLanguage } from "@/components/shared/Language/ServerLanguage";
 
-export default function TwoSteps() {
+export default function Login() {
   return (
-    (<PageContainer title="Two steps Page" description="this is Sample page">
+    <PageContainer title="Login Page" description="this is Sample page">
       <Grid
         container
         spacing={0}
         justifyContent="center"
-        sx={{ overflowX: "hidden" }}
+        sx={{ height: "100vh" }}
       >
         <Grid
           sx={{
+            display: { xs: "none", lg: "block" },
             position: "relative",
             "&:before": {
               content: '""',
@@ -30,13 +32,14 @@ export default function TwoSteps() {
           size={{
             xs: 12,
             sm: 12,
-            lg: 8,
-            xl: 9
-          }}>
+            lg: 7,
+            xl: 8,
+          }}
+        >
           <Box position="relative">
-            <Box px={3}>
+            {/* <Box px={3}>
               <Logo />
-            </Box>
+            </Box> */}
             <Box
               alignItems="center"
               justifyContent="center"
@@ -69,25 +72,31 @@ export default function TwoSteps() {
           size={{
             xs: 12,
             sm: 12,
-            lg: 4,
-            xl: 3
-          }}>
-          <Box p={4}>
-            <Typography variant="h4" fontWeight="700">
-              Two Step Verification
-            </Typography>
-
-            <Typography variant="subtitle1" color="textSecondary" mt={2} mb={1}>
-              We sent a verification code to your mobile. Enter the code from
-              the mobile in the field below.
-            </Typography>
-            <Typography variant="subtitle1" fontWeight="700" mb={1}>
-              ******1234
-            </Typography>
-            <AuthTwoSteps />
+            lg: 5,
+            xl: 4,
+          }}
+        >
+          <Box p={4} width={"100%"} maxWidth={500}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{ width: "100%"}}
+            >
+              <Box sx={{ flex: 1 }} />
+              <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                <Logo />
+              </Box>
+              <Box
+                sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}
+              >
+                <ServerLanguage />
+              </Box>
+            </Box>
+            <AuthLogin />
           </Box>
         </Grid>
       </Grid>
-    </PageContainer>)
+    </PageContainer>
   );
 }

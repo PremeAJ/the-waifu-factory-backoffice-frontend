@@ -3,7 +3,7 @@ import { ProductProvider } from "@/context/Ecommercecontext/index";
 import { styled } from "@mui/material/styles";
 import { useContext } from "react";
 import { UserContext } from "@/common/contexts/UserContext";
-import AppBarStyled from "@/components/styled/AppBarStyled";
+import AppBarStyled from "@/common/components/shared/AppBarStyled";
 import Language from "@/components/shared/Language/Language";
 import Profile from "@/components/shared/Profile";
 import Stack from "@mui/material/Stack";

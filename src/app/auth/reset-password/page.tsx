@@ -1,6 +1,6 @@
 "use client";
 import { Grid, Box, Typography } from "@mui/material";
-import Logo from "@/components/shared/logo/Logo";
+import Logo from "@/common/components/shared/Logo";
 import PageContainer from "@/components/container/PageContainer";
 import Image from "next/image";
 import AuthResetPassword from "../../../common/components/auth/AuthResetPassword";

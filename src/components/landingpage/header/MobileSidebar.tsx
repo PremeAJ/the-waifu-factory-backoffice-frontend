@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Collapse from "@mui/material/Collapse";
 import Stack from "@mui/material/Stack";
 import { IconChevronDown } from "@tabler/icons-react";
-import Logo from "@/components/shared/logo/Logo";
+import Logo from "@/common/components/shared/Logo";
 import DemosDD from "./DemosDD";
 import { AuthContext } from "@/common/contexts/AuthContext";
 import { UserContext } from "@/common/contexts/UserContext";

@@ -7,7 +7,7 @@ import { Grid } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { IconChevronDown } from "@tabler/icons-react";
-import DemosDD from "./DemosDD";
+import DemosDD from "../../../components/landingpage/header/DemosDD";
 import { useTranslation } from "react-i18next";
 import { UserContext } from "@/common/contexts/UserContext";
 import BaseButton from "@/common/components/base/BaseButton";
@@ -136,7 +136,9 @@ const Navigations = () => {
       <StyledButton color="inherit" variant="text" href="/">
         รู้จักเรา
       </StyledButton>
-      {user ? null : <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />}
+      {/* {user ? null : <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />} */}
+      <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />
+      <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />
     </>
   );
 };

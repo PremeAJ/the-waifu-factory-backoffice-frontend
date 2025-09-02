@@ -10,13 +10,13 @@ import Features from '@/components/landingpage/features/Features';
 import Footer from '@/components/layout/footer/MainFooter';
 import Frameworks from '@/components/landingpage/frameworks/Frameworks';
 import OtherFramework from '@/components/landingpage/other-framework/OtherFramework';
-import LandingPageHeader from '@/components/layout/header/LandingPageHeader';
 import Testimonial from '@/components/landingpage/testimonial/Testimonial';
+import Header from './components/Header';
 
 export default function Landingpage() {
   return (
     <PageContainer title="Home" description="Meow Som Home">
-      <LandingPageHeader />
+      <Header />
       <Banner />
       <DemoSlider />
       <Frameworks />

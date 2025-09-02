@@ -5,7 +5,7 @@ import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import ChildCard from "@/components/shared/ChildCard";
 import BlankCard from "@/components/shared/BlankCard";
-import Logo from "@/components/shared/logo/Logo";
+import Logo from "@/common/components/shared/Logo";
 
 // custom components
 import FVLogin from "@/components/forms/form-validation/FVLogin";
