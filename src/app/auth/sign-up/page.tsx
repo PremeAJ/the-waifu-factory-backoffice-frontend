@@ -40,8 +40,7 @@ export default function Register() {
           }}
         >
           <Box position="relative">
-            <Box px={3}>
-              <Logo />
+            <Box px={3} mt={3}>
             </Box>
             <Box
               alignItems="center"

@@ -1,28 +1,31 @@
 "use client";
-import React, { useContext, useState } from "react";
+import { Grid } from "@mui/material";
+import { IconChevronDown } from "@tabler/icons-react";
+import { styled } from "@mui/material/styles";
+import { UserContext } from "@/common/contexts/UserContext";
+import { useTranslation } from "react-i18next";
+import AppLinks from "@/app/dashboard/layout/header/AppLinks";
+import BaseButton from "@/common/components/base/BaseButton";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import { Grid } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import { IconChevronDown } from "@tabler/icons-react";
 import DemosDD from "../../../components/landingpage/header/DemosDD";
-import { useTranslation } from "react-i18next";
-import { UserContext } from "@/common/contexts/UserContext";
-import BaseButton from "@/common/components/base/BaseButton";
+import Divider from "@mui/material/Divider";
+import Paper from "@mui/material/Paper";
 import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
-import AppLinks from "@/app/dashboard/layout/header/AppLinks";
+import React, { useContext, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const Navigations = () => {
   const { t } = useTranslation();
   const { user, loading } = useContext(UserContext);
+  const { data: session, status } = useSession();
+  const { profile } = session || {};
+  // If you need profile, access it like: session?.profile
   const StyledButton = styled(Button)(({ theme }) => ({
     fontSize: "16px",
     color: theme.palette.text.secondary,
   }));
 
-  // demos
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -32,8 +35,6 @@ const Navigations = () => {
   const handleClose = () => {
     setOpen(false);
   };
-
-  // pages
 
   const [open2, setOpen2] = useState(false);
 
@@ -136,9 +137,12 @@ const Navigations = () => {
       <StyledButton color="inherit" variant="text" href="/">
         รู้จักเรา
       </StyledButton>
-      {/* {user ? null : <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />} */}
-      <BaseButton label={'เข้าสู่ระบบ'} href="/auth/sign-in" fullWidth={false} variant="outlined"/>
-      <BaseButton label={'เริ่มต้นใช้งาน'} href="/auth/sign-up" fullWidth={false} />
+      {!session && (
+        <>
+          <BaseButton label={"เข้าสู่ระบบ"} href="/auth/sign-in" fullWidth={false} variant="outlined" />
+          <BaseButton label={"เริ่มต้นใช้งาน"} href="/auth/sign-up" fullWidth={false} />
+        </>
+      )}
     </>
   );
 };

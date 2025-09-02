@@ -9,20 +9,21 @@ import ConfirmSignOutDialog from "@/common/components/auth/dialog/ConfirmSignOut
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseButton from "@/common/components/base/BaseButton";
+import { signOut, useSession } from "next-auth/react";
 
 interface ProfileProps {
   loading?: boolean;
 }
 
 const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
-  const { signOut } = useContext(AuthContext);
   const { isLanguage } = useContext(CustomizerContext);
   const { user } = useContext(UserContext);
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
   const { companies } = user || {};
   const { companyUsers } = companies || {};
   const { roles } = companyUsers?.[0] || {};
   const { nameTh: roleNameTh, nameEn: roleNameEn } = roles || {};
-  const loading = loadingProp;
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
 
   const [openSignOut, setOpenSignOut] = useState(false);
@@ -124,11 +125,10 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   }
 
   // --- Normal UI ---
-  if (!user) {
+  if (!session) {
     return null;
   }
-  const { avatarUrl, firstName, lastName, users } = user;
-  const { email } = users || {};
+  const {firstName, lastName, fullName ,email, avatar} = session.profile || {};
 
   return (
     <Box>
@@ -145,7 +145,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
         onClick={handleClick2}
       >
         <Avatar
-          src={avatarUrl ?? "/images/profile/user-1.jpg"}
+          src={avatar ?? "/images/profile/user-1.jpg"}
           alt={firstName}
           sx={{
             width: 35,
@@ -170,28 +170,30 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
       >
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
-          <Avatar src={avatarUrl ?? "/images/profile/user-1.jpg"} alt={firstName} sx={{ width: 95, height: 95 }} />
+          <Avatar src={avatar ?? "/images/profile/user-1.jpg"} alt={firstName} sx={{ width: 95, height: 95 }} />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-              {firstName || lastName ? `${firstName ?? ""} ${lastName ?? ""}`.trim() : "-"}
+              {fullName}
             </Typography>
-            {companies && <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
-              <IconUser width={15} height={15} />
-              <Box sx={{ maxWidth: 160, overflow: "hidden" }}>
-                <Typography
-                  variant="body2"
-                  noWrap
-                  sx={{
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
-                    maxWidth: "100%",
-                    display: "block",
-                  }}
-                >
-                  {I18nString(isLanguage, roleNameTh, roleNameEn)}
-                </Typography>
-              </Box>
-            </Typography>}
+            {companies && (
+              <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
+                <IconUser width={15} height={15} />
+                <Box sx={{ maxWidth: 160, overflow: "hidden" }}>
+                  <Typography
+                    variant="body2"
+                    noWrap
+                    sx={{
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      maxWidth: "100%",
+                      display: "block",
+                    }}
+                  >
+                    {I18nString(isLanguage, roleNameTh, roleNameEn)}
+                  </Typography>
+                </Box>
+              </Typography>
+            )}
             <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
               <IconMail width={15} height={15} />
               <Box sx={{ maxWidth: 160, overflow: "hidden" }}>

@@ -48,7 +48,7 @@ const PricingCard = ({ isLoading }: PricingCardProps) => {
     if (session) {
       router.push("/dashboard/create-company");
     } else {
-      router.push("/auth/register");
+      router.push("/auth/sign-up");
     }
   };
 

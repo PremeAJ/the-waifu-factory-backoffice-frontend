@@ -5,7 +5,7 @@ export interface Profile {
   id: string;
   firstName: string;
   lastName: string;
-  displayName: string;
+  fullName: string;
   nickName: string;
   avatar: string;
   email: string;
