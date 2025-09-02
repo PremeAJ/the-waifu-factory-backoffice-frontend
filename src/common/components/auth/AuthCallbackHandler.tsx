@@ -12,18 +12,19 @@ interface AuthCallbackHandlerProps {
   loginPath: string;
 }
 
-export default function AuthCallbackHandler({ redirectPath, loginPath }: AuthCallbackHandlerProps) {
+export default function AuthCallbackHandler() {
   const { setSession, getSession, exchangeCodeForSession } = useContext(AuthContext);
   const { syncUser } = useContext(UserContext);
   const { appearanceMutate } = useContext(CustomizerContext);
   const router = useRouter();
   const { data: session, status } = useSession();
-
+  
   useEffect(() => {
+    if (status === "loading") return;
     if (session && status === "authenticated") {
-      router.replace(redirectPath);
+      router.push("/dashboard");
     } else {
-      router.replace(loginPath);
+      router.replace("/auth/sign-in");
     }
   }, [session, status]);
   if (status === "loading") return <Loading />;

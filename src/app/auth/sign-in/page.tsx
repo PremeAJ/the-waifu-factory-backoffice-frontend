@@ -8,12 +8,7 @@ import { ServerLanguage } from "@/components/shared/Language/ServerLanguage";
 export default function Login() {
   return (
     <PageContainer title="Login Page" description="this is Sample page">
-      <Grid
-        container
-        spacing={0}
-        justifyContent="center"
-        sx={{ height: "100vh" }}
-      >
+      <Grid container spacing={0} justifyContent="center" sx={{ height: "100vh" }}>
         <Grid
           sx={{
             display: { xs: "none", lg: "block" },
@@ -37,9 +32,6 @@ export default function Login() {
           }}
         >
           <Box position="relative">
-            {/* <Box px={3}>
-              <Logo />
-            </Box> */}
             <Box
               alignItems="center"
               justifyContent="center"
@@ -77,19 +69,12 @@ export default function Login() {
           }}
         >
           <Box p={4} width={"100%"} maxWidth={500}>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{ width: "100%"}}
-            >
+            <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ width: "100%" }}>
               <Box sx={{ flex: 1 }} />
               <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
                 <Logo />
               </Box>
-              <Box
-                sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}
-              >
+              <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
                 <ServerLanguage />
               </Box>
             </Box>

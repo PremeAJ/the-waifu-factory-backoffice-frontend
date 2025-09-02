@@ -1,9 +1,5 @@
-import { HeadersKey } from "@/common/constants/header";
 import { Method } from "@/common/constants/method";
 import { getHeaders } from "@/common/utils/getHeaders";
-import Cookies from "js-cookie";
-import { v4 as uuidv4 } from "uuid";
-import { cookies } from "next/headers";
 
 async function handleResponse(res: Response, method: string, url: string) {
   return res.json();
@@ -24,7 +20,6 @@ const getFetcher = async (url: string | [string, Record<string, any>], headers?:
     const search = new URLSearchParams(params).toString();
     fullUrl += (fullUrl.includes("?") ? "&" : "?") + search;
   }
-
   return fetch(fullUrl, {
     method: Method.GET,
     headers: { browserrefreshed: "false", ...getHeaders(headers) },

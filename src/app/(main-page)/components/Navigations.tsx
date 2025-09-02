@@ -137,8 +137,8 @@ const Navigations = () => {
         รู้จักเรา
       </StyledButton>
       {/* {user ? null : <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />} */}
-      <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />
-      <BaseButton label={t("Page.Main.Login")} href="/auth/login" fullWidth={false} />
+      <BaseButton label={'เข้าสู่ระบบ'} href="/auth/sign-in" fullWidth={false} variant="outlined"/>
+      <BaseButton label={'เริ่มต้นใช้งาน'} href="/auth/sign-up" fullWidth={false} />
     </>
   );
 };

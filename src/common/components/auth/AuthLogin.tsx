@@ -12,7 +12,7 @@ import AuthSocialButtons from "./AuthSocialButtons";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Turnstile from "react-turnstile";
 
 const validationSchema = yup.object({
@@ -20,7 +20,7 @@ const validationSchema = yup.object({
   password: requiredPasswordSchema,
 });
 
-const AuthLogin = ({ isDashboard = false }) => {
+const AuthLogin = () => {
   const { data: session, status } = useSession();
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
@@ -48,16 +48,16 @@ const AuthLogin = ({ isDashboard = false }) => {
         formik.setFieldError("email", result?.error);
         formik.setFieldError("password", " ");
       } else {
-        window.location.href = isDashboard ? `/dashboard/auth/callback` : "/auth/callback";
+        router.push("/auth/callback") 
       }
     },
   });
 
-  useEffect(() => {
-    if (session && status === "authenticated"){
-      signOut();
-    }
-  }, [session, status]);
+  // useEffect(() => {
+  //   if (session && status === "authenticated"){
+  //     signOut();
+  //   }
+  // }, [session, status]);
 
   useEffect(() => {
     if (!(formik.isValid && formik.dirty)) {
@@ -122,14 +122,13 @@ const AuthLogin = ({ isDashboard = false }) => {
           </Button>
         </Box>
       </form>
-      {!isDashboard && (
         <Stack direction="row" spacing={1} mt={3}>
           <Typography color="textSecondary" variant="h6" fontWeight="500">
             {t("Page.Login.DontHaveAccount")} ?
           </Typography>
           <Typography
             component={Link}
-            href="/auth/register"
+            href="/auth/sign-up"
             fontWeight="500"
             sx={{
               textDecoration: "none",
@@ -139,7 +138,6 @@ const AuthLogin = ({ isDashboard = false }) => {
             {t("Page.Login.CreateAnAccount")}
           </Typography>
         </Stack>
-      )}
       <Box mt={3}>
         <Divider>
           <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" position="relative" px={2}>
@@ -147,7 +145,7 @@ const AuthLogin = ({ isDashboard = false }) => {
           </Typography>
         </Divider>
       </Box>
-      <AuthSocialButtons title="Sign in with" isDashboard={isDashboard} />
+      <AuthSocialButtons title="Sign in with"/>
     </>
   );
 };

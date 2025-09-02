@@ -34,22 +34,20 @@ export const authOptions: AuthOptions = {
         //#region call login api
         const { email, password, captchaToken } = credentials || {};
         const login = await postFetcher(
-          `${process.env.NEXTAUTH_URL}/api/v1/auth/login`,
+          `${process.env.NEXTAUTH_URL}/api/authentication/login`,
           {
             email,
             password,
             // captchaToken
           },
           {
-            ...await header()
+            ...(await header()),
           }
         );
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         //#endregion
 
-        return {
-          ...login.data,
-        };
+        return login.data;
       },
     }),
   ],
@@ -57,23 +55,21 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token }) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.profile = user.profile;
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+      }
       return token;
     },
     async session({ session, token }) {
-      const {accessToken, refreshToken, profile} = token || {};
-      session.accessToken = accessToken;
-      session.refreshToken = refreshToken;
-      session.profile = profile;
-      if (accessToken) {
-        try {
-          const profileRes = await getFetcher(`${process.env.NEXTAUTH_URL}/api/v1/profile`, {...await header(token.accessToken)});
-          session.profile = profileRes.data;
-        } catch (e) {
-          session.profile = profile;
-        }
-      } else {
-        session.profile = profile;
+      session.profile = token.profile;
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+      if (session.accessToken) {
+        const profileRes = await getFetcher(`${process.env.NEXTAUTH_URL}/api/profile`, { ...(await header(session.accessToken)) });
+        session.profile = profileRes.data;
       }
       delete session.user;
       return session;

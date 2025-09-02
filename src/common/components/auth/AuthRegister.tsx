@@ -22,7 +22,7 @@ import { useTranslation } from "react-i18next";
 import { AuthContext } from "@/common/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
-import Language from "@/components/shared/Language/Language";
+import Language from "@/common/components/shared/Language";
 import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 import Turnstile from "react-turnstile";
 import { IconLock, IconMail } from "@tabler/icons-react";

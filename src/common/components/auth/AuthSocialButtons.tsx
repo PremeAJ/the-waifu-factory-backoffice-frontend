@@ -6,11 +6,9 @@ import { signInType } from "@/common/utils/types/auth/auth";
 import { AuthContext } from "@/common/contexts/AuthContext";
 import { useContext } from "react";
 
-const AuthSocialButtons = ({ title, isDashboard = false }: signInType) => {
+const AuthSocialButtons = ({ title }: signInType) => {
   const { signInWithGoogle, isLoading } = useContext(AuthContext);
   const onClick = () => {
-    const redirectTo = isDashboard ? `${window.location.origin}/dashboard/auth/callback` : `${window.location.origin}/auth/callback`;
-    signInWithGoogle(redirectTo);
   };
   return (
     <>

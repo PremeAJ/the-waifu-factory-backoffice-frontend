@@ -1,5 +1,5 @@
-import Language from "@/components/shared/Language/Language";
-import Profile from "@/components/shared/Profile";
+import Language from "@/common/components/shared/Language";
+import Profile from "@/common/components/shared/Profile";
 import AppBarStyled from "@/common/components/shared/AppBarStyled";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import config from "@/common/contexts/setting/config";

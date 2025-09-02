@@ -6,7 +6,7 @@ import Collapse from "@mui/material/Collapse";
 import Stack from "@mui/material/Stack";
 import { IconChevronDown } from "@tabler/icons-react";
 import Logo from "@/common/components/shared/Logo";
-import DemosDD from "./DemosDD";
+import DemosDD from "../../../components/landingpage/header/DemosDD";
 import { AuthContext } from "@/common/contexts/AuthContext";
 import { UserContext } from "@/common/contexts/UserContext";
 import AppLinks from "@/app/dashboard/(company-auth)/layout/header/AppLinks";

@@ -1,7 +1,7 @@
 "use client";
 
-import AuthCallbackHandler from "../../../common/components/auth/AuthCallbackHandler";
+import AuthCallbackHandler from "@/common/components/auth/AuthCallbackHandler";
 
 export default function AuthCallback() {
-  return <AuthCallbackHandler redirectPath="/" loginPath="/auth/login" />;
+  return <AuthCallbackHandler/>;
 }
