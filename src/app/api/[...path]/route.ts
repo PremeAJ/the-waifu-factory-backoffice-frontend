@@ -1,9 +1,7 @@
+import authOptions from "@/common/auth/options";
 import { HeadersKey } from "@/common/constants/header";
 import { getServerSession } from "next-auth";
-import { useSession } from "next-auth/react";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "../auth/[...nextauth]/route";
 
 async function handleRequest(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const session = await getServerSession(authOptions);

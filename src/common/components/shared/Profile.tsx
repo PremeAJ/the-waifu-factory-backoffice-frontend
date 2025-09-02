@@ -10,12 +10,14 @@ import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseButton from "@/common/components/base/BaseButton";
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface ProfileProps {
   loading?: boolean;
 }
 
 const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
+  const router = useRouter();
   const { isLanguage } = useContext(CustomizerContext);
   const { user } = useContext(UserContext);
   const { data: session, status } = useSession();
@@ -42,10 +44,9 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
 
   const handleConfirmSignOut = async () => {
     setSignOutLoading(true);
-    await signOut();
+    await signOut({callbackUrl: "/auth/sign-in"});
     setSignOutLoading(false);
     setOpenSignOut(false);
-    window.location.reload();
   };
 
   const renderIcon = (icon: any) => {
