@@ -13,6 +13,5 @@ export const getHeaders =  (headers?: Record<string, string>) => {
     [HeadersKey.DeviceId]: deviceId,
     ...(headers || {}),
   };
-  console.log("🚀 ~ getHeaders ~ header:", header)
   return header;
 };

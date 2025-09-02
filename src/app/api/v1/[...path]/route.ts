@@ -5,10 +5,7 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
   const { path } = await context.params;
   const search = req.nextUrl.search;
   const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/${path.join("/")}${search}`;
-
-  // ใช้ cookies(req) เพื่ออ่าน cookie จาก request ปัจจุบัน
- const allCookies = req.cookies.getAll(); 
- console.log("🚀 ~ handleRequest ~ allCookies:", allCookies)
+  const allCookies = req.cookies.getAll();
 
   try {
     const options: RequestInit = {
@@ -24,7 +21,6 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
   }
 }
 
-// Export handler สำหรับแต่ละ HTTP method
 export const GET = handleRequest;
 export const POST = handleRequest;
 export const PUT = handleRequest;
