@@ -9,8 +9,9 @@ export const getHeaders =  (headers?: Record<string, string>) => {
   const header = {
     [HeadersKey.Lang]: lang,
     [HeadersKey.ContentType]: "application/json",
-    [HeadersKey.Origin]: process.env.NEXT_PUBLIC_DOMAIN || "",
+    [HeadersKey.Origin]: process.env.NEXTAUTH_URL || "",
     [HeadersKey.DeviceId]: deviceId,
+    [HeadersKey.Authorization] : "",
     ...(headers || {}),
   };
   return header;

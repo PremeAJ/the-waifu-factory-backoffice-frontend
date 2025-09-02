@@ -1,21 +1,19 @@
 "use client";
+import { AuthContext } from "@/common/contexts/AuthContext";
+import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Divider, InputAdornment } from "@mui/material";
+import { emailValidator, requiredPasswordSchema } from "@/common/utils/validator/yup";
+import { IconLock, IconMail } from "@tabler/icons-react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useFormik } from "formik";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import * as yup from "yup";
+import AuthSocialButtons from "./AuthSocialButtons";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
+import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import Turnstile from "react-turnstile";
-import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Divider, InputAdornment } from "@mui/material";
-import Link from "next/link";
-import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
-import AuthSocialButtons from "./AuthSocialButtons";
-import * as yup from "yup";
-import { AuthContext } from "@/common/contexts/AuthContext";
-import { useFormik } from "formik";
-import { emailValidator, requiredPasswordSchema } from "@/common/utils/validator/yup";
-import { useTranslation } from "react-i18next";
-import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
-import { IconLock, IconMail } from "@tabler/icons-react";
-import BaseTextField from "@/common/components/base/BaseTextField";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useError } from "@/common/contexts/ErrorContext";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -23,13 +21,11 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = ({ isDashboard = false }) => {
-  const { signOut, signInWithEmail, isLoading: authIsLoading } = useContext(AuthContext);
+  const { data: session, status } = useSession();
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { showError } = useError();
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const formik = useFormik({
@@ -39,74 +35,29 @@ const AuthLogin = ({ isDashboard = false }) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
-      // setError(null);
-      // try {
       setIsLoading(true);
       const result = await signIn("credentials", {
-        redirect: false, // ตั้งเป็น false เพื่อจัดการ redirect เอง
+        redirect: false,
         email: data.email,
         password: data.password,
+        captchaToken,
       });
       setIsLoading(false);
-      if (result?.error) showError(result?.error, "เกิดข้อผิดพลาด");
-
-      //   if (result?.error) {
-      //     // แสดง error ที่ได้รับจาก authorize function
-      //     setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-      //     formik.setFieldError("email", " ");
-      //     formik.setFieldError("password", " ");
-      //   } else if (result?.ok) {
-      //     // redirect เมื่อ login สำเร็จ
-      //     const callbackUrl = isDashboard ? `/dashboard` : "/";
-      //     router.push(callbackUrl);
-      //   }
-      // } catch (e) {
-      //   console.log("🚀 ~ AuthLogin ~ e:", e)
-      //   setError("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง");
-      // } finally {
-      //   setIsLoading(false);
-      // }
-      // const userData: SignInWithPasswordCredentials = {
-      //   email: data.email,
-      //   password: data.password,
-      //   options: {
-      //     captchaToken: captchaToken,
-      //   },
-      // };
-      // const { error } = await signInWithEmail(userData);
-      // if (error) {
-      //   setCaptchaToken("");
-      //   switch (error) {
-      //     case "email_not_confirmed":
-      //       alert("กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ");
-      //       break;
-      //     case "invalid_credentials":
-      //       formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-      //       formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-      //       break;
-      //     case "over_request_rate_limit":
-      //       alert("คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)");
-      //       break;
-      //     case "user_banned":
-      //       alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
-      //       break;
-      //     case "captcha_failed":
-      //     case "unexpected_failure":
-      //       alert("เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า");
-      //       break;
-      //     default:
-      //       alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-      //       break;
-      //   }
-      // } else {
-      //   window.location.href = isDashboard ? `/dashboard/auth/callback` : "/auth/callback";
-      // }
+      if (result?.error) {
+        setCaptchaToken("");
+        formik.setFieldError("email", result?.error);
+        formik.setFieldError("password", " ");
+      } else {
+        window.location.href = isDashboard ? `/dashboard/auth/callback` : "/auth/callback";
+      }
     },
   });
 
   useEffect(() => {
-    signOut();
-  }, []);
+    if (session && status === "authenticated"){
+      signOut();
+    }
+  }, [session, status]);
 
   useEffect(() => {
     if (!(formik.isValid && formik.dirty)) {
@@ -163,18 +114,10 @@ const AuthLogin = ({ isDashboard = false }) => {
           </Stack>
         </Stack>
         <Box>
-          {/* {formik.isValid && formik.dirty && (
+          {formik.isValid && formik.dirty && (
             <Turnstile sitekey={siteKey} theme="light" action="login" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
-          )} */}
-          <Button
-            color="primary"
-            variant="contained"
-            size="large"
-            fullWidth
-            type="submit"
-            loading={isLoading}
-            // disabled={!captchaToken}
-          >
+          )}
+          <Button color="primary" variant="contained" size="large" fullWidth type="submit" loading={isLoading} disabled={!captchaToken}>
             {t("Page.Login.SignIn")}
           </Button>
         </Box>

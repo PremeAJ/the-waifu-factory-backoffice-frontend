@@ -79,7 +79,7 @@ export async function createClient() {
               sameSite: "lax",
               path: "/",
               maxAge: 7 * 24 * 60 * 60,
-              //  domain: process.env.NEXT_PUBLIC_DOMAIN?.replace(/^https?:\/\//, ''),
+              //  domain: process.env.NEXTAUTH_URL?.replace(/^https?:\/\//, ''),
             })
           );
         } catch {
@@ -128,7 +128,7 @@ export async function supabaseSignInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: new URL("/auth/callback", process.env.NEXT_PUBLIC_DOMAIN!).toString(),
+      redirectTo: new URL("/auth/callback", process.env.NEXTAUTH_URL!).toString(),
     },
   });
   if (error) {
@@ -220,7 +220,7 @@ export async function supabaseExchangeCodeForSession(code: string) {
 // Password/OTP
 export async function supabaseForgotPassword(payload: ResetPasswordForEmailType) {
   const supabase = await createClient();
-  const redirectUrl = new URL("/auth/reset-password", process.env.NEXT_PUBLIC_DOMAIN!);
+  const redirectUrl = new URL("/auth/reset-password", process.env.NEXTAUTH_URL!);
   payload.options.redirectTo = redirectUrl.toString();
   const { data, error } = await supabase.auth.resetPasswordForEmail(payload.email, payload.options);
 
@@ -294,7 +294,7 @@ export async function supabaseUpdateEmail(newEmail: string) {
       email: newEmail,
     },
     {
-      emailRedirectTo: new URL("/auth/confirm/change-email?type=email_change", process.env.NEXT_PUBLIC_DOMAIN!).toString(),
+      emailRedirectTo: new URL("/auth/confirm/change-email?type=email_change", process.env.NEXTAUTH_URL!).toString(),
     }
   );
 

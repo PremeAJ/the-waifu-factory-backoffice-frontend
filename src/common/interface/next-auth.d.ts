@@ -1,35 +1,37 @@
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 import { JWT, DefaultJWT } from "next-auth/jwt";
 
+export interface Profile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  displayName: string;
+  nickName: string;
+  avatar: string;
+  email: string;
+  phone: string;
+  activeCompany: string | null;
+  hasReceivedTrial: boolean;
+}
+
 declare module "next-auth" {
   interface Session {
-    user: {
-      id: string;
-      email: string;
-      // เพิ่ม property อื่นๆ ของ user ที่ได้จาก backend
-    } & DefaultSession["user"];
     accessToken: string;
     refreshToken: string;
+    profile?: Profile;
   }
 
   interface User extends DefaultUser {
-    // property ที่ได้จาก backend ตอน authorize
     accessToken: string;
     refreshToken: string;
-    user: {
-      id: string;
-      email: string;
-    };
+    profile?: Profile;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
-    user: {
-      id: string;
-      email: string;
-    };
     accessToken: string;
     refreshToken: string;
+    profile?: Profile;
   }
 }
