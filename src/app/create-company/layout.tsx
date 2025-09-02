@@ -4,12 +4,12 @@ import Container from "@mui/material/Container";
 import { styled, useTheme } from "@mui/material/styles";
 import React, { useContext } from "react";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import AuthGuard from "./authGuard";
 import Header from "@/components/layout/header/DashboardUserHeader";
 import { CompanyProvider } from "@/common/contexts/CompanyContext";
 import Sidebar from "../setting/layout/sidebar/Sidebar";
 import { usePathname } from "next/navigation";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import SessionGuard from "@/common/guards/sessionGuard";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <CompanyProvider>
-      <AuthGuard>
+      <SessionGuard>
         <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
           {settingsPath && <Sidebar />}
           <PageWrapper
@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Container>
           </PageWrapper>
         </MainWrapper>
-      </AuthGuard>
+      </SessionGuard>
     </CompanyProvider>
   );
 }

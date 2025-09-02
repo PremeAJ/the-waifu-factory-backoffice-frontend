@@ -46,7 +46,7 @@ const PricingCard = ({ isLoading }: PricingCardProps) => {
 
   const onClickPlan = () => {
     if (session) {
-      router.push("/dashboard/create-company");
+      router.push("/create-company");
     } else {
       router.push("/auth/sign-up");
     }

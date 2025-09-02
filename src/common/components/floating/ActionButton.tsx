@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import BaseFab from "../base/BaseFab";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
+import { useSession } from "next-auth/react";
 
 const hideButton = ["/", "/auth/callback", "/dashboard/auth/callback", "/dashboard/auth/login", "/auth/login"];
 
@@ -13,7 +14,8 @@ const ActionButton = () => {
   const isMobie = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
-  const isSubMenu = useIsSubMenu()
+  const isSubMenu = useIsSubMenu();
+  const { data: session, status } = useSession();
 
   const [show, setShow] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -42,7 +44,7 @@ const ActionButton = () => {
   return (
     <BaseFab
       fadeDirection="left"
-      sx={{ position: "fixed", top: 16, left: 16, }}
+      sx={{ position: "fixed", top: 16, left: 16 }}
       onClick={() => (isSubMenu ? router.back() : sidebarAction())}
       aria-label="action"
       open={visible}

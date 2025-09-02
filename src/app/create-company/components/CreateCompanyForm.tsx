@@ -1,18 +1,18 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
 import { Box, Stepper, Step, StepLabel, Alert, Stack } from "@mui/material";
-import ParentCard from "@/components/shared/ParentCard";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import CompanyInfoStep from "./step/CompanyInfoStep";
-import ContactInfoStep from "./step/ContactInfoStep";
-import ConfirmStep from "./step/ConfirmStep";
-import { UserContext } from "@/common/contexts/UserContext";
-import { ConsentContext } from "@/common/contexts/Master/ConsentContext";
 import { CompanyContext, CompanyType } from "@/common/contexts/CompanyContext";
+import { ConsentContext } from "@/common/contexts/Master/ConsentContext";
+import { useContext, useEffect, useState } from "react";
+import { useFormik } from "formik";
+import { UserContext } from "@/common/contexts/UserContext";
 import { useRouter } from "next/navigation";
+import * as Yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
+import CompanyInfoStep from "./step/CompanyInfoStep";
+import ConfirmStep from "./step/ConfirmStep";
+import ContactInfoStep from "./step/ContactInfoStep";
+import ParentCard from "@/components/shared/ParentCard";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
