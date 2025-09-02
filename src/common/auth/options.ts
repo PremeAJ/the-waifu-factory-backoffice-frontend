@@ -33,17 +33,19 @@ const authOptions: AuthOptions = {
       async authorize(credentials) {
         //#region call login api
         const { email, password, captchaToken } = credentials || {};
+        console.log("🚀 ~ authorize ~ `${process.env.NEXTAUTH_URL}/api/authentication/login`:", `${process.env.NEXTAUTH_URL}/api/authentication/login`)
         const login = await postFetcher(
           `${process.env.NEXTAUTH_URL}/api/authentication/login`,
           {
-            email,
-            password,
-            // captchaToken
-          },
-          {
-            ...(await header()),
-          }
+              email,
+              password,
+              // captchaToken
+            },
+            {
+                ...(await header()),
+            }
         );
+        console.log("🚀 ~ authorize ~ login.statusCode:", login)
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         //#endregion
 
