@@ -11,7 +11,7 @@ import {
 import { IconSearch, IconX } from "@tabler/icons-react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
-import AppLinks from "@/app/dashboard/(company-auth)/layout/header/AppLinks";
+import AppLinks from "@/app/dashboard/layout/header/AppLinks";
 
 const AppShortcutDrawer = () => {
   const { appShortcutisOpen, closeAppShortcut } = useSidebarState();

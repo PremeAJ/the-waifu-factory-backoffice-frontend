@@ -3,7 +3,7 @@ import HeaderAlert from "../../../components/layout/header/HeaderAlert";
 import HomePageHeader from "../../../components/layout/header/HomePageHeader";
 import Leadership from "../../../components/frontend-pages/shared/leadership";
 import Reviews from "../../../components/frontend-pages/shared/reviews";
-import Pricing from "../../../components/pages/pricing";
+import Pricing from "../../pricing/components";
 import C2a from "../../../components/frontend-pages/shared/c2a";
 import Footer from "../../../components/layout/footer/FllowUsFooter";
 import Banner from "../../../components/frontend-pages/about/banner";

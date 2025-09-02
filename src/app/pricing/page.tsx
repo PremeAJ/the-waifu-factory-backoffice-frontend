@@ -1,6 +1,6 @@
 import PageContainer from "@/components/container/PageContainer";
 import LandingPageHeader from "../(main-page)/components/Header";
-import Pricing from "@/components/pages/pricing";
+import Pricing from "@/app/pricing/components";
 import Footer from "@/components/layout/footer/FllowUsFooter";
 import { PlanProvider } from "@/common/contexts/Master/PlanContext";
 
@@ -8,9 +8,9 @@ const PricingPage = () => {
   return (
     <PageContainer title="Pricing" description="this is Pricing">
       <PlanProvider>
-      <LandingPageHeader />
-      <Pricing />
-      <Footer />
+        <LandingPageHeader />
+        <Pricing />
+        <Footer />
       </PlanProvider>
     </PageContainer>
   );

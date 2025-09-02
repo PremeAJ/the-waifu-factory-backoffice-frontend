@@ -43,7 +43,7 @@ import {
   IconCheck,
   IconX,
 } from "@tabler/icons-react";
-import { BasicsTableDataType, basicsTableData } from "@/app/dashboard/(company-auth)/react-tables/filter/FilterTableData";
+import { BasicsTableDataType, basicsTableData } from "@/app/dashboard/react-tables/filter/FilterTableData";
 
 const BCrumb = [
   {

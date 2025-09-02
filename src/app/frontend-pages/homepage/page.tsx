@@ -8,7 +8,7 @@ import Leadership from '../../../components/frontend-pages/shared/leadership';
 import PowerfulDozens from '../../../components/frontend-pages/homepage/powerful-dozens';
 import Reviews from '../../../components/frontend-pages/shared/reviews';
 import ExceptionalFeature from '../../../components/frontend-pages/homepage/exceptional-feature';
-import Pricing from '../../../components/pages/pricing';
+import Pricing from '../../pricing/components';
 import FAQ from '../../../components/frontend-pages/homepage/faq';
 import C2a from '../../../components/frontend-pages/shared/c2a';
 import Footer from '../../../components/layout/footer/FllowUsFooter';

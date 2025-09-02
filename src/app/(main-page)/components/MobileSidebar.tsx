@@ -9,8 +9,8 @@ import Logo from "@/common/components/shared/Logo";
 import DemosDD from "../../../components/landingpage/header/DemosDD";
 import { AuthContext } from "@/common/contexts/AuthContext";
 import { UserContext } from "@/common/contexts/UserContext";
-import AppLinks from "@/app/dashboard/(company-auth)/layout/header/AppLinks";
-import QuickLinks from "@/app/dashboard/(company-auth)/layout/header/QuickLinks";
+import AppLinks from "@/app/dashboard/layout/header/AppLinks";
+import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
 
 //!
 

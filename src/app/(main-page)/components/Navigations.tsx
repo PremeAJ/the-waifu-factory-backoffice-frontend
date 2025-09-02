@@ -11,8 +11,8 @@ import DemosDD from "../../../components/landingpage/header/DemosDD";
 import { useTranslation } from "react-i18next";
 import { UserContext } from "@/common/contexts/UserContext";
 import BaseButton from "@/common/components/base/BaseButton";
-import QuickLinks from "@/app/dashboard/(company-auth)/layout/header/QuickLinks";
-import AppLinks from "@/app/dashboard/(company-auth)/layout/header/AppLinks";
+import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
+import AppLinks from "@/app/dashboard/layout/header/AppLinks";
 
 const Navigations = () => {
   const { t } = useTranslation();

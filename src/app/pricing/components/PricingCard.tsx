@@ -2,13 +2,14 @@
 import React, { useContext } from "react";
 import { Box, Grid, Typography, Chip, CardContent, Divider, Stack, Button } from "@mui/material";
 import Image from "next/image";
-import BlankCard from "../../shared/BlankCard";
+import BlankCard from "../../../components/shared/BlankCard";
 import { UserContext } from "@/common/contexts/UserContext";
 import { PlanContext } from "@/common/contexts/Master/PlanContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Skeleton from "@mui/material/Skeleton";
+import { useSession } from "next-auth/react";
 
 const FeatureIcon = ({ checked }: { checked: boolean }) => (
   <Image
@@ -26,10 +27,11 @@ interface PricingCardProps {
 const PricingCard = ({ isLoading }: PricingCardProps) => {
   const { plan: planData, error } = useContext(PlanContext);
   const { user } = useContext(UserContext);
+  const { data: session, status } = useSession();
+  const { hasReceivedTrial } = session?.profile || {};
   const { i18n } = useTranslation();
   const router = useRouter();
   const { language } = i18n;
-  const { hasReceivedTrial } = user || {};
   const featureList: { key: string; labelTh: string; labelEn: string }[] = [
     { key: "pos", labelTh: "ระบบขายหน้าร้าน (POS)", labelEn: "POS System" },
     { key: "crm", labelTh: "ระบบลูกค้าสัมพันธ์ (CRM)", labelEn: "CRM" },
@@ -43,7 +45,7 @@ const PricingCard = ({ isLoading }: PricingCardProps) => {
   ];
 
   const onClickPlan = () => {
-    if (user) {
+    if (session) {
       router.push("/dashboard/create-company");
     } else {
       router.push("/auth/register");

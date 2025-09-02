@@ -1,10 +1,10 @@
 "use client";
 import React, { useContext } from "react";
 import { Box, Grid, Typography, Container } from "@mui/material";
-import PricingCard from "./PricingCard";
 import PaymentMethods from "./PaymentMethods";
 import { PlanContext } from "@/common/contexts/Master/PlanContext";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import PricingCard from "./PricingCard";
 
 const Pricing = () => {
   const { isLoading: IsPlanLoading } = useContext(PlanContext);

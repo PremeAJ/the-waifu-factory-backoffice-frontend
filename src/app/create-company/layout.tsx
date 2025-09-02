@@ -7,7 +7,7 @@ import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import AuthGuard from "./authGuard";
 import Header from "@/components/layout/header/DashboardUserHeader";
 import { CompanyProvider } from "@/common/contexts/CompanyContext";
-import Sidebar from "./setting/layout/sidebar/Sidebar";
+import Sidebar from "../setting/layout/sidebar/Sidebar";
 import { usePathname } from "next/navigation";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
