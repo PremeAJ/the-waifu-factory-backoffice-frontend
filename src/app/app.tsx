@@ -12,12 +12,12 @@ import "./global.css";
 import { ErrorProvider } from "@/common/contexts/ErrorContext";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
-  if (process.env.NODE_ENV === "production") {
-    console.log = () => {};
-    console.warn = () => {};
-    console.error = () => {};
-    console.info = () => {};
-  }
+  // if (process.env.NODE_ENV === "production") {
+  //   console.log = () => {};
+  //   console.warn = () => {};
+  //   console.error = () => {};
+  //   console.info = () => {};
+  // }
   const theme = ThemeSettings();
 
   return (
