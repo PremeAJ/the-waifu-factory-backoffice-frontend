@@ -1,10 +1,17 @@
+import { HeadersKey } from "@/common/constants/header";
+import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 async function handleRequest(req: NextRequest, context: { params: Promise<{ path: string[] }> }) {
+  const session = await getServerSession(authOptions);
+  console.log("🚀 ~ handleRequest ~ session:", session)
   const { path } = await context.params;
   const search = req.nextUrl.search;
-  const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${path.join("/")}${search}`.replace('/authentication', '/auth');
+  const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${path.join("/")}${search}`.replace("/authentication", "/auth");
+  if (session?.accessToken) req.headers.set(HeadersKey.Authorization, `Bearer ${session.accessToken}`);
   try {
     const options: RequestInit = {
       method: req.method,

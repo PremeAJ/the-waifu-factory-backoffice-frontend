@@ -43,10 +43,11 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setLoading(true);
     setError(null);
     try {
-      await postFetcher("/api/company", payload);
+      const response = await postFetcher("/api/company", payload);
       await userMutate();
       await companyListMutate();
       setLoading(false);
+      return response;
     } catch (err: any) {
       setError(err.message);
       setLoading(false);

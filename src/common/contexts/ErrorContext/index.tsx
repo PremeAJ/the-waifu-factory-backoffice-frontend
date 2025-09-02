@@ -20,12 +20,12 @@ const ErrorContext = createContext<ErrorContextType>({} as ErrorContextType);
 export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [errorState, setErrorState] = useState<ErrorState>({
     open: false,
-    title: "Error",
+    title: "เกิดข้อผิดพลาด",
     error: null,
     showDetails: false,
   });
 
-  const showError = useCallback((error: Error | string, title = "Error", showDetails = false) => {
+  const showError = useCallback((error: Error | string, title = "เกิดข้อผิดพลาด", showDetails = false) => {
     setErrorState({
       open: true,
       title,
