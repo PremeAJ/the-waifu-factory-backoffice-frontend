@@ -13,8 +13,12 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
 
   //#region Check active company
   useEffect(() => {
-    if (status === "authenticated" && !activeCompany) setShowCompanyDialog(true);
-  }, [session, status]);
+    if (status === "authenticated" && !activeCompany) {
+      setShowCompanyDialog(true);
+    } else {
+      setShowCompanyDialog(false);
+    }
+  }, [session, status, activeCompany]);
   //#endregion
 
   //#region loading
@@ -23,7 +27,8 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
 
   return (
     <>
-      {children} <SelectCompanyDialog open={showCompanyDialog} onClose={() => setShowCompanyDialog(false)} disableBackdropClose />
+      {activeCompany && children}
+      <SelectCompanyDialog open={showCompanyDialog} onClose={() => setShowCompanyDialog(false)} disableBackdropClose />
     </>
   );
 }

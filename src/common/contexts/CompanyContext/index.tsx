@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { UserContext } from "../UserContext";
 import { useError } from "../ErrorContext";
+import { useSession } from "next-auth/react";
 
 export interface CompanyType {
   id: string;
@@ -35,7 +36,6 @@ export type CompanyContextType = {
 export const CompanyContext = createContext<CompanyContextType>({} as CompanyContextType);
 
 export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { userMutate, companyListMutate } = useContext(UserContext);
   const [company, setCompany] = useState<CompanyType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
@@ -46,9 +46,6 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setError(null);
     try {
       const response = await postFetcher("/api/company", payload);
-      console.log("🚀 ~ createCompany ~ response:", response)
-      await userMutate();
-      await companyListMutate();
       setLoading(false);
       if (response.statusCode !== 201) showError(response.message, "เกิดข้อผิดพลาด");
       return response;

@@ -39,28 +39,26 @@ const stepSchemas = [
     contactEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลผู้ติดต่อ"),
     contactPhone: Yup.string().required("กรุณากรอกเบอร์โทรศัพท์"),
   }),
-  // Yup.object({
-  //   consent: Yup.boolean().oneOf([true], "กรุณายอมรับเงื่อนไขการใช้งาน"),
-  // }),
 ];
 
 const CreateCompanyForm = () => {
-  const { data: session, status } = useSession();
-  const { fullName, email, phone } = session?.profile || {};
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const { getConsentData } = useContext(ConsentContext);
+  const { data: session, status } = useSession();
+  const { fullName, email, phone } = session?.profile || {};
   const { createCompany } = useContext(CompanyContext);
-  const termsOfService = getConsentData("terms_of_service");
+  const { getConsentData } = useContext(ConsentContext);
+  const { update } = useSession();
   const router = useRouter();
+  const termsOfService = getConsentData("terms_of_service");
+
   const { showError } = useError();
 
-  // useEffect สำหรับนำทางไปยังหน้า Dashboard
   useEffect(() => {
     if (submitted) {
-      const timer = setTimeout(() => {
+      const timer = setTimeout(async () => {
         router.push("/dashboard");
+        await update();
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -87,7 +85,6 @@ const CreateCompanyForm = () => {
     validationSchema: stepSchemas[activeStep],
     enableReinitialize: true,
     onSubmit: async (data) => {
-      setSubmitError(null);
       try {
         await createCompany(data);
         setSubmitted(true);
