@@ -34,17 +34,17 @@ const authOptions: AuthOptions = {
         //#region call login api
         const { email, password, captchaToken } = credentials || {};
         const login = await postFetcher(
-          `/api/authentication/login`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`,
           {
-              email,
-              password,
-              // captchaToken
-            },
-            {
-                ...(await header()),
-            }
+            email,
+            password,
+            // captchaToken
+          },
+          {
+            ...(await header()),
+          }
         );
-        console.log("🚀 ~ authorize ~ login.statusCode:", login)
+        console.log("🚀 ~ authorize ~ login.statusCode:", login);
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         //#endregion
 
@@ -69,7 +69,7 @@ const authOptions: AuthOptions = {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       if (session.accessToken) {
-        const profileRes = await getFetcher(`/api/profile`, { ...(await header(session.accessToken)) });
+        const profileRes = await getFetcher(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/profile`, { ...(await header(session.accessToken)) });
         session.profile = profileRes.data;
       }
       delete session.user;
