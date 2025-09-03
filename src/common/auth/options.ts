@@ -33,9 +33,8 @@ const authOptions: AuthOptions = {
       async authorize(credentials) {
         //#region call login api
         const { email, password, captchaToken } = credentials || {};
-        console.log("🚀 ~ authorize ~ `${process.env.NEXTAUTH_URL}/api/authentication/login`:", `${process.env.NEXTAUTH_URL}/api/authentication/login`)
         const login = await postFetcher(
-          `${process.env.NEXTAUTH_URL}/api/authentication/login`,
+          `/api/authentication/login`,
           {
               email,
               password,
@@ -70,7 +69,7 @@ const authOptions: AuthOptions = {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       if (session.accessToken) {
-        const profileRes = await getFetcher(`${process.env.NEXTAUTH_URL}/api/profile`, { ...(await header(session.accessToken)) });
+        const profileRes = await getFetcher(`/api/profile`, { ...(await header(session.accessToken)) });
         session.profile = profileRes.data;
       }
       delete session.user;

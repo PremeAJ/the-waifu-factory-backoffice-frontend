@@ -5,7 +5,13 @@ async function handleResponse(res: Response, method: string, url: string) {
   return res.json();
 }
 
-const getFetcher = async (url: string | [string, Record<string, any>], headers?: Record<string, string>) => {
+// สร้างฟังก์ชัน fetcher หลัก
+const baseFetcher = async (
+  method: string,
+  url: string | [string, Record<string, any>],
+  body?: any,
+  headers?: Record<string, string>
+) => {
   let fullUrl = "";
   let params: Record<string, any> | undefined;
 
@@ -16,44 +22,48 @@ const getFetcher = async (url: string | [string, Record<string, any>], headers?:
     fullUrl = url;
   }
 
-  if (params && Object.keys(params).length > 0) {
+  // แปลง params เป็น query string สำหรับ GET
+  if (method === Method.GET && params && Object.keys(params).length > 0) {
     const search = new URLSearchParams(params).toString();
     fullUrl += (fullUrl.includes("?") ? "&" : "?") + search;
   }
-  return fetch(fullUrl, {
-    method: Method.GET,
-    headers: { browserrefreshed: "false", ...getHeaders(headers) },
-  }).then((res) => handleResponse(res, Method.GET, fullUrl));
+
+  // แปลงเป็น absolute URL ถ้าเริ่มต้นด้วย /
+  if (typeof fullUrl === "string" && fullUrl.startsWith("/")) {
+    if (typeof window !== "undefined") {
+      fullUrl = window.location.origin + fullUrl;
+    } else {
+      fullUrl =
+        (process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_DOMAIN || `http://localhost:${process.env.PORT}`) +
+        fullUrl;
+    }
+  }
+
+  const fetchOptions: RequestInit = {
+    method,
+    headers: method === Method.GET
+      ? { browserrefreshed: "false", ...getHeaders(headers) }
+      : getHeaders(headers),
+    ...(body && method !== Method.GET ? { body: JSON.stringify(body) } : {}),
+  };
+
+  return fetch(fullUrl, fetchOptions).then((res) => handleResponse(res, method, fullUrl));
 };
 
-const postFetcher = async (url: string, body: any, headers?: Record<string, string>) => {
-  
-  return fetch(url, {
-    method: Method.POST,
-    headers: getHeaders(headers),
-    body: JSON.stringify(body),
-  }).then((res) => handleResponse(res, Method.POST, url));
-};
+// สร้าง method เฉพาะแต่ละแบบ
+const getFetcher = (url: string | [string, Record<string, any>], headers?: Record<string, string>) =>
+  baseFetcher(Method.GET, url, undefined, headers);
 
-const putFetcher = async (url: string, body: any, headers?: Record<string, string>) =>
-  fetch(url, {
-    method: Method.PUT,
-    headers: getHeaders(headers),
-    body: JSON.stringify(body),
-  }).then((res) => handleResponse(res, Method.PUT, url));
+const postFetcher = (url: string, body: any, headers?: Record<string, string>) =>
+  baseFetcher(Method.POST, url, body, headers);
 
-const patchFetcher = async (url: string, body: any, headers?: Record<string, string>) =>
-  fetch(url, {
-    method: Method.PATCH,
-    headers: getHeaders(headers),
-    body: JSON.stringify(body),
-  }).then((res) => handleResponse(res, Method.PATCH, url));
+const putFetcher = (url: string, body: any, headers?: Record<string, string>) =>
+  baseFetcher(Method.PUT, url, body, headers);
 
-const deleteFetcher = async (url: string, body: any, headers?: Record<string, string>) =>
-  fetch(url, {
-    method: Method.DELETE,
-    headers: getHeaders(headers),
-    body: JSON.stringify(body),
-  }).then((res) => handleResponse(res, Method.DELETE, url));
+const patchFetcher = (url: string, body: any, headers?: Record<string, string>) =>
+  baseFetcher(Method.PATCH, url, body, headers);
+
+const deleteFetcher = (url: string, body: any, headers?: Record<string, string>) =>
+  baseFetcher(Method.DELETE, url, body, headers);
 
 export { getFetcher, postFetcher, putFetcher, deleteFetcher, patchFetcher };
