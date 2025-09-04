@@ -44,7 +44,6 @@ const authOptions: AuthOptions = {
             ...(await header()),
           }
         );
-        console.log("🚀 ~ authorize ~ login.statusCode:", login);
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         //#endregion
 

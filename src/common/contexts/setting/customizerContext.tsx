@@ -66,7 +66,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     isLoading: isAppearanceLoading,
     error: appearanceError,
     mutate: appearanceMutate,
-  } = useSWR(session && !authIsLoading ? "/api/user/setting/appearnce" : null, getFetcher);
+  } = useSWR(session && !authIsLoading ? "/api/user/setting/_appearnce" : null, getFetcher);
 
   useEffect(() => {
     if (!session && !authIsLoading) {
@@ -94,12 +94,12 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   }, [userAppearanceData, isAppearanceLoading, appearanceError, session, authIsLoading]);
 
   useEffect(() => {
-    document.documentElement.setAttribute("class", activeMode);
-    document.documentElement.setAttribute("dir", activeDir);
-    document.documentElement.setAttribute("data-color-theme", activeTheme);
-    document.documentElement.setAttribute("data-layout", activeLayout);
-    document.documentElement.setAttribute("data-boxed-layout", isLayout);
-    document.documentElement.setAttribute("data-sidebar-type", isCollapse);
+    // document.documentElement.setAttribute("class", activeMode);
+    // document.documentElement.setAttribute("dir", activeDir);
+    // document.documentElement.setAttribute("data-color-theme", activeTheme);
+    // document.documentElement.setAttribute("data-layout", activeLayout);
+    // document.documentElement.setAttribute("data-boxed-layout", isLayout);
+    // document.documentElement.setAttribute("data-sidebar-type", isCollapse);
   }, [activeMode, activeDir, activeTheme, activeLayout, isLayout, isCollapse]);
 
   type AppearancePayload = {

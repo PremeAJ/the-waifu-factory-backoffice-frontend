@@ -1,49 +1,68 @@
 "use client";
-
-import useSWR from "swr";
-import React, { createContext, use, useContext } from "react";
+import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
-import { ActiveCompany, Company, CompanyListItem } from "./interfaces/interface";
+import { Appearance, ProfileContextType } from "./interfaces/interface";
 import { useError } from "../ErrorContext";
 import { useSession } from "next-auth/react";
-
-interface ProfileContextType {
-  activeCompany: ActiveCompany | null;
-  companyList: CompanyListItem[];
-  loading: boolean;
-  error: any;
-  companyListMutate: () => void;
-  updateActiveCompany: (companyId: string) => Promise<any>;
-}
+import React, { createContext, use, useContext, useEffect } from "react";
+import useSWR from "swr";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { showError } = useError();
-  const { data: session, update: updateSession } = useSession();
-
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { data: session, update: updateSession } = useSession();
+  const { showError } = useError();
+
+  //#region ลิสต์บริษัทที่ผู้ใช้มีสิทธิ์เข้าใช้งาน
   const {
     data: companyListData,
     error: companyListError,
     isLoading: conmpanyListLoading,
     mutate: companyListMutate,
-  } = useSWR("/api/profile/company", getFetcher, {
+  } = useSWR(session ? "/api/profile/company" : null, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 5000,
   });
+  //#endregion
 
+  //#region บริษัทที่ผู้ใช้เลือกใช้งานอยู่
   const {
     data: activeCompanyData,
     error: activeCompanyError,
     isLoading: activeCompanyLoading,
     mutate: activeCompanyMutate,
-  } = useSWR("/api/profile/active-company", getFetcher, {
+  } = useSWR(session ? "/api/profile/active-company" : null, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 5000,
   });
+  //#endregion
 
+  //#region ลักษณะการแสดงผลของผู้ใช้
+  const {
+    data: appearanceData,
+    error: appearanceError,
+    isLoading: appearanceLoading,
+    mutate: appearanceMutate,
+  } = useSWR(session ? "/api/profile/appearance" : null, getFetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 5000,
+  });
+  const appearance: Appearance = appearanceData?.data || defaultAppearance;
+  useEffect(() => {
+    console.log("🚀 ~ ProfileProvider ~ appearance:", appearance);
+    document.documentElement.setAttribute("class", 'dark');
+    // document.documentElement.setAttribute("dir", activeDir);
+    document.documentElement.setAttribute("data-color-theme", appearance.activeTheme);
+    // document.documentElement.setAttribute("data-layout", activeLayout);
+    // document.documentElement.setAttribute("data-boxed-layout", isLayout);
+    document.documentElement.setAttribute("data-sidebar-type", appearance.isCollapse);
+  }, [appearance]);
+  //#endregion
+
+  //#region อัพเดทบริษัทที่ใช้งานอยู่
   const updateActiveCompany = async (companyId: string) => {
     try {
       setLoading(true);
@@ -55,12 +74,14 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
       showError(error.message, "เกิดข้อผิดพลาด");
     }
   };
+  //#endregion
 
   const value: ProfileContextType = {
     companyList: companyListData?.data || [],
     activeCompany: activeCompanyData?.data || null,
-    loading: activeCompanyLoading || conmpanyListLoading || loading,
-    error: activeCompanyError || companyListError,
+    appearance: appearanceData?.data || defaultAppearance,
+    loading: activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
+    error: activeCompanyError || companyListError || appearanceError,
     companyListMutate,
     updateActiveCompany,
   };

@@ -43,42 +43,40 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   if (ignoreLayout.includes(path)) return <>{children}</>;
 
   return (
-    <ProfileProvider>
-      <SessionGuard>
-        <DashboardGuard>
-          <CompanyProvider>
-            <SidebarStateProvider>
-              <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-                <Sidebar />
-                <PageWrapper
-                  className="page-wrapper"
+    <SessionGuard>
+      <DashboardGuard>
+        <CompanyProvider>
+          <SidebarStateProvider>
+            <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
+              <Sidebar />
+              <PageWrapper
+                className="page-wrapper"
+                sx={{
+                  ...(isCollapse === "mini-sidebar" && {
+                    [theme.breakpoints.up("lg")]: {
+                      ml: `87px`,
+                    },
+                  }),
+                }}
+              >
+                {isMobile && isSubMenu ? null : <Header />}
+                <AppShortcutButton />
+                <AppShortcutDrawer />
+
+                <Container
                   sx={{
-                    ...(isCollapse === "mini-sidebar" && {
-                      [theme.breakpoints.up("lg")]: {
-                        ml: `87px`,
-                      },
-                    }),
+                    pt: "30px",
+                    maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
+                    mt: isMobile && isSubMenu ? 6 : undefined,
                   }}
                 >
-                  {isMobile && isSubMenu ? null : <Header />}
-                  <AppShortcutButton />
-                  <AppShortcutDrawer />
-
-                  <Container
-                    sx={{
-                      pt: "30px",
-                      maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
-                      mt: isMobile && isSubMenu ? 6 : undefined,
-                    }}
-                  >
-                    <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
-                  </Container>
-                </PageWrapper>
-              </MainWrapper>
-            </SidebarStateProvider>
-          </CompanyProvider>
-        </DashboardGuard>
-      </SessionGuard>
-    </ProfileProvider>
+                  <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
+                </Container>
+              </PageWrapper>
+            </MainWrapper>
+          </SidebarStateProvider>
+        </CompanyProvider>
+      </DashboardGuard>
+    </SessionGuard>
   );
 }
