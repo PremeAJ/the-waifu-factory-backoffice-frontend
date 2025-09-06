@@ -52,8 +52,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
   const appearance: Appearance = appearanceData?.data || defaultAppearance;
   useEffect(() => {
-    console.log("🚀 ~ ProfileProvider ~ appearance:", appearance);
-    document.documentElement.setAttribute("class", 'dark');
+    document.documentElement.setAttribute("class", appearance.activeMode);
     // document.documentElement.setAttribute("dir", activeDir);
     document.documentElement.setAttribute("data-color-theme", appearance.activeTheme);
     // document.documentElement.setAttribute("data-layout", activeLayout);

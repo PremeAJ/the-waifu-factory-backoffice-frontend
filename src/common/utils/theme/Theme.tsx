@@ -1,22 +1,25 @@
-import _ from 'lodash';
-import { createTheme } from '@mui/material/styles';
+import _ from "lodash";
+import { createTheme } from "@mui/material/styles";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { useContext, useEffect } from 'react';
-import components from './Components';
-import typography from './Typography';
-import { shadows, darkshadows } from './Shadows';
-import { DarkThemeColors } from './DarkThemeColors';
-import { LightThemeColors } from './LightThemeColors';
-import { baseDarkTheme, baselightTheme } from './DefaultColors';
-import * as locales from '@mui/material/locale';
+import { useContext, useEffect } from "react";
+import components from "./Components";
+import typography from "./Typography";
+import { shadows, darkshadows } from "./Shadows";
+import { DarkThemeColors } from "./DarkThemeColors";
+import { LightThemeColors } from "./LightThemeColors";
+import { baseDarkTheme, baselightTheme } from "./DefaultColors";
+import * as locales from "@mui/material/locale";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 export const BuildTheme = (config: any = {}) => {
+  const { appearance } = useProfile();
+  const { activeMode } = appearance || {};
   const themeOptions = LightThemeColors.find((theme) => theme.name === config.theme);
   const darkthemeOptions = DarkThemeColors.find((theme) => theme.name === config.theme);
-  const { activeMode, isBorderRadius } = useContext(CustomizerContext);
-  const defaultTheme = activeMode === 'dark' ? baseDarkTheme : baselightTheme;
-  const defaultShadow = activeMode === 'dark' ? darkshadows : shadows;
-  const themeSelect = activeMode === 'dark' ? darkthemeOptions : themeOptions;
+  const { isBorderRadius } = useContext(CustomizerContext);
+  const defaultTheme = activeMode === "dark" ? baseDarkTheme : baselightTheme;
+  const defaultShadow = activeMode === "dark" ? darkshadows : shadows;
+  const themeSelect = activeMode === "dark" ? darkthemeOptions : themeOptions;
   const baseMode = {
     palette: {
       mode: activeMode,
@@ -30,7 +33,7 @@ export const BuildTheme = (config: any = {}) => {
   const theme = createTheme(
     _.merge({}, baseMode, defaultTheme, locales, themeSelect, {
       direction: config.direction,
-    }),
+    })
   );
   theme.components = components(theme);
 
@@ -50,6 +53,5 @@ const ThemeSettings = () => {
 
   return theme;
 };
-
 
 export { ThemeSettings };
