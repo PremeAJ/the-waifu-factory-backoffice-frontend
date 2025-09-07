@@ -2,9 +2,7 @@
 
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { IconAlertTriangle } from "@tabler/icons-react";
 import BaseDialog from "@/common/components/base/BaseDialog";
-import { useTheme } from "@mui/system";
 
 interface ErrorDialogProps {
   open: boolean;
@@ -23,7 +21,6 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
   error,
   showDetails = process.env.NODE_ENV === "development",
 }) => {
-  const theme = useTheme()
   const getErrorMessage = () => {
     if (message) return message;
     if (typeof error === "string") return error;
@@ -75,7 +72,7 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
           )}
         </Box>
       }
-      confirmText="OK"
+      confirmText="ตกลง"
       onConfirm={onClose}
       confirmColor="primary"
     />

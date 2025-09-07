@@ -56,11 +56,11 @@ const AppLinks: React.FC<AppLinksProps> = ({ searchApp = "" }) => {
                   alignItems: "center",
                   mb: 1,
                   boxShadow: "0 4px 16px 0 rgba(0,0,0,0.10)",
-                  border: `2px solid ${app.color || "#1976d2"}`,
+                  border: `2px solid ${app.color || "#eb9e37"}`,
                   transition: "all 0.2s",
                   "&:hover": {
                     boxShadow: "0 8px 24px 0 rgba(0,0,0,0.18)",
-                    borderColor: "#1565c0",
+                    borderColor: "#eb9e37",
                   },
                 }}
               >

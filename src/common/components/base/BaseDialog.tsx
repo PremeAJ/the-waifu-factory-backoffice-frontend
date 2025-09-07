@@ -150,7 +150,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
                 disabled={loading}
                 fullWidth={false}
                 loading={loading}
-                {...(confirmColor ? { color: confirmColor } : null)}
+                {...(confirmColor ? { color: 'primary' } : null)}
               />
             )}
           </>
