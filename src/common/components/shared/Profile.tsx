@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } from "@mui/material";
 import * as dropdownData from "../../../app/dashboard/layout/header/data";
 import { IconMail, IconUser } from "@tabler/icons-react";
-import { AuthContext } from "@/common/contexts/AuthContext";
 import { UserContext } from "@/common/contexts/UserContext";
 import ConfirmSignOutDialog from "@/common/components/auth/dialog/ConfirmSignOutDialog";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";

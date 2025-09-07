@@ -3,17 +3,15 @@ import CustomSocialButton from "@/components/forms/theme-elements/CustomSocialBu
 import { Stack } from "@mui/system";
 import { Avatar, Box } from "@mui/material";
 import { signInType } from "@/common/utils/types/auth/auth";
-import { AuthContext } from "@/common/contexts/AuthContext";
 import { useContext } from "react";
 
 const AuthSocialButtons = ({ title }: signInType) => {
-  const { signInWithGoogle, isLoading } = useContext(AuthContext);
   const onClick = () => {
   };
   return (
     <>
       <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
-        <CustomSocialButton onClick={onClick} loading={isLoading}>
+        <CustomSocialButton onClick={onClick} >
           <Avatar
             src={"/images/svgs/google-icon.svg"}
             alt={"icon1"}

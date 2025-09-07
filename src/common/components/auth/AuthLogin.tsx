@@ -1,5 +1,4 @@
 "use client";
-import { AuthContext } from "@/common/contexts/AuthContext";
 import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Divider, InputAdornment } from "@mui/material";
 import { emailValidator, requiredPasswordSchema } from "@/common/utils/validator/yup";
 import { IconLock, IconMail } from "@tabler/icons-react";

@@ -1,19 +1,17 @@
 "use client";
+import {  useEffect, useState } from "react";
 import { Box, Typography, Button, Divider, Stack, Grid, InputAdornment } from "@mui/material";
-import Link from "next/link";
-import AuthSocialButtons from "./AuthSocialButtons";
 import { confirmPasswordSchema, emailValidator, firstNameSchema, lastNameSchema, passwordSchema } from "@/common/utils/validator/yup";
-import * as yup from "yup";
-import { useTranslation } from "react-i18next";
-import { AuthContext, useAuth } from "@/common/contexts/AuthContext";
-import { useContext, useEffect, useState } from "react";
-import { useFormik } from "formik";
-import Language from "@/common/components/shared/Language";
-import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
-import Turnstile from "react-turnstile";
 import { IconLock, IconMail } from "@tabler/icons-react";
-import BaseTextField from "@/common/components/base/BaseTextField";
 import { Register } from "@/common/contexts/AuthContext/interfaces/interface";
+import { useAuth } from "@/common/contexts/AuthContext";
+import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
+import * as yup from "yup";
+import AuthSocialButtons from "./AuthSocialButtons";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import Link from "next/link";
+import Turnstile from "react-turnstile";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -24,10 +22,10 @@ const validationSchema = yup.object({
 });
 
 const AuthRegister = () => {
+  const { register } = useAuth();
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-  const { register } = useAuth();
   const formik = useFormik({
     initialValues: {
       email: "",

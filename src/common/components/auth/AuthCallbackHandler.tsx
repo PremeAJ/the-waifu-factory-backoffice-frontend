@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useContext } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AuthContext } from "@/common/contexts/AuthContext";
 import { UserContext } from "@/common/contexts/UserContext";
 import Loading from "@/app/loading";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
@@ -13,7 +12,6 @@ interface AuthCallbackHandlerProps {
 }
 
 export default function AuthCallbackHandler() {
-  const { setSession, getSession, exchangeCodeForSession } = useContext(AuthContext);
   const { syncUser } = useContext(UserContext);
   const { appearanceMutate } = useContext(CustomizerContext);
   const router = useRouter();

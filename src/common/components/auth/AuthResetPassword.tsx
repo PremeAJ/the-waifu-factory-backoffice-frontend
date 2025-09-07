@@ -2,7 +2,6 @@
 import { Alert, InputAdornment, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useContext, useState } from "react";
-import { AuthContext } from "@/common/contexts/AuthContext";
 import { useFormik } from "formik";
 import { confirmPasswordSchema, passwordSchema } from "@/common/utils/validator/yup";
 import * as yup from "yup";
@@ -44,31 +43,30 @@ const validationSchema = yup.object({
 
 export default function AuthResetPassword() {
   const { t } = useTranslation();
-  const { isLoading, resetPassword } = useContext(AuthContext);
   const router = useRouter();
   const [status, setStatus] = useState<ResetPasswordStatus>("idle");
 
   const handleResetPassword = async (password: string) => {
     try {
-      const { error } = await resetPassword({ newPassword: password });
+      // const { error } = await resetPassword({ newPassword: password });
 
-      if (error) {
-        switch (error) {
-          case "same_password":
-            setStatus("same_password");
-            break;
-          case "invalid_password":
-            setStatus("invalid_password");
-            break;
-          case "expired_token":
-            setStatus("expired_token");
-            setTimeout(() => router.push("/auth/forgot-password"), 2000);
-            break;
-          default:
-            setStatus("unknown_error");
-        }
-        return;
-      }
+      // if (error) {
+      //   switch (error) {
+      //     case "same_password":
+      //       setStatus("same_password");
+      //       break;
+      //     case "invalid_password":
+      //       setStatus("invalid_password");
+      //       break;
+      //     case "expired_token":
+      //       setStatus("expired_token");
+      //       setTimeout(() => router.push("/auth/forgot-password"), 2000);
+      //       break;
+      //     default:
+      //       setStatus("unknown_error");
+      //   }
+      //   return;
+      // }
 
       setStatus("success");
       setTimeout(() => router.push("/auth/login"), 2000);

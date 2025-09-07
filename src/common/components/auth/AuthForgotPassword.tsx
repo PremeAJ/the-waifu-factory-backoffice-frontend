@@ -2,7 +2,6 @@
 import { Alert, InputAdornment, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/common/contexts/AuthContext";
 import { useFormik } from "formik";
 import { emailValidator } from "@/common/utils/validator/yup";
 import * as yup from "yup";
@@ -42,7 +41,6 @@ const getAlertMessage = (status: ForgotPasswordStatus): string => {
 
 export default function AuthForgotPassword() {
   const { t, i18n } = useTranslation();
-  const { isLoading, forgotPassword } = useContext(AuthContext);
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const [status, setStatus] = useState<ForgotPasswordStatus>("idle");
@@ -61,28 +59,28 @@ export default function AuthForgotPassword() {
           },
         };
 
-        const { error } = await forgotPassword(payload);
+        // const { error } = await forgotPassword(payload);
 
-        if (error) {
-          switch (error) {
-            case "over_email_send_rate_limit":
-              setStatus("over_email_send_rate_limit");
-              break;
-            case "user_not_found":
-              setStatus("user_not_found");
-              break;
-            case "invalid_email":
-              setStatus("invalid_email");
-              break;
-            case "captcha_failed":
-              setStatus("captcha_failed");
-              setCaptchaToken("");
-              break;
-            default:
-              setStatus("unknown_error");
-          }
-          return;
-        }
+        // if (error) {
+        //   switch (error) {
+        //     case "over_email_send_rate_limit":
+        //       setStatus("over_email_send_rate_limit");
+        //       break;
+        //     case "user_not_found":
+        //       setStatus("user_not_found");
+        //       break;
+        //     case "invalid_email":
+        //       setStatus("invalid_email");
+        //       break;
+        //     case "captcha_failed":
+        //       setStatus("captcha_failed");
+        //       setCaptchaToken("");
+        //       break;
+        //     default:
+        //       setStatus("unknown_error");
+        //   }
+        //   return;
+        // }
 
         setStatus("success");
         setTimeout(() => {
@@ -139,7 +137,6 @@ export default function AuthForgotPassword() {
         )}
         <BaseButton
           label="ส่งลิงก์รีเซ็ตรหัสผ่าน"
-          loading={isLoading}
           type="submit"
           disabled={!captchaToken}
         />

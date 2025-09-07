@@ -6,8 +6,6 @@ import Cookies from "js-cookie";
 import useSWR from "swr";
 import { set } from "lodash";
 import { getFetcher, patchFetcher } from "@/app/api/globalFetcher";
-import { UserContext } from "../UserContext";
-import { AuthContext } from "../AuthContext";
 
 // Define the shape of the context state
 interface CustomizerContextState {

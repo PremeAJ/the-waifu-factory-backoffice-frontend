@@ -6,10 +6,8 @@ import Image from "next/image";
 import AuthResetPassword from "../../../common/components/auth/AuthResetPassword";
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AuthContext } from "@/common/contexts/AuthContext";
 
 export default function ResetPassword() {
-  const { verifyOtp } = useContext(AuthContext);
   const [isValid, setIsValid] = useState(false);
   const searchParams = useSearchParams();
   const token_hash = searchParams.get("token_hash");
@@ -23,16 +21,16 @@ export default function ResetPassword() {
 
     const verifyToken = async () => {
       try {
-        const { error } = await verifyOtp({
-          token_hash,
-          type: "recovery",
-        });
+        // const { error } = await verifyOtp({
+        //   token_hash,
+        //   type: "recovery",
+        // });
 
-        if (error) {
-          console.error("Token verification failed:", error);
-          window.location.href = "/auth/forgot-password";
-          return;
-        }
+        // if (error) {
+        //   console.error("Token verification failed:", error);
+        //   window.location.href = "/auth/forgot-password";
+        //   return;
+        // }
 
         setIsValid(true);
       } catch (err) {

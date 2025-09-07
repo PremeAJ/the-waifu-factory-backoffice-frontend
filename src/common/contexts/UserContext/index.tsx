@@ -5,8 +5,6 @@ import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdatePhone, supabaseVerifyOtp } from "@/common/utils/supabase/server";
 import reduceImageFileSize from "@/common/utils/function/file/reduceImageFileSize";
 import { VerifyOtpParams } from "@supabase/supabase-js";
-import { AuthContext } from "../AuthContext";
-import { useRouter } from "next/navigation";
 
 export interface userType {
   id: string;
@@ -99,33 +97,32 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<userType | null>(initialConfig.user);
   const [loading, setLoading] = useState<boolean>(initialConfig.loading);
   const [error, setError] = useState<Error | null>(initialConfig.error);
-  const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
   const {
     data: usersData,
     isLoading: isUsersLoading,
     error: usersError,
     mutate: userMutate,
-  } = useSWR(session && !authIsLoading ? "/api/users/me" : null, getFetcher, {});
+  } = useSWR( null, getFetcher, {});
   const {
     data: companyListData,
     isLoading: companyListLoading,
     error: companyListError,
     mutate: companyListMutate,
-  } = useSWR(session && !authIsLoading ? "/api/users/me/company-list" : null, getFetcher, {});
+  } = useSWR( null, getFetcher, {});
 
-  useEffect(() => {
-    if (!session && !authIsLoading) {
-      setLoading(false);
-    }
-    if (usersData) {
-      setUser(usersData?.data);
-      setLoading(isUsersLoading);
-    } else if (usersError) {
-      setError(usersError);
-      setLoading(isUsersLoading);
-    }
-  }, [session, usersData, usersError, isUsersLoading, authIsLoading]);
+  // useEffect(() => {
+  //   if (!session && !authIsLoading) {
+  //     setLoading(false);
+  //   }
+  //   if (usersData) {
+  //     setUser(usersData?.data);
+  //     setLoading(isUsersLoading);
+  //   } else if (usersError) {
+  //     setError(usersError);
+  //     setLoading(isUsersLoading);
+  //   }
+  // }, [session, usersData, usersError, isUsersLoading, authIsLoading]);
 
   const syncUser = async () => {
     try {
