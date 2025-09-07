@@ -4,7 +4,7 @@ import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
 import { Appearance, ProfileContextType } from "./interfaces/interface";
 import { useError } from "../ErrorContext";
 import { useSession } from "next-auth/react";
-import React, { createContext, use, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import useSWR from "swr";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
@@ -53,11 +53,11 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const appearance: Appearance = appearanceData?.data || defaultAppearance;
   useEffect(() => {
     document.documentElement.setAttribute("class", appearance.activeMode);
-    // document.documentElement.setAttribute("dir", activeDir);
     document.documentElement.setAttribute("data-color-theme", appearance.activeTheme);
+    document.documentElement.setAttribute("data-sidebar-type", appearance.isCollapse);
+    // document.documentElement.setAttribute("dir", activeDir);
     // document.documentElement.setAttribute("data-layout", activeLayout);
     // document.documentElement.setAttribute("data-boxed-layout", isLayout);
-    document.documentElement.setAttribute("data-sidebar-type", appearance.isCollapse);
   }, [appearance]);
   //#endregion
 
@@ -83,6 +83,8 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     error: activeCompanyError || companyListError || appearanceError,
     companyListMutate,
     updateActiveCompany,
+    activeCompanyMutate,
+    appearanceMutate,
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

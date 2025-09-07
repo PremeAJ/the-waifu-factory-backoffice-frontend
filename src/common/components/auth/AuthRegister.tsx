@@ -40,7 +40,7 @@ const AuthRegister = () => {
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-  const { signUpWithEmail } = useContext(AuthContext);
+  // const { signUpWithEmail } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -63,34 +63,34 @@ const AuthRegister = () => {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       };
-      const { data: data2, error } = await signUpWithEmail(userData);
-      if (error) {
-        switch (error) {
-          case "invalid_credentials":
-            formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-            formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-            break;
-          case "over_request_rate_limit":
-            alert(
-              "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)"
-            );
-            break;
-          case "user_banned":
-            alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
-            break;
-          case "captcha_failed":
-          case "unexpected_failure":
-            alert(
-              "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า"
-            );
-            break;
-          default:
-            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-            break;
-        }
-      } else {
-        window.location.href = "/auth/login";
-      }
+      // const { data: data2, error } = await signUpWithEmail(userData);
+      // if (error) {
+      //   switch (error) {
+      //     case "invalid_credentials":
+      //       formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      //       formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      //       break;
+      //     case "over_request_rate_limit":
+      //       alert(
+      //         "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)"
+      //       );
+      //       break;
+      //     case "user_banned":
+      //       alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
+      //       break;
+      //     case "captcha_failed":
+      //     case "unexpected_failure":
+      //       alert(
+      //         "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า"
+      //       );
+      //       break;
+      //     default:
+      //       alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+      //       break;
+      //   }
+      // } else {
+      //   window.location.href = "/auth/login";
+      // }
     },
   });
 
@@ -150,7 +150,7 @@ const AuthRegister = () => {
               name="confirmPassword"
               formik={formik}
               label="Confirm Password"
-              placeholder="กรุณายืนยันรหัสผ่าน"
+              placeholder="กรุณายืนยัน รหัสผ่าน"
               type="password"
               startAdornment={
                 <InputAdornment position="start">

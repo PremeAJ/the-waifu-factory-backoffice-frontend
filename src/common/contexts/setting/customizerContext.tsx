@@ -47,7 +47,6 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   const [loading, setLoading] = useState<boolean>(true);
   
   const [error, setError] = useState<Error | null>(null);
-  const { user: session, isLoading: authIsLoading } = useContext(AuthContext);
 
   const [activeDir, setActiveDir] = useState<string>(config.activeDir);
   const [activeMode, setActiveMode] = useState<string>(config.activeMode);
@@ -66,12 +65,12 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     isLoading: isAppearanceLoading,
     error: appearanceError,
     mutate: appearanceMutate,
-  } = useSWR(session && !authIsLoading ? "/api/user/setting/_appearnce" : null, getFetcher);
+  } = useSWR( "/api/user/setting/_appearnce" , getFetcher);
 
   useEffect(() => {
-    if (!session && !authIsLoading) {
-      setLoading(false);
-    }
+    // if () {
+    //   setLoading(false);
+    // }
     if (userAppearanceData) {
       const appearanceData = userAppearanceData.data || {};
       // if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);
@@ -91,7 +90,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         setLoading(isAppearanceLoading);
       }
     }
-  }, [userAppearanceData, isAppearanceLoading, appearanceError, session, authIsLoading]);
+  }, [userAppearanceData, isAppearanceLoading, appearanceError]);
 
   useEffect(() => {
     // document.documentElement.setAttribute("class", activeMode);

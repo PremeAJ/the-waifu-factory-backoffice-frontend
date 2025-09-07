@@ -15,11 +15,11 @@ export interface Role {
 }
 
 export interface ActiveCompany {
-  name: string
-  logoUrl: string
-  businessTypeId: number
-  branchNameTh: string
-  branchNameEn: string
+  name: string;
+  logoUrl: string;
+  businessTypeId: number;
+  branchNameTh: string;
+  branchNameEn: string;
 }
 
 export interface ProfileContextType {
@@ -29,16 +29,18 @@ export interface ProfileContextType {
   loading: boolean;
   error: any;
   companyListMutate: () => void;
+  activeCompanyMutate: () => void;
+  appearanceMutate: () => void;
   updateActiveCompany: (companyId: string) => Promise<any>;
 }
 
 export interface Appearance {
-  isLanguage: IsLanguage
-  activeMode: ActiveMode
-  activeTheme: string
-  isCollapse: IsCollapse
+  isLanguage: IsLanguage;
+  activeMode: ActiveMode;
+  activeTheme: string;
+  isCollapse: IsCollapse;
 }
 
-export type IsLanguage = 'en' | 'th'
-export type ActiveMode = 'light' | 'dark'
-export type IsCollapse = 'full_sidebar' | 'mini_sidebar'
+export type IsLanguage = "en" | "th";
+export type ActiveMode = "light" | "dark";
+export type IsCollapse = "full_sidebar" | "mini_sidebar";
