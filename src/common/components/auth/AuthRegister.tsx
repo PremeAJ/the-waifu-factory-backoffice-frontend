@@ -1,25 +1,11 @@
 "use client";
-import {
-  Box,
-  Typography,
-  Button,
-  Divider,
-  Stack,
-  Grid,
-  InputAdornment,
-} from "@mui/material";
+import { Box, Typography, Button, Divider, Stack, Grid, InputAdornment } from "@mui/material";
 import Link from "next/link";
 import AuthSocialButtons from "./AuthSocialButtons";
-import {
-  confirmPasswordSchema,
-  emailValidator,
-  firstNameSchema,
-  lastNameSchema,
-  passwordSchema,
-} from "@/common/utils/validator/yup";
+import { confirmPasswordSchema, emailValidator, firstNameSchema, lastNameSchema, passwordSchema } from "@/common/utils/validator/yup";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
-import { AuthContext } from "@/common/contexts/AuthContext";
+import { AuthContext, useAuth } from "@/common/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import Language from "@/common/components/shared/Language";
@@ -27,6 +13,7 @@ import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 import Turnstile from "react-turnstile";
 import { IconLock, IconMail } from "@tabler/icons-react";
 import BaseTextField from "@/common/components/base/BaseTextField";
+import { Register } from "@/common/contexts/AuthContext/interfaces/interface";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -40,7 +27,7 @@ const AuthRegister = () => {
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-  // const { signUpWithEmail } = useContext(AuthContext);
+  const { register } = useAuth();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -50,47 +37,9 @@ const AuthRegister = () => {
       lastName: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (data) => {
-      const { email, password, firstName, lastName } = data;
-      const userData: SignUpWithPasswordCredentials = {
-        email,
-        password,
-        options: {
-          data: {
-            full_name: `${firstName} ${lastName}`,
-          },
-          captchaToken: captchaToken,
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      };
-      // const { data: data2, error } = await signUpWithEmail(userData);
-      // if (error) {
-      //   switch (error) {
-      //     case "invalid_credentials":
-      //       formik.setFieldError("email", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-      //       formik.setFieldError("password", "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-      //       break;
-      //     case "over_request_rate_limit":
-      //       alert(
-      //         "คุณส่งคำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง (Rate limit reached)"
-      //       );
-      //       break;
-      //     case "user_banned":
-      //       alert("บัญชีของคุณถูกระงับ กรุณาติดต่อผู้ดูแลระบบ");
-      //       break;
-      //     case "captcha_failed":
-      //     case "unexpected_failure":
-      //       alert(
-      //         "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง หรือรีเฟรชหน้า"
-      //       );
-      //       break;
-      //     default:
-      //       alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-      //       break;
-      //   }
-      // } else {
+    onSubmit: async (data: Register) => {
+      const response = await register(data);
       //   window.location.href = "/auth/login";
-      // }
     },
   });
 
@@ -107,20 +56,10 @@ const AuthRegister = () => {
           <Stack mb={3}>
             <Grid container columnSpacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <BaseTextField
-                  name="firstName"
-                  formik={formik}
-                  label="ชื่อ"
-                  placeholder="กรุณากรอก ชื่อ"
-                />
+                <BaseTextField name="firstName" formik={formik} label="ชื่อ" placeholder="กรุณากรอก ชื่อ" />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <BaseTextField
-                  name="lastName"
-                  formik={formik}
-                  label="นามสกุล"
-                  placeholder="กรุณากรอก นามสกุล"
-                />
+                <BaseTextField name="lastName" formik={formik} label="นามสกุล" placeholder="กรุณากรอก นามสกุล" />
               </Grid>
             </Grid>
             <BaseTextField
@@ -160,23 +99,9 @@ const AuthRegister = () => {
             />
           </Stack>
           {formik.isValid && formik.dirty && (
-            <Turnstile
-              sitekey={siteKey}
-              theme="light"
-              action="register"
-              size="flexible"
-              onSuccess={setCaptchaToken}
-              language={i18n.language}
-            />
+            <Turnstile sitekey={siteKey} theme="light" action="register" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
           )}
-          <Button
-            color="primary"
-            variant="contained"
-            size="large"
-            fullWidth
-            type="submit"
-            disabled={!captchaToken}
-          >
+          <Button color="primary" variant="contained" size="large" fullWidth type="submit" disabled={!captchaToken}>
             Sign Up
           </Button>
         </form>
@@ -199,14 +124,7 @@ const AuthRegister = () => {
       </Stack>
       <Box mt={3}>
         <Divider>
-          <Typography
-            component="span"
-            color="textSecondary"
-            variant="h6"
-            fontWeight="400"
-            position="relative"
-            px={2}
-          >
+          <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" position="relative" px={2}>
             or
           </Typography>
         </Divider>

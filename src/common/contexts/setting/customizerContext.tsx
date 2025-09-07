@@ -65,7 +65,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     isLoading: isAppearanceLoading,
     error: appearanceError,
     mutate: appearanceMutate,
-  } = useSWR( "/api/user/setting/_appearnce" , getFetcher);
+  } = useSWR( null , getFetcher);
 
   useEffect(() => {
     // if () {
