@@ -23,6 +23,7 @@ import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { UserContext } from "@/common/contexts/UserContext";
 import Menuitems from "./sidebar/MenuItems"; // นำเข้า Menuitems 
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const MobileSettingsList = () => {
   const theme = useTheme();
@@ -71,8 +72,9 @@ const MobileSettingsList = () => {
     </Box>
   );
 
-  const { updateAppearance, activeMode, setActiveMode } = useContext(CustomizerContext);
-
+  const { updateAppearance, setActiveMode } = useContext(CustomizerContext);
+  const { appearance } = useProfile();
+  const { activeMode } = appearance || {};
   // อัปเดต theme ผ่าน CustomizerContext
   const toggleDarkMode = () => {
     const newMode = activeMode === "dark" ? "light" : "dark";

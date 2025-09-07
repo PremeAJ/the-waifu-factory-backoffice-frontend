@@ -6,9 +6,12 @@ import config from "@/common/contexts/setting/config";
 import Image from "next/image";
 import { useContext } from "react";
 import { usePathname } from "next/navigation";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const Logo = () => {
-  const { isCollapse, isSidebarHover, activeMode } = useContext(CustomizerContext);
+  const { isCollapse, isSidebarHover } = useContext(CustomizerContext);
+    const { appearance } = useProfile();
+    const { activeMode } = appearance || {};
   const path = usePathname();
   const url = path.includes("/dashboard") || path.includes("/setting") ? "/dashboard" : "/";
   const TopbarHeight = config.topbarHeight;

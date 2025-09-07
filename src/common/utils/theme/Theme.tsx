@@ -41,8 +41,9 @@ export const BuildTheme = (config: any = {}) => {
 };
 
 const ThemeSettings = () => {
-  const { activeDir, activeTheme } = useContext(CustomizerContext);
-
+  const { activeDir } = useContext(CustomizerContext);
+  const { appearance } = useProfile();
+  const { activeTheme } = appearance || {};
   const theme = BuildTheme({
     direction: activeDir,
     theme: activeTheme,

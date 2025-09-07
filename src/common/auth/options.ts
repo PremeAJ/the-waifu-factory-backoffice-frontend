@@ -5,6 +5,7 @@ import { HeadersKey } from "../constants/header";
 import { getHeaders } from "../utils/getHeaders";
 import { v4 as uuidv4 } from "uuid";
 import { AuthOptions } from "next-auth";
+import { signOut } from "next-auth/react";
 
 async function header(accessToken?: string) {
   const cookieStore = await cookies();
@@ -68,7 +69,14 @@ const authOptions: AuthOptions = {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       if (session.accessToken) {
-        const profileRes = await getFetcher(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/profile`, { ...(await header(session.accessToken)) });
+        const profileRes = await getFetcher(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/profile`,
+          { ...(await header(session.accessToken)) }
+        );
+        if (profileRes.statusCode !== 200) {
+          // return {} แทน null
+          return {} as typeof session;
+        }
         session.profile = profileRes.data;
       }
       delete session.user;

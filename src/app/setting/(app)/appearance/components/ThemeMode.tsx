@@ -5,9 +5,12 @@ import DarkModeTwoToneIcon from "@mui/icons-material/DarkModeTwoTone";
 import StyledBox from "../StyledBox";
 import { useContext } from "react";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const ThemeMode = () => {
-  const { updateAppearance, activeMode, setActiveMode } = useContext(CustomizerContext);
+  const { updateAppearance, setActiveMode } = useContext(CustomizerContext);
+  const { appearance } = useProfile();
+  const { activeMode } = appearance || {};
   const updateSetting = (mode: string) => {
     setActiveMode(mode);
     updateAppearance({ activeMode: mode });

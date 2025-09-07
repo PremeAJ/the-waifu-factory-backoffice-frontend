@@ -10,6 +10,7 @@ import Sidebar from "../setting/layout/sidebar/Sidebar";
 import { usePathname } from "next/navigation";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import SessionGuard from "@/common/guards/sessionGuard";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -28,7 +29,9 @@ const PageWrapper = styled("div")(() => ({
 }));
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isLayout, activeMode, isCollapse } = useContext(CustomizerContext);
+  const { isLayout, isCollapse } = useContext(CustomizerContext);
+  const { appearance } = useProfile();
+  const { activeMode } = appearance || {};
   const isMobile = useIsMobile();
   const theme = useTheme();
   const path = usePathname();
