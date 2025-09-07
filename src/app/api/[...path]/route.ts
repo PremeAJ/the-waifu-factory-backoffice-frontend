@@ -8,6 +8,7 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
   const { path } = await context.params;
   const search = req.nextUrl.search;
   const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${path.join("/")}${search}`.replace("/authentication", "/auth");
+  console.log("🚀 ~ handleRequest ~ backendUrl:", backendUrl)
   if (session?.accessToken) req.headers.set(HeadersKey.Authorization, `Bearer ${session.accessToken}`);
   try {
     const options: RequestInit = {

@@ -28,21 +28,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ErrorProvider>
       <NextAuthProvider>
         <ProfileProvider>
-          <CustomizerContextProvider>
-            <html lang="en" suppressHydrationWarning>
-              <head>
-                <Header />
-              </head>
-              <body>
-                <MyApp>
-                  <AuthProvider>{children}</AuthProvider>
-                  <ThemeAwareTopLoader />
-                  <ActionButton />
-                  <ScrollToTopButton />
-                </MyApp>
-              </body>
-            </html>
-          </CustomizerContextProvider>
+          <AuthProvider>
+            <CustomizerContextProvider>
+              <html lang="en" suppressHydrationWarning>
+                <head>
+                  <Header />
+                </head>
+                <body>
+                  <MyApp>
+                    {children}
+                    <ThemeAwareTopLoader />
+                    <ActionButton />
+                    <ScrollToTopButton />
+                  </MyApp>
+                </body>
+              </html>
+            </CustomizerContextProvider>
+          </AuthProvider>
         </ProfileProvider>
       </NextAuthProvider>
     </ErrorProvider>
