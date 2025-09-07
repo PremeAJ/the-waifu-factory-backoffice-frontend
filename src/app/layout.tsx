@@ -34,14 +34,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Header />
               </head>
               <body>
-                <ErrorProvider>
                   <MyApp>
                     {children}
                     <ThemeAwareTopLoader />
                     <ActionButton />
                     <ScrollToTopButton />
                   </MyApp>
-                </ErrorProvider>
               </body>
             </html>
           </CustomizerContextProvider>

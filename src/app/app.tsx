@@ -23,12 +23,14 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <UserProvider>
-          <Analytics />
-          <SpeedInsights />
-          {children}
-        </UserProvider>
+        <ErrorProvider>
+          <CssBaseline />
+          <UserProvider>
+            <Analytics />
+            <SpeedInsights />
+            {children}
+          </UserProvider>
+        </ErrorProvider>
       </ThemeProvider>
     </AppRouterCacheProvider>
   );

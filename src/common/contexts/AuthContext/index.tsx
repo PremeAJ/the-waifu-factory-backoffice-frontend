@@ -10,7 +10,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { update: updateSession, status } = useSession();
 
   const register = async (payload: Register) => {
-    return postFetcher("/api/authentication/register", payload);
+    setLoading(true);
+    const response = await postFetcher("/api/authentication/register", payload);
+    setLoading(false);
+    return response;
   };
 
   useEffect(() => {

@@ -24,7 +24,7 @@ const validationSchema = yup.object({
 });
 
 const AuthRegister = () => {
-  const { register } = useAuth();
+  const { register, loading } = useAuth();
   const { update: updateSession } = useSession();
   const { t, i18n } = useTranslation();
   const { showError } = useError();
@@ -41,7 +41,7 @@ const AuthRegister = () => {
     validationSchema: validationSchema,
     onSubmit: async (data: Register) => {
       const response = await register(data);
-      if (response.status !== 201) {
+      if (response.statusCode !== 201) {
         showError(response.message, "เกิดข้อผิดพลาด");
       } else {
         await updateSession();
@@ -108,7 +108,7 @@ const AuthRegister = () => {
           {formik.isValid && formik.dirty && (
             <Turnstile sitekey={siteKey} theme="light" action="register" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
           )}
-          <Button color="primary" variant="contained" size="large" fullWidth type="submit" disabled={!captchaToken}>
+          <Button color="primary" variant="contained" size="large" fullWidth type="submit" disabled={!captchaToken} loading={loading}>
             Sign Up
           </Button>
         </form>
