@@ -8,27 +8,26 @@ import React, { createContext, useContext, useEffect } from "react";
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  // const { update: updateSession, status } = useSession();
-  // const { showError } = useError();
+  const { update: updateSession, status } = useSession();
+  const { showError } = useError();
 
   const register = async (payload: Register) => {
-    console.log("🚀 ~ register ~ payload:", payload)
-    // try {
-    //   console.log("🚀 ~ register ~ payload:", payload)
-    //   await postFetcher("/api/auth/register", payload);
-    //   await updateSession();
-    // } catch (error: any) {
-    //   showError(error.message, "เกิดข้อผิดพลาดใรการสมัครสมาชิก กรุณาลองใหม่อีกครั้ง");
-    // }
+    try {
+      console.log("🚀 ~ register ~ payload:", payload);
+      await postFetcher("/api/auth/register", payload);
+      await updateSession();
+    } catch (error: any) {
+      showError(error.message, "เกิดข้อผิดพลาดใรการสมัครสมาชิก กรุณาลองใหม่อีกครั้ง");
+    }
   };
 
-  // useEffect(() => {
-  //   if (status === "loading") {
-  //     setLoading(true);
-  //   } else {
-  //     setLoading(false);
-  //   }
-  // }, [status]);
+  useEffect(() => {
+    if (status === "loading") {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [status]);
   const value: AuthContextType = {
     register,
     loading,

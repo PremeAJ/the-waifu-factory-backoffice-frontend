@@ -130,7 +130,6 @@ export default function AuthResetPassword() {
         />
         <BaseButton
           label="ยืนยัน"
-          loading={isLoading}
           type="submit"
           disabled={!formik.isValid || !formik.dirty}
         />
