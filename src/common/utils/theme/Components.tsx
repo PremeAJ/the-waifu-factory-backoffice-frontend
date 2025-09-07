@@ -1,5 +1,8 @@
+// project imports
+import { borderRadius } from "@mui/system";
 import "./DefaultColors";
 import { Theme } from "@mui/material/styles";
+import zIndex from "@mui/material/styles/zIndex";
 
 const components: any = (theme: Theme) => {
   return {
@@ -120,21 +123,6 @@ const components: any = (theme: Theme) => {
         ".rounded-bars .apexcharts-bar-series.apexcharts-plot-series .apexcharts-series path": {
           clipPath: "inset(0 0 5% 0 round 20px)",
         },
-        "input, textarea, form": {
-          autoComplete: "off",
-          autofill: "off",
-        },
-        "input": {
-          autoComplete: "off",
-          autofill: "off",
-        },
-        "textarea": {
-          autoComplete: "off",
-          autofill: "off",
-        },
-        "form": {
-          autoComplete: "off",
-        },
       },
     },
     MuiButtonGroup: {
@@ -171,6 +159,7 @@ const components: any = (theme: Theme) => {
       styleOverrides: {
         root: {
           boxShadow: "none",
+          // borderRadius: theme.shape.borderRadius, 
         },
       },
     },

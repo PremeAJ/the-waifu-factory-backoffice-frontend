@@ -13,11 +13,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const register = async (payload: Register) => {
     try {
-      console.log("🚀 ~ register ~ payload:", payload);
-      await postFetcher("/api/authentication/register", payload);
-      await updateSession();
+      return postFetcher("/api/authentication/register", payload);
     } catch (error: any) {
-      showError(error.message, "เกิดข้อผิดพลาดใรการสมัครสมาชิก กรุณาลองใหม่อีกครั้ง");
+      showError(error.message, "เกิดข้อผิดพลาด");
     }
   };
 

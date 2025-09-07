@@ -25,28 +25,28 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ErrorProvider>
-      <NextAuthProvider>
-        <ProfileProvider>
-          <AuthProvider>
-            <CustomizerContextProvider>
-              <html lang="en" suppressHydrationWarning>
-                <head>
-                  <Header />
-                </head>
-                <body>
+    <NextAuthProvider>
+      <ProfileProvider>
+        <AuthProvider>
+          <CustomizerContextProvider>
+            <html lang="en" suppressHydrationWarning>
+              <head>
+                <Header />
+              </head>
+              <body>
+                <ErrorProvider>
                   <MyApp>
                     {children}
                     <ThemeAwareTopLoader />
                     <ActionButton />
                     <ScrollToTopButton />
                   </MyApp>
-                </body>
-              </html>
-            </CustomizerContextProvider>
-          </AuthProvider>
-        </ProfileProvider>
-      </NextAuthProvider>
-    </ErrorProvider>
+                </ErrorProvider>
+              </body>
+            </html>
+          </CustomizerContextProvider>
+        </AuthProvider>
+      </ProfileProvider>
+    </NextAuthProvider>
   );
 }

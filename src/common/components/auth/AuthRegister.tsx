@@ -1,11 +1,13 @@
 "use client";
-import {  useEffect, useState } from "react";
 import { Box, Typography, Button, Divider, Stack, Grid, InputAdornment } from "@mui/material";
 import { confirmPasswordSchema, emailValidator, firstNameSchema, lastNameSchema, passwordSchema } from "@/common/utils/validator/yup";
 import { IconLock, IconMail } from "@tabler/icons-react";
 import { Register } from "@/common/contexts/AuthContext/interfaces/interface";
 import { useAuth } from "@/common/contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { useError } from "@/common/contexts/ErrorContext";
 import { useFormik } from "formik";
+import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import AuthSocialButtons from "./AuthSocialButtons";
@@ -23,7 +25,9 @@ const validationSchema = yup.object({
 
 const AuthRegister = () => {
   const { register } = useAuth();
+  const { update: updateSession } = useSession();
   const { t, i18n } = useTranslation();
+  const { showError } = useError();
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const formik = useFormik({
@@ -37,7 +41,12 @@ const AuthRegister = () => {
     validationSchema: validationSchema,
     onSubmit: async (data: Register) => {
       const response = await register(data);
-      //   window.location.href = "/auth/login";
+      if (response.status !== 201) {
+        showError(response.message, "เกิดข้อผิดพลาด");
+      } else {
+        await updateSession();
+        window.location.href = "/auth/sign-in";
+      }
     },
   });
 
