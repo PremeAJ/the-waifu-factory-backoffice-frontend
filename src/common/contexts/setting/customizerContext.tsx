@@ -74,17 +74,17 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     }
     if (userAppearanceData) {
       const appearanceData = userAppearanceData.data || {};
-      if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);
-      if (appearanceData.activeTheme) setActiveTheme(appearanceData.activeTheme);
-      if (appearanceData.activeLayout) setActiveLayout(appearanceData.activeLayout);
-      if (appearanceData.activeDir) setActiveDir(appearanceData.activeDir);
-      if (appearanceData.isCardShadow !== undefined) setIsCardShadow(appearanceData.isCardShadow);
-      if (appearanceData.isLayout) setIsLayout(appearanceData.isLayout);
-      if (appearanceData.isBorderRadius !== undefined) setIsBorderRadius(appearanceData.isBorderRadius);
-      if (appearanceData.isCollapse) setIsCollapse(appearanceData.isCollapse);
-      if (appearanceData.isLanguage) setIsLanguage(appearanceData.isLanguage);
-      if (appearanceData.isSidebarHover !== undefined) setIsSidebarHover(appearanceData.isSidebarHover);
-      if (appearanceData.isMobileSidebar !== undefined) setIsMobileSidebar(appearanceData.isMobileSidebar);
+      // if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);
+      // if (appearanceData.activeTheme) setActiveTheme(appearanceData.activeTheme);
+      // if (appearanceData.activeLayout) setActiveLayout(appearanceData.activeLayout);
+      // if (appearanceData.activeDir) setActiveDir(appearanceData.activeDir);
+      // if (appearanceData.isCardShadow !== undefined) setIsCardShadow(appearanceData.isCardShadow);
+      // if (appearanceData.isLayout) setIsLayout(appearanceData.isLayout);
+      // if (appearanceData.isBorderRadius !== undefined) setIsBorderRadius(appearanceData.isBorderRadius);
+      // if (appearanceData.isCollapse) setIsCollapse(appearanceData.isCollapse);
+      // if (appearanceData.isLanguage) setIsLanguage(appearanceData.isLanguage);
+      // if (appearanceData.isSidebarHover !== undefined) setIsSidebarHover(appearanceData.isSidebarHover);
+      // if (appearanceData.isMobileSidebar !== undefined) setIsMobileSidebar(appearanceData.isMobileSidebar);
       setLoading(isAppearanceLoading);
       if (appearanceError) {
         setError(appearanceError);

@@ -5,6 +5,7 @@ import { LightThemeColors } from "@/common/utils/theme/LightThemeColors";
 import StyledBox from "../StyledBox";
 import { useContext } from "react";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 interface colors {
   id: number;
@@ -19,7 +20,9 @@ const thColors: colors[] = LightThemeColors.map((color, index) => ({
 }));
 
 const ThemeColors = () => {
-  const { updateAppearance, activeTheme, setActiveTheme } = useContext(CustomizerContext);
+  const { updateAppearance, setActiveTheme } = useContext(CustomizerContext);
+  const { appearance } = useProfile();
+  const { activeTheme } = appearance || {};
   const updateSetting = (theme: string) => {
     setActiveTheme(theme);
     updateAppearance({ activeTheme: theme });
@@ -50,9 +53,7 @@ const ThemeColors = () => {
                 cursor: "pointer",
               }}
             >
-              {activeTheme === thcolor.disp ? (
-                <IconCheck width={20} style={{ position: "absolute", top: 4, right: 4 }} />
-              ) : null}
+              {activeTheme === thcolor.disp ? <IconCheck width={20} style={{ position: "absolute", top: 4, right: 4 }} /> : null}
             </StyledBox>
           </Tooltip>
         </Grid>
