@@ -14,7 +14,7 @@ import Sidebar from "./layout/sidebar/Sidebar";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import AppShortcutDrawer from "@/common/components/shared/AppShortcutDrawer";
 import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
-import { ProfileProvider, useProfile } from "@/common/contexts/ProfileContext";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 
 const MainWrapper = styled("div")(() => ({
@@ -36,8 +36,8 @@ const PageWrapper = styled("div")(() => ({
 const ignoreLayout = ["/dashboard/pos/cashier"];
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const { isLayout, isCollapse } = useContext(CustomizerContext);
-    const { appearance } = useProfile();
-    const { activeMode } = appearance || {};
+  const { appearance } = useProfile();
+  const { activeMode } = appearance || {};
   const theme = useTheme();
   const path = usePathname();
   const isMobile = useIsMobile();

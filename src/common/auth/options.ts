@@ -74,7 +74,6 @@ const authOptions: AuthOptions = {
           { ...(await header(session.accessToken)) }
         );
         if (profileRes.statusCode !== 200) {
-          // return {} แทน null
           return {} as typeof session;
         }
         session.profile = profileRes.data;
