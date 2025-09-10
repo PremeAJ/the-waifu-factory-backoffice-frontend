@@ -50,34 +50,24 @@ const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, session }) {
       if (user) {
-        if (user.accessToken) {
-          token.accessToken = user.accessToken;
-        }
-        if (user.refreshToken) {
-          token.refreshToken = user.refreshToken;
-        }
-        if (user.profile) {
-          token.profile = user.profile;
-        }
+        if (user.accessToken) token.accessToken = user.accessToken;
+        if (user.refreshToken) token.refreshToken = user.refreshToken;
+        if (user.profile) token.profile = user.profile;
+      }
+      if (session) {
+        if (session.profile) token.profile = session.profile;
       }
       return token;
     },
     async session({ session, token }) {
       delete session.user;
       if (token) {
-        if (token.accessToken) {
-          session.accessToken = token.accessToken;
-        }
-        if (token.refreshToken) {
-          session.refreshToken = token.refreshToken;
-        }
-        if (token.profile) {
-          session.profile = token.profile;
-        }
+        if (token.accessToken) session.accessToken = token.accessToken;
+        if (token.refreshToken) session.refreshToken = token.refreshToken;
+        if (token.profile) session.profile = token.profile;
       }
-
       return session;
     },
   },

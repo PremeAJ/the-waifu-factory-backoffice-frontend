@@ -31,6 +31,7 @@ export interface ProfileContextType {
   companyListMutate: () => void;
   activeCompanyMutate: () => void;
   appearanceMutate: () => void;
+  updateProfile: () => void;
   updateActiveCompany: (companyId: string) => Promise<any>;
 }
 

@@ -7,7 +7,7 @@ import React, { createContext, useContext, useEffect } from "react";
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const { update: updateSession, status } = useSession();
+  const {  status } = useSession();
 
   const register = async (payload: Register) => {
     setLoading(true);

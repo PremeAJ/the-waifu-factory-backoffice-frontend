@@ -1,16 +1,17 @@
 "use client";
+
+import { Appearance, ProfileContextType } from "./interfaces/interface";
 import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
-import { Appearance, ProfileContextType } from "./interfaces/interface";
 import { useError } from "../ErrorContext";
 import { useSession } from "next-auth/react";
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const { data: session, update: updateSession } = useSession();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { data: session, update } = useSession();
   const { showError } = useError();
 
   //#region ลิสต์บริษัทที่ผู้ใช้มีสิทธิ์เข้าใช้งาน
@@ -66,7 +67,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       setLoading(true);
       await putFetcher("/api/profile/active-company", { companyId });
-      await updateSession();
+      await update();
       await companyListMutate();
       setLoading(false);
     } catch (error: any) {
@@ -75,16 +76,27 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
   //#endregion
 
+  //#region update profile
+  const updateProfile = async () => {
+    const response = await getFetcher("/api/profile");
+    if (response.statusCode !== 200) {
+      showError(response.message, "เกิดข้อผิดพลาด");
+    }
+    await update({ profile: response.data });
+  };
+  //#endregion
+
   const value: ProfileContextType = {
-    companyList: companyListData?.data || [],
-    activeCompany: activeCompanyData?.data || null,
-    appearance: appearanceData?.data || defaultAppearance,
-    loading: activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
-    error: activeCompanyError || companyListError || appearanceError,
+    updateProfile,
+    appearanceMutate,
     companyListMutate,
     updateActiveCompany,
     activeCompanyMutate,
-    appearanceMutate,
+    companyList: companyListData?.data || [],
+    activeCompany: activeCompanyData?.data || null,
+    appearance: appearanceData?.data || defaultAppearance,
+    error: activeCompanyError || companyListError || appearanceError,
+    loading: activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
