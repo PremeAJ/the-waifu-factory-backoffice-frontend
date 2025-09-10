@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <CustomizerContextProvider>
             <html lang="en" suppressHydrationWarning>
-              <Head />
+                <Head />
               <body>
                 <MyApp>
                   {children}

@@ -13,6 +13,7 @@ import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Turnstile from "react-turnstile";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -25,6 +26,7 @@ const AuthLogin = () => {
   const [captchaToken, setCaptchaToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { appearance } = useProfile();
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const formik = useFormik({
@@ -47,7 +49,7 @@ const AuthLogin = () => {
         formik.setFieldError("email", result?.error);
         formik.setFieldError("password", " ");
       } else {
-        router.push("/auth/callback") 
+        router.push("/auth/callback");
       }
     },
   });
@@ -114,29 +116,29 @@ const AuthLogin = () => {
         </Stack>
         <Box>
           {formik.isValid && formik.dirty && formik.values.password.length > 6 && (
-            <Turnstile sitekey={siteKey} theme="light" action="login" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
+            <Turnstile sitekey={siteKey} theme={appearance.activeMode || 'light'} action="login" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
           )}
           <Button color="primary" variant="contained" size="large" fullWidth type="submit" loading={isLoading} disabled={!captchaToken}>
             {t("Page.Login.SignIn")}
           </Button>
         </Box>
       </form>
-        <Stack direction="row" spacing={1} mt={3}>
-          <Typography color="textSecondary" variant="h6" fontWeight="500">
-            {t("Page.Login.DontHaveAccount")} ?
-          </Typography>
-          <Typography
-            component={Link}
-            href="/auth/sign-up"
-            fontWeight="500"
-            sx={{
-              textDecoration: "none",
-              color: "primary.main",
-            }}
-          >
-            {t("Page.Login.CreateAnAccount")}
-          </Typography>
-        </Stack>
+      <Stack direction="row" spacing={1} mt={3}>
+        <Typography color="textSecondary" variant="h6" fontWeight="500">
+          {t("Page.Login.DontHaveAccount")} ?
+        </Typography>
+        <Typography
+          component={Link}
+          href="/auth/sign-up"
+          fontWeight="500"
+          sx={{
+            textDecoration: "none",
+            color: "primary.main",
+          }}
+        >
+          {t("Page.Login.CreateAnAccount")}
+        </Typography>
+      </Stack>
       <Box mt={3}>
         <Divider>
           <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" position="relative" px={2}>
@@ -144,7 +146,7 @@ const AuthLogin = () => {
           </Typography>
         </Divider>
       </Box>
-      <AuthSocialButtons title="Sign in with"/>
+      <AuthSocialButtons title="Sign in with" />
     </>
   );
 };

@@ -1,5 +1,5 @@
 "use client";
-import { AuthContextType, Register } from "./interfaces/interface";
+import { AuthContextType, RegisterPayload } from "./interfaces/interface";
 import { postFetcher } from "@/app/api/globalFetcher";
 import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect } from "react";
@@ -9,7 +9,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = React.useState<boolean>(false);
   const {  status } = useSession();
 
-  const register = async (payload: Register) => {
+  const register = async (payload: RegisterPayload) => {
     setLoading(true);
     const response = await postFetcher("/api/authentication/register", payload);
     setLoading(false);

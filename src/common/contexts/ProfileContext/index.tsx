@@ -9,6 +9,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
+const APPEARANCE_KEY = "appearance";
+
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session, update } = useSession();
@@ -51,14 +53,33 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     revalidateOnReconnect: false,
     dedupingInterval: 5000,
   });
-  const appearance: Appearance = appearanceData?.data || defaultAppearance;
+
+  // อ่าน appearance จาก localStorage ก่อน
+  const [localAppearance, setLocalAppearance] = useState<Appearance>(defaultAppearance);
+
+  // ดึงจาก localStorage หลัง mount (client only)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(APPEARANCE_KEY);
+      if (stored) setLocalAppearance(JSON.parse(stored));
+    }
+  }, []);
+
+  // ถ้า API มีข้อมูล ให้ set ลง localStorage และใช้ข้อมูลจาก API
+  useEffect(() => {
+    if (appearanceData?.data) {
+      localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearanceData.data));
+      setLocalAppearance(appearanceData.data);
+    }
+  }, [appearanceData?.data]);
+
+  // appearance จะเลือกตามลำดับ: API > localStorage > default
+  const appearance: Appearance = appearanceData?.data || localAppearance || defaultAppearance;
+
   useEffect(() => {
     document.documentElement.setAttribute("class", appearance.activeMode);
     document.documentElement.setAttribute("data-color-theme", appearance.activeTheme);
     document.documentElement.setAttribute("data-sidebar-type", appearance.isCollapse);
-    // document.documentElement.setAttribute("dir", activeDir);
-    // document.documentElement.setAttribute("data-layout", activeLayout);
-    // document.documentElement.setAttribute("data-boxed-layout", isLayout);
   }, [appearance]);
   //#endregion
 
@@ -94,7 +115,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     activeCompanyMutate,
     companyList: companyListData?.data || [],
     activeCompany: activeCompanyData?.data || null,
-    appearance: appearanceData?.data || defaultAppearance,
+    appearance,
     error: activeCompanyError || companyListError || appearanceError,
     loading: activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
   };
