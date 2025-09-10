@@ -2,7 +2,7 @@ import { Grid, Box, Typography } from "@mui/material";
 import Logo from "@/common/components/shared/Logo";
 import PageContainer from "@/components/container/PageContainer";
 import Image from "next/image";
-import AuthForgotPassword from "@/common/components/auth/AuthForgotPassword";
+import AuthForgotPassword from "@/app/auth/components/AuthForgotPassword";
 
 export default function ForgotPassword() {
   return (

@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PageWrapper
             className="page-wrapper"
             sx={{
-              ...(isCollapse === "mini-sidebar" && {
+              ...(isCollapse === "mini_sidebar" && {
                 [theme.breakpoints.up("lg")]: {
                   ml: `87px`,
                 },

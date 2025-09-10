@@ -18,7 +18,7 @@ const Logo = () => {
 
   const LinkStyled = styled(Link)(() => ({
     height: TopbarHeight,
-    width: isCollapse == "mini-sidebar" && !isSidebarHover ? "40px" : "180px",
+    width: isCollapse == "mini_sidebar" && !isSidebarHover ? "40px" : "180px",
     overflow: "hidden",
     display: "block",
   }));

@@ -15,10 +15,10 @@ const Sidebar = () => {
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
   const theme = useTheme();
-  const toggleWidth = isCollapse == "mini-sidebar" && !isSidebarHover ? MiniSidebarWidth : SidebarWidth;
+  const toggleWidth = isCollapse == "mini_sidebar" && !isSidebarHover ? MiniSidebarWidth : SidebarWidth;
 
   const onHoverEnter = () => {
-    if (isCollapse == "mini-sidebar") {
+    if (isCollapse == "mini_sidebar") {
       setIsSidebarHover(true);
     }
   };
@@ -35,7 +35,7 @@ const Sidebar = () => {
             zIndex: 99,
             width: toggleWidth,
             flexShrink: 0,
-            ...(isCollapse == "mini-sidebar" && {
+            ...(isCollapse == "mini_sidebar" && {
               position: "absolute",
             }),
           }}

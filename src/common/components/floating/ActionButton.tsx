@@ -34,9 +34,9 @@ const ActionButton = () => {
   const sidebarAction = () => {
     return isMobie
       ? setIsMobileSidebar(!isMobileSidebar)
-      : isCollapse === "full-sidebar"
-      ? setIsCollapse("mini-sidebar")
-      : setIsCollapse("full-sidebar");
+      : isCollapse === "full_sidebar"
+      ? setIsCollapse("mini_sidebar")
+      : setIsCollapse("full_sidebar");
   };
 
   if (!show || loading) return null;

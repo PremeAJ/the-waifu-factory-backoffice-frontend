@@ -18,7 +18,7 @@ const marks = [
 const Others = () => {
   const theme = useTheme();
   const { updateAppearance, isCollapse, setIsCollapse } = useContext(CustomizerContext);
-  const isChecked = isCollapse === "mini-sidebar" ? true : false;
+  const isChecked = isCollapse === "mini_sidebar" ? true : false;
   const updateSetting = (
     payload: Partial<{
       activeTheme: string;
@@ -46,7 +46,7 @@ const Others = () => {
       <Box sx={{ ml: "auto !important" }}>
         <CustomSwitch
           checked={isChecked}
-          onChange={() => updateSetting({ isCollapse: isChecked ? "full-sidebar" : "mini-sidebar" })}
+          onChange={() => updateSetting({ isCollapse: isChecked ? "full_sidebar" : "mini_sidebar" })}
         />
       </Box>
     </Stack>

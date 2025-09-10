@@ -5,7 +5,7 @@ const config = {
   activeLayout: "vertical", // This can be vertical or horizontal
   isLayout: "boxed", // This can be full or boxed
   isSidebarHover: false,
-  isCollapse: "full-sidebar",
+  isCollapse: "full_sidebar",
   isLanguage: "th",
   isCardShadow: true,
   isMobileSidebar: false,

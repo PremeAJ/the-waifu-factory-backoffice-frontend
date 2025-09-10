@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import AuthSocialButtons from "./AuthSocialButtons";
+import AuthSocialButtons from "../../components/AuthSocialButtons";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import Link from "next/link";

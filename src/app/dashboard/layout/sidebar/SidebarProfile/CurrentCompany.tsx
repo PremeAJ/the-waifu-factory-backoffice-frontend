@@ -19,7 +19,7 @@ export const CurrentCompany = () => {
   // const { nameTh: branchNameTh, nameEn: branchNameEN } = branches || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const { isSidebarHover, isCollapse } = useContext(CustomizerContext);
-  const hideMenu = lgUp ? isCollapse == "mini-sidebar" && !isSidebarHover : "";
+  const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";
 
   const [openSwitchCompany, setOpenSwitchCompany] = useState(false);
   const [hovered, setHovered] = useState(false);

@@ -1,9 +1,7 @@
 "use client";
-import { useEffect, useContext } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { UserContext } from "@/common/contexts/UserContext";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Loading from "@/app/loading";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { useSession } from "next-auth/react";
 
 interface AuthCallbackHandlerProps {
@@ -12,8 +10,6 @@ interface AuthCallbackHandlerProps {
 }
 
 export default function AuthCallbackHandler() {
-  const { syncUser } = useContext(UserContext);
-  const { appearanceMutate } = useContext(CustomizerContext);
   const router = useRouter();
   const { data: session, status } = useSession();
   

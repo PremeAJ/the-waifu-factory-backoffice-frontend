@@ -18,7 +18,7 @@ const SidebarItems = () => {
   const { loading: isLoading } = useContext(CustomizerContext);
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-  const hideMenu = lgUp ? isCollapse == "mini-sidebar" && !isSidebarHover : "";
+  const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";
   if (isLoading) return <SidebarItemsSkeleton />;
   return (
     <Box sx={{ px: 3 }}>

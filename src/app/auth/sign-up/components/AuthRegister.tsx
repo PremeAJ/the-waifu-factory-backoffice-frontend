@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import AuthSocialButtons from "./AuthSocialButtons";
+import AuthSocialButtons from "../../components/AuthSocialButtons";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Link from "next/link";
 import Turnstile from "react-turnstile";

@@ -1,7 +1,7 @@
 import { Grid, Box, Card, Typography } from "@mui/material";
 import Logo from "@/common/components/shared/Logo";
 import PageContainer from "@/components/container/PageContainer";
-import AuthTwoSteps from "@/common/components/auth/AuthTwoSteps";
+import AuthTwoSteps from "@/app/auth/components/AuthTwoSteps";
 
 export default function TwoSteps2() {
   return (

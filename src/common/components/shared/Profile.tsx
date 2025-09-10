@@ -4,7 +4,7 @@ import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } f
 import * as dropdownData from "../../../app/dashboard/layout/header/data";
 import { IconMail, IconUser } from "@tabler/icons-react";
 import { UserContext } from "@/common/contexts/UserContext";
-import ConfirmSignOutDialog from "@/common/components/auth/dialog/ConfirmSignOutDialog";
+import ConfirmSignOutDialog from "@/app/auth/components/dialog/ConfirmSignOutDialog";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseButton from "@/common/components/base/BaseButton";

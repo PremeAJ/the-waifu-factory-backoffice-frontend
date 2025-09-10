@@ -5,7 +5,7 @@ import Logo from "@/common/components/shared/Logo";
 
 import Image from "next/image";
 import { ServerLanguage } from "@/components/shared/Language/ServerLanguage";
-import AuthRegister from "@/common/components/auth/AuthRegister";
+import AuthRegister from "@/app/auth/sign-up/components/AuthRegister";
 
 export default function Register() {
   return (
