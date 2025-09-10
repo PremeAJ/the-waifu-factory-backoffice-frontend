@@ -5,12 +5,11 @@ import { Metadata, Viewport } from "next";
 import { ProfileProvider } from "@/common/contexts/ProfileContext";
 import { ThemeAwareTopLoader } from "@/common/components/main/ThemeAwareComponents";
 import ActionButton from "@/common/components/floating/ActionButton";
-import Header from "./header";
 import MyApp from "./app";
 import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 import React from "react";
 import ScrollToTopButton from "../common/components/floating/ScrollToTopButton";
-import { ErrorProvider } from "@/common/contexts/ErrorContext";
+import Head from "./head";
 
 export const metadata: Metadata = {
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
@@ -30,16 +29,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <CustomizerContextProvider>
             <html lang="en" suppressHydrationWarning>
-              <head>
-                <Header />
-              </head>
+              <Head />
               <body>
-                  <MyApp>
-                    {children}
-                    <ThemeAwareTopLoader />
-                    <ActionButton />
-                    <ScrollToTopButton />
-                  </MyApp>
+                <MyApp>
+                  {children}
+                  <ThemeAwareTopLoader />
+                  <ActionButton />
+                  <ScrollToTopButton />
+                </MyApp>
               </body>
             </html>
           </CustomizerContextProvider>

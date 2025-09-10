@@ -1,5 +1,4 @@
 "use client";
-
 import { useTheme } from "@mui/material";
 import NextTopLoader from "nextjs-toploader";
 
