@@ -2,7 +2,6 @@
 import { Box, Typography, Button, Divider, Stack, Grid, InputAdornment } from "@mui/material";
 import { confirmPasswordSchema, emailValidator, firstNameSchema, lastNameSchema, passwordSchema } from "@/common/utils/validator/yup";
 import { IconLock, IconMail } from "@tabler/icons-react";
-import { Register } from "@/common/contexts/AuthContext/interfaces/interface";
 import { useAuth } from "@/common/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useError } from "@/common/contexts/ErrorContext";
@@ -14,6 +13,8 @@ import AuthSocialButtons from "../../components/AuthSocialButtons";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Link from "next/link";
 import Turnstile from "react-turnstile";
+import { useRouter } from "next/navigation";
+import { RegisterPayload } from "@/common/contexts/AuthContext/interfaces/interface";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -26,6 +27,7 @@ const validationSchema = yup.object({
 const AuthRegister = () => {
   const { register, loading } = useAuth();
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const { showError } = useError();
   const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
@@ -38,12 +40,13 @@ const AuthRegister = () => {
       lastName: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (data: Register) => {
+    onSubmit: async (data: RegisterPayload) => {
       const response = await register(data);
       if (response.statusCode !== 201) {
         showError(response.message, "เกิดข้อผิดพลาด");
       } else {
-        window.location.href = "/auth/sign-in";
+        const {id,otpRef,otpType } = response.data;
+        router.replace(`otp/verify/email/${otpType}/${id}/${otpRef}`);
       }
     },
   });
@@ -117,7 +120,7 @@ const AuthRegister = () => {
         </Typography>
         <Typography
           component={Link}
-          href="/auth/login"
+          href="/auth/sign-in"
           fontWeight="500"
           sx={{
             textDecoration: "none",

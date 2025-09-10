@@ -1,11 +1,12 @@
+import { ApiResponse } from "@/common/interface/apiResponse";
 
 
 export interface AuthContextType {
-  register: (payload:Register) => Promise<any>;
+  register: (payload:RegisterPayload) => Promise<RegisterResponse>;
   loading: boolean;
 }
 
-export interface Register {
+export interface RegisterPayload {
   email: string
   phone?: string
   lastName: string
@@ -13,4 +14,12 @@ export interface Register {
   firstName: string
   nickName?: string
   confirmPassword: string
+}
+
+export interface RegisterResponse extends ApiResponse {
+  data:{
+    id: string
+    otpRef:string
+    otpType: string
+  }
 }
