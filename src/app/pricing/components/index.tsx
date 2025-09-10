@@ -2,14 +2,13 @@
 import React, { useContext } from "react";
 import { Box, Grid, Typography, Container } from "@mui/material";
 import PaymentMethods from "./PaymentMethods";
-import { PlanContext } from "@/common/contexts/Master/PlanContext";
+import { PlanContext, usePlan } from "@/common/contexts/Master/PlanContext";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import PricingCard from "./PricingCard";
 
 const Pricing = () => {
-  const { isLoading: IsPlanLoading } = useContext(PlanContext);
-  const { loading: IsCustomizerLoading } = useContext(CustomizerContext);
-  const isLoading = IsPlanLoading || IsCustomizerLoading;
+  const { isLoading: IsPlanLoading } = usePlan();
+  const isLoading = IsPlanLoading
   return (
     <>
       <Box

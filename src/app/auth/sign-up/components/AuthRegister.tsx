@@ -25,7 +25,6 @@ const validationSchema = yup.object({
 
 const AuthRegister = () => {
   const { register, loading } = useAuth();
-  const { update: updateSession } = useSession();
   const { t, i18n } = useTranslation();
   const { showError } = useError();
   const [captchaToken, setCaptchaToken] = useState("");
@@ -44,7 +43,6 @@ const AuthRegister = () => {
       if (response.statusCode !== 201) {
         showError(response.message, "เกิดข้อผิดพลาด");
       } else {
-        await updateSession();
         window.location.href = "/auth/sign-in";
       }
     },

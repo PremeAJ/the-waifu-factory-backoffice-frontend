@@ -5,7 +5,6 @@ import { HeadersKey } from "../constants/header";
 import { getHeaders } from "../utils/getHeaders";
 import { v4 as uuidv4 } from "uuid";
 import { AuthOptions } from "next-auth";
-import { signOut } from "next-auth/react";
 
 async function header(accessToken?: string) {
   const cookieStore = await cookies();
@@ -33,22 +32,17 @@ const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         //#region call login api
-        const { email, password, captchaToken } = credentials || {};
-        const login = await postFetcher(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`,
-          {
-            email,
-            password,
-            // captchaToken
-          },
-          {
-            ...(await header()),
-          }
-        );
+        const { email, password } = credentials || {};
+        const login = await postFetcher(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, { email, password }, { ...(await header()) });
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         //#endregion
 
-        return login.data;
+        //#region get profile
+        const { accessToken } = login.data;
+        const profile = await getFetcher(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/profile`, { ...(await header(accessToken)) });
+        if (profile.statusCode !== 200) throw new Error(profile.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+        //#endregion
+        return { ...login.data, profile: profile.data };
       },
     }),
   ],
@@ -58,27 +52,32 @@ const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.profile = user.profile;
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
+        if (user.accessToken) {
+          token.accessToken = user.accessToken;
+        }
+        if (user.refreshToken) {
+          token.refreshToken = user.refreshToken;
+        }
+        if (user.profile) {
+          token.profile = user.profile;
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      session.profile = token.profile;
-      session.accessToken = token.accessToken;
-      session.refreshToken = token.refreshToken;
-      if (session.accessToken) {
-        const profileRes = await getFetcher(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/profile`,
-          { ...(await header(session.accessToken)) }
-        );
-        if (profileRes.statusCode !== 200) {
-          return {} as typeof session;
-        }
-        session.profile = profileRes.data;
-      }
       delete session.user;
+      if (token) {
+        if (token.accessToken) {
+          session.accessToken = token.accessToken;
+        }
+        if (token.refreshToken) {
+          session.refreshToken = token.refreshToken;
+        }
+        if (token.profile) {
+          session.profile = token.profile;
+        }
+      }
+
       return session;
     },
   },

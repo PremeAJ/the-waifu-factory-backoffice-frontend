@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from "react";
+import { createContext, useState, useEffect, ReactNode, Dispatch, SetStateAction, useContext } from "react";
 import React from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
@@ -66,3 +66,5 @@ export const PlanProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
   return <PlanContext.Provider value={value}>{children}</PlanContext.Provider>;
 };
+
+export const usePlan = () => useContext(PlanContext);

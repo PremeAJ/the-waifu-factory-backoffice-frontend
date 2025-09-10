@@ -151,7 +151,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         isLayout,
         isMobileSidebar,
         isSidebarHover,
-        loading,
+        loading: false,
         setActiveDir,
         setActiveLayout,
         setActiveMode,
