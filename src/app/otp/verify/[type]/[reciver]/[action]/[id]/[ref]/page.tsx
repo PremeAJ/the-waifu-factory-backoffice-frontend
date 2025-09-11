@@ -2,7 +2,7 @@
 import { Grid, Box, Typography } from "@mui/material";
 import { useEncrypt } from "@/common/contexts/EncryptContext";
 import { useParams } from "next/navigation";
-import AuthTwoSteps from "@/app/auth/components/AuthTwoSteps";
+import AuthTwoSteps from "@/app/otp/verify/[type]/[reciver]/[action]/[id]/[ref]/components/AuthTwoSteps";
 import Image from "next/image";
 import PageContainer from "@/components/container/PageContainer";
 
@@ -78,7 +78,7 @@ export default function VerifyOtp() {
         >
           <Box p={4}>
             <Typography variant="h4" fontWeight="700">
-              Two Step Verification
+              ยืนยันตัวตน
             </Typography>
 
             <Typography variant="subtitle1" color="textSecondary" mt={2} mb={1}>
