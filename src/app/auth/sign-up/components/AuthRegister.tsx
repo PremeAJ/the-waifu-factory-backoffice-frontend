@@ -15,6 +15,7 @@ import BaseTextField from "@/common/components/base/BaseTextField";
 import Link from "next/link";
 import Turnstile from "react-turnstile";
 import { useEncrypt } from "@/common/contexts/EncryptContext";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -27,6 +28,7 @@ const validationSchema = yup.object({
 const AuthRegister = () => {
   const [captchaToken, setCaptchaToken] = useState("");
   const { register, loading } = useAuth();
+  const { appearance } = useProfile();
   const { showError } = useError();
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -107,7 +109,7 @@ const AuthRegister = () => {
             />
           </Stack>
           {formik.isValid && formik.dirty && (
-            <Turnstile sitekey={siteKey} theme="light" action="register" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
+            <Turnstile sitekey={siteKey} theme={appearance.activeMode} action="register" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
           )}
           <Button color="primary" variant="contained" size="large" fullWidth type="submit" disabled={!captchaToken} loading={loading}>
             Sign Up
