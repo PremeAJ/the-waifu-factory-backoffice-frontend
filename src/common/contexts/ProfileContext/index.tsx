@@ -88,7 +88,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       setLoading(true);
       await putFetcher("/api/profile/active-company", { companyId });
-      await update();
+      await updateProfile();
       await companyListMutate();
       setLoading(false);
     } catch (error: any) {

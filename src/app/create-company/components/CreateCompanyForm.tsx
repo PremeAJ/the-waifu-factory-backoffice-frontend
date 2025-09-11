@@ -14,6 +14,7 @@ import ContactInfoStep from "./step/ContactInfoStep";
 import ParentCard from "@/components/shared/ParentCard";
 import { useSession } from "next-auth/react";
 import { useError } from "@/common/contexts/ErrorContext";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
@@ -48,7 +49,7 @@ const CreateCompanyForm = () => {
   const { fullName, email, phone } = session?.profile || {};
   const { createCompany } = useContext(CompanyContext);
   const { getConsentData } = useContext(ConsentContext);
-  const { update } = useSession();
+  const { updateProfile } = useProfile();
   const router = useRouter();
   const termsOfService = getConsentData("terms_of_service");
 
@@ -58,7 +59,7 @@ const CreateCompanyForm = () => {
     if (submitted) {
       const timer = setTimeout(async () => {
         router.push("/dashboard");
-        await update();
+        await updateProfile();
       }, 3000);
       return () => clearTimeout(timer);
     }

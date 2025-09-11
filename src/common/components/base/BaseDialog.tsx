@@ -46,9 +46,9 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
 }) => {
   const getIconComponent = () => {
     if (!iconType) return null;
-    
+
     const iconProps = { size: iconSize };
-    
+
     switch (iconType) {
       case "success":
         return <IconCircleCheck {...iconProps} style={{ color: "#4caf50" }} />;
@@ -76,16 +76,11 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
       <DialogContent
         dividers={scrolling}
         sx={{
-          // display: "flex",
-          // flexDirection: "column",
-          // alignItems: "center",
-          // justifyContent: "center",
-          // textAlign: "center",
           minWidth: 320,
         }}
       >
         {(icon || iconType) && (
-          <Box display="flex" justifyContent="center" >
+          <Box display="flex" justifyContent="center">
             {iconType ? (
               getIconComponent()
             ) : (
@@ -100,11 +95,19 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
             )}
           </Box>
         )}
-        <DialogTitle sx={{ textAlign: "center", pb: 1 }}>
-          {title}
-        </DialogTitle>
+        <DialogTitle sx={{ textAlign: "center", pb: 1 }}>{title}</DialogTitle>
         {typeof content === "string" && htmlContent ? (
-          <DialogContentText id="alert-dialog-slide-description" sx={{ textAlign: "center" }} dangerouslySetInnerHTML={{ __html: content }} />
+          <Box>
+            <DialogContentText
+              id="alert-dialog-slide-description"
+              sx={{
+                textAlign: "left",
+                color: "text.primary",
+                a: { color: "primary.main" },
+              }}
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+          </Box>
         ) : typeof content === "string" ? (
           <DialogContentText id="alert-dialog-slide-description" sx={{ textAlign: "center" }}>
             {content}
@@ -122,8 +125,8 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
                 padding: 3,
               }
             : {
-              margin: 1
-            }
+                margin: 1,
+              }
         }
       >
         {fullScreen ? (
@@ -150,7 +153,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
                 disabled={loading}
                 fullWidth={false}
                 loading={loading}
-                {...(confirmColor ? { color: 'primary' } : null)}
+                {...(confirmColor ? { color: "primary" } : null)}
               />
             )}
           </>
