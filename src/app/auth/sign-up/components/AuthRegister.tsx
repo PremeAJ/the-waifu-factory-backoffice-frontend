@@ -48,8 +48,8 @@ const AuthRegister = () => {
       if (response.statusCode !== 201) {
         showError(response.message, "เกิดข้อผิดพลาด");
       } else {
-        const { id, otpRef, otpType, email } = response.data;
-        const url = genOtpUrl({ type: "email", reciver: email, otpType, id, otpRef });
+        const { id, otpRef, otpType, email, expiresIn } = response.data;
+        const url = genOtpUrl({ type: "email", reciver: email, otpType, id, otpRef, expiresIn });
         router.push(url);
       }
     },

@@ -3,7 +3,7 @@ import { Grid, Box, Typography } from "@mui/material";
 import { OtpProvider } from "@/common/contexts/OtpContext";
 import { useEncrypt } from "@/common/contexts/EncryptContext";
 import { useParams } from "next/navigation";
-import AuthTwoSteps from "@/app/otp/verify/[type]/[reciver]/[action]/[id]/[ref]/components/AuthTwoSteps";
+import AuthTwoSteps from "@/app/otp/verify/[type]/[reciver]/[action]/[id]/[ref]/[expiresIn]/components/AuthTwoSteps";
 import Image from "next/image";
 import PageContainer from "@/components/container/PageContainer";
 

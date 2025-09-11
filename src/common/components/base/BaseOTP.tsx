@@ -6,6 +6,7 @@ interface BaseOTPProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  error?: boolean;
 }
 
 const BaseOTP: React.FC<BaseOTPProps> = ({
@@ -13,6 +14,7 @@ const BaseOTP: React.FC<BaseOTPProps> = ({
   value,
   onChange,
   disabled = false,
+  error = false,
 }) => {
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
@@ -35,7 +37,7 @@ const BaseOTP: React.FC<BaseOTPProps> = ({
   };
 
   return (
-    <Stack spacing={2} direction="row">
+    <Stack spacing={2} direction="row" width="100%">
       {Array.from({ length }).map((_, idx) => (
         <TextField
           key={idx}
@@ -49,9 +51,23 @@ const BaseOTP: React.FC<BaseOTPProps> = ({
             inputMode: "numeric",
             pattern: "[0-9]*",
           }}
+          autoFocus={idx === 0}
           disabled={disabled}
           variant="outlined"
-          sx={{ width: 48 }}
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: error ? "error.main" : undefined,
+              },
+            },
+            ...(error && {
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "error.main",
+              },
+            }),
+          }}
         />
       ))}
     </Stack>
