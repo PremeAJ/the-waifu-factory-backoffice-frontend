@@ -1,13 +1,14 @@
 "use client";
-import {  useOtp } from "@/common/contexts/OtpContext";
+import { useOtp } from "@/common/contexts/OtpContext";
 import { Box, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseOTP from "@/common/components/base/BaseOTP";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
+import { genOtpUrl } from "@/common/utils/otpUrl";
 
 const AuthTwoSteps = () => {
   const params = useParams();
@@ -15,25 +16,50 @@ const AuthTwoSteps = () => {
   const [otp, setOtp] = useState("");
   const [errorText, setErrorText] = useState("");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
-  const {verifyOtp, loading} = useOtp()
-
+  const { verifyOtp, resendOtp, loading } = useOtp();
+  const router = useRouter();
   const onFocusVerifyOtp = async () => {
     const response = await verifyOtp({
       id: id?.toString() || "",
       type: action?.toString() || "",
       ref: ref?.toString() || "",
-      otp: otp
+      otp: otp,
     });
     if (response.statusCode !== 200) {
       setErrorText(response.message || "เกิดข้อผิดพลาด");
     } else {
       setErrorText("");
+      router.replace("/auth/sign-in");
     }
-  }
+  };
+
+  const handleResend = async () => {
+    const response = await resendOtp({
+      id: id?.toString() || "",
+      type: action?.toString() || "",
+      ref: ref?.toString() || "",
+    });
+
+    if (response.statusCode !== 200) {
+      setErrorText(response.message || "เกิดข้อผิดพลาด");
+    }
+
+    const { expiresIn, otpRef } = response.data;
+
+    const url = genOtpUrl({
+      type: type?.toString() || "",
+      reciver: reciver?.toString() || "",
+      otpType: action?.toString() || "",
+      id: id?.toString() || "",
+      otpRef: otpRef?.toString() || "",
+      expiresIn: expiresIn || 0,
+    });
+    router.replace(url);
+  };
 
   useEffect(() => {
     if (otp.length === 6) {
-      onFocusVerifyOtp()
+      onFocusVerifyOtp();
     } else {
       setErrorText("");
     }
@@ -55,33 +81,33 @@ const AuthTwoSteps = () => {
   }, [expiresIn]);
 
   return (
-      <Box mt={4}>
-        <Stack mb={3}>
-          <CustomFormLabel htmlFor="code">กรอกรหัส OTP 6 หลัก</CustomFormLabel>
-          <BaseOTP value={otp} onChange={setOtp} error={!!errorText} />
-          {errorText && (
-            <Typography color="error" variant="body2" mt={1}>
-              {errorText}
-            </Typography>
-          )}
+    <Box mt={4}>
+      <Stack mb={3}>
+        <CustomFormLabel htmlFor="code">กรอกรหัส OTP 6 หลัก</CustomFormLabel>
+        <BaseOTP value={otp} onChange={setOtp} error={!!errorText} />
+        {errorText && (
+          <Typography color="error" variant="body2" mt={1}>
+            {errorText}
+          </Typography>
+        )}
+      </Stack>
+      <BaseButton onClick={() => console.log(otp)} variant="contained" label="ยืนยัน" loading={loading} />
+      <Stack direction="row" spacing={1} mt={3} alignItems="center" justifyContent="space-between">
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography color="textSecondary" variant="h6" fontWeight="400">
+            ไม่ได้รับรหัส OTP?
+          </Typography>
+          <BaseLinkButton onClick={handleResend} label="ส่งอีกครั้ง" />
         </Stack>
-        <BaseButton onClick={() => console.log(otp)} variant="contained" label="ยืนยัน" loading={loading}/>
-        <Stack direction="row" spacing={1} mt={3} alignItems="center" justifyContent="space-between">
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography color="textSecondary" variant="h6" fontWeight="400">
-              ไม่ได้รับรหัส OTP?
-            </Typography>
-            <BaseLinkButton onClick={() => console.log()} label="ส่งอีกครั้ง" />
-          </Stack>
-          {typeof secondsLeft === "number" && (
-            <Typography variant="body2" color={secondsLeft === 0 ? "error" : "textSecondary"}>
-              {secondsLeft > 0
-                ? `รหัสหมดอายุใน ${Math.floor(secondsLeft / 60)}:${(secondsLeft % 60).toString().padStart(2, "0")}`
-                : "รหัสหมดอายุ กรุณาขอใหม่"}
-            </Typography>
-          )}
-        </Stack>
-      </Box>
+        {typeof secondsLeft === "number" && (
+          <Typography variant="body2" color={secondsLeft === 0 ? "error" : "textSecondary"}>
+            {secondsLeft > 0
+              ? `รหัสหมดอายุใน ${Math.floor(secondsLeft / 60)}:${(secondsLeft % 60).toString().padStart(2, "0")}`
+              : "รหัสหมดอายุ กรุณาขอใหม่"}
+          </Typography>
+        )}
+      </Stack>
+    </Box>
   );
 };
 

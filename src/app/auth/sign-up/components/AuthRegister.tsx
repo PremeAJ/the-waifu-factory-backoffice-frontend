@@ -50,7 +50,7 @@ const AuthRegister = () => {
       } else {
         const { id, otpRef, otpType, email, expiresIn } = response.data;
         const url = genOtpUrl({ type: "email", reciver: email, otpType, id, otpRef, expiresIn });
-        router.push(url);
+        router.replace(url);
       }
     },
   });

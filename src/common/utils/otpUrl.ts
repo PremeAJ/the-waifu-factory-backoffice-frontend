@@ -1,7 +1,6 @@
-type OtpType = "email" | "phone";
 
 interface OtpUrlParams {
-  type: OtpType;
+  type: string;
   reciver: string;
   otpType: string;
   id: string | number;

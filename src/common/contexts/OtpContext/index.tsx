@@ -9,8 +9,15 @@ export interface OtpVerifyPayload {
   otp: string;
 }
 
+export interface OtpResendPayload {
+  id: string;
+  type: string;
+  ref: string;
+}
+
 export interface OtpContextType {
   verifyOtp: (payload: OtpVerifyPayload) => Promise<any>;
+  resendOtp: (payload: OtpResendPayload) => Promise<any>;
   loading: boolean;
 }
 
@@ -26,7 +33,14 @@ export const OtpProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return response;
   };
 
-  const value: OtpContextType = { verifyOtp, loading };
+  const resendOtp = async (payload: OtpResendPayload) => {
+    setLoading(true);
+    const response = await postFetcher("/api/otp/resend", payload);
+    setLoading(false);
+    return response;
+  };
+
+  const value: OtpContextType = { verifyOtp, resendOtp, loading };
 
   return <OtpContext.Provider value={value}>{children}</OtpContext.Provider>;
 };
