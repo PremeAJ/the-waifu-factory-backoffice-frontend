@@ -1,5 +1,5 @@
 "use client";
-import { AuthContextType, RegisterPayload } from "./interfaces/interface";
+import { AuthContextType, ForgotPasswordPayload, ForgotPasswordResponse, RegisterPayload } from "./interfaces/interface";
 import { postFetcher } from "@/app/api/globalFetcher";
 import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect } from "react";
@@ -7,11 +7,18 @@ import React, { createContext, useContext, useEffect } from "react";
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const {  status } = useSession();
+  const { status } = useSession();
 
   const register = async (payload: RegisterPayload) => {
     setLoading(true);
     const response = await postFetcher("/api/authentication/register", payload);
+    setLoading(false);
+    return response;
+  };
+
+  const forgotPassword = async (payload: ForgotPasswordPayload): Promise<ForgotPasswordResponse> => {
+    setLoading(true);
+    const response = await postFetcher("/api/authentication/forgot-password", payload);
     setLoading(false);
     return response;
   };
@@ -25,6 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [status]);
   const value: AuthContextType = {
     register,
+    forgotPassword,
     loading,
   };
 
