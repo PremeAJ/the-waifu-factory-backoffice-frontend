@@ -1,8 +1,7 @@
 import { Grid, Box, Typography } from "@mui/material";
-import Logo from "@/common/components/shared/Logo";
 import PageContainer from "@/components/container/PageContainer";
 import Image from "next/image";
-import AuthForgotPassword from "@/app/auth/components/AuthForgotPassword";
+import AuthForgotPassword from "./components/AuthForgotPassword";
 
 export default function ForgotPassword() {
   return (
@@ -40,7 +39,6 @@ export default function ForgotPassword() {
           }}>
           <Box position="relative">
             <Box pb={5}>
-              {/* <Logo /> */}
             </Box>
             <Box
               alignItems="center"

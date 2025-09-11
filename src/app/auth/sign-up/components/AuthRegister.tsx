@@ -14,7 +14,6 @@ import AuthSocialButtons from "../../components/AuthSocialButtons";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Link from "next/link";
 import Turnstile from "react-turnstile";
-import { useEncrypt } from "@/common/contexts/EncryptContext";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { genOtpUrl } from "@/common/utils/otpUrl";
 
