@@ -8,12 +8,12 @@ import PageContainer from "@/components/container/PageContainer";
 
 export default function VerifyOtp() {
   const params = useParams();
-  const { decrypt } = useEncrypt();
   const { type, reciver, action, id, ref } = params;
+  const { decrypt } = useEncrypt();
   const decryptedReciver = decrypt(reciver?.toString() || '');
   return (
     <PageContainer title="Two steps Page" description="this is Sample page">
-      <Grid container spacing={0} justifyContent="center" sx={{ height: "100vh" }}>
+      <Grid container spacing={0} justifyContent="center">
         <Grid
           sx={{
             position: "relative",
@@ -36,7 +36,6 @@ export default function VerifyOtp() {
           }}
         >
           <Box position="relative">
-            <Box px={3} mt={3}></Box>
             <Box
               alignItems="center"
               justifyContent="center"
@@ -76,11 +75,10 @@ export default function VerifyOtp() {
             height: "100vh",
           }}
         >
-          <Box p={4}>
+          <Box p={4} width="100%" maxWidth={500}>
             <Typography variant="h4" fontWeight="700">
               ยืนยันตัวตน
             </Typography>
-
             <Typography variant="subtitle1" color="textSecondary" mt={2} mb={1}>
               We sent a verification code to your {type}. Enter the code from the mobile in the field below.
             </Typography>
