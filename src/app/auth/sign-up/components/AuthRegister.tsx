@@ -16,6 +16,7 @@ import Link from "next/link";
 import Turnstile from "react-turnstile";
 import { useEncrypt } from "@/common/contexts/EncryptContext";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { genOtpUrl } from "@/common/utils/otpUrl";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -48,7 +49,8 @@ const AuthRegister = () => {
         showError(response.message, "เกิดข้อผิดพลาด");
       } else {
         const { id, otpRef, otpType, email } = response.data;
-        router.push(`/otp/verify/email/${email}/${otpType}/${id}/${otpRef}`);
+        const url = genOtpUrl({ type: "email", reciver: email, otpType, id, otpRef });
+        router.push(url);
       }
     },
   });

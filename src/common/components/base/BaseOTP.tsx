@@ -49,7 +49,6 @@ const BaseOTP: React.FC<BaseOTPProps> = ({
             inputMode: "numeric",
             pattern: "[0-9]*",
           }}
-          autoFocus={idx === 0} // เพิ่มบรรทัดนี้
           disabled={disabled}
           variant="outlined"
           sx={{ width: 48 }}
