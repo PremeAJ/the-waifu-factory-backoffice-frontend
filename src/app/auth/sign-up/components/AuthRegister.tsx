@@ -2,19 +2,19 @@
 import { Box, Typography, Button, Divider, Stack, Grid, InputAdornment } from "@mui/material";
 import { confirmPasswordSchema, emailValidator, firstNameSchema, lastNameSchema, passwordSchema } from "@/common/utils/validator/yup";
 import { IconLock, IconMail } from "@tabler/icons-react";
+import { RegisterPayload } from "@/common/contexts/AuthContext/interfaces/interface";
 import { useAuth } from "@/common/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useError } from "@/common/contexts/ErrorContext";
 import { useFormik } from "formik";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import AuthSocialButtons from "../../components/AuthSocialButtons";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Link from "next/link";
 import Turnstile from "react-turnstile";
-import { useRouter } from "next/navigation";
-import { RegisterPayload } from "@/common/contexts/AuthContext/interfaces/interface";
+import { useEncrypt } from "@/common/contexts/EncryptContext";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -25,19 +25,19 @@ const validationSchema = yup.object({
 });
 
 const AuthRegister = () => {
+  const [captchaToken, setCaptchaToken] = useState("");
   const { register, loading } = useAuth();
+  const { showError } = useError();
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const { showError } = useError();
-  const [captchaToken, setCaptchaToken] = useState("");
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
       confirmPassword: "",
+      email: "",
       firstName: "",
       lastName: "",
+      password: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (data: RegisterPayload) => {
@@ -45,8 +45,8 @@ const AuthRegister = () => {
       if (response.statusCode !== 201) {
         showError(response.message, "เกิดข้อผิดพลาด");
       } else {
-        const {id,otpRef,otpType } = response.data;
-        router.replace(`otp/verify/email/${otpType}/${id}/${otpRef}`);
+        const { id, otpRef, otpType, email } = response.data;
+        router.push(`/otp/verify/email/${email}/${otpType}/${id}/${otpRef}`);
       }
     },
   });

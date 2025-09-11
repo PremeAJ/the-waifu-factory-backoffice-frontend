@@ -8,7 +8,7 @@ import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 import { useSession } from "next-auth/react";
 
-const hideButton = ["/", "/auth/callback", "/dashboard/auth/callback", "/dashboard/auth/login", "/auth/login"];
+const hideButton = ["/", "/auth/callback", "/auth/sign-in", "/auth/sign-up"];
 
 const ActionButton = () => {
   const isMobie = useIsMobile();

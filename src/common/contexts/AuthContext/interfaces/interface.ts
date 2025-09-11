@@ -21,5 +21,6 @@ export interface RegisterResponse extends ApiResponse {
     id: string
     otpRef:string
     otpType: string
+    email: string
   }
 }

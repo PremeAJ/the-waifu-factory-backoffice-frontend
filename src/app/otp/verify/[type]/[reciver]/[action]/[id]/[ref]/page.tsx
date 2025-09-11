@@ -1,9 +1,16 @@
-import AuthTwoSteps from "@/app/auth/components/AuthTwoSteps";
-import PageContainer from "@/components/container/PageContainer";
+"use client";
 import { Grid, Box, Typography } from "@mui/material";
+import { useEncrypt } from "@/common/contexts/EncryptContext";
+import { useParams } from "next/navigation";
+import AuthTwoSteps from "@/app/auth/components/AuthTwoSteps";
 import Image from "next/image";
+import PageContainer from "@/components/container/PageContainer";
 
-export default function TwoSteps() {
+export default function VerifyOtp() {
+  const params = useParams();
+  const { decrypt } = useEncrypt();
+  const { type, reciver, action, id, ref } = params;
+  const decryptedReciver = decrypt(reciver?.toString() || '');
   return (
     <PageContainer title="Two steps Page" description="this is Sample page">
       <Grid container spacing={0} justifyContent="center" sx={{ height: "100vh" }}>
@@ -75,10 +82,10 @@ export default function TwoSteps() {
             </Typography>
 
             <Typography variant="subtitle1" color="textSecondary" mt={2} mb={1}>
-              We sent a verification code to your mobile. Enter the code from the mobile in the field below.
+              We sent a verification code to your {type}. Enter the code from the mobile in the field below.
             </Typography>
             <Typography variant="subtitle1" fontWeight="700" mb={1}>
-              ******1234
+              {decryptedReciver}
             </Typography>
             <AuthTwoSteps />
           </Box>
