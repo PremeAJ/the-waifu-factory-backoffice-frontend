@@ -21,6 +21,15 @@ async function header(accessToken?: string) {
   return headers;
 }
 
+function isExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+}
+
 const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -58,6 +67,21 @@ const authOptions: AuthOptions = {
       }
       if (session) {
         if (session.profile) token.profile = session.profile;
+      }
+      if (token.accessToken && isExpired(token.accessToken)) {
+        const refreshed = await postFetcher(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/session/refresh`,
+          { token: token.refreshToken },
+          { ...(await header()) }
+        );
+        console.log("🚀 ~ jwt ~ refreshed:", refreshed)
+        if (refreshed?.error) {
+          throw new Error(refreshed.message);
+        }
+        if (refreshed.data.accessToken && refreshed.data.refreshToken) {
+          token.refreshToken = refreshed.data.refreshToken;
+          token.accessToken = refreshed.data.accessToken;
+        }
       }
       return token;
     },

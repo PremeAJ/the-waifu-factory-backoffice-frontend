@@ -21,11 +21,11 @@ const validationSchema = yup.object({
 
 export default function AuthResetPassword() {
   const { showSuccess, showError } = useDialog();
-  const { resetPassword } = useAuth();
+  const { resetPassword, loading } = useAuth();
   const searchParams = useSearchParams();
   const encryptedCode = searchParams.get("code");
   const { type, userId } = useParams();
-  const { encrypt,decrypt } = useEncrypt();
+  const { encrypt, decrypt } = useEncrypt();
   const code = encryptedCode ? decrypt(encryptedCode) : null;
   useEffect(() => {
     if (!code) {
@@ -56,12 +56,13 @@ export default function AuthResetPassword() {
       const response = await resetPassword(payload);
       if (response?.error) {
         showError({
-          message: response?.message
+          message: response?.message,
         });
       } else {
         showSuccess({
           message: response?.data?.message || "รีเซ็ตรหัสผ่านสำเร็จ",
           callback: "/auth/sign-in",
+          disableBackdropClose: true,
         });
       }
     },
@@ -94,7 +95,7 @@ export default function AuthResetPassword() {
             </InputAdornment>
           }
         />
-        <BaseButton label="ยืนยัน" type="submit" disabled={!formik.isValid || !formik.dirty} />
+        <BaseButton label="ยืนยัน" type="submit" disabled={!formik.isValid || !formik.dirty} loading={loading} />
       </Stack>
     </form>
   );

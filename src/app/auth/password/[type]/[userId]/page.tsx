@@ -1,10 +1,5 @@
 "use client";
 import { Grid, Box, Typography } from "@mui/material";
-import { useEffect } from "react";
-import { useEncrypt } from "@/common/contexts/EncryptContext";
-import { useError } from "@/common/contexts/ErrorContext";
-import { useParams, useSearchParams } from "next/navigation";
-import { uuidV4Regex } from "@/common/utils/validator/regex";
 import AuthResetPassword from "../../components/AuthResetPassword";
 import Image from "next/image";
 import PageContainer from "@/components/container/PageContainer";

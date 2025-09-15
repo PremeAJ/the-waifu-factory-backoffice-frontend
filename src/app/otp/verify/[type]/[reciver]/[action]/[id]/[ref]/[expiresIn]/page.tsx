@@ -10,8 +10,8 @@ import PageContainer from "@/components/container/PageContainer";
 export default function VerifyOtp() {
   const params = useParams();
   const { type, reciver, action, id, ref } = params;
-  const { decrypt } = useEncrypt();
-  const decryptedReciver = decrypt(reciver?.toString() || "");
+  const { decrypt, censorEmail } = useEncrypt();
+  const decryptedReciver = decrypt(reciver?.toString() || "") || "";
   return (
     <OtpProvider>
       <PageContainer title="Two steps Page" description="this is Sample page">
@@ -85,7 +85,7 @@ export default function VerifyOtp() {
                 We sent a verification code to your {type}. Enter the code from the mobile in the field below.
               </Typography>
               <Typography variant="subtitle1" fontWeight="700" mb={1}>
-                {decryptedReciver}
+                {censorEmail(decryptedReciver)}
               </Typography>
               <AuthTwoSteps />
             </Box>
