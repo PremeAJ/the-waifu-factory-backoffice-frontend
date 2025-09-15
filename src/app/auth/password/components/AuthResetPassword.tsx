@@ -12,7 +12,6 @@ import { IconLock } from "@tabler/icons-react";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseButton from "@/common/components/base/BaseButton";
 
-// สร้าง type สำหรับ status
 type ResetPasswordStatus =
   | "idle"
   | "success"
@@ -22,19 +21,7 @@ type ResetPasswordStatus =
   | "network_error"
   | "unknown_error";
 
-// สร้าง map ของข้อความ error
-const getAlertMessage = (status: ResetPasswordStatus): string => {
-  const messages: Record<ResetPasswordStatus, string> = {
-    idle: "",
-    success: "เปลี่ยนรหัสผ่านสำเร็จ",
-    same_password: "รหัสผ่านใหม่ไม่สามารถตรงกับรหัสผ่านเดิมได้",
-    invalid_password: "รหัสผ่านไม่ถูกต้องตามเงื่อนไข",
-    expired_token: "ลิงก์หมดอายุ กรุณาขอลิงก์ใหม่",
-    network_error: "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง",
-    unknown_error: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-  };
-  return messages[status];
-};
+
 
 const validationSchema = yup.object({
   password: passwordSchema,
@@ -48,26 +35,6 @@ export default function AuthResetPassword() {
 
   const handleResetPassword = async (password: string) => {
     try {
-      // const { error } = await resetPassword({ newPassword: password });
-
-      // if (error) {
-      //   switch (error) {
-      //     case "same_password":
-      //       setStatus("same_password");
-      //       break;
-      //     case "invalid_password":
-      //       setStatus("invalid_password");
-      //       break;
-      //     case "expired_token":
-      //       setStatus("expired_token");
-      //       setTimeout(() => router.push("/auth/forgot-password"), 2000);
-      //       break;
-      //     default:
-      //       setStatus("unknown_error");
-      //   }
-      //   return;
-      // }
-
       setStatus("success");
       setTimeout(() => router.push("/auth/login"), 2000);
     } catch (err) {
@@ -87,19 +54,6 @@ export default function AuthResetPassword() {
       await handleResetPassword(data.password);
     },
   });
-
-  const renderAlert = () => {
-    if (status === "idle") return null;
-
-    return (
-      <Alert
-        variant="filled"
-        severity={status === "success" ? "success" : "error"}
-      >
-        {getAlertMessage(status)}
-      </Alert>
-    );
-  };
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -133,7 +87,6 @@ export default function AuthResetPassword() {
           type="submit"
           disabled={!formik.isValid || !formik.dirty}
         />
-        {renderAlert()}
       </Stack>
     </form>
   );

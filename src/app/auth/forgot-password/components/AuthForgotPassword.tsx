@@ -1,5 +1,5 @@
 "use client";
-import {  InputAdornment, Stack } from "@mui/material";
+import { InputAdornment, Stack } from "@mui/material";
 import { emailValidator } from "@/common/utils/validator/yup";
 import { ForgotPasswordPayload } from "@/common/contexts/AuthContext/interfaces/interface";
 import { genOtpUrl } from "@/common/utils/otpUrl";
@@ -23,7 +23,7 @@ const validationSchema = yup.object({
 export default function AuthForgotPassword() {
   const [captchaToken, setCaptchaToken] = useState("");
   const { encrypt } = useEncrypt();
-  const { forgotPassword } = useAuth();
+  const { forgotPassword, loading } = useAuth();
   const { showError } = useError();
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -71,8 +71,8 @@ export default function AuthForgotPassword() {
         {formik.isValid && formik.dirty && (
           <Turnstile sitekey={siteKey} theme="light" action="forgot-password" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
         )}
-        <BaseButton label="ส่งลิงก์รีเซ็ตรหัสผ่าน" type="submit" disabled={!captchaToken} />
-        <BaseButton label="กลับไปหน้าเข้าสู่ระบบ" href="/auth/login" variant="outlined" />
+        <BaseButton label="ส่งลิงก์รีเซ็ตรหัสผ่าน" type="submit" disabled={!captchaToken} loading={loading} />
+        <BaseButton label="กลับไปหน้าเข้าสู่ระบบ" href="/auth/login" variant="outlined" loading={loading} />
       </Stack>
     </form>
   );

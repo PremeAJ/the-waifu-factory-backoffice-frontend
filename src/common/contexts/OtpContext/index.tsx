@@ -15,6 +15,12 @@ export interface OtpResendPayload {
   ref: string;
 }
 
+export enum OtpType {
+  sign_up = "sign_up",
+  change_email = "change_email",
+  forgot_password = "forgot_password",
+}
+
 export interface OtpContextType {
   verifyOtp: (payload: OtpVerifyPayload) => Promise<any>;
   resendOtp: (payload: OtpResendPayload) => Promise<any>;

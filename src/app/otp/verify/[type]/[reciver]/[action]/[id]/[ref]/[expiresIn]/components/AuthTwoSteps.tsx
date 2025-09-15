@@ -1,23 +1,25 @@
 "use client";
-import { useOtp } from "@/common/contexts/OtpContext";
 import { Box, Typography } from "@mui/material";
+import { genOtpUrl } from "@/common/utils/otpUrl";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
+import { useOtp, OtpType } from "@/common/contexts/OtpContext";
 import { useParams, useRouter } from "next/navigation";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseOTP from "@/common/components/base/BaseOTP";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
-import { genOtpUrl } from "@/common/utils/otpUrl";
+import { useError } from "@/common/contexts/ErrorContext";
 
 const AuthTwoSteps = () => {
   const params = useParams();
-  const { type, reciver, action, id, ref, expiresIn } = params;
-  const [otp, setOtp] = useState("");
-  const [errorText, setErrorText] = useState("");
-  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
-  const { verifyOtp, resendOtp, loading } = useOtp();
   const router = useRouter();
+  const { showError } = useError();
+  const [errorText, setErrorText] = useState("");
+  const [otp, setOtp] = useState("");
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
+  const { type, reciver, action, id, ref, expiresIn } = params;
+  const { verifyOtp, resendOtp, loading } = useOtp();
   const onFocusVerifyOtp = async () => {
     const response = await verifyOtp({
       id: id?.toString() || "",
@@ -29,7 +31,20 @@ const AuthTwoSteps = () => {
       setErrorText(response.message || "เกิดข้อผิดพลาด");
     } else {
       setErrorText("");
-      router.replace("/auth/sign-in");
+      switch (action) {
+        case OtpType.sign_up:
+          router.replace("/auth/sign-in");
+          break;
+        case OtpType.forgot_password: {
+          const url = `/auth/password/reset/${encodeURIComponent(id?.toString() || "")}`;
+          const params = new URLSearchParams({ code: response.data || "" });
+          router.replace(`${url}?${params.toString()}`);
+          break;
+        }
+        default:
+          router.replace("/auth/sign-in");
+          break;
+      }
     }
   };
 
@@ -42,19 +57,18 @@ const AuthTwoSteps = () => {
 
     if (response.statusCode !== 200) {
       setErrorText(response.message || "เกิดข้อผิดพลาด");
+    } else {
+      const { expiresIn, otpRef } = response.data || {};
+      const url = genOtpUrl({
+        type: type?.toString() || "",
+        reciver: reciver?.toString() || "",
+        otpType: action?.toString() || "",
+        id: id?.toString() || "",
+        otpRef: otpRef?.toString() || "",
+        expiresIn: expiresIn || 0,
+      });
+      router.replace(url);
     }
-
-    const { expiresIn, otpRef } = response.data || {};
-
-    const url = genOtpUrl({
-      type: type?.toString() || "",
-      reciver: reciver?.toString() || "",
-      otpType: action?.toString() || "",
-      id: id?.toString() || "",
-      otpRef: otpRef?.toString() || "",
-      expiresIn: expiresIn || 0,
-    });
-    router.replace(url);
   };
 
   useEffect(() => {
@@ -79,6 +93,11 @@ const AuthTwoSteps = () => {
       return () => clearInterval(interval);
     }
   }, [expiresIn]);
+
+  if (!Object.values(OtpType).includes(action?.toString() as OtpType)) {
+    showError("ประเภท OTP ไม่ถูกต้อง", "เกิดข้อผิดพลาด");
+    return null;
+  }
 
   return (
     <Box mt={4}>
