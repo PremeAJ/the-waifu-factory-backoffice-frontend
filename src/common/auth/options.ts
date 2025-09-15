@@ -1,10 +1,11 @@
-import CredentialsProvider from "next-auth/providers/credentials";
-import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
-import { cookies } from "next/headers";
-import { HeadersKey } from "../constants/header";
-import { getHeaders } from "../utils/getHeaders";
-import { v4 as uuidv4 } from "uuid";
 import { AuthOptions } from "next-auth";
+import { cookies } from "next/headers";
+import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
+import { getHeaders } from "../utils/getHeaders";
+import { HeadersKey } from "../constants/header";
+import { v4 as uuidv4 } from "uuid";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
 async function header(accessToken?: string) {
   const cookieStore = await cookies();
@@ -30,6 +31,8 @@ function isExpired(token: string): boolean {
   }
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+
 const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -42,24 +45,39 @@ const authOptions: AuthOptions = {
       async authorize(credentials) {
         //#region call login api
         const { email, password } = credentials || {};
-        const login = await postFetcher(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, { email, password }, { ...(await header()) });
+        const login = await postFetcher(`${baseUrl}/api/v1/auth/login`, { email, password }, { ...(await header()) });
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         //#endregion
 
         //#region get profile
         const { accessToken } = login.data;
-        const profile = await getFetcher(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/profile`, { ...(await header(accessToken)) });
+        const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
         if (profile.statusCode !== 200) throw new Error(profile.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         //#endregion
         return { ...login.data, profile: profile.data };
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user, session }) {
+   async redirect({ url, baseUrl }) {
+    return "/auth/callback";
+  },
+    async jwt({ token, user, session, account }) {
+      if (account?.provider === "google" && user) {
+        const login = await postFetcher(`${baseUrl}/api/v1/auth/login-google`, { id_token: account.id_token }, { ...(await header()) });
+        if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+        const { accessToken } = login.data;
+        const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
+        if (profile.statusCode !== 200) throw new Error(profile.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+        return { ...login.data, profile: profile.data };
+      }
       if (user) {
         if (user.accessToken) token.accessToken = user.accessToken;
         if (user.refreshToken) token.refreshToken = user.refreshToken;
@@ -69,12 +87,7 @@ const authOptions: AuthOptions = {
         if (session.profile) token.profile = session.profile;
       }
       if (token.accessToken && isExpired(token.accessToken)) {
-        const refreshed = await postFetcher(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/session/refresh`,
-          { token: token.refreshToken },
-          { ...(await header()) }
-        );
-        console.log("🚀 ~ jwt ~ refreshed:", refreshed)
+        const refreshed = await postFetcher(`${baseUrl}/api/v1/session/refresh`, { token: token.refreshToken }, { ...(await header()) });
         if (refreshed?.error) {
           throw new Error(refreshed.message);
         }

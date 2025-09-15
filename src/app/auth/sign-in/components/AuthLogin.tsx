@@ -38,7 +38,7 @@ const AuthLogin = () => {
     onSubmit: async (data) => {
       setIsLoading(true);
       const result = await signIn("credentials", {
-        redirect: false,
+        redirect: true,
         email: data.email,
         password: data.password,
         captchaToken,
@@ -48,17 +48,9 @@ const AuthLogin = () => {
         setCaptchaToken("");
         formik.setFieldError("email", result?.error);
         formik.setFieldError("password", " ");
-      } else {
-        router.push("/auth/callback");
-      }
+      } 
     },
   });
-
-  // useEffect(() => {
-  //   if (session && status === "authenticated"){
-  //     signOut();
-  //   }
-  // }, [session, status]);
 
   useEffect(() => {
     if (!(formik.isValid && formik.dirty)) {
@@ -71,6 +63,7 @@ const AuthLogin = () => {
       <form onSubmit={formik.handleSubmit}>
         <Stack>
           <Box>
+            {JSON.stringify(session)}
             <BaseTextField
               name="email"
               formik={formik}
@@ -116,7 +109,14 @@ const AuthLogin = () => {
         </Stack>
         <Box>
           {formik.isValid && formik.dirty && formik.values.password.length > 6 && (
-            <Turnstile sitekey={siteKey} theme={appearance.activeMode || 'light'} action="login" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
+            <Turnstile
+              sitekey={siteKey}
+              theme={appearance.activeMode || "light"}
+              action="login"
+              size="flexible"
+              onSuccess={setCaptchaToken}
+              language={i18n.language}
+            />
           )}
           <Button color="primary" variant="contained" size="large" fullWidth type="submit" loading={isLoading} disabled={!captchaToken}>
             {t("Page.Login.SignIn")}
