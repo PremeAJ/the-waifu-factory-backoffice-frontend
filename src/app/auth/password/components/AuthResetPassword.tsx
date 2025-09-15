@@ -1,27 +1,18 @@
 "use client";
-import { Alert, InputAdornment, Stack } from "@mui/material";
-import { useTranslation } from "react-i18next";
-import { useContext, useState } from "react";
-import { useFormik } from "formik";
 import { confirmPasswordSchema, passwordSchema } from "@/common/utils/validator/yup";
-import * as yup from "yup";
-import { ResetPasswordType } from "@/common/utils/supabase/server";
-import { useRouter } from "next/navigation";
-import { set } from "lodash";
 import { IconLock } from "@tabler/icons-react";
-import BaseTextField from "@/common/components/base/BaseTextField";
+import { InputAdornment, Stack } from "@mui/material";
+import { ResetPasswordPayload } from "@/common/contexts/AuthContext/interfaces/interface";
+import { useAuth } from "@/common/contexts/AuthContext";
+import { useDialog } from "@/common/contexts/DialogContext";
+import { useEffect } from "react";
+import { useEncrypt } from "@/common/contexts/EncryptContext";
+import { useFormik } from "formik";
+import { useParams, useSearchParams } from "next/navigation";
+import { uuidV4Regex } from "@/common/utils/validator/regex";
+import * as yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
-
-type ResetPasswordStatus =
-  | "idle"
-  | "success"
-  | "same_password"
-  | "invalid_password"
-  | "expired_token"
-  | "network_error"
-  | "unknown_error";
-
-
+import BaseTextField from "@/common/components/base/BaseTextField";
 
 const validationSchema = yup.object({
   password: passwordSchema,
@@ -29,19 +20,24 @@ const validationSchema = yup.object({
 });
 
 export default function AuthResetPassword() {
-  const { t } = useTranslation();
-  const router = useRouter();
-  const [status, setStatus] = useState<ResetPasswordStatus>("idle");
-
-  const handleResetPassword = async (password: string) => {
-    try {
-      setStatus("success");
-      setTimeout(() => router.push("/auth/login"), 2000);
-    } catch (err) {
-      console.error("Reset password error:", err);
-      setStatus("network_error");
+  const { showSuccess, showError } = useDialog();
+  const { resetPassword } = useAuth();
+  const searchParams = useSearchParams();
+  const encryptedCode = searchParams.get("code");
+  const { type, userId } = useParams();
+  const { encrypt,decrypt } = useEncrypt();
+  const code = encryptedCode ? decrypt(encryptedCode) : null;
+  useEffect(() => {
+    if (!code) {
+      showError({ message: "Missing code parameter" });
     }
-  };
+    if (type !== "reset" && type !== "forgot") {
+      showError({ message: "Invalid type parameter" });
+    }
+    if (!userId || !uuidV4Regex.test(userId.toString())) {
+      showError({ message: "Invalid userId parameter" });
+    }
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -51,7 +47,23 @@ export default function AuthResetPassword() {
     validationSchema: validationSchema,
 
     onSubmit: async (data) => {
-      await handleResetPassword(data.password);
+      const payload: ResetPasswordPayload = {
+        id: userId?.toString() || "",
+        code: encrypt(code?.toString() || ""),
+        newPassword: data.password,
+        confirmNewPassword: data.confirmPassword,
+      };
+      const response = await resetPassword(payload);
+      if (response?.error) {
+        showError({
+          message: response?.message
+        });
+      } else {
+        showSuccess({
+          message: response?.data?.message || "รีเซ็ตรหัสผ่านสำเร็จ",
+          callback: "/auth/sign-in",
+        });
+      }
     },
   });
 
@@ -82,11 +94,7 @@ export default function AuthResetPassword() {
             </InputAdornment>
           }
         />
-        <BaseButton
-          label="ยืนยัน"
-          type="submit"
-          disabled={!formik.isValid || !formik.dirty}
-        />
+        <BaseButton label="ยืนยัน" type="submit" disabled={!formik.isValid || !formik.dirty} />
       </Stack>
     </form>
   );

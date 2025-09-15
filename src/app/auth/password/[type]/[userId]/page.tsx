@@ -10,23 +10,7 @@ import Image from "next/image";
 import PageContainer from "@/components/container/PageContainer";
 
 export default function ResetPassword() {
-  const searchParams = useSearchParams();
-  const encryptedCode = searchParams.get("code");
-  const { type, userId } = useParams();
-  const { decrypt } = useEncrypt();
-  const { showError } = useError();
-  const code = encryptedCode ? decrypt(encryptedCode) : null;
-  useEffect(() => {
-    if (!code) {
-      showError("Missing code parameter");
-    }
-    if (type !== "reset" && type !== "forgot"){
-      showError("Invalid type parameter");
-    }
-    if (!userId || !uuidV4Regex.test(userId.toString())) {
-      showError("Invalid userId parameter");
-    }
-  },[code])
+
 
   return (
     <PageContainer title="Forgot Password Page" description="this is Sample page">

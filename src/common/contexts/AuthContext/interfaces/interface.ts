@@ -2,7 +2,8 @@ import { ApiResponse } from "@/common/interface/apiResponse";
 
 export interface AuthContextType {
   register: (payload: RegisterPayload) => Promise<RegisterResponse>;
-  forgotPassword: (payload:ForgotPasswordPayload) => Promise<ForgotPasswordResponse>;
+  forgotPassword: (payload: ForgotPasswordPayload) => Promise<ForgotPasswordResponse>;
+  resetPassword: (payload: ResetPasswordPayload) => Promise<any>;
   loading: boolean;
 }
 
@@ -38,4 +39,11 @@ export interface ForgotPasswordResponse extends ApiResponse {
     email: string;
     expiresIn: number;
   };
+}
+
+export interface ResetPasswordPayload {
+  id: string;
+  code: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }

@@ -25,6 +25,7 @@ interface BaseDialogProps {
   fullScreen?: boolean;
   scrolling?: boolean;
   htmlContent?: boolean;
+  disableBackdropClose?: boolean; // เพิ่ม prop นี้
 }
 
 const BaseDialog: React.FC<BaseDialogProps> = ({
@@ -43,7 +44,15 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   fullScreen = false,
   scrolling = false,
   htmlContent = false,
+  disableBackdropClose = false, // เพิ่ม default
 }) => {
+  const handleDialogClose = (event?: object, reason?: string) => {
+    if (disableBackdropClose && (reason === "backdropClick" || reason === "escapeKeyDown")) {
+      return;
+    }
+    onClose();
+  };
+
   const getIconComponent = () => {
     if (!iconType) return null;
 
@@ -68,7 +77,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
       open={open}
       TransitionComponent={Transition}
       keepMounted
-      onClose={onClose}
+      onClose={handleDialogClose}
       aria-describedby="alert-dialog-slide-description"
       fullScreen={fullScreen}
       scroll={scrolling ? "paper" : undefined}

@@ -11,6 +11,7 @@ interface ErrorDialogProps {
   message?: string;
   error?: Error | string | null;
   showDetails?: boolean;
+  disableBackdropClose?: boolean; // เพิ่ม prop นี้
 }
 
 const ErrorDialog: React.FC<ErrorDialogProps> = ({
@@ -20,6 +21,7 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
   message,
   error,
   showDetails = process.env.NODE_ENV === "development",
+  disableBackdropClose = false, // เพิ่ม default
 }) => {
   const getErrorMessage = () => {
     if (message) return message;
@@ -30,11 +32,9 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
 
   const getErrorDetails = () => {
     if (!showDetails || !error) return null;
-    
     if (typeof error === "object" && error.stack) {
       return error.stack;
     }
-    
     return JSON.stringify(error, null, 2);
   };
 
@@ -49,7 +49,7 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
           <Typography variant="body1" sx={{ textAlign: "center", mb: showDetails ? 2 : 0 }}>
             {getErrorMessage()}
           </Typography>
-          
+
           {showDetails && getErrorDetails() && (
             <Box
               sx={{
@@ -75,6 +75,7 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
       confirmText="ตกลง"
       onConfirm={onClose}
       confirmColor="primary"
+      disableBackdropClose={disableBackdropClose} // ส่ง prop นี้เข้า BaseDialog
     />
   );
 };
