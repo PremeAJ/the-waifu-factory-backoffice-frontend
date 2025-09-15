@@ -1,5 +1,6 @@
-export interface ApiResponse {
+export interface ApiResponse<T = any> {
   statusCode: number;
   message: string;
-  data: any;
+  error?: string; 
+  data?: T;       
 }

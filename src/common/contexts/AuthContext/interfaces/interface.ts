@@ -32,6 +32,7 @@ export interface RegisterResponse extends ApiResponse {
 
 export interface ForgotPasswordResponse extends ApiResponse {
   data: {
+    id: string;
     otpRef: string;
     otpType: string;
     email: string;

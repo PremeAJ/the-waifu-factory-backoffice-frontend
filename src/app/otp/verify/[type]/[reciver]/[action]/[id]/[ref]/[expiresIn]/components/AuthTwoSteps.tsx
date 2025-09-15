@@ -44,7 +44,7 @@ const AuthTwoSteps = () => {
       setErrorText(response.message || "เกิดข้อผิดพลาด");
     }
 
-    const { expiresIn, otpRef } = response.data;
+    const { expiresIn, otpRef } = response.data || {};
 
     const url = genOtpUrl({
       type: type?.toString() || "",

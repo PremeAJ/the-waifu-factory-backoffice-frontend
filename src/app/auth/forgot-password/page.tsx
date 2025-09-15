@@ -77,7 +77,7 @@ export default function ForgotPassword() {
           }}>
           <Box p={4} width={'100%'} maxWidth={500}>
             <Typography variant="h4" fontWeight="700">
-              Forgot your password?
+              ลืมรหัสผ่าน?
             </Typography>
 
             <Typography
@@ -86,8 +86,7 @@ export default function ForgotPassword() {
               fontWeight="400"
               mt={2}
             >
-              Please enter the email address associated with your account and We
-              will email you a link to reset your password.
+              กรุณากรอกอีเมลที่เชื่อมกับบัญชีของคุณ แล้วเราจะส่งลิงก์สำหรับรีเซ็ตรหัสผ่านไปทางอีเมลของคุณ
             </Typography>
             <AuthForgotPassword />
           </Box>
