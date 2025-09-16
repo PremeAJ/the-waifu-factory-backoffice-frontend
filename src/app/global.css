@@ -7,23 +7,19 @@ user-select: none;
 }
 
 :root {
-  --dvh: 100vh;
   --keyboard-offset: 0px;
 }
 
-/* ให้ container สูงตาม dynamic viewport */
 html, body, #__next {
-  height: var(--dvh);
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
 
-/* ตัวอย่างปุ่ม/ฟิกซ์ ให้เลื่อนขึ้นเมื่อ keyboard เปิด */
 .fab, .fixed-bottom {
   transition: bottom 180ms ease, transform 180ms ease;
-  bottom: calc(16px + var(--keyboard-offset, 0px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 }
 
-/* ถ้าต้องการ class เมื่อ keyboard เปิด */
 .keyboard-open .some-sticky {
-  /* ตัวอย่าง: เพิ่ม padding-bottom เพื่อไม่ให้ถูกซ่อน */
   padding-bottom: calc(var(--keyboard-offset, 0px) + env(safe-area-inset-bottom, 0px));
 }
