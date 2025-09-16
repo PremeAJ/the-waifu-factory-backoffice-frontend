@@ -24,6 +24,7 @@ const ConfirmSignOutDialog: React.FC<ConfirmSignOutDialogProps> = ({
     onConfirm={onConfirm}
     onClose={onClose}
     loading={loading}
+    disableBackdropClose={true}
   />
 );
 

@@ -1,16 +1,16 @@
-import React, { useContext, useState } from "react";
-import Link from "next/link";
 import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } from "@mui/material";
-import * as dropdownData from "../../../app/dashboard/layout/header/data";
-import { IconMail, IconUser } from "@tabler/icons-react";
-import { UserContext } from "@/common/contexts/UserContext";
-import ConfirmSignOutDialog from "@/app/auth/components/dialog/ConfirmSignOutDialog";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
-import BaseButton from "@/common/components/base/BaseButton";
-import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { IconMail, IconUser } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
+import { signOut, useSession } from "next-auth/react";
+import { UserContext } from "@/common/contexts/UserContext";
+import { useRouter } from "next/navigation";
+import * as dropdownData from "../../../app/dashboard/layout/header/data";
+import BaseButton from "@/common/components/base/BaseButton";
+import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDialog";
+import Link from "next/link";
+import React, { useContext, useState } from "react";
 
 interface ProfileProps {
   loading?: boolean;
