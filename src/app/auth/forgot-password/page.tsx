@@ -1,7 +1,8 @@
+"use client";
 import { Grid, Box, Typography } from "@mui/material";
-import PageContainer from "@/components/container/PageContainer";
-import Image from "next/image";
 import AuthForgotPassword from "./components/AuthForgotPassword";
+import Image from "next/image";
+import PageContainer from "@/components/container/PageContainer";
 
 export default function ForgotPassword() {
   return (
@@ -22,7 +23,7 @@ export default function ForgotPassword() {
             position: "relative",
             "&:before": {
               content: '""',
-              background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
+              background: (theme) => `radial-gradient(${theme.palette.primary.main}, ${theme.palette.primary.light})`,
               backgroundSize: "400% 400%",
               animation: "gradient 15s ease infinite",
               position: "absolute",

@@ -1,14 +1,14 @@
-import { Grid, Box, Stack, Typography } from "@mui/material";
-import PageContainer from "@/components/container/PageContainer";
-import Logo from "@/common/components/shared/Logo";
-import Image from "next/image";
+"use client";
+import { Grid, Box, Typography } from "@mui/material";
 import AuthLogin from "./components/AuthLogin";
-import { ServerLanguage } from "@/components/shared/Language/ServerLanguage";
-import packageJson from "../../../../package.json"; // เพิ่ม import
+import Image from "next/image";
+import Logo from "@/common/components/shared/Logo";
+import packageJson from "../../../../package.json";
+import PageContainer from "@/components/container/PageContainer";
+import Language from "@/common/components/shared/Language";
 
 export default function Login() {
   const version = (packageJson as any)?.version ?? "0.0.0";
-
   return (
     <PageContainer title="Login Page" description="this is Sample page">
       <Grid container spacing={0} justifyContent="center" sx={{ height: "100vh" }}>
@@ -18,7 +18,7 @@ export default function Login() {
             position: "relative",
             "&:before": {
               content: '""',
-              background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
+              background: (theme) => `radial-gradient(${theme.palette.primary.main}, ${theme.palette.primary.light})`,
               backgroundSize: "400% 400%",
               animation: "gradient 15s ease infinite",
               position: "absolute",
@@ -78,7 +78,7 @@ export default function Login() {
                 <Logo />
               </Box>
               <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
-                <ServerLanguage />
+                <Language />
               </Box>
             </Box>
             <AuthLogin />

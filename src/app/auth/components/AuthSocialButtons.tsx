@@ -4,10 +4,11 @@ import { signIn } from "next-auth/react";
 import { signInType } from "@/common/utils/types/auth/auth";
 import { Stack } from "@mui/system";
 import CustomSocialButton from "@/components/forms/theme-elements/CustomSocialButton";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const AuthSocialButtons = ({ title }: signInType) => {
   const onClick = () => {
-    signIn("google");
+    signIn("google", { callbackUrl: PageUrl.CALLBACK });
   };
   return (
     <>

@@ -77,9 +77,9 @@ const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      return "/auth/callback";
-    },
+    // async redirect({ url, baseUrl }) {
+    //   return "/auth/callback";
+    // },
     async jwt({ token, user, session, account }) {
       if (account?.provider === "google" && user) {
         const login = await postFetcher(`${baseUrl}/api/v1/auth/login-google`, { id_token: account.id_token }, { ...(await header()) });

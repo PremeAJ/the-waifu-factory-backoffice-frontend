@@ -6,6 +6,7 @@ import { PageUrl } from "@/common/constants/pageUrl";
 import { signIn } from "next-auth/react";
 import { useFormik } from "formik";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import AuthSocialButtons from "../../components/AuthSocialButtons";
@@ -21,6 +22,7 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = () => {
+  const router = useRouter();
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -36,17 +38,20 @@ const AuthLogin = () => {
     onSubmit: async (data) => {
       setIsLoading(true);
       const result = await signIn("credentials", {
-        redirect: true,
+        redirect: false,
         email: data.email,
         password: data.password,
         captchaToken,
       });
+      console.log("🚀 ~ AuthLogin ~ result:", result);
       setIsLoading(false);
       if (result?.error) {
         setCaptchaToken("");
         formik.setFieldError("email", result?.error);
         formik.setFieldError("password", " ");
-      } 
+      } else {
+        router.push("/auth/callback");
+      }
     },
   });
 
