@@ -13,7 +13,6 @@ export default function useVisualViewport() {
       // ตั้งตัวแปร CSS
       document.documentElement.style.setProperty("--dvh", `${visibleHeight}px`);
       document.documentElement.style.setProperty("--keyboard-offset", `${keyboardHeight}px`);
-      // เพิ่ม class เฉพาะเวลา keyboard เปิด (optional)
       if (keyboardHeight > 0) document.documentElement.classList.add("keyboard-open");
       else document.documentElement.classList.remove("keyboard-open");
     };
@@ -32,6 +31,32 @@ export default function useVisualViewport() {
       window.addEventListener("orientationchange", handler);
     }
 
+    // ----- NEW: focus handling to ensure inputs are visible and restore on blur -----
+    let savedScrollY = 0;
+    const onFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.getAttribute("contenteditable") === "true") {
+        savedScrollY = window.scrollY;
+        // small timeout to allow keyboard/visualViewport to settle
+        setTimeout(() => {
+          try {
+            // prefer scrollIntoView with center to avoid hidden by keyboard
+            (target as HTMLElement).scrollIntoView({ block: "center", behavior: "smooth" });
+          } catch { /* ignore */ }
+        }, 300);
+      }
+    };
+    const onFocusOut = () => {
+      // restore scroll after keyboard closed
+      setTimeout(() => {
+        window.scrollTo({ top: savedScrollY, behavior: "smooth" });
+      }, 250);
+    };
+
+    window.addEventListener("focusin", onFocusIn);
+    window.addEventListener("focusout", onFocusOut);
+
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
       if (vv) {
@@ -41,6 +66,8 @@ export default function useVisualViewport() {
         window.removeEventListener("resize", handler);
         window.removeEventListener("orientationchange", handler);
       }
+      window.removeEventListener("focusin", onFocusIn);
+      window.removeEventListener("focusout", onFocusOut);
       document.documentElement.style.removeProperty("--keyboard-offset");
       document.documentElement.classList.remove("keyboard-open");
     };
