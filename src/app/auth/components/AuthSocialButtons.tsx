@@ -7,7 +7,7 @@ import CustomSocialButton from "@/components/forms/theme-elements/CustomSocialBu
 
 const AuthSocialButtons = ({ title }: signInType) => {
   const onClick = () => {
-    signIn("google");
+    signIn("google", { prompt: "select_account" });
   };
   return (
     <>
