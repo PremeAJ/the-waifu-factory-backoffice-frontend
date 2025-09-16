@@ -1,6 +1,7 @@
 "use client";
 import "./global.css";
 import "@/common/utils/i18n/i18n";
+import useVisualViewport from "@/common/hooks/useVisualViewport";
 import { Analytics } from "@vercel/analytics/next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { DialogProvider } from "@/common/contexts/DialogContext";
@@ -15,6 +16,7 @@ import React, { useEffect } from "react";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   const theme = ThemeSettings();
+  useVisualViewport();
 
   useEffect(() => {
     if (typeof navigator !== "undefined") {
