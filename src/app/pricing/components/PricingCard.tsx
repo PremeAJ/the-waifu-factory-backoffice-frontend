@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Skeleton from "@mui/material/Skeleton";
 import { useSession } from "next-auth/react";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const FeatureIcon = ({ checked }: { checked: boolean }) => (
   <Image
@@ -48,7 +49,7 @@ const PricingCard = ({ isLoading }: PricingCardProps) => {
     if (session) {
       router.push("/create-company");
     } else {
-      router.push("/auth/sign-up");
+      router.push(PageUrl.AUTH_SIGN_UP);
     }
   };
 

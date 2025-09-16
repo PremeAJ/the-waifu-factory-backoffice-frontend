@@ -15,6 +15,7 @@ import ParentCard from "@/components/shared/ParentCard";
 import { useSession } from "next-auth/react";
 import { useError } from "@/common/contexts/ErrorContext";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
@@ -58,7 +59,7 @@ const CreateCompanyForm = () => {
   useEffect(() => {
     if (submitted) {
       const timer = setTimeout(async () => {
-        router.push("/dashboard");
+        router.push(PageUrl.DASHBOARD);
         await updateProfile();
       }, 3000);
       return () => clearTimeout(timer);

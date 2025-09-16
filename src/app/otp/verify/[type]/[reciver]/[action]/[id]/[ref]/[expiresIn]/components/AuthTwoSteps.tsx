@@ -10,6 +10,7 @@ import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseOTP from "@/common/components/base/BaseOTP";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import { useError } from "@/common/contexts/ErrorContext";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const AuthTwoSteps = () => {
   const params = useParams();
@@ -33,7 +34,7 @@ const AuthTwoSteps = () => {
       setErrorText("");
       switch (action) {
         case OtpType.sign_up:
-          router.replace("/auth/sign-in");
+          router.replace(PageUrl.AUTH_SIGN_IN);
           break;
         case OtpType.forgot_password: {
           const url = `/auth/password/reset/${encodeURIComponent(id?.toString() || "")}`;
@@ -42,7 +43,7 @@ const AuthTwoSteps = () => {
           break;
         }
         default:
-          router.replace("/auth/sign-in");
+          router.replace(PageUrl.AUTH_SIGN_IN);
           break;
       }
     }

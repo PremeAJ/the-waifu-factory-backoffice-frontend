@@ -18,6 +18,7 @@ import {
   IconBasket,
 } from "@tabler/icons-react";
 import { NavGroup } from "@/common/utils/types/layout/sidebar";
+import { PageUrl } from "../pageUrl";
 
 const Menuitems: NavGroup[] = [
   {
@@ -38,7 +39,7 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "แดชบอร์ดบริษัท",
     icon: IconAperture,
-    href: "/dashboard",
+    href: PageUrl.DASHBOARD,
   },
   {
     id: uniqueId(),

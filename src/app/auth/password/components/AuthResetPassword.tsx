@@ -13,6 +13,7 @@ import { uuidV4Regex } from "@/common/utils/validator/regex";
 import * as yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const validationSchema = yup.object({
   password: passwordSchema,
@@ -61,7 +62,7 @@ export default function AuthResetPassword() {
       } else {
         showSuccess({
           message: response?.data?.message || "รีเซ็ตรหัสผ่านสำเร็จ",
-          callback: "/auth/sign-in",
+          callback: PageUrl.AUTH_SIGN_IN,
         });
       }
     },

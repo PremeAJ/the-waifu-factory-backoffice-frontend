@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/loading";
 import { useSession } from "next-auth/react";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 interface AuthCallbackHandlerProps {
   redirectPath: string;
@@ -16,9 +17,9 @@ export default function AuthCallbackHandler() {
   useEffect(() => {
     if (status === "loading") return;
     if (session && status === "authenticated") {
-      router.push("/dashboard");
+      router.push(PageUrl.DASHBOARD);
     } else {
-      router.replace("/auth/sign-in");
+      router.replace(PageUrl.AUTH_SIGN_IN);
     }
   }, [session, status]);
   if (status === "loading") return <Loading />;

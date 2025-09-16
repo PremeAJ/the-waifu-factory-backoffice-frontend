@@ -7,8 +7,9 @@ import BaseFab from "../base/BaseFab";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 import { useSession } from "next-auth/react";
+import { PageUrl } from "@/common/constants/pageUrl";
 
-const hideButton = ["/", "/auth/callback", "/auth/sign-in", "/auth/sign-up"];
+const hideButton = ["/", "/auth/callback", PageUrl.AUTH_SIGN_IN, PageUrl.AUTH_SIGN_UP];
 
 const ActionButton = () => {
   const isMobie = useIsMobile();

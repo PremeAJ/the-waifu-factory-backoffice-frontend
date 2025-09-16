@@ -7,13 +7,14 @@ import Image from "next/image";
 import { useContext } from "react";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const Logo = () => {
   const { isCollapse, isSidebarHover } = useContext(CustomizerContext);
     const { appearance } = useProfile();
     const { activeMode } = appearance || {};
   const path = usePathname();
-  const url = path.includes("/dashboard") || path.includes("/setting") ? "/dashboard" : "/";
+  const url = path.includes(PageUrl.DASHBOARD) || path.includes("/setting") ? PageUrl.DASHBOARD : "/";
   const TopbarHeight = config.topbarHeight;
 
   const LinkStyled = styled(Link)(() => ({

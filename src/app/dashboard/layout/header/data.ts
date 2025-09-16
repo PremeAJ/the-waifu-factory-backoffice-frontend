@@ -1,3 +1,4 @@
+import { PageUrl } from "@/common/constants/pageUrl";
 import { IconSettings,  IconBuildingCommunity } from "@tabler/icons-react";
 import { ElementType } from "react";
 
@@ -64,7 +65,7 @@ const profile: ProfileType[] = [
     subtitle: "Account Settings",
   },
   {
-    href: "/dashboard",
+    href: PageUrl.DASHBOARD,
     title: "My Company",
     subtitle: "Dashboard",
     icon: IconBuildingCommunity,

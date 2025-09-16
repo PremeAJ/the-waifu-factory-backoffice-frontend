@@ -10,6 +10,7 @@ import { I18nString } from "@/common/utils/i18n/I18nString";
 import BaseButton from "@/common/components/base/BaseButton";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 interface ProfileProps {
   loading?: boolean;
@@ -43,7 +44,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
 
   const handleConfirmSignOut = async () => {
     setSignOutLoading(true);
-    await signOut({callbackUrl: "/auth/sign-in"});
+    await signOut({callbackUrl: PageUrl.AUTH_SIGN_IN});
     setSignOutLoading(false);
     setOpenSignOut(false);
   };

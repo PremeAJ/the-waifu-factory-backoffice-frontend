@@ -14,6 +14,7 @@ import Paper from "@mui/material/Paper";
 import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
 import React, { useContext, useState } from "react";
 import { useSession } from "next-auth/react";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const Navigations = () => {
   const { t } = useTranslation();
@@ -139,8 +140,8 @@ const Navigations = () => {
       </StyledButton>
       {!session && (
         <>
-          <BaseButton label={"เข้าสู่ระบบ"} href="/auth/sign-in" fullWidth={false} variant="outlined" size="small" />
-          <BaseButton label={"เริ่มต้นใช้งาน"} href="/auth/sign-up" fullWidth={false} size="small" />
+          <BaseButton label={"เข้าสู่ระบบ"} href={PageUrl.AUTH_SIGN_IN} fullWidth={false} variant="outlined" size="small" />
+          <BaseButton label={"เริ่มต้นใช้งาน"} href={PageUrl.AUTH_SIGN_UP} fullWidth={false} size="small" />
         </>
       )}
     </>

@@ -15,6 +15,7 @@ import * as yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Turnstile from "react-turnstile";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -72,7 +73,7 @@ export default function AuthForgotPassword() {
           <Turnstile sitekey={siteKey} theme="light" action="forgot-password" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
         )}
         <BaseButton label="ส่งลิงก์รีเซ็ตรหัสผ่าน" type="submit" disabled={!captchaToken} loading={loading} />
-        <BaseButton label="กลับไปหน้าเข้าสู่ระบบ" href="/auth/login" variant="outlined" loading={loading} />
+        <BaseButton label="กลับไปหน้าเข้าสู่ระบบ" href={PageUrl.AUTH_SIGN_IN} variant="outlined" loading={loading} />
       </Stack>
     </form>
   );

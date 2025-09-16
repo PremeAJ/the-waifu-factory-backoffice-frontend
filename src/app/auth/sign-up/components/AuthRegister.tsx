@@ -16,6 +16,7 @@ import Link from "next/link";
 import Turnstile from "react-turnstile";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { genOtpUrl } from "@/common/utils/otpUrl";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -123,7 +124,7 @@ const AuthRegister = () => {
         </Typography>
         <Typography
           component={Link}
-          href="/auth/sign-in"
+          href={PageUrl.AUTH_SIGN_IN}
           fontWeight="500"
           sx={{
             textDecoration: "none",
