@@ -1,6 +1,5 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import BaseDialog from "@/common/components/base/BaseDialog";
 import Loading from "@/app/loading";
 import { useEffect } from "react";
 import { PageUrl } from "../constants/pageUrl";

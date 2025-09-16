@@ -42,35 +42,29 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     disableBackdropClose: false,
   });
 
-  const showError = useCallback(
-    (payload: DialogPayload) => {
-      setDialogState({
-        open: true,
-        type: "error",
-        title: payload.title || "เกิดข้อผิดพลาด",
-        message: payload.message,
-        showDetails: payload.showDetails ?? false,
-        disableBackdropClose: payload.disableBackdropClose ?? false,
-        callback: payload.callback,
-      });
-    },
-    []
-  );
+  const showError = useCallback((payload: DialogPayload) => {
+    setDialogState({
+      open: true,
+      type: "error",
+      title: payload.title || "เกิดข้อผิดพลาด",
+      message: payload.message,
+      showDetails: payload.showDetails ?? false,
+      disableBackdropClose: payload.disableBackdropClose ?? false,
+      callback: payload.callback,
+    });
+  }, []);
 
-  const showSuccess = useCallback(
-    (payload: DialogPayload) => {
-      setDialogState({
-        open: true,
-        type: "success",
-        title: payload.title || "สำเร็จ",
-        message: payload.message,
-        showDetails: false,
-        disableBackdropClose: payload.disableBackdropClose ?? false,
-        callback: payload.callback,
-      });
-    },
-    []
-  );
+  const showSuccess = useCallback((payload: DialogPayload) => {
+    setDialogState({
+      open: true,
+      type: "success",
+      title: payload.title || "สำเร็จ",
+      message: payload.message,
+      showDetails: false,
+      disableBackdropClose: payload.callback ? true : payload.disableBackdropClose ? payload.disableBackdropClose : false,
+      callback: payload.callback,
+    });
+  }, []);
 
   const hideDialog = useCallback(() => {
     setDialogState((prev) => ({

@@ -1,12 +1,13 @@
 "use client";
-import CustomSocialButton from "@/components/forms/theme-elements/CustomSocialButton";
-import { Stack } from "@mui/system";
 import { Avatar, Box } from "@mui/material";
+import { signIn } from "next-auth/react";
 import { signInType } from "@/common/utils/types/auth/auth";
-import { useContext } from "react";
+import { Stack } from "@mui/system";
+import CustomSocialButton from "@/components/forms/theme-elements/CustomSocialButton";
 
 const AuthSocialButtons = ({ title }: signInType) => {
   const onClick = () => {
+    signIn("google");
   };
   return (
     <>

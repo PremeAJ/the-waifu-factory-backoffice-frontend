@@ -28,7 +28,7 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
   return (
     <>
       {activeCompany && children}
-      <SelectCompanyDialog open={showCompanyDialog} onClose={() => setShowCompanyDialog(false)} disableBackdropClose />
+      <SelectCompanyDialog open={showCompanyDialog} onClose={() => setShowCompanyDialog(false)} disableBackdropClose={true} />
     </>
   );
 }

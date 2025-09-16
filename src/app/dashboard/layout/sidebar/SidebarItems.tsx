@@ -13,7 +13,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 const SidebarItems = () => {
   const currentPath = usePathname();
   const pathname = currentPath.split("/").slice(0, 4).join("/") || "/";
-  console.log("🚀 ~ SidebarItems ~ pathname:", pathname)
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
   const { isSidebarHover, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);

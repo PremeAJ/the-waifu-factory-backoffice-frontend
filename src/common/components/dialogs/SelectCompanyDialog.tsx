@@ -74,7 +74,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
     if (onClose) onClose();
   };
 
-  return <BaseDialog open={open} title="เลือกบริษัทที่ต้องการใช้งาน" content={companyListContent} onClose={handleDialogClose} onConfirm={() => {}} />;
+  return <BaseDialog open={open} title="เลือกบริษัทที่ต้องการใช้งาน" content={companyListContent} onClose={handleDialogClose} onConfirm={() => {}} disableBackdropClose/>;
 };
 
 export default SelectCompanyDialog;
