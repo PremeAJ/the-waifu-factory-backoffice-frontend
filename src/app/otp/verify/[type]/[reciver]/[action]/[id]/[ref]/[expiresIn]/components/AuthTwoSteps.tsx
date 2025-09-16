@@ -1,7 +1,9 @@
 "use client";
 import { Box, Typography } from "@mui/material";
 import { genOtpUrl } from "@/common/utils/otpUrl";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { Stack } from "@mui/system";
+import { useDialog } from "@/common/contexts/DialogContext";
 import { useEffect, useState } from "react";
 import { useOtp, OtpType } from "@/common/contexts/OtpContext";
 import { useParams, useRouter } from "next/navigation";
@@ -9,13 +11,11 @@ import BaseButton from "@/common/components/base/BaseButton";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseOTP from "@/common/components/base/BaseOTP";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
-import { useError } from "@/common/contexts/ErrorContext";
-import { PageUrl } from "@/common/constants/pageUrl";
 
 const AuthTwoSteps = () => {
   const params = useParams();
   const router = useRouter();
-  const { showError } = useError();
+  const { showError } = useDialog();
   const [errorText, setErrorText] = useState("");
   const [otp, setOtp] = useState("");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
@@ -96,7 +96,7 @@ const AuthTwoSteps = () => {
   }, [expiresIn]);
 
   if (!Object.values(OtpType).includes(action?.toString() as OtpType)) {
-    showError("ประเภท OTP ไม่ถูกต้อง", "เกิดข้อผิดพลาด");
+    showError({ message: "ประเภท OTP ไม่ถูกต้อง", title: "เกิดข้อผิดพลาด" });
     return null;
   }
 

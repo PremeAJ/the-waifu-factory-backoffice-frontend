@@ -1,12 +1,15 @@
 "use client";
 import { Box, Typography, Button, Divider, Stack, Grid, InputAdornment } from "@mui/material";
 import { confirmPasswordSchema, emailValidator, firstNameSchema, lastNameSchema, passwordSchema } from "@/common/utils/validator/yup";
+import { genOtpUrl } from "@/common/utils/otpUrl";
 import { IconLock, IconMail } from "@tabler/icons-react";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { RegisterPayload } from "@/common/contexts/AuthContext/interfaces/interface";
 import { useAuth } from "@/common/contexts/AuthContext";
+import { useDialog } from "@/common/contexts/DialogContext";
 import { useEffect, useState } from "react";
-import { useError } from "@/common/contexts/ErrorContext";
 import { useFormik } from "formik";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
@@ -14,9 +17,6 @@ import AuthSocialButtons from "../../components/AuthSocialButtons";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Link from "next/link";
 import Turnstile from "react-turnstile";
-import { useProfile } from "@/common/contexts/ProfileContext";
-import { genOtpUrl } from "@/common/utils/otpUrl";
-import { PageUrl } from "@/common/constants/pageUrl";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -30,7 +30,7 @@ const AuthRegister = () => {
   const [captchaToken, setCaptchaToken] = useState("");
   const { register, loading } = useAuth();
   const { appearance } = useProfile();
-  const { showError } = useError();
+  const { showError } = useDialog();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
@@ -46,7 +46,7 @@ const AuthRegister = () => {
     onSubmit: async (data: RegisterPayload) => {
       const response = await register(data);
       if (response.statusCode !== 201) {
-        showError(response.message, "เกิดข้อผิดพลาด");
+        showError({ message: response.message, title: "เกิดข้อผิดพลาด" });
       } else {
         const { id, otpRef, otpType, email, expiresIn } = response.data;
         const url = genOtpUrl({ type: "email", reciver: email, otpType, id, otpRef, expiresIn });
@@ -111,7 +111,14 @@ const AuthRegister = () => {
             />
           </Stack>
           {formik.isValid && formik.dirty && (
-            <Turnstile sitekey={siteKey} theme={appearance.activeMode} action="register" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
+            <Turnstile
+              sitekey={siteKey}
+              theme={appearance.activeMode}
+              action="register"
+              size="flexible"
+              onSuccess={setCaptchaToken}
+              language={i18n.language}
+            />
           )}
           <Button color="primary" variant="contained" size="large" fullWidth type="submit" disabled={!captchaToken} loading={loading}>
             Sign Up

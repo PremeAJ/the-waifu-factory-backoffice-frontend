@@ -1,9 +1,8 @@
 "use client";
-
 import { Appearance, ProfileContextType } from "./interfaces/interface";
 import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
-import { useError } from "../ErrorContext";
+import { useDialog } from "../DialogContext";
 import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
@@ -14,7 +13,7 @@ const APPEARANCE_KEY = "appearance";
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session, update } = useSession();
-  const { showError } = useError();
+  const { showError } = useDialog();
 
   //#region ลิสต์บริษัทที่ผู้ใช้มีสิทธิ์เข้าใช้งาน
   const {
@@ -92,7 +91,10 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
       await companyListMutate();
       setLoading(false);
     } catch (error: any) {
-      showError(error.message, "เกิดข้อผิดพลาด");
+      showError({
+        message: error.message,
+        title: "เกิดข้อผิดพลาด",
+      })
     }
   };
   //#endregion
@@ -101,7 +103,10 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const updateProfile = async () => {
     const response = await getFetcher("/api/profile");
     if (response.statusCode !== 200) {
-      showError(response.message, "เกิดข้อผิดพลาด");
+       showError({
+        message: response.message,
+        title: "เกิดข้อผิดพลาด",
+      })
     }
     await update({ profile: response.data });
   };

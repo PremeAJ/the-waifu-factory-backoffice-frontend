@@ -3,42 +3,37 @@
 import { Box, Stepper, Step, StepLabel, Alert, Stack } from "@mui/material";
 import { CompanyContext, CompanyType } from "@/common/contexts/CompanyContext";
 import { ConsentContext } from "@/common/contexts/Master/ConsentContext";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { useContext, useEffect, useState } from "react";
+import { useDialog } from "@/common/contexts/DialogContext";
 import { useFormik } from "formik";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import * as Yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
 import CompanyInfoStep from "./step/CompanyInfoStep";
 import ConfirmStep from "./step/ConfirmStep";
 import ContactInfoStep from "./step/ContactInfoStep";
 import ParentCard from "@/components/shared/ParentCard";
-import { useSession } from "next-auth/react";
-import { useError } from "@/common/contexts/ErrorContext";
-import { useProfile } from "@/common/contexts/ProfileContext";
-import { PageUrl } from "@/common/constants/pageUrl";
 
 const steps = ["ข้อมูลบริษัท", "ข้อมูลผู้ติดต่อ", "ยืนยัน"];
 
 const stepSchemas = [
   Yup.object({
-    companyName: Yup.string().required("กรุณากรอกชื่อบริษัท"),
-    companyEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลบริษัท"),
-    companyAddress: Yup.string()
-      .required("กรุณากรอกที่อยู่บริษัท")
-      .test("not-empty", "ที่อยู่ไม่ควรเป็นช่องว่าง", (val) => !!val && val.trim().length > 0),
-    provinceId: Yup.number().typeError("กรุณาเลือกจังหวัด").required("กรุณาเลือกจังหวัด"),
-    districtId: Yup.number().typeError("กรุณาเลือกอำเภอ").required("กรุณาเลือกอำเภอ"),
-    subdistrictId: Yup.number().typeError("กรุณาเลือกตำบล").required("กรุณาเลือกตำบล"),
-    zipcodeId: Yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
     businessTypeId: Yup.number().typeError("กรุณาเลือกประเภทร้านค้า").required("กรุณาเลือกประเภทร้านค้า"),
-    taxId: Yup.string()
-      .matches(/^\d{13}$/, "เลขประจำตัวผู้เสียภาษีต้องมี 13 หลัก")
-      .nullable()
-      .notRequired(),
+    companyAddress: Yup.string() .required("กรุณากรอกที่อยู่บริษัท") .test("not-empty", "ที่อยู่ไม่ควรเป็นช่องว่าง", (val) => !!val && val.trim().length > 0),
+    companyEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลบริษัท"),
+    companyName: Yup.string().required("กรุณากรอกชื่อบริษัท"),
+    districtId: Yup.number().typeError("กรุณาเลือกอำเภอ").required("กรุณาเลือกอำเภอ"),
+    provinceId: Yup.number().typeError("กรุณาเลือกจังหวัด").required("กรุณาเลือกจังหวัด"),
+    subdistrictId: Yup.number().typeError("กรุณาเลือกตำบล").required("กรุณาเลือกตำบล"),
+    taxId: Yup.string() .matches(/^\d{13}$/, "เลขประจำตัวผู้เสียภาษีต้องมี 13 หลัก") .nullable() .notRequired(), 
+    zipcodeId: Yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
   }),
   Yup.object({
-    contactName: Yup.string().required("กรุณากรอกชื่อผู้ติดต่อ"),
     contactEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลผู้ติดต่อ"),
+    contactName: Yup.string().required("กรุณากรอกชื่อผู้ติดต่อ"),
     contactPhone: Yup.string().required("กรุณากรอกเบอร์โทรศัพท์"),
   }),
 ];
@@ -46,15 +41,15 @@ const stepSchemas = [
 const CreateCompanyForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const { createCompany } = useContext(CompanyContext);
   const { data: session, status } = useSession();
   const { fullName, email, phone } = session?.profile || {};
-  const { createCompany } = useContext(CompanyContext);
   const { getConsentData } = useContext(ConsentContext);
   const { updateProfile } = useProfile();
   const router = useRouter();
   const termsOfService = getConsentData("terms_of_service");
 
-  const { showError } = useError();
+  const { showError } = useDialog();
 
   useEffect(() => {
     if (submitted) {
@@ -92,7 +87,7 @@ const CreateCompanyForm = () => {
         setSubmitted(true);
         setActiveStep(steps.length);
       } catch (err: any) {
-        showError(err?.message, "เกิดข้อผิดพลาด", true);
+        showError({ message: err?.message, title: "เกิดข้อผิดพลาด", showDetails: true });
       }
     },
   });

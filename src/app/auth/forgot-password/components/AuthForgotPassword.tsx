@@ -8,7 +8,6 @@ import { PageUrl } from "@/common/constants/pageUrl";
 import { useAuth } from "@/common/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useEncrypt } from "@/common/contexts/EncryptContext";
-import { useError } from "@/common/contexts/ErrorContext";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -16,6 +15,7 @@ import * as yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Turnstile from "react-turnstile";
+import { useDialog } from "@/common/contexts/DialogContext";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -25,7 +25,7 @@ export default function AuthForgotPassword() {
   const [captchaToken, setCaptchaToken] = useState("");
   const { encrypt } = useEncrypt();
   const { forgotPassword, loading } = useAuth();
-  const { showError } = useError();
+  const { showError } = useDialog();
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
@@ -41,7 +41,7 @@ export default function AuthForgotPassword() {
       };
       const response = await forgotPassword(payload);
       if (response.error) {
-        showError(response.message, "เกิดข้อผิดพลาด");
+        showError({ message: response.message, title: "เกิดข้อผิดพลาด" });
       } else {
         const { id, otpRef, otpType, email, expiresIn } = response.data;
         const url = genOtpUrl({ type: "email", reciver: email, otpType, id, otpRef, expiresIn });

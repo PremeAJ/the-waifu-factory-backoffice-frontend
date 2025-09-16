@@ -1,18 +1,17 @@
 "use client";
-
-import useSWR from "swr";
-import { useError } from "@/common/contexts/ErrorContext";
-import { defaultPageOptions } from "@/common/interface/paginate";
-import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
-import { getFetcher, postFetcher, patchFetcher, deleteFetcher } from "@/app/api/globalFetcher";
 import { CategoriesContextType, CategoryDetailType, CreateCategoryDto, UpdateCategoryDto } from "./interfaces/categories";
+import { defaultPageOptions } from "@/common/interface/paginate";
+import { getFetcher, postFetcher, patchFetcher, deleteFetcher } from "@/app/api/globalFetcher";
+import { useDialog } from "../DialogContext";
+import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
+import useSWR from "swr";
 
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
 
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const endpoint = "/api/categories";
   const masterIconEndpoint = "/api/master/icon/category";
-  const { showError } = useError();
+  const { showError } = useDialog();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(5);
@@ -26,22 +25,22 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (search !== debouncedSearch) {
         setPage(1);
       }
-    }, 500); 
+    }, 500);
 
     return () => clearTimeout(timeoutId);
   }, [search]);
 
   const categoriesUrl = useMemo(() => {
     const queryParams = new URLSearchParams();
-    queryParams.set('page', page.toString());
-    queryParams.set('perPage', perPage.toString());
+    queryParams.set("page", page.toString());
+    queryParams.set("perPage", perPage.toString());
     if (debouncedSearch && debouncedSearch.trim()) {
-      queryParams.set('search', debouncedSearch.trim());
+      queryParams.set("search", debouncedSearch.trim());
     }
     if (isActive !== null) {
-      queryParams.set('isActive', isActive.toString());
+      queryParams.set("isActive", isActive.toString());
     }
-    
+
     return `${endpoint}?${queryParams.toString()}`;
   }, [page, perPage, debouncedSearch, isActive]);
 
@@ -53,7 +52,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   } = useSWR(categoriesUrl, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    dedupingInterval: 2000, 
+    dedupingInterval: 2000,
   });
 
   const {
@@ -64,7 +63,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   } = useSWR(`${endpoint}/dropdown`, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    dedupingInterval: 300000, 
+    dedupingInterval: 300000,
   });
 
   const {
@@ -75,7 +74,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   } = useSWR(masterIconEndpoint, getFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    dedupingInterval: 300000, 
+    dedupingInterval: 300000,
   });
 
   const getCategoryById = async (id: string): Promise<CategoryDetailType> => {
@@ -83,7 +82,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       const response = await getFetcher(`${endpoint}/${id}`);
       return response.data;
     } catch (err: any) {
-      showError(err, "Failed to fetch category");
+      showError({ message: err, title: "Failed to fetch category" });
       throw err;
     }
   };
@@ -95,7 +94,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await categoriesMutate();
       await dropdownMutate();
     } catch (err: any) {
-      showError(err, "Failed to create category");
+      showError({ message: err, title: "Failed to create category" });
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +107,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await categoriesMutate();
       await dropdownMutate();
     } catch (err: any) {
-      showError(err, "Failed to update category");
+      showError({ message: err, title: "Failed to update category" });
     } finally {
       setIsLoading(false);
     }
@@ -121,7 +120,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await categoriesMutate();
       await dropdownMutate();
     } catch (err: any) {
-      showError(err, "Failed to delete category");
+      showError({ message: err, title: "Failed to delete category" });
     } finally {
       setIsLoading(false);
     }

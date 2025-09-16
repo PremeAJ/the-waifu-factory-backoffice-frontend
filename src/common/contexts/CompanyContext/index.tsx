@@ -1,10 +1,7 @@
 "use client";
-import React, { createContext, useState, useEffect, useContext } from "react";
-import useSWR from "swr";
-import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
-import { UserContext } from "../UserContext";
-import { useError } from "../ErrorContext";
-import { useSession } from "next-auth/react";
+import React, { createContext, useState } from "react";
+import { postFetcher } from "@/app/api/globalFetcher";
+import { useDialog } from "../DialogContext";
 
 export interface CompanyType {
   id: string;
@@ -39,7 +36,7 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [company, setCompany] = useState<CompanyType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const { showError } = useError();
+  const { showError } = useDialog();
 
   const createCompany = async (payload: Omit<CompanyType, "id">) => {
     setLoading(true);
@@ -47,7 +44,7 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       const response = await postFetcher("/api/company", payload);
       setLoading(false);
-      if (response.statusCode !== 201) showError(response.message, "เกิดข้อผิดพลาด");
+      if (response.statusCode !== 201) showError({ message: response.message, title: "เกิดข้อผิดพลาด" });
       return response;
     } catch (err: any) {
       setError(err.message);
