@@ -4,7 +4,7 @@ export enum HeadersKey {
   Authorization = 'Authorization',
   Origin = 'Origin',
   Lang = 'x-lang',
-  UserAgent = 'User-Agent',
+  UserAgent = 'user-agent',
   AppVersion = 'x-app-version',
   Latitude = 'x-latitude',
   Longitude = 'x-longitude',
