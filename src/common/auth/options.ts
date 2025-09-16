@@ -15,10 +15,13 @@ async function header(accessToken?: string) {
     cookieStore.set(HeadersKey.DeviceId, deviceId, { path: "/" });
   }
   const language = cookieStore.get(HeadersKey.Lang)?.value || "th";
+  const userAgent = cookieStore.get(HeadersKey.UserAgent)?.value || "";
+
   const headers = getHeaders();
+  if (accessToken) headers[HeadersKey.Authorization] = `Bearer ${accessToken}`;
   if (deviceId) headers[HeadersKey.DeviceId] = deviceId;
   if (language) headers[HeadersKey.Lang] = language;
-  if (accessToken) headers[HeadersKey.Authorization] = `Bearer ${accessToken}`;
+  if (userAgent) headers[HeadersKey.UserAgent] = userAgent;
   return headers;
 }
 
@@ -66,9 +69,9 @@ const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-   async redirect({ url, baseUrl }) {
-    return "/auth/callback";
-  },
+    async redirect({ url, baseUrl }) {
+      return "/auth/callback";
+    },
     async jwt({ token, user, session, account }) {
       if (account?.provider === "google" && user) {
         const login = await postFetcher(`${baseUrl}/api/v1/auth/login-google`, { id_token: account.id_token }, { ...(await header()) });

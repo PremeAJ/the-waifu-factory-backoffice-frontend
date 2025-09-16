@@ -1,6 +1,6 @@
 {
-  "name": "modernize",
-  "version": "10.0.0",
+  "name": "meowsom-frontend",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",

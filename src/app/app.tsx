@@ -9,9 +9,12 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@mui/material/styles";
 import { ThemeSettings } from "@/common/utils/theme/Theme";
 import { UserProvider } from "../common/contexts/UserContext";
+import Cookies from "js-cookie";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
+import { HeadersKey } from "@/common/constants/header";
 
+Cookies.set(HeadersKey.UserAgent, navigator.userAgent, { path: "/" });
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   const theme = ThemeSettings();
 
