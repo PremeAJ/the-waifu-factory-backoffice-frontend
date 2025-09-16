@@ -1,9 +1,10 @@
 "use client";
-import { InputAdornment, Stack } from "@mui/material";
 import { emailValidator } from "@/common/utils/validator/yup";
 import { ForgotPasswordPayload } from "@/common/contexts/AuthContext/interfaces/interface";
 import { genOtpUrl } from "@/common/utils/otpUrl";
 import { IconMail } from "@tabler/icons-react";
+import { InputAdornment, Stack } from "@mui/material";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { useAuth } from "@/common/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useEncrypt } from "@/common/contexts/EncryptContext";
@@ -15,7 +16,6 @@ import * as yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Turnstile from "react-turnstile";
-import { PageUrl } from "@/common/constants/pageUrl";
 
 const validationSchema = yup.object({
   email: emailValidator,

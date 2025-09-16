@@ -28,14 +28,14 @@ const Error404 = () => {
         <Typography align="center" variant="h4" mb={4}>
           This page you are looking for could not be found.
         </Typography>
-        <Button
+        {/* <Button
           color="primary"
           variant="contained"
           disableElevation
           onClick={() => router.back()}
         >
           Go Back
-        </Button>
+        </Button> */}
       </Container>
     </Box>
   );

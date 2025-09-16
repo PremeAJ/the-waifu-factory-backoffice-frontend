@@ -2,9 +2,10 @@
 import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Divider, InputAdornment } from "@mui/material";
 import { emailValidator, requiredPasswordSchema } from "@/common/utils/validator/yup";
 import { IconLock, IconMail } from "@tabler/icons-react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { PageUrl } from "@/common/constants/pageUrl";
+import { signIn } from "next-auth/react";
 import { useFormik } from "formik";
-import { useRouter } from "next/navigation";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import AuthSocialButtons from "../../components/AuthSocialButtons";
@@ -13,8 +14,6 @@ import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Turnstile from "react-turnstile";
-import { useProfile } from "@/common/contexts/ProfileContext";
-import { PageUrl } from "@/common/constants/pageUrl";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -22,11 +21,9 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = () => {
-  const { data: session, status } = useSession();
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
   const { appearance } = useProfile();
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
@@ -64,7 +61,6 @@ const AuthLogin = () => {
       <form onSubmit={formik.handleSubmit}>
         <Stack>
           <Box>
-            {JSON.stringify(session)}
             <BaseTextField
               name="email"
               formik={formik}
