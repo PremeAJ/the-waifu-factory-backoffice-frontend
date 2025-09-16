@@ -49,7 +49,7 @@ const Sidebar = () => {
             slotProps={{
               paper: {
                 sx: {
-                  mt: 8,
+                  zIndex: 99,
                   transition: theme.transitions.create("width", {
                     duration: theme.transitions.duration.shortest,
                   }),
@@ -60,6 +60,7 @@ const Sidebar = () => {
             }}
           >
             <Box
+              mt={8}
               sx={{
                 height: "100%",
               }}

@@ -37,21 +37,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <SidebarStateProvider>
       <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-        <Box sx={{ height: "100vh", borderRight: "1px solid #eee" }}>
-          <Sidebar />
-        </Box>
-        <PageWrapper
-          className="page-wrapper"
-          sx={{ ...(isCollapse === "mini_sidebar" && { [theme.breakpoints.up("lg")]: { ml: `87px`, }, }), }}
-        >
+        <Sidebar />
+        <PageWrapper className="page-wrapper" sx={{ ...(isCollapse === "mini_sidebar" && { [theme.breakpoints.up("lg")]: { ml: `87px` } }) }}>
           <Container
             sx={{
               pt: "30px",
               maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
-              mt: isMobile && isSubMenu ? 6 : undefined,
+              mt: isMobile ? undefined : 6,
             }}
           >
-            <Box sx={{ minHeight: "calc(100vh - 170px)" }} mt={isMobile ? 1 : 10}>{children}</Box>
+            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
           </Container>
         </PageWrapper>
       </MainWrapper>

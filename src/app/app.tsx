@@ -26,43 +26,6 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
         });
       }
     }
-
-    // Visual viewport / keyboard handling (for mobile iOS/Android)
-    const updateViewportVars = () => {
-      try {
-        const vv = (window as any).visualViewport;
-        const visibleHeight = vv ? vv.height : window.innerHeight;
-        // --dvh: dynamic viewport height (in px)
-        document.documentElement.style.setProperty("--dvh", `${visibleHeight}px`);
-        // keyboard offset = window.innerHeight - visualViewport.height - offsetTop (if any)
-        const keyboardHeight = Math.max(0, window.innerHeight - visibleHeight - (vv?.offsetTop ?? 0));
-        document.documentElement.style.setProperty("--keyboard-offset", `${keyboardHeight}px`);
-      } catch {
-        document.documentElement.style.setProperty("--dvh", `${window.innerHeight}px`);
-        document.documentElement.style.setProperty("--keyboard-offset", `0px`);
-      }
-    };
-
-    updateViewportVars();
-
-    const vv = (window as any).visualViewport;
-    if (vv) {
-      vv.addEventListener("resize", updateViewportVars);
-      vv.addEventListener("scroll", updateViewportVars);
-    } else {
-      window.addEventListener("resize", updateViewportVars);
-      window.addEventListener("orientationchange", updateViewportVars);
-    }
-
-    return () => {
-      if (vv) {
-        vv.removeEventListener("resize", updateViewportVars);
-        vv.removeEventListener("scroll", updateViewportVars);
-      } else {
-        window.removeEventListener("resize", updateViewportVars);
-        window.removeEventListener("orientationchange", updateViewportVars);
-      }
-    };
   }, []);
 
   return (
