@@ -1,15 +1,14 @@
 "use client";
-import { useMediaQuery, useTheme } from "@mui/material";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { redirect } from "next/navigation";
 import MobileSettingsList from "./components/MobileSettingsList";
 import PageContainer from "@/components/container/PageContainer";
-import { PageUrl } from "@/common/constants/pageUrl";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 export default function SettingPage() {
-  const theme = useTheme();
-  const isLg = useMediaQuery(theme.breakpoints.down("lg"));
+  const isMobile = useIsMobile();
 
-  if (!isLg) {
+  if (!isMobile) {
     redirect(`${PageUrl.SETTING}/account/profile`);
   }
 
