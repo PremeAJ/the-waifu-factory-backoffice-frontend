@@ -9,7 +9,7 @@ import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 const AppShortcutButton = () => {
   const { toggleAppShortcut } = useSidebarState();
   const isMobile = useIsMobile();
-  const isSubmenu = useIsSubMenu()
+  const isSubmenu = useIsSubMenu();
 
   return (
     <BaseFab
@@ -19,9 +19,10 @@ const AppShortcutButton = () => {
       onClick={toggleAppShortcut}
       sx={{
         position: "fixed",
-        bottom: 16,
+        bottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
         left: "50%",
         transform: "translateX(-50%)",
+        transition: "bottom 180ms ease", // Optional: for smooth transition
       }}
       open={isMobile && !isSubmenu}
     >
