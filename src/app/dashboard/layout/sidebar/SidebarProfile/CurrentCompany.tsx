@@ -1,12 +1,12 @@
-import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
-import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
-import { useProfile } from "@/common/contexts/ProfileContext";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { UserContext } from "@/common/contexts/UserContext";
-import { I18nString } from "@/common/utils/i18n/I18nString";
 import { Box, Typography, useMediaQuery } from "@mui/material";
+import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconTransfer } from "@tabler/icons-react";
 import { useContext, useState } from "react";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { UserContext } from "@/common/contexts/UserContext";
+import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
+import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 
 export const CurrentCompany = () => {
   const { isLanguage } = useContext(CustomizerContext);
@@ -14,9 +14,6 @@ export const CurrentCompany = () => {
   const { companies } = user || {};
   const { activeCompany } = useProfile();
   const { name, logoUrl, businessTypeId, branchNameTh, branchNameEn } = activeCompany || {};
-  // const { name, logoUrl, businessTypeId, companyUsers } = companies || {};
-  // const { roles, branches } = companyUsers?.[0] || {};
-  // const { nameTh: branchNameTh, nameEn: branchNameEN } = branches || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const { isSidebarHover, isCollapse } = useContext(CustomizerContext);
   const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";

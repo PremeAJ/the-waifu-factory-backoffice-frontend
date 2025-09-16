@@ -10,8 +10,8 @@ import { PageUrl } from "@/common/constants/pageUrl";
 
 interface SelectCompanyDialogProps {
   open: boolean;
-  onClose?: () => void;
-  disableBackdropClose?: boolean; // เพิ่ม prop นี้
+  onClose: () => void;
+  disableBackdropClose?: boolean;
 }
 
 const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose, disableBackdropClose = false }) => {
@@ -56,7 +56,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
           </ListItemButton>
         );
       })}
-      <ListItemButton autoFocus onClick={() => handleSelect("addAccount")}>
+      <ListItemButton onClick={() => handleSelect("addAccount")}>
         <ListItemAvatar>
           <Avatar>
             <IconPlus width={20} height={20} />
@@ -67,14 +67,17 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
     </List>
   );
 
-  const handleDialogClose = (event?: object, reason?: string) => {
-    if (disableBackdropClose && (reason === "backdropClick" || reason === "escapeKeyDown")) {
-      return;
-    }
-    if (onClose) onClose();
-  };
-
-  return <BaseDialog open={open} title="เลือกบริษัทที่ต้องการใช้งาน" content={companyListContent} onClose={handleDialogClose} onConfirm={() => {}} disableBackdropClose/>;
+  return (
+    <BaseDialog
+      content={companyListContent}
+      disableBackdropClose={disableBackdropClose}
+      noAction={true}
+      onClose={onClose}
+      onConfirm={() => {}}
+      open={open}
+      title="เลือกบริษัทที่ต้องการใช้งาน"
+    />
+  );
 };
 
 export default SelectCompanyDialog;

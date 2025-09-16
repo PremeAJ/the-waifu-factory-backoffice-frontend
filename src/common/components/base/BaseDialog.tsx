@@ -1,50 +1,52 @@
 "use client";
-import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
 import { IconAlertTriangle, IconCircleCheck, IconInfoCircle, IconX } from "@tabler/icons-react";
+import { TransitionProps } from "@mui/material/transitions";
 import BaseButton from "@/common/components/base/BaseButton";
+import React from "react";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & { children: React.ReactElement }, ref: React.Ref<unknown>) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 interface BaseDialogProps {
-  open: boolean;
-  title: string;
-  content: string | React.ReactNode;
-  confirmText?: string;
   cancelText?: string;
-  onConfirm: () => void;
-  onClose: () => void;
   confirmColor?: "primary" | "error" | "success";
-  loading?: boolean;
-  icon?: string;
-  iconType?: "success" | "error" | "warning" | "info";
-  iconSize?: number;
+  confirmText?: string;
+  content: string | React.ReactNode;
+  disableBackdropClose?: boolean; 
   fullScreen?: boolean;
-  scrolling?: boolean;
   htmlContent?: boolean;
-  disableBackdropClose?: boolean; // เพิ่ม prop นี้
+  icon?: string;
+  iconSize?: number;
+  iconType?: "success" | "error" | "warning" | "info";
+  loading?: boolean;
+  noAction?: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  open: boolean;
+  scrolling?: boolean;
+  title: string;
 }
 
 const BaseDialog: React.FC<BaseDialogProps> = ({
-  open,
-  title,
-  content,
-  confirmText,
   cancelText,
-  onConfirm,
-  onClose,
   confirmColor = "primary",
-  loading = false,
-  icon,
-  iconType,
-  iconSize = 80,
+  confirmText,
+  content,
+  disableBackdropClose = true,
   fullScreen = false,
-  scrolling = false,
   htmlContent = false,
-  disableBackdropClose = false, // เพิ่ม default
+  icon,
+  iconSize = 80,
+  iconType,
+  loading = false,
+  noAction = false,
+  onClose,
+  onConfirm,
+  open,
+  scrolling = false,
+  title,
 }) => {
   const handleDialogClose = (event?: object, reason?: string) => {
     if (disableBackdropClose && (reason === "backdropClick" || reason === "escapeKeyDown")) {
@@ -125,6 +127,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
           <Box id="alert-dialog-slide-description">{content}</Box>
         )}
       </DialogContent>
+      {noAction ? null : (
       <DialogActions
         sx={
           fullScreen
@@ -168,6 +171,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
           </>
         )}
       </DialogActions>
+      )}
     </Dialog>
   );
 };
