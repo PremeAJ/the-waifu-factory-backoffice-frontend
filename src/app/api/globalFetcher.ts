@@ -1,11 +1,15 @@
 import { Method } from "@/common/constants/method";
 import { getHeaders } from "@/common/utils/getHeaders";
+import { signOut } from "next-auth/react";
 
 async function handleResponse(res: Response, method: string, url: string) {
-  return res.json();
+  const data = await res.json();
+  if (typeof window !== "undefined" && data?.statusCode === 401) {
+    signOut();
+  }
+  return data;
 }
 
-// สร้างฟังก์ชัน fetcher หลัก
 const baseFetcher = async (
   method: string,
   url: string | [string, Record<string, any>],
@@ -22,13 +26,11 @@ const baseFetcher = async (
     fullUrl = url;
   }
 
-  // แปลง params เป็น query string สำหรับ GET
   if (method === Method.GET && params && Object.keys(params).length > 0) {
     const search = new URLSearchParams(params).toString();
     fullUrl += (fullUrl.includes("?") ? "&" : "?") + search;
   }
 
-  // แปลงเป็น absolute URL ถ้าเริ่มต้นด้วย /
   if (typeof fullUrl === "string" && fullUrl.startsWith("/")) {
     if (typeof window !== "undefined") {
       fullUrl = window.location.origin + fullUrl;
