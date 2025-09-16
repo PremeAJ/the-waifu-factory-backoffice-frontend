@@ -59,16 +59,16 @@ interface ProfileType {
 }
 const profile: ProfileType[] = [
   {
-    href: "/dashboard/setting",
-    title: "Settings",
+    href: PageUrl.SETTING,
     icon: IconSettings,
     subtitle: "Account Settings",
+    title: "Settings",
   },
   {
     href: PageUrl.DASHBOARD,
-    title: "My Company",
-    subtitle: "Dashboard",
     icon: IconBuildingCommunity,
+    subtitle: "Dashboard",
+    title: "My Company",
   },
 ];
 

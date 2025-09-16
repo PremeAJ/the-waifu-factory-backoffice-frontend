@@ -1,19 +1,16 @@
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles";
-import SidebarItems from "./SidebarItems";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import config from "@/common/contexts/setting/config";
-
-import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import { useContext } from "react";
-import Logo from "@/common/components/shared/Logo";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import config from "@/common/contexts/setting/config";
+import Drawer from "@mui/material/Drawer";
+import Scrollbar from "@/components/custom-scroll/Scrollbar";
+import SidebarItems from "./SidebarItems";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } =
-    useContext(CustomizerContext);
+  const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
 
@@ -43,9 +40,6 @@ const Sidebar = () => {
             }),
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar for desktop */}
-          {/* ------------------------------------------- */}
           <Drawer
             anchor="left"
             open
@@ -65,27 +59,14 @@ const Sidebar = () => {
               },
             }}
           >
-            {/* ------------------------------------------- */}
-            {/* Sidebar Box */}
-            {/* ------------------------------------------- */}
             <Box
               sx={{
                 height: "100%",
               }}
             >
-              {/* ------------------------------------------- */}
-              {/* Logo */}
-              {/* ------------------------------------------- */}
-              {/* <Box px={3}>
-                <Logo />
-              </Box> */}
               <Scrollbar sx={{ height: "calc(100% - 190px)" }}>
-                {/* ------------------------------------------- */}
-                {/* Sidebar Items */}
-                {/* ------------------------------------------- */}
                 <SidebarItems />
               </Scrollbar>
-              {/* <Profile /> */}
             </Box>
           </Drawer>
         </Box>
@@ -98,7 +79,7 @@ const Sidebar = () => {
           slotProps={{
             paper: {
               sx: {
-                mt:8,
+                mt: 8,
                 zIndex: 99,
                 width: SidebarWidth,
                 border: "0 !important",
@@ -111,7 +92,7 @@ const Sidebar = () => {
           {/* Logo */}
           {/* ------------------------------------------- */}
           {/* <Box px={2}> */}
-            {/* <Logo /> */}
+          {/* <Logo /> */}
           {/* </Box> */}
           {/* ------------------------------------------- */}
           {/* Sidebar For Mobile */}

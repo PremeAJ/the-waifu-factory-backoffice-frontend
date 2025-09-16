@@ -1,18 +1,18 @@
 import { uniqueId } from "lodash";
 import {
-  IconUser,
-  IconMapPin,
-  IconKey,
-  IconDeviceMobile,
-  IconPalette,
-  IconLock,
   IconBell,
-  IconWallet,
   IconHelp,
+  IconHome,
+  IconKey,
+  IconLock,
+  IconMapPin,
   IconMessage,
-  IconHome
+  IconPalette,
+  IconUser,
+  IconWallet,
 } from "@tabler/icons-react";
 import { NavGroup } from "@/common/utils/types/layout/sidebar";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const Menuitems: NavGroup[] = [
   {
@@ -23,25 +23,25 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "บัญชีของฉัน",
     icon: IconUser,
-    href: "/dashboard/setting/account/profile",
+    href: `${PageUrl.SETTING}/account/profile`,
     children: [
       {
         id: uniqueId(),
         title: "ข้อมูลส่วนตัว",
         icon: IconHome,
-        href: "/dashboard/setting/account/profile",
+        href: `${PageUrl.SETTING}/account/profile`,
       },
       {
         id: uniqueId(),
         title: "ที่อยู่",
         icon: IconMapPin,
-        href: "/setting/account/address",
+        href: `${PageUrl.SETTING}/account/address`,
       },
       {
         id: uniqueId(),
         title: "รหัสผ่าน",
         icon: IconKey,
-        href: "/setting/account/security",
+        href: `${PageUrl.SETTING}/account/security`,
       },
     ],
   },
@@ -53,7 +53,7 @@ const Menuitems: NavGroup[] = [
     id: uniqueId(),
     title: "การแสดงผล",
     icon: IconPalette,
-    href: "/dashboard/setting/appearance",
+    href: `${PageUrl.SETTING}/appearance`,
   },
   {
     id: uniqueId(),

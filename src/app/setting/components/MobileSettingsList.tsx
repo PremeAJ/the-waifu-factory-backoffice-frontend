@@ -22,7 +22,7 @@ import {
 import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { UserContext } from "@/common/contexts/UserContext";
-import Menuitems from "./sidebar/MenuItems"; // นำเข้า Menuitems 
+import Menuitems from "../layout/sidebar/MenuItems"; // นำเข้า Menuitems 
 import { useProfile } from "@/common/contexts/ProfileContext";
 
 const MobileSettingsList = () => {
