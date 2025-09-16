@@ -6,4 +6,6 @@ export enum HeadersKey {
   Lang = 'x-lang',
   UserAgent = 'User-Agent',
   AppVersion = 'x-app-version',
+  Latitude = 'x-latitude',
+  Longitude = 'x-longitude',
 }

@@ -15,6 +15,12 @@ import React from "react";
 import { HeadersKey } from "@/common/constants/header";
 
 Cookies.set(HeadersKey.UserAgent, navigator.userAgent, { path: "/" });
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition((position) => {
+    Cookies.set(HeadersKey.Latitude, position.coords.latitude.toString(), { path: "/" });
+    Cookies.set(HeadersKey.Longitude, position.coords.longitude.toString(), { path: "/" });
+  });
+}
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   const theme = ThemeSettings();
 

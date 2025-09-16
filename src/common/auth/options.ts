@@ -16,12 +16,15 @@ async function header(accessToken?: string) {
   }
   const language = cookieStore.get(HeadersKey.Lang)?.value || "th";
   const userAgent = cookieStore.get(HeadersKey.UserAgent)?.value || "";
-
+  const latitude = cookieStore.get(HeadersKey.Latitude)?.value || "";
+  const longitude = cookieStore.get(HeadersKey.Longitude)?.value || "";
   const headers = getHeaders();
   if (accessToken) headers[HeadersKey.Authorization] = `Bearer ${accessToken}`;
   if (deviceId) headers[HeadersKey.DeviceId] = deviceId;
   if (language) headers[HeadersKey.Lang] = language;
   if (userAgent) headers[HeadersKey.UserAgent] = userAgent;
+  if (latitude) headers[HeadersKey.Latitude] = latitude;
+  if (longitude) headers[HeadersKey.Longitude] = longitude;
   return headers;
 }
 
