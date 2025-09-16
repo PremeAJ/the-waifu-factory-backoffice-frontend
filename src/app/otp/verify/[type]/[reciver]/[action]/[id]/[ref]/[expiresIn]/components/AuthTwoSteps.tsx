@@ -111,7 +111,7 @@ const AuthTwoSteps = () => {
           </Typography>
         )}
       </Stack>
-      <BaseButton onClick={() => console.log(otp)} variant="contained" label="ยืนยัน" loading={loading} />
+      <BaseButton onClick={onFocusVerifyOtp} variant="contained" label="ยืนยัน" loading={loading} />
       <Stack direction="row" spacing={1} mt={3} alignItems="center" justifyContent="space-between">
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography color="textSecondary" variant="h6" fontWeight="400">

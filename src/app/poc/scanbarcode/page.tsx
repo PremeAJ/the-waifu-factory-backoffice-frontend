@@ -6,7 +6,6 @@ export default function ScanBarcodePage() {
   return (
     <BarcodeScanner
       onScan={(result) => {
-        // ทำอะไรก็ได้กับผลลัพธ์ เช่น alert หรือบันทึกลง state
         console.log("Scanned:", result);
       }}
       onError={(err) => {
