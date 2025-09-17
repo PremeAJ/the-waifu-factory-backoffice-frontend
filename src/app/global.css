@@ -9,17 +9,3 @@ user-select: none;
 :root {
   --keyboard-offset: 0px;
 }
-
-html, body, #__next {
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-}
-
-.fab, .fixed-bottom {
-  transition: bottom 180ms ease, transform 180ms ease;
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-}
-
-.keyboard-open .some-sticky {
-  padding-bottom: calc(var(--keyboard-offset, 0px) + env(safe-area-inset-bottom, 0px));
-}

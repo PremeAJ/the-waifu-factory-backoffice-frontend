@@ -25,7 +25,7 @@ interface BaseDropdownProps extends Omit<SelectProps, "onChange" | "value"> {
   showEmptyOption?: boolean;
   emptyOptionText?: string;
   loading?: boolean;
-  renderOption?: (option: OptionType) => React.ReactNode; // เพิ่ม renderOption prop
+  renderOption?: (option: OptionType) => React.ReactNode;
 }
 
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
@@ -41,7 +41,7 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     },
   },
   "& .MuiSelect-select": {
-    minHeight: "1.4375em", // รักษาความสูงให้เท่ากับ TextField
+    minHeight: "1.4375em",
     textAlign: "left !important",
   },
   "& .MuiList-root": {
@@ -72,14 +72,12 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
   fullWidth = true,
   loading = false,
   size,
-  renderOption, // เพิ่ม renderOption
+  renderOption,
   ...rest
 }) => {
-  // จัดเรียง options ถ้ามี orderBy
   const sortedOptions = orderBy ? [...options].sort(orderBy) : options;
 
-  // จัดกลุ่ม options ถ้ามี groupBy
-  const groupedOptions = groupBy 
+  const groupedOptions = groupBy
     ? sortedOptions.reduce((groups, option) => {
         const group = groupBy(option);
         if (!groups[group]) groups[group] = [];
@@ -88,33 +86,25 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
       }, {} as Record<string, OptionType[]>)
     : null;
 
-  // ค่าที่แสดงใน Select
-  const currentValue = formik 
-    ? (formik.values[name] !== undefined ? formik.values[name] : "") 
+  const currentValue = formik
+    ? (formik.values[name] !== undefined ? formik.values[name] : "")
     : (controlledValue !== undefined ? controlledValue : "");
 
-  // Function สำหรับจัดการการเปลี่ยนแปลงค่า
   const handleChange = (event: any) => {
     let newValue = event.target.value;
-    
-    // Convert string boolean back to actual boolean
     if (newValue === "true") newValue = true;
     if (newValue === "false") newValue = false;
-    
     if (formik) {
       formik.setFieldValue(name, newValue);
     }
-    
     if (controlledOnChange) {
       controlledOnChange(newValue);
     }
   };
 
-  // Error state
   const hasError = formik?.touched[name] && Boolean(formik.errors[name]);
   const helperText = formik?.touched[name] && formik.errors[name];
 
-  // 4. เพิ่ม Logic การแสดง Skeleton
   if (loading) {
     return (
       <>
@@ -124,7 +114,6 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
     );
   }
 
-  // Function สำหรับ render option content
   const renderOptionContent = (option: OptionType) => {
     return renderOption ? renderOption(option) : option.text;
   };
@@ -140,10 +129,7 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
       {tooltip ? (
         <Tooltip title={tooltip} placement="bottom-start">
           <span style={{ display: "block" }}>
-            <StyledFormControl 
-              fullWidth={fullWidth} 
-              error={hasError}
-            >
+            <StyledFormControl fullWidth={fullWidth} error={hasError}>
               <Select
                 value={currentValue}
                 onChange={handleChange}
@@ -157,50 +143,42 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
                     <em>{emptyOptionText}</em>
                   </MenuItem>
                 )}
-                
                 {placeholder && !showEmptyOption && (
                   <MenuItem value="" disabled>
                     <em>{placeholder}</em>
                   </MenuItem>
                 )}
-                {groupedOptions ? (
-                  Object.entries(groupedOptions).map(([groupName, groupOptions]) => [
-                    <MenuItem key={`group-${groupName}`} disabled>
-                      <strong>{groupName}</strong>
-                    </MenuItem>,
-                    ...groupOptions.map((option) => (
-                      <MenuItem 
-                        key={option.value} 
-                        value={option.value}
-                        disabled={option.disabled}
-                        sx={{ pl: 4 }} // indent สำหรับ grouped items
-                      >
-                        {option.text}
+                {groupedOptions
+                  ? Object.entries(groupedOptions).map(([groupName, groupOptions]) => [
+                      <MenuItem key={`group-${groupName}`} disabled>
+                        <strong>{groupName}</strong>
+                      </MenuItem>,
+                      ...groupOptions.map((option) => (
+                        <MenuItem
+                          key={option.value}
+                          value={option.value}
+                          disabled={option.disabled}
+                          sx={{ pl: 4 }}
+                        >
+                          {renderOptionContent(option)}
+                        </MenuItem>
+                      )),
+                    ])
+                  : sortedOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value} disabled={option.disabled}>
+                        {renderOptionContent(option)}
                       </MenuItem>
-                    ))
-                  ])
-                ) : (
-                  /* Render normal options */
-                  sortedOptions.map((option) => (
-                    <MenuItem 
-                      key={option.value} 
-                      value={option.value}
-                      disabled={option.disabled}
-                    >
-                      {option.text}
-                    </MenuItem>
-                  ))
-                )}
+                    ))}
               </Select>
-              
-              {/* Helper text สำหรับ error */}
               {hasError && (
-                <div style={{ 
-                  color: '#d32f2f', 
-                  fontSize: '0.75rem', 
-                  marginTop: '3px',
-                  marginLeft: '14px' 
-                }}>
+                <div
+                  style={{
+                    color: "#d32f2f",
+                    fontSize: "0.75rem",
+                    marginTop: "3px",
+                    marginLeft: "14px",
+                  }}
+                >
                   {helperText}
                 </div>
               )}
@@ -208,10 +186,7 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
           </span>
         </Tooltip>
       ) : (
-        <StyledFormControl 
-          fullWidth={fullWidth} 
-          error={hasError}
-        >
+        <StyledFormControl fullWidth={fullWidth} error={hasError}>
           <Select
             value={currentValue}
             onChange={handleChange}
@@ -220,59 +195,47 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
             id={name}
             {...rest}
           >
-            {/* Empty option สำหรับ placeholder */}
             {showEmptyOption && (
               <MenuItem value="">
                 <em>{emptyOptionText}</em>
               </MenuItem>
             )}
-            
-            {/* Placeholder option */}
             {placeholder && !showEmptyOption && (
               <MenuItem value="" disabled>
                 <em>{placeholder}</em>
               </MenuItem>
             )}
-
-            {/* Render grouped options */}
-            {groupedOptions ? (
-              Object.entries(groupedOptions).map(([groupName, groupOptions]) => [
-                <MenuItem key={`group-${groupName}`} disabled>
-                  <strong>{groupName}</strong>
-                </MenuItem>,
-                ...groupOptions.map((option) => (
-                  <MenuItem 
-                    key={option.value} 
-                    value={option.value}
-                    disabled={option.disabled}
-                    sx={{ pl: 4 }} // indent สำหรับ grouped items
-                  >
-                    {option.text}
+            {groupedOptions
+              ? Object.entries(groupedOptions).map(([groupName, groupOptions]) => [
+                  <MenuItem key={`group-${groupName}`} disabled>
+                    <strong>{groupName}</strong>
+                  </MenuItem>,
+                  ...groupOptions.map((option) => (
+                    <MenuItem
+                      key={option.value}
+                      value={option.value}
+                      disabled={option.disabled}
+                      sx={{ pl: 4 }}
+                    >
+                      {renderOptionContent(option)}
+                    </MenuItem>
+                  )),
+                ])
+              : sortedOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value} disabled={option.disabled}>
+                    {renderOptionContent(option)}
                   </MenuItem>
-                ))
-              ])
-            ) : (
-              /* Render normal options */
-              sortedOptions.map((option) => (
-                <MenuItem 
-                  key={option.value} 
-                  value={option.value}
-                  disabled={option.disabled}
-                >
-                  {option.text}
-                </MenuItem>
-              ))
-            )}
+                ))}
           </Select>
-          
-          {/* Helper text สำหรับ error */}
           {hasError && (
-            <div style={{ 
-              color: '#d32f2f', 
-              fontSize: '0.75rem', 
-              marginTop: '3px',
-              marginLeft: '14px' 
-            }}>
+            <div
+              style={{
+                color: "#d32f2f",
+                fontSize: "0.75rem",
+                marginTop: "3px",
+                marginLeft: "14px",
+              }}
+            >
               {helperText}
             </div>
           )}

@@ -1,7 +1,7 @@
 "use client";
 import { CategoriesContextType, CategoryDetailType, CreateCategoryDto, UpdateCategoryDto } from "./interfaces/categories";
 import { defaultPageOptions } from "@/common/interface/paginate";
-import { getFetcher, postFetcher, patchFetcher, deleteFetcher } from "@/app/api/globalFetcher";
+import { getFetcher, postFetcher, deleteFetcher, putFetcher } from "@/app/api/globalFetcher";
 import { useDialog } from "../DialogContext";
 import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
 import useSWR from "swr";
@@ -9,15 +9,15 @@ import useSWR from "swr";
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
 
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [isActive, setIsActive] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
+  const [search, setSearch] = useState("");
+  const { showError } = useDialog();
   const endpoint = "/api/categories";
   const masterIconEndpoint = "/api/master/icon/category";
-  const { showError } = useDialog();
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [perPage, setPerPage] = useState(5);
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isActive, setIsActive] = useState<boolean | null>(null);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -103,7 +103,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const updateCategory = async (id: string, payload: UpdateCategoryDto) => {
     try {
       setIsLoading(true);
-      await patchFetcher(`${endpoint}/${id}`, payload);
+      await putFetcher(`${endpoint}/${id}`, payload);
       await categoriesMutate();
       await dropdownMutate();
     } catch (err: any) {
@@ -127,26 +127,26 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const value: CategoriesContextType = {
-    search,
-    setPage,
-    isActive,
-    setSearch,
-    setPerPage,
-    setIsActive,
+    categories: categoriesData?.data?.data || [],
+    categoriesMutate,
+    categoryIcons: categoryIconsData?.data || [],
+    categoryIconsLoading,
+    categoryIconsMutate,
     createCategory,
     deleteCategory,
-    dropdownMutate,
-    updateCategory,
-    getCategoryById,
-    categoriesMutate,
-    categoryIconsMutate,
-    categoryIconsLoading,
     dropdown: dropdownData?.data || [],
-    loading: categoriesLoading || isLoading,
-    categories: categoriesData?.data?.data || [],
-    categoryIcons: categoryIconsData?.data || [],
-    pageOptions: categoriesData?.data?.pageOptions || defaultPageOptions,
+    dropdownMutate,
     error: categoriesError || dropdownError || categoryIconsError || null,
+    getCategoryById,
+    isActive,
+    loading: categoriesLoading || isLoading,
+    pageOptions: categoriesData?.data?.pageOptions || defaultPageOptions,
+    search,
+    setIsActive,
+    setPage,
+    setPerPage,
+    setSearch,
+    updateCategory,
   };
 
   return <CategoriesContext.Provider value={value}>{children}</CategoriesContext.Provider>;

@@ -219,32 +219,20 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
             </Grid>
 
             <Grid size={isMobile ? 12 : 6}>
-              <BaseAutoComplete
+              <BaseDropdown
+                loading={fetchLoading}
                 formik={formik}
                 name="icon"
                 label="Icon"
                 options={categoryIcons}
-                freeSolo={false}
-                clearOnEscape
-                placeholder="Search icon..."
-                loading={fetchLoading}
+                placeholder="เลือก icon..."
                 orderBy={(a, b) => a.text.localeCompare(b.text)}
-                renderOption={(props, option) => {
-                  const { key, ...otherProps } = props;
-                  return (
-                    <Box 
-                      component="li" 
-                      key={key} 
-                      {...otherProps} 
-                      display="flex" 
-                      alignItems="center" 
-                      gap={1}
-                    >
-                      {renderTablerIcon(option.value, { size: 16 })}
-                      {option.text}
-                    </Box>
-                  );
-                }}
+                renderOption={(option) => (
+                  <Box display="flex" alignItems="center" gap={1}>
+                    {renderTablerIcon(option.value, { size: 16 })}
+                    {option.text}
+                  </Box>
+                )}
               />
             </Grid>
 

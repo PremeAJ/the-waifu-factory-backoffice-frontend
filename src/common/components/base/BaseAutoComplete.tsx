@@ -82,9 +82,7 @@ function BaseAutoComplete<T extends OptionType>({
         groupBy={groupBy}
         disabled={disabled}
         renderOption={renderOption}
-        clearOnEscape 
-        openOnFocus 
-        autoHighlight
+        clearOnEscape // เพิ่ม clearOnEscape
         renderInput={(params) => (
           <TextField
             {...params}
