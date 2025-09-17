@@ -37,7 +37,7 @@ const BaseOTP: React.FC<BaseOTPProps> = ({
   };
 
   return (
-    <Stack spacing={2} direction="row" width="100%">
+    <Stack spacing={1} direction="row" justifyContent="space-between">
       {Array.from({ length }).map((_, idx) => (
         <TextField
           key={idx}
@@ -47,7 +47,7 @@ const BaseOTP: React.FC<BaseOTPProps> = ({
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(idx, e)}
           inputProps={{
             maxLength: 1,
-            style: { textAlign: "center", fontSize: 24, padding: "10px 0" },
+            style: { textAlign: "center", fontSize: 20, padding: "8px 0" },
             inputMode: "numeric",
             pattern: "[0-9]*",
           }}
@@ -55,9 +55,10 @@ const BaseOTP: React.FC<BaseOTPProps> = ({
           disabled={disabled}
           variant="outlined"
           sx={{
-            flex: 1,
-            minWidth: 0,
+            width: 48, // กำหนดความกว้าง
+            height: 48, // กำหนดความสูง
             "& .MuiOutlinedInput-root": {
+              height: "100%", // ทำให้ input field สูงเต็ม
               "& fieldset": {
                 borderColor: error ? "error.main" : undefined,
               },

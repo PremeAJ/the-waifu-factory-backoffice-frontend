@@ -21,6 +21,7 @@ import EmailChangeFlow from "@/components/pages/settings/account-setting/EmailCh
 import PhoneChangeFlow from "@/components/pages/settings/account-setting/PhoneChangeFlow";
 import React, { useContext, useState, useRef } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import OtpDialog from "@/common/components/dialogs/OtpDialog";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -208,6 +209,12 @@ const AccountTab = () => {
       />
       <EmailChangeFlow open={showEmailChangeFlow} onClose={() => setShowEmailChangeFlow(false)} currentEmail={email || ""} />
       <PhoneChangeFlow open={showPhoneChangeFlow} onClose={() => setShowPhoneChangeFlow(false)} currentPhone={phone || ""} />
+         {/* <OtpDialog
+          open={true}
+          onClose={() => console.log("close")}
+          params={null}
+          onSuccess={(data) => console.log("success", data)}
+        /> */}
     </Grid>
   );
 };
