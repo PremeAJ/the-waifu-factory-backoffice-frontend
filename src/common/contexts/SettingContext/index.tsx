@@ -2,13 +2,10 @@
 import React, { createContext, useContext, useState } from "react";
 import { putFetcher } from "@/app/api/globalFetcher";
 import { useProfile } from "../ProfileContext";
+import { Appearance } from "../ProfileContext/interfaces/interface";
+import { useDialog } from "../DialogContext";
 
-export interface AppearanceSettings {
-  isLanguage: string;
-  activeMode: string;
-  activeTheme: string;
-  isCollapse: string;
-}
+export interface AppearanceSettings extends Appearance {}
 
 export interface SettingContextType {
   updateAppearance: (payload: Partial<AppearanceSettings>) => Promise<any>;
@@ -18,14 +15,18 @@ export interface SettingContextType {
 export const SettingContext = createContext<SettingContextType>({} as SettingContextType);
 
 export const SettingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { appearanceMutate } = useProfile();
+  const {showError} = useDialog()
+  const { appearanceMutate, appearance } = useProfile();
   const [loading, setLoading] = useState(false);
 
   const updateAppearance = async (payload: Partial<AppearanceSettings>) => {
     setLoading(true);
+    await appearanceMutate({ data: { ...appearance, ...payload } }, false);
     const response = await putFetcher("/api/profile/appearance", payload);
-    await appearanceMutate();
     setLoading(false);
+    if (response?.error) {
+      showError({message: "Failed to update appearance settings."})
+    }
     return response;
   };
 

@@ -1,3 +1,5 @@
+import { KeyedMutator } from "swr";
+
 export interface CompanyListItem {
   companies: Company;
   roles: Role;
@@ -30,7 +32,7 @@ export interface ProfileContextType {
   error: any;
   companyListMutate: () => Promise<any>;
   activeCompanyMutate: () => Promise<any>;
-  appearanceMutate: () => Promise<any>;
+  appearanceMutate: KeyedMutator<any>
   updateProfile: () => Promise<any>;
   updateActiveCompany: (companyId: string) => Promise<any>;
 }
@@ -43,5 +45,5 @@ export interface Appearance {
 }
 
 export type IsLanguage = "en" | "th";
-export type ActiveMode = "light" | "dark";
+export type ActiveMode = "light" | "dark" | 'test';
 export type IsCollapse = "full_sidebar" | "mini_sidebar";

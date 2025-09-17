@@ -49,7 +49,7 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       title: payload.title || "เกิดข้อผิดพลาด",
       message: payload.message,
       showDetails: payload.showDetails ?? false,
-      disableBackdropClose: payload.disableBackdropClose ?? false,
+      disableBackdropClose: payload.disableBackdropClose ?? true,
       callback: payload.callback,
     });
   }, []);
