@@ -74,10 +74,6 @@ const AccountTab = () => {
     if (isMobile) router.replace("/setting");
   };
 
-  const handleSubmit = async (data: Partial<ProfilePayload>) => {
-    await updateProfile(data);
-  };
-
   const formik = useFormik({
     initialValues: {
       firstName: firstName || "",
@@ -86,7 +82,9 @@ const AccountTab = () => {
     },
     validationSchema: validationSchema,
     enableReinitialize: true,
-    onSubmit: handleSubmit,
+    onSubmit: async (data: Partial<ProfilePayload>) => {
+      await updateProfile(data);
+    },
   });
 
   return (
