@@ -45,5 +45,5 @@ export interface Appearance {
 }
 
 export type IsLanguage = "en" | "th";
-export type ActiveMode = "light" | "dark" | 'test';
+export type ActiveMode = "light" | "dark";
 export type IsCollapse = "full_sidebar" | "mini_sidebar";

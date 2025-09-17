@@ -9,7 +9,6 @@ const StatusCard = () => {
   const [status, setStatus] = useState(0);
   const handleChange = (event: { target: { value: React.SetStateAction<number>; }; }) => {
     setStatus(event.target.value);
-    console.log("test");
   };
 
   return (
