@@ -7,7 +7,7 @@ import BaseButton from "@/common/components/base/BaseButton";
 
 const SignInWithGoogleButton = () => {
   const onClick = () => {
-    signIn("google", { callbackUrl: '/' });
+    signIn("google", { callbackUrl: PageUrl.CALLBACK });
   };
   return (
     <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
