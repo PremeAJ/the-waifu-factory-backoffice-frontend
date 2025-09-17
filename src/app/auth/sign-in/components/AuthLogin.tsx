@@ -9,11 +9,12 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import AuthSocialButtons from "../../components/AuthSocialButtons";
+import BaseButton from "@/common/components/base/BaseButton";
+import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import SignInWithGoogleButton from "../../components/SignInWithGoogleButton";
 import Turnstile from "react-turnstile";
 
 const validationSchema = yup.object({
@@ -43,7 +44,6 @@ const AuthLogin = () => {
         password: data.password,
         captchaToken,
       });
-      console.log("🚀 ~ AuthLogin ~ result:", result);
       setIsLoading(false);
       if (result?.error) {
         setCaptchaToken("");
@@ -96,17 +96,7 @@ const AuthLogin = () => {
             <FormGroup>
               <FormControlLabel control={<CustomCheckbox defaultChecked />} label={t("Page.Login.RememberThisDevice")} />
             </FormGroup>
-            <Typography
-              component={Link}
-              href="/auth/forgot-password"
-              fontWeight="500"
-              sx={{
-                textDecoration: "none",
-                color: "primary.main",
-              }}
-            >
-              {t("Page.Login.ForgotPassword")} ?
-            </Typography>
+            <BaseLinkButton underline={false} onClick={() => router.push("/auth/forgot-password")} label={`${t("Page.Login.ForgotPassword")} ?`} />
           </Stack>
         </Stack>
         <Box>
@@ -120,26 +110,14 @@ const AuthLogin = () => {
               language={i18n.language}
             />
           )}
-          <Button color="primary" variant="contained" size="large" fullWidth type="submit" loading={isLoading} disabled={!captchaToken}>
-            {t("Page.Login.SignIn")}
-          </Button>
+          <BaseButton type="submit" loading={isLoading} disabled={!captchaToken} label={t("Page.Login.SignIn")} />
         </Box>
       </form>
       <Stack direction="row" spacing={1} mt={3}>
         <Typography color="textSecondary" variant="h6" fontWeight="500">
           {t("Page.Login.DontHaveAccount")} ?
         </Typography>
-        <Typography
-          component={Link}
-          href={PageUrl.AUTH_SIGN_UP}
-          fontWeight="500"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-          }}
-        >
-          {t("Page.Login.CreateAnAccount")}
-        </Typography>
+        <BaseLinkButton underline={false} onClick={() => router.push(PageUrl.AUTH_SIGN_UP)} label={t("Page.Login.CreateAnAccount")} />
       </Stack>
       <Box mt={3}>
         <Divider>
@@ -148,7 +126,7 @@ const AuthLogin = () => {
           </Typography>
         </Divider>
       </Box>
-      <AuthSocialButtons title="Sign in with" />
+      <SignInWithGoogleButton />
     </>
   );
 };

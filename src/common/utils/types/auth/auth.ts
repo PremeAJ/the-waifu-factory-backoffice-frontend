@@ -9,8 +9,3 @@ export interface loginType {
   subtitle?: React.ReactNode;
   subtext?: React.ReactNode;
 }
-
-export interface signInType {
-  title?: string;
-  isDashboard?: boolean;
-}

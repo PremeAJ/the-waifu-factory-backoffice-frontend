@@ -13,10 +13,12 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import AuthSocialButtons from "../../components/AuthSocialButtons";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Link from "next/link";
+import SignInWithGoogleButton from "../../components/SignInWithGoogleButton";
 import Turnstile from "react-turnstile";
+import BaseButton from "@/common/components/base/BaseButton";
+import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -120,26 +122,17 @@ const AuthRegister = () => {
               language={i18n.language}
             />
           )}
-          <Button color="primary" variant="contained" size="large" fullWidth type="submit" disabled={!captchaToken} loading={loading}>
-            Sign Up
-          </Button>
+          <BaseButton type="submit" disabled={!captchaToken} loading={loading} label="Sign Up" />
         </form>
       </Box>
       <Stack direction="row" spacing={1} mt={3}>
         <Typography color="textSecondary" variant="h6" fontWeight="400">
           Already have an Account?
         </Typography>
-        <Typography
-          component={Link}
-          href={PageUrl.AUTH_SIGN_IN}
-          fontWeight="500"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-          }}
-        >
-          Sign In
-        </Typography>
+        <BaseLinkButton
+        label={t("Page.Login.SignIn")}
+        onClick={() => router.push(PageUrl.AUTH_SIGN_IN)}
+        />
       </Stack>
       <Box mt={3}>
         <Divider>
@@ -148,7 +141,7 @@ const AuthRegister = () => {
           </Typography>
         </Divider>
       </Box>
-      <AuthSocialButtons title="Sign up with" />
+      <SignInWithGoogleButton />
     </>
   );
 };
