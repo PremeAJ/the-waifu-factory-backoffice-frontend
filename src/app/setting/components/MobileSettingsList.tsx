@@ -1,49 +1,28 @@
 "use client";
-import React, { useContext, useState } from "react";
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemButton,
-  Typography,
-  Divider,
-  Box,
-  Avatar,
-  Collapse,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useTheme } from "@mui/material/styles";
-import {
-  IconChevronRight,
-  IconChevronDown,
-  IconMoon,
-} from "@tabler/icons-react";
-import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
+import { Avatar, Box, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { UserContext } from "@/common/contexts/UserContext";
-import Menuitems from "../layout/sidebar/MenuItems"; // นำเข้า Menuitems 
+import { IconChevronRight, IconChevronDown, IconMoon } from "@tabler/icons-react";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useSetting } from "@/common/contexts/SettingContext";
+import { useTheme } from "@mui/material/styles";
+import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
+import Menuitems from "../layout/sidebar/MenuItems"; // นำเข้า Menuitems
+import React, { useContext, useState } from "react";
 
 const MobileSettingsList = () => {
+  const { updateAppearance } = useSetting();
   const theme = useTheme();
   const router = useRouter();
-  const { user } = useContext(UserContext);
-  const { firstName, lastName, avatarUrl, users } = user || {};
-  const {email, phone } = users || {};
-  // State เก็บ ID ของเมนูที่เปิดอยู่
+  const { data: session } = useSession();
+  const { fullName, email, avatar } = session?.profile || {};
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
-  // ฟังก์ชันสลับการแสดง/ซ่อนเมนูย่อย
   const handleMenuToggle = (menuId: string) => {
-    setOpenMenus(prev => 
-      prev.includes(menuId) 
-        ? prev.filter(id => id !== menuId) 
-        : [...prev, menuId]
-    );
+    setOpenMenus((prev) => (prev.includes(menuId) ? prev.filter((id) => id !== menuId) : [...prev, menuId]));
   };
 
-  // User profile header
   const userProfile = (
     <Box
       sx={{
@@ -55,7 +34,7 @@ const MobileSettingsList = () => {
       }}
     >
       <Avatar
-        src={avatarUrl || "/images/profile/user-1.jpg"}
+        src={avatar || "/images/profile/user-1.jpg"}
         alt="User"
         sx={{
           width: 80,
@@ -64,7 +43,7 @@ const MobileSettingsList = () => {
         }}
       />
       <Typography variant="h5" fontWeight={600}>
-        {firstName || "ผู้ใช้"} {lastName || ""}
+        {fullName || "ผู้ใช้"}
       </Typography>
       <Typography variant="body2" color="textSecondary">
         {email || "example@email.com"}
@@ -72,17 +51,14 @@ const MobileSettingsList = () => {
     </Box>
   );
 
-  const { updateAppearance, setActiveMode } = useContext(CustomizerContext);
+  const { setActiveMode } = useContext(CustomizerContext);
   const { appearance } = useProfile();
   const { activeMode } = appearance || {};
-  // อัปเดต theme ผ่าน CustomizerContext
   const toggleDarkMode = () => {
     const newMode = activeMode === "dark" ? "light" : "dark";
-    setActiveMode(newMode);
     updateAppearance({ activeMode: newMode });
   };
 
-  // Define NavItem and NavGroup types
   type NavItem = {
     id: string;
     title: string;
@@ -102,7 +78,7 @@ const MobileSettingsList = () => {
   const renderNavItem = (item: NavItem, index: number, depth: number = 0) => {
     const isParent = item.children && item.children.length > 0;
     const isExpanded = openMenus.includes(item.id);
-    
+
     return (
       <React.Fragment key={item.id}>
         <ListItem disablePadding>
@@ -136,21 +112,14 @@ const MobileSettingsList = () => {
                 </Typography>
               }
             />
-            {isParent && (
-              isExpanded 
-                ? <IconChevronDown width={18} stroke={1.5} /> 
-                : <IconChevronRight width={18} stroke={1.5} />
-            )}
+            {isParent && (isExpanded ? <IconChevronDown width={18} stroke={1.5} /> : <IconChevronRight width={18} stroke={1.5} />)}
           </ListItemButton>
         </ListItem>
 
-        {/* Submenu */}
         {isParent && (
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {item.children!.map((child: NavGroup, childIndex: number) => (
-                renderNavItem(child, childIndex, depth + 1)
-              ))}
+              {item.children!.map((child: NavGroup, childIndex: number) => renderNavItem(child, childIndex, depth + 1))}
             </List>
           </Collapse>
         )}
@@ -158,8 +127,7 @@ const MobileSettingsList = () => {
     );
   };
 
-  // กรองเฉพาะเมนูที่ไม่ใช่ navlabel
-  const filteredMenus = Menuitems.filter(item => !item.navlabel);
+  const filteredMenus = Menuitems.filter((item) => !item.navlabel);
 
   return (
     <Box sx={{ p: 2 }}>
@@ -167,26 +135,21 @@ const MobileSettingsList = () => {
         sx={{
           maxWidth: "100%",
           bgcolor: "background.paper",
-        }} 
+        }}
       >
         {userProfile}
         <Divider />
         <List disablePadding>
           {filteredMenus.map((item, index) => (
             <React.Fragment key={item.id || index}>
-              {/* รายการเมนูปกติ */}
               {renderNavItem(item as NavItem, index)}
-              
-              {/* เส้นขั้นระหว่างรายการยกเว้นรายการสุดท้าย */}
-              {index < filteredMenus.length - 1 && (
-                <Divider variant="inset" component="li" />
-              )}
+
+              {index < filteredMenus.length - 1 && <Divider variant="inset" component="li" />}
             </React.Fragment>
           ))}
         </List>
       </Box>
-      
-      {/* Dark Mode Toggle */}
+
       <Typography variant="subtitle2" color="textSecondary" sx={{ px: 3, py: 2, mt: 2 }}>
         การตั้งค่าทั่วไป
       </Typography>

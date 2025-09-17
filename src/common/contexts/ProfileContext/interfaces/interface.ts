@@ -28,10 +28,10 @@ export interface ProfileContextType {
   appearance: Appearance;
   loading: boolean;
   error: any;
-  companyListMutate: () => void;
-  activeCompanyMutate: () => void;
-  appearanceMutate: () => void;
-  updateProfile: () => void;
+  companyListMutate: () => Promise<any>;
+  activeCompanyMutate: () => Promise<any>;
+  appearanceMutate: () => Promise<any>;
+  updateProfile: () => Promise<any>;
   updateActiveCompany: (companyId: string) => Promise<any>;
 }
 

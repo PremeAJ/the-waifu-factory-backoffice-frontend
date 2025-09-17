@@ -1,6 +1,3 @@
-import { typography } from "@mui/system";
-import { color } from "framer-motion";
-import { text } from "stream/consumers";
 
 const DarkThemeColors = [
   {

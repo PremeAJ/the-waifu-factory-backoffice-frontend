@@ -1,5 +1,6 @@
 "use client";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { SettingProvider } from "@/common/contexts/SettingContext";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 import { styled, useTheme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
@@ -8,7 +9,6 @@ import Container from "@mui/material/Container";
 import React, { useContext } from "react";
 import Sidebar from "./layout/sidebar/Sidebar";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
@@ -32,24 +32,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const { activeMode } = appearance || {};
   const theme = useTheme();
   const isMobile = useIsMobile();
-  const isSubMenu = useIsSubMenu();
 
   return (
-    <SidebarStateProvider>
-      <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-        <Sidebar />
-        <PageWrapper className="page-wrapper" sx={{ ...(isCollapse === "mini_sidebar" && { [theme.breakpoints.up("lg")]: { ml: `87px` } }) }}>
-          <Container
-            sx={{
-              pt: "30px",
-              maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
-              mt: isMobile ? undefined : 6,
-            }}
-          >
-            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
-          </Container>
-        </PageWrapper>
-      </MainWrapper>
-    </SidebarStateProvider>
+    <SettingProvider>
+      <SidebarStateProvider>
+        <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
+          <Sidebar />
+          <PageWrapper className="page-wrapper" sx={{ ...(isCollapse === "mini_sidebar" && { [theme.breakpoints.up("lg")]: { ml: `87px` } }) }}>
+            <Container
+              sx={{
+                pt: "30px",
+                maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
+                mt: isMobile ? undefined : 6,
+              }}
+            >
+              <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
+            </Container>
+          </PageWrapper>
+        </MainWrapper>
+      </SidebarStateProvider>
+    </SettingProvider>
   );
 }
