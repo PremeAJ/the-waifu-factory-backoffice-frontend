@@ -45,7 +45,7 @@ const CreateCompanyForm = () => {
   const { data: session, status } = useSession();
   const { fullName, email, phone } = session?.profile || {};
   const { getConsentData } = useContext(ConsentContext);
-  const { updateProfile } = useProfile();
+  const { refreshProfile } = useProfile();
   const router = useRouter();
   const termsOfService = getConsentData("terms_of_service");
 
@@ -55,7 +55,7 @@ const CreateCompanyForm = () => {
     if (submitted) {
       const timer = setTimeout(async () => {
         router.push(PageUrl.DASHBOARD);
-        await updateProfile();
+        await refreshProfile();
       }, 3000);
       return () => clearTimeout(timer);
     }

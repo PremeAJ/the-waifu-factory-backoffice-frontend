@@ -1,23 +1,26 @@
-import React, { useContext, useState, useRef } from "react";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import { Grid, Typography, useMediaQuery } from "@mui/material";
-import * as yup from "yup";
-import { Stack, useTheme } from "@mui/system";
-import { useRouter } from "next/navigation";
-import { UserContext } from "@/common/contexts/UserContext";
-import { useFormik } from "formik";
 import { firstNameSchemaNotRequired, lastNameSchemaNotRequired, nickNameSchemaNotRequired } from "@/common/utils/validator/yup";
+import { Grid, Typography } from "@mui/material";
 import { IconPencil, IconMail, IconDeviceMobile } from "@tabler/icons-react";
+import { ProfilePayload } from "@/common/contexts/ProfileContext/interfaces/interface";
+import { Stack, useTheme } from "@mui/system";
+import { useFormik } from "formik";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { UserContext } from "@/common/contexts/UserContext";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
-import { removeUndefinedAndNull } from "@/common/utils/function/object/object-cleaner";
-import EmailChangeFlow from "./EmailChangeFlow";
-import PhoneChangeFlow from "./PhoneChangeFlow";
+import * as yup from "yup";
+import Avatar from "@mui/material/Avatar";
 import AvatarCropDialog from "@/components/ui-components/dialog/AvatarCropDialog";
-import BaseLabel from "@/common/components/base/BaseLabel";
-import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseDialog from "@/common/components/base/BaseDialog";
+import BaseLabel from "@/common/components/base/BaseLabel";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import Box from "@mui/material/Box";
+import EmailChangeFlow from "@/components/pages/settings/account-setting/EmailChangeFlow";
+import PhoneChangeFlow from "@/components/pages/settings/account-setting/PhoneChangeFlow";
+import React, { useContext, useState, useRef } from "react";
+import useIsMobile from "@/common/utils/breakpoints/isMobile";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -28,24 +31,20 @@ const validationSchema = yup.object({
 const AccountTab = () => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+  const isMobile = useIsMobile();
 
-  const { user, uploadAvatar, updateUser } = useContext(UserContext);
-  const { firstName, lastName, avatarUrl, nickName, users } = user || {};
-  const { email, phone} = users || {};
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { uploadAvatar } = useContext(UserContext);
+  const { data: session } = useSession();
+  const { updateProfile, loading } = useProfile();
+  const { firstName, lastName, nickName, avatar, email, phone } = session?.profile || {};
   const [hover, setHover] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [preview, setPreview] = useState<string | undefined>(avatarUrl);
-
-  const [openCrop, setOpenCrop] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
-
-  // Dialog states
+  const [openCrop, setOpenCrop] = useState(false);
+  const [preview, setPreview] = useState<string | undefined>(avatar);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showEmailChangeFlow, setShowEmailChangeFlow] = useState(false);
   const [showPhoneChangeFlow, setShowPhoneChangeFlow] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
 
@@ -65,7 +64,6 @@ const AccountTab = () => {
     }
   };
 
-  // Handle cancel confirmation
   const handleCancel = () => {
     setShowCancelDialog(true);
   };
@@ -76,13 +74,8 @@ const AccountTab = () => {
     if (isMobile) router.replace("/setting");
   };
 
-  const handleSubmit = async (data: any) => {
-    setLoading(true);
-    const error = await updateUser(removeUndefinedAndNull(data));
-    if (error) {
-      alert(error);
-    }
-    setLoading(false);
+  const handleSubmit = async (data: Partial<ProfilePayload>) => {
+    await updateProfile(data);
   };
 
   const formik = useFormik({
@@ -150,7 +143,7 @@ const AccountTab = () => {
           {t("Setting.AllowedFile")}
         </Typography>
       </Grid>
-      
+
       <Grid size={{ xs: 12, lg: 6 }}>
         <Typography variant="h5" mb={1}>
           {t("Setting.PersonalDetails")}
@@ -181,10 +174,7 @@ const AccountTab = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <BaseLabel htmlFor="phone" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <IconDeviceMobile size={18} style={{ marginRight: 4 }} /> {t("common.phone")}
-                <span 
-                  style={{ color: theme.palette.primary.main, cursor: "pointer" }}
-                  onClick={() => setShowPhoneChangeFlow(true)}
-                >
+                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }} onClick={() => setShowPhoneChangeFlow(true)}>
                   {phone ? "เปลี่ยน" : "เพิ่ม"}
                 </span>
               </BaseLabel>
@@ -198,7 +188,6 @@ const AccountTab = () => {
         </form>
       </Grid>
 
-      {/* Avatar Crop Dialog */}
       <AvatarCropDialog
         open={openCrop}
         imageSrc={imageSrc}
@@ -210,7 +199,6 @@ const AccountTab = () => {
         }}
       />
 
-      {/* Cancel Confirmation Dialog */}
       <BaseDialog
         open={showCancelDialog}
         title="ยืนยันการยกเลิก"
@@ -220,20 +208,8 @@ const AccountTab = () => {
         onConfirm={handleConfirmCancel}
         onClose={() => setShowCancelDialog(false)}
       />
-
-      {/* Email Change Flow */}
-      <EmailChangeFlow
-        open={showEmailChangeFlow}
-        onClose={() => setShowEmailChangeFlow(false)}
-        currentEmail={email || ""}
-      />
-
-      {/* Phone Change Flow */}
-      <PhoneChangeFlow
-        open={showPhoneChangeFlow}
-        onClose={() => setShowPhoneChangeFlow(false)}
-        currentPhone={phone || ""}
-      />
+      <EmailChangeFlow open={showEmailChangeFlow} onClose={() => setShowEmailChangeFlow(false)} currentEmail={email || ""} />
+      <PhoneChangeFlow open={showPhoneChangeFlow} onClose={() => setShowPhoneChangeFlow(false)} currentPhone={phone || ""} />
     </Grid>
   );
 };

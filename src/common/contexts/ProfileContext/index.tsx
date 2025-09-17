@@ -1,5 +1,5 @@
 "use client";
-import { Appearance, ProfileContextType } from "./interfaces/interface";
+import { Appearance, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
 import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
 import { useDialog } from "../DialogContext";
@@ -15,7 +15,6 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const { data: session, update } = useSession();
   const { showError } = useDialog();
 
-  //#region ลิสต์บริษัทที่ผู้ใช้มีสิทธิ์เข้าใช้งาน
   const {
     data: companyListData,
     error: companyListError,
@@ -26,9 +25,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     revalidateOnReconnect: false,
     dedupingInterval: 5000,
   });
-  //#endregion
 
-  //#region บริษัทที่ผู้ใช้เลือกใช้งานอยู่
   const {
     data: activeCompanyData,
     error: activeCompanyError,
@@ -39,9 +36,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     revalidateOnReconnect: false,
     dedupingInterval: 5000,
   });
-  //#endregion
 
-  //#region ลักษณะการแสดงผลของผู้ใช้
   const {
     data: appearanceData,
     error: appearanceError,
@@ -53,10 +48,8 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     dedupingInterval: 5000,
   });
 
-  // อ่าน appearance จาก localStorage ก่อน
   const [localAppearance, setLocalAppearance] = useState<Appearance>(defaultAppearance);
 
-  // ดึงจาก localStorage หลัง mount (client only)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem(APPEARANCE_KEY);
@@ -64,7 +57,6 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, []);
 
-  // ถ้า API มีข้อมูล ให้ set ลง localStorage และใช้ข้อมูลจาก API
   useEffect(() => {
     if (appearanceData?.data) {
       localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearanceData.data));
@@ -72,7 +64,6 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [appearanceData?.data]);
 
-  // appearance จะเลือกตามลำดับ: API > localStorage > default
   const appearance: Appearance = appearanceData?.data || localAppearance || defaultAppearance;
 
   useEffect(() => {
@@ -80,49 +71,56 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     document.documentElement.setAttribute("data-color-theme", appearance.activeTheme);
     document.documentElement.setAttribute("data-sidebar-type", appearance.isCollapse);
   }, [appearance]);
-  //#endregion
 
-  //#region อัพเดทบริษัทที่ใช้งานอยู่
   const updateActiveCompany = async (companyId: string) => {
     try {
       setLoading(true);
       await putFetcher("/api/profile/active-company", { companyId });
-      await updateProfile();
+      await refreshProfile();
       await companyListMutate();
       setLoading(false);
     } catch (error: any) {
       showError({
         message: error.message,
         title: "เกิดข้อผิดพลาด",
-      })
+      });
     }
   };
-  //#endregion
 
-  //#region update profile
-  const updateProfile = async () => {
+  const refreshProfile = async () => {
     const response = await getFetcher("/api/profile");
     if (response.statusCode !== 200) {
-       showError({
+      showError({
         message: response.message,
         title: "เกิดข้อผิดพลาด",
-      })
+      });
     }
     await update({ profile: response.data });
   };
-  //#endregion
+
+  const updateProfile = async (payload: Partial<ProfilePayload>): Promise<ProfileResponse> => {
+    setLoading(true);
+    const response = await putFetcher("/api/profile", payload);
+    setLoading(false);
+    if (response?.error) {
+      showError({ message: response.message });
+    }
+    await update({ profile: response.data });
+    return response;
+  };
 
   const value: ProfileContextType = {
-    updateProfile,
-    appearanceMutate,
-    companyListMutate,
-    updateActiveCompany,
-    activeCompanyMutate,
-    companyList: companyListData?.data || [],
     activeCompany: activeCompanyData?.data || null,
+    activeCompanyMutate,
     appearance,
+    appearanceMutate,
+    companyList: companyListData?.data || [],
+    companyListMutate,
     error: activeCompanyError || companyListError || appearanceError,
     loading: activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
+    refreshProfile,
+    updateActiveCompany,
+    updateProfile,
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

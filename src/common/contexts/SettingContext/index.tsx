@@ -25,7 +25,7 @@ export const SettingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const response = await putFetcher("/api/profile/appearance", payload);
     setLoading(false);
     if (response?.error) {
-      showError({message: "Failed to update appearance settings."})
+      showError({message: response.message})
     }
     return response;
   };

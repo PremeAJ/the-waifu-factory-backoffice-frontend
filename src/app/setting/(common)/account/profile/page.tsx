@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 // components
 import BlankCard from "@/components/shared/BlankCard";
-import ProfileSetting from "@/components/pages/settings/account-setting/ProfileSetting";
+import ProfileSetting from "@/app/setting/(common)/account/profile/components/ProfileSetting";
 
 const AccountSetting = () => {
   const { t } = useTranslation();

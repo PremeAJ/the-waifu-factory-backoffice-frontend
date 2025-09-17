@@ -1,3 +1,4 @@
+import { ApiResponse } from "@/common/interface/apiResponse";
 import { KeyedMutator } from "swr";
 
 export interface CompanyListItem {
@@ -30,11 +31,39 @@ export interface ProfileContextType {
   appearance: Appearance;
   loading: boolean;
   error: any;
+  updateProfile: (payload: Partial<ProfilePayload>) => Promise<ProfileResponse>;
   companyListMutate: () => Promise<any>;
   activeCompanyMutate: () => Promise<any>;
-  appearanceMutate: KeyedMutator<any>
-  updateProfile: () => Promise<any>;
+  appearanceMutate: KeyedMutator<any>;
+  refreshProfile: () => Promise<any>;
   updateActiveCompany: (companyId: string) => Promise<any>;
+}
+
+export interface ProfileResponse extends ApiResponse {
+  data: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    nickName: string;
+    avatar: string;
+    email: string;
+    phone: string;
+    activeCompany: string | null;
+    hasReceivedTrial: boolean;
+  };
+}
+
+export interface ProfilePayload {
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  nickName: string;
+  avatar: string;
+  email: string;
+  phone: string;
+  activeCompany: string | null;
+  hasReceivedTrial: boolean;
 }
 
 export interface Appearance {
