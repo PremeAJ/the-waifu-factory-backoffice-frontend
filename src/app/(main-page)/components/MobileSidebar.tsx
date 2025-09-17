@@ -1,17 +1,17 @@
 "use client";
-import React, { useContext, useState } from "react";
+import { IconChevronDown } from "@tabler/icons-react";
+import { PageUrl } from "@/common/constants/pageUrl";
+import { UserContext } from "@/common/contexts/UserContext";
+import AppLinks from "@/app/dashboard/layout/header/AppLinks";
+import BaseButton from "@/common/components/base/BaseButton";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Collapse from "@mui/material/Collapse";
-import Stack from "@mui/material/Stack";
-import { IconChevronDown } from "@tabler/icons-react";
-import Logo from "@/common/components/shared/Logo";
 import DemosDD from "../../../components/landingpage/header/DemosDD";
-import { UserContext } from "@/common/contexts/UserContext";
-import AppLinks from "@/app/dashboard/layout/header/AppLinks";
+import Logo from "@/common/components/shared/Logo";
 import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
-
-//!
+import React, { useContext, useState } from "react";
+import Stack from "@mui/material/Stack";
 
 const MobileSidebar = () => {
   const [toggle, setToggle] = useState(false);
@@ -25,7 +25,7 @@ const MobileSidebar = () => {
       </Box>
       <Box p={3}>
         <Stack direction="column" spacing={2}>
-          <Button
+          {/* <Button
             color="inherit"
             onClick={() => setToggle(!toggle)}
             endIcon={<IconChevronDown width={20} />}
@@ -62,30 +62,27 @@ const MobileSidebar = () => {
                 <QuickLinks />
               </Box>
             </Collapse>
-          )}
-          <Button
+          )} */}
+       
+           <BaseButton
+            label="Documentation"
+            variant="text"
             color="inherit"
-            href="#"
+           href="#"
             sx={{
               justifyContent: "start",
             }}
-          >
-            Documentation
-          </Button>
-          <Button
+          />
+          <BaseButton
+            label="Support"
+            variant="text"
             color="inherit"
             href="https://adminmart.com/support"
             sx={{
               justifyContent: "start",
             }}
-          >
-            Support
-          </Button>
-          {user && !loading ? null : (
-            <Button color="primary" variant="contained" href="/auth/login">
-              Login
-            </Button>
-          )}
+          />
+          {user && !loading ? null : <BaseButton variant="contained" label="Login" href={PageUrl.AUTH_SIGN_IN} />}
         </Stack>
       </Box>
     </>

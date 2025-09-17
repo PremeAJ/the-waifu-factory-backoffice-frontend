@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Box, Typography, Container, Paper, CircularProgress } from "@mui/material";
 import { IconCheck, IconMail, IconAlertTriangle } from "@tabler/icons-react";
 import BaseButton from "@/common/components/base/BaseButton";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const EmailConfirm = () => {
   const searchParams = useSearchParams();
@@ -178,7 +179,7 @@ const EmailConfirm = () => {
               <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap" }}>
                 <BaseButton
                   label="เข้าสู่ระบบใหม่"
-                  onClick={() => router.push("/dashboard/auth/login")}
+                  onClick={() => router.push(PageUrl.AUTH_SIGN_IN)}
                   fullWidth={false}
                   color="primary"
                 />

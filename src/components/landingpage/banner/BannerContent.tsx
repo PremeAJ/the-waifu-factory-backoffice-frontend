@@ -12,6 +12,8 @@ import { IconRocket } from "@tabler/icons-react";
 // third party
 import { motion } from "framer-motion";
 import { UserContext } from "@/common/contexts/UserContext";
+import { PageUrl } from "@/common/constants/pageUrl";
+import BaseButton from "@/common/components/base/BaseButton";
 
 const StyledButton = styled(Button)(() => ({
   padding: "13px 48px",
@@ -54,7 +56,7 @@ const BannerContent = () => {
         >
           ระบบ All-in-one สำหรับธุรกิจยุคใหม่ที่
           <Typography component={"span"} variant="inherit" color={"primary"}>
-          &nbsp;ครบจบในที่เดียว <br />
+            &nbsp;ครบจบในที่เดียว <br />
           </Typography>
           ทั้ง POS, CRM, HRM และคลังสินค้า
         </Typography>
@@ -71,8 +73,7 @@ const BannerContent = () => {
           }}
         >
           <Typography variant="h5" fontWeight={300}>
-            เชื่อมโยงทุกการจัดการธุรกิจ ทั้งหน้าร้าน ลูกค้า พนักงาน และสต็อกสินค้า
-            ใช้งานง่าย ครอบคลุมทุกฟังก์ชัน พร้อมรองรับการเติบโตของคุณ
+            เชื่อมโยงทุกการจัดการธุรกิจ ทั้งหน้าร้าน ลูกค้า พนักงาน และสต็อกสินค้า ใช้งานง่าย ครอบคลุมทุกฟังก์ชัน พร้อมรองรับการเติบโตของคุณ
           </Typography>
         </motion.div>
       </Box>
@@ -87,19 +88,8 @@ const BannerContent = () => {
         }}
       >
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mt={3}>
-          {!user && (
-            <StyledButton
-              variant="contained"
-              color="primary"
-              href="/auth/login"
-            >
-              Login
-            </StyledButton>
-          )}
-
-          <StyledButton variant="outlined" href="#demos">
-            Live Preview
-          </StyledButton>
+          {!user && <BaseButton label="Login" href={PageUrl.AUTH_SIGN_IN} fullWidth={false} sx={{ padding: "13px 48px" }} />}
+          <BaseButton variant="outlined" label="Live Preview" href="#demos" fullWidth={false} sx={{ padding: "13px 48px" }} />
         </Stack>
       </motion.div>
     </Box>
