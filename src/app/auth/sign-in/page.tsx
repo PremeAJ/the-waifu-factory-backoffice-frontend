@@ -3,12 +3,10 @@ import { Grid, Box, Typography } from "@mui/material";
 import AuthLogin from "./components/AuthLogin";
 import Image from "next/image";
 import Logo from "@/common/components/shared/Logo";
-import packageJson from "../../../../package.json";
 import PageContainer from "@/components/container/PageContainer";
 import Language from "@/common/components/shared/Language";
 
 export default function Login() {
-  const version = (packageJson as any)?.version ?? "0.0.0";
   return (
     <PageContainer title="Login Page" description="this is Sample page">
       <Grid container spacing={0} justifyContent="center" sx={{ height: "100vh" }}>
@@ -85,21 +83,6 @@ export default function Login() {
           </Box>
         </Grid>
       </Grid>
-
-      {/* Version badge bottom-left */}
-      <Box
-        sx={{
-          position: "fixed",
-          left: 8,
-          bottom: 8,
-          zIndex: 1400,
-          pointerEvents: "none",
-        }}
-      >
-        <Typography variant="caption" color="textSecondary">
-          v{version}
-        </Typography>
-      </Box>
     </PageContainer>
   );
 }

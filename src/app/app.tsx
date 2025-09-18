@@ -12,9 +12,12 @@ import { UserProvider } from "../common/contexts/UserContext";
 import Cookies from "js-cookie";
 import CssBaseline from "@mui/material/CssBaseline";
 import React, { useEffect } from "react";
+import packageJson from "../../package.json";
+import { Box, Typography } from "@mui/material";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   const theme = ThemeSettings();
+  const version = (packageJson as any)?.version ?? "0.0.0";
   useEffect(() => {
     if (typeof navigator !== "undefined") {
       Cookies.set(HeadersKey.UserAgent, navigator.userAgent, { path: "/" });
@@ -30,14 +33,27 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <ThemeProvider theme={theme}>
-          <DialogProvider>
-            <CssBaseline />
-            <UserProvider>
-              <Analytics />
-              <SpeedInsights />
-              {children}
-            </UserProvider>
-          </DialogProvider>
+        <DialogProvider>
+          <CssBaseline />
+          <UserProvider>
+            <Analytics />
+            <SpeedInsights />
+            {children}
+            <Box
+              sx={{
+                position: "fixed",
+                left: 8,
+                bottom: 8,
+                zIndex: 1400,
+                pointerEvents: "none",
+              }}
+            >
+              <Typography variant="caption" color="textSecondary">
+                v{version}
+              </Typography>
+            </Box>
+          </UserProvider>
+        </DialogProvider>
       </ThemeProvider>
     </AppRouterCacheProvider>
   );
