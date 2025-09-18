@@ -1,5 +1,5 @@
 "use client";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box, SxProps, Theme } from "@mui/material";
 import { IconAlertTriangle, IconCircleCheck, IconInfoCircle, IconX } from "@tabler/icons-react";
 import { TransitionProps } from "@mui/material/transitions";
 import BaseButton from "@/common/components/base/BaseButton";
@@ -27,6 +27,7 @@ interface BaseDialogProps {
   open: boolean;
   scrolling?: boolean;
   title: string;
+  sx?: SxProps<Theme>;
 }
 
 const BaseDialog: React.FC<BaseDialogProps> = ({
@@ -47,6 +48,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   open,
   scrolling = false,
   title,
+  sx,
 }) => {
   const handleDialogClose = (event?: object, reason?: string) => {
     if (disableBackdropClose && (reason === "backdropClick" || reason === "escapeKeyDown")) {
@@ -83,6 +85,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
       aria-describedby="alert-dialog-slide-description"
       fullScreen={fullScreen}
       scroll={scrolling ? "paper" : undefined}
+      sx={sx}
     >
       <DialogContent
         dividers={scrolling}

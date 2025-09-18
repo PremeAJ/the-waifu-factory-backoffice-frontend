@@ -75,7 +75,8 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
       confirmText="ตกลง"
       onConfirm={onClose}
       confirmColor="primary"
-      disableBackdropClose={disableBackdropClose} // ส่ง prop นี้เข้า BaseDialog
+      disableBackdropClose={disableBackdropClose}
+      sx={{ zIndex: 9999 }}
     />
   );
 };

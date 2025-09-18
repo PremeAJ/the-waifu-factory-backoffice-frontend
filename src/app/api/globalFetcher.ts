@@ -23,7 +23,8 @@ async function handleResponse(
   body?: any,
   headers?: Record<string, string>
 ): Promise<any> {
-  if (res.status !== 401) {
+ 
+  if (res.status !== 401 && res.status !== 403) {
     return res.json();
   }
 
@@ -31,6 +32,11 @@ async function handleResponse(
     return res.json();
   }
 
+  if (res.status === 403) {
+    await signOut();
+    return Promise.reject(new Error("Forbidden"));
+  }
+ 
   if (isRefreshing) {
     return new Promise((resolve, reject) => {
       failedQueue.push({ resolve, reject });
@@ -54,7 +60,7 @@ async function handleResponse(
     return baseFetcher(method, url, body, headers);
   } catch (error) {
     processQueue(error, null);
-    signOut();
+    await signOut();
     return Promise.reject(error);
   } finally {
     isRefreshing = false;
@@ -94,6 +100,7 @@ const baseFetcher = async (
 
   const fetchOptions: RequestInit = {
     method,
+    cache:'no-store',
     headers:
       method === Method.GET ? { browserrefreshed: "false", ...getHeaders(headers) } : getHeaders(headers),
     ...(body && method !== Method.GET ? { body: JSON.stringify(body) } : {}),
@@ -105,7 +112,6 @@ const baseFetcher = async (
   );
 };
 
-// สร้าง method เฉพาะแต่ละแบบ
 const getFetcher = (url: string | [string, Record<string, any>], headers?: Record<string, string>) =>
   baseFetcher(Method.GET, url, undefined, headers);
 

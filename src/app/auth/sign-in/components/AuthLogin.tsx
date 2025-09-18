@@ -50,7 +50,7 @@ const AuthLogin = () => {
         formik.setFieldError("email", result?.error);
         formik.setFieldError("password", " ");
       } else {
-        router.push("/auth/callback");
+        router.push(PageUrl.CALLBACK);
       }
     },
   });
