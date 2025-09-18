@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Loading from "@/app/loading";
+import { stat } from "fs";
 
 export default function AuthCallbackHandler() {
   console.log("AuthCallbackHandler -----");
@@ -13,6 +14,7 @@ export default function AuthCallbackHandler() {
   useEffect(() => {
     console.log("🚀 ~ AuthCallbackHandler ~ session:", session)
     console.log("🚀 ~ AuthCallbackHandler ~ status:", status)
+    if (status === "loading") return;
     if (session && status === "authenticated") {
       router.push(PageUrl.DASHBOARD);
     } else {
