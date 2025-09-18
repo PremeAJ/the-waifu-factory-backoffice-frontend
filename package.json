@@ -1,10 +1,11 @@
 {
   "name": "meowsom-frontend",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/version-increment.js && next build",
+    "build": "next build",
+    "submit-version": "node scripts/version-increment.js",
     "start": "next start",
     "lint": "next lint"
   },
