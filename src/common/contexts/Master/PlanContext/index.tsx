@@ -12,7 +12,7 @@ export interface PlanType {
   periodDays: number | null;
   isTrial: boolean;
   features: Record<string, boolean>;
-  sort:number;
+  sort: number;
   isPopular: boolean;
   isActive: boolean;
   descriptionEn: string | null;
@@ -40,7 +40,16 @@ export const PlanProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  const { data: PlanData, isLoading: isPlanLoading, error: PlanError, mutate: PlanMutate } = useSWR("/api/master/plan", getFetcher);
+  const {
+    data: PlanData,
+    isLoading: isPlanLoading,
+    error: PlanError,
+    mutate: PlanMutate,
+  } = useSWR("/api/master/plan", getFetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 5000,
+  });
 
   useEffect(() => {
     if (PlanData) {
@@ -54,7 +63,6 @@ export const PlanProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(isPlanLoading);
     }
   }, [PlanData, PlanError, isPlanLoading]);
-
 
   const value: PlanContextProps = {
     plan,
