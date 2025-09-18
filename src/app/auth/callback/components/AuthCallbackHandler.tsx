@@ -6,13 +6,17 @@ import { useSession } from "next-auth/react";
 import Loading from "@/app/loading";
 
 export default function AuthCallbackHandler() {
+  console.log("AuthCallbackHandler -----");
   const router = useRouter();
   const { data: session, status } = useSession();
   
   useEffect(() => {
+    console.log("🚀 ~ AuthCallbackHandler ~ session:", session)
+    console.log("🚀 ~ AuthCallbackHandler ~ status:", status)
     if (session && status === "authenticated") {
       router.push(PageUrl.DASHBOARD);
     } else {
+      console.log('>>>>>>>>')
       router.replace(PageUrl.AUTH_SIGN_IN);
     }
   }, [session, status]);
