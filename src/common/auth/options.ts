@@ -95,7 +95,7 @@ const authOptions: AuthOptions = {
         if (session.profile) token.profile = session.profile;
       }
       if (token.accessToken && isExpired(token.accessToken)) {
-        const refreshed = await postFetcher(`${baseUrl}/api/v1/session/refresh`, { token: token.refreshToken }, { ...(await header()) });
+        const refreshed = await postFetcher(`${baseUrl}/api/v1/session/refresh`, { token: token.refreshToken }, { ...(await header(token.accessToken)) });
         if (refreshed?.error) {
           throw new Error(refreshed.message);
         }

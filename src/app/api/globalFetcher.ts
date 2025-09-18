@@ -1,13 +1,64 @@
 import { Method } from "@/common/constants/method";
 import { getHeaders } from "@/common/utils/getHeaders";
-import { signOut } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 
-async function handleResponse(res: Response, method: string, url: string) {
-  const data = await res.json();
-  if (typeof window !== "undefined" && data?.statusCode === 401) {
-    signOut();
+let isRefreshing = false;
+let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void }[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+async function handleResponse(
+  res: Response,
+  method: string,
+  url: string | [string, Record<string, any>],
+  body?: any,
+  headers?: Record<string, string>
+): Promise<any> {
+  if (res.status !== 401) {
+    return res.json();
   }
-  return data;
+
+  if (typeof window === "undefined") {
+    return res.json();
+  }
+
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({ resolve, reject });
+    })
+      .then(() => {
+        return baseFetcher(method, url, body, headers);
+      })
+      .catch((err) => {
+        return Promise.reject(err);
+      });
+  }
+
+  isRefreshing = true;
+
+  try {
+    const session = await getSession();
+    if (!session) {
+      throw new Error("No session");
+    }
+    processQueue(null, session.accessToken);
+    return baseFetcher(method, url, body, headers);
+  } catch (error) {
+    processQueue(error, null);
+    signOut();
+    return Promise.reject(error);
+  } finally {
+    isRefreshing = false;
+  }
 }
 
 const baseFetcher = async (
@@ -15,7 +66,7 @@ const baseFetcher = async (
   url: string | [string, Record<string, any>],
   body?: any,
   headers?: Record<string, string>
-) => {
+): Promise<any> => {
   let fullUrl = "";
   let params: Record<string, any> | undefined;
 
@@ -43,13 +94,15 @@ const baseFetcher = async (
 
   const fetchOptions: RequestInit = {
     method,
-    headers: method === Method.GET
-      ? { browserrefreshed: "false", ...getHeaders(headers) }
-      : getHeaders(headers),
+    headers:
+      method === Method.GET ? { browserrefreshed: "false", ...getHeaders(headers) } : getHeaders(headers),
     ...(body && method !== Method.GET ? { body: JSON.stringify(body) } : {}),
   };
 
-  return fetch(fullUrl, fetchOptions).then((res) => handleResponse(res, method, fullUrl));
+  const originalRequestUrl = Array.isArray(url) ? url : fullUrl;
+  return fetch(fullUrl, fetchOptions).then((res) =>
+    handleResponse(res, method, originalRequestUrl, body, headers)
+  );
 };
 
 // สร้าง method เฉพาะแต่ละแบบ
