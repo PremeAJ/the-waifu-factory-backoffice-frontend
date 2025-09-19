@@ -1,14 +1,10 @@
 "use client";
 
-import { Box, Stepper, Step, StepLabel, Alert, Stack } from "@mui/material";
-import { CompanyContext, CompanyType } from "@/common/contexts/CompanyContext";
+import { Box, Stepper, Step, StepLabel } from "@mui/material";
+import { CompanyType, useCompany } from "@/common/contexts/CompanyContext";
 import { ConsentContext } from "@/common/contexts/Master/ConsentContext";
-import { PageUrl } from "@/common/constants/pageUrl";
-import { useContext, useEffect, useState } from "react";
-import { useDialog } from "@/common/contexts/DialogContext";
+import { useContext,  useState } from "react";
 import { useFormik } from "formik";
-import { useProfile } from "@/common/contexts/ProfileContext";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import * as Yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
@@ -22,13 +18,18 @@ const steps = ["ข้อมูลบริษัท", "ข้อมูลผู
 const stepSchemas = [
   Yup.object({
     businessTypeId: Yup.number().typeError("กรุณาเลือกประเภทร้านค้า").required("กรุณาเลือกประเภทร้านค้า"),
-    companyAddress: Yup.string() .required("กรุณากรอกที่อยู่บริษัท") .test("not-empty", "ที่อยู่ไม่ควรเป็นช่องว่าง", (val) => !!val && val.trim().length > 0),
+    companyAddress: Yup.string()
+      .required("กรุณากรอกที่อยู่บริษัท")
+      .test("not-empty", "ที่อยู่ไม่ควรเป็นช่องว่าง", (val) => !!val && val.trim().length > 0),
     companyEmail: Yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมลบริษัท"),
     companyName: Yup.string().required("กรุณากรอกชื่อบริษัท"),
     districtId: Yup.number().typeError("กรุณาเลือกอำเภอ").required("กรุณาเลือกอำเภอ"),
     provinceId: Yup.number().typeError("กรุณาเลือกจังหวัด").required("กรุณาเลือกจังหวัด"),
     subdistrictId: Yup.number().typeError("กรุณาเลือกตำบล").required("กรุณาเลือกตำบล"),
-    taxId: Yup.string() .matches(/^\d{13}$/, "เลขประจำตัวผู้เสียภาษีต้องมี 13 หลัก") .nullable() .notRequired(), 
+    taxId: Yup.string()
+      .matches(/^\d{13}$/, "เลขประจำตัวผู้เสียภาษีต้องมี 13 หลัก")
+      .nullable()
+      .notRequired(),
     zipcodeId: Yup.string().required("กรุณากรอกรหัสไปรษณีย์"),
   }),
   Yup.object({
@@ -40,26 +41,11 @@ const stepSchemas = [
 
 const CreateCompanyForm = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
-  const { createCompany } = useContext(CompanyContext);
+  const { createCompany, loading } = useCompany();
   const { data: session, status } = useSession();
   const { fullName, email, phone } = session?.profile || {};
   const { getConsentData } = useContext(ConsentContext);
-  const { refreshProfile } = useProfile();
-  const router = useRouter();
   const termsOfService = getConsentData("terms_of_service");
-
-  const { showError } = useDialog();
-
-  useEffect(() => {
-    if (submitted) {
-      const timer = setTimeout(async () => {
-        router.push(PageUrl.DASHBOARD);
-        await refreshProfile();
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [submitted, router]);
 
   const initialValues: Omit<CompanyType, "id"> = {
     businessTypeId: null,
@@ -80,15 +66,9 @@ const CreateCompanyForm = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: stepSchemas[activeStep],
-    enableReinitialize: true,
+    enableReinitialize: false,
     onSubmit: async (data) => {
-      try {
-        await createCompany(data);
-        setSubmitted(true);
-        setActiveStep(steps.length);
-      } catch (err: any) {
-        showError({ message: err?.message, title: "เกิดข้อผิดพลาด", showDetails: true });
-      }
+      await createCompany(data);
     },
   });
 
@@ -129,31 +109,26 @@ const CreateCompanyForm = () => {
               </Step>
             ))}
           </Stepper>
-          {activeStep === steps.length ? (
-            <Stack spacing={2} mt={3}>
-              <Alert severity="success">สร้างบริษัทสำเร็จ! กำลังนำคุณไปยังหน้า Dashboard...</Alert>
-            </Stack>
-          ) : (
-            <>
-              <Box mt={3}>{renderStep(activeStep)}</Box>
-              <Box display="flex" flexDirection="row" mt={3}>
-                <BaseButton fullWidth={false} color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} label="กลับ" />
-                <Box flex="1 1 auto" />
-                {activeStep < steps.length - 1 ? (
-                  <BaseButton fullWidth={false} onClick={handleNext} variant="contained" color="secondary" label="ถัดไป" />
-                ) : (
-                  <BaseButton
-                    fullWidth={false}
-                    type="submit"
-                    variant="contained"
-                    color="success"
-                    disabled={!formik.values.consents.find((c: any) => c.id === termsOfService?.id && c.accepted)}
-                    label="ยืนยัน"
-                  />
-                )}
-              </Box>
-            </>
-          )}
+          <>
+            <Box mt={3}>{renderStep(activeStep)}</Box>
+            <Box display="flex" flexDirection="row" mt={3}>
+              <BaseButton fullWidth={false} color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} label="กลับ" />
+              <Box flex="1 1 auto" />
+              {activeStep < steps.length - 1 ? (
+                <BaseButton fullWidth={false} onClick={handleNext} variant="contained" color="secondary" label="ถัดไป" />
+              ) : (
+                <BaseButton
+                  loading={loading || status === "loading"}
+                  fullWidth={false}
+                  type="submit"
+                  variant="contained"
+                  color="success"
+                  disabled={!formik.values.consents.find((c: any) => c.id === termsOfService?.id && c.accepted)}
+                  label="ยืนยัน"
+                />
+              )}
+            </Box>
+          </>
         </Box>
       </form>
     </ParentCard>

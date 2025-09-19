@@ -1,4 +1,5 @@
 import Avatar from "@mui/material/Avatar";
+import { Skeleton } from "@mui/material";
 import {
   IconBuildingCommunity,
   IconToolsKitchen2,
@@ -25,6 +26,7 @@ type CompanyAvatarProps = {
   businessTypeId?: number;
   imageUrl?: string;
   size?: number;
+  loading?: boolean;
 };
 
 const iconSize = {
@@ -53,18 +55,24 @@ const iconMap: Record<number, React.ReactNode> = {
   18: <IconLuggage {...iconSize} />,
 };
 
-const CompanyAvatar = ({ businessTypeId, imageUrl, size = 40 }: CompanyAvatarProps) => (
-  <Avatar
-    src={imageUrl || undefined}
-    sx={{
-      bgcolor: "primary.light",
-      color: "primary.main",
-      width: size,
-      height: size,
-    }}
-  >
-    {!imageUrl && (iconMap[businessTypeId ?? -1] || <IconBuildingCommunity {...iconSize} />)}
-  </Avatar>
-);
+const CompanyAvatar = ({ businessTypeId, imageUrl, size = 40, loading = false }: CompanyAvatarProps) => {
+  if (loading) {
+    return <Skeleton variant="circular" width={size} height={size} />;
+  }
+
+  return (
+    <Avatar
+      src={imageUrl || undefined}
+      sx={{
+        bgcolor: "primary.light",
+        color: "primary.main",
+        width: size,
+        height: size,
+      }}
+    >
+      {!imageUrl && (iconMap[businessTypeId ?? -1] || <IconBuildingCommunity {...iconSize} />)}
+    </Avatar>
+  );
+};
 
 export default CompanyAvatar;

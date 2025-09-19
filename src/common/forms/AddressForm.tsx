@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { AddressContext } from "@/common/contexts/Master/AddressContext";
+import { AddressContext, useAddress } from "@/common/contexts/Master/AddressContext";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { Grid } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
@@ -12,7 +12,7 @@ interface AddressZoneProps {
 
 const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
   const { isLanguage } = useContext(CustomizerContext);
-  const { provinces, districts, subdistricts, zipcode, setProvinceId, setDistrictId, setSubdistrictId } = useContext(AddressContext);
+  const { loading, provinces, districts, subdistricts, zipcode, setProvinceId, setDistrictId, setSubdistrictId } = useAddress();
 
   // เมื่อเปลี่ยนจังหวัด ให้ล้างค่าอำเภอ, ตำบล, รหัสไปรษณีย์
   useEffect(() => {
@@ -58,6 +58,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           required
           placeholder="เลือกจังหวัด"
           orderBy={(a, b) => a.text.localeCompare(b.text)}
+          loading={loading}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -70,6 +71,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           required
           placeholder="เลือกอำเภอ"
           orderBy={(a, b) => a.text.localeCompare(b.text)}
+          loading={loading}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -82,6 +84,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           required
           placeholder="เลือกตำบล"
           orderBy={(a, b) => a.text.localeCompare(b.text)}
+          loading={loading}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -94,6 +97,7 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           required
           placeholder="เลือกรหัสไปรษณีย์"
           orderBy={(a, b) => a.text.localeCompare(b.text)}
+          loading={loading}
         />
       </Grid>
     </React.Fragment>

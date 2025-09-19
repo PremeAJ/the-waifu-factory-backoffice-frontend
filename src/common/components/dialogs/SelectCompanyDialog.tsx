@@ -1,12 +1,12 @@
 import { IconPlus } from "@tabler/icons-react";
 import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip } from "@mui/material";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import BaseDialog from "../base/BaseDialog";
 import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import React from "react";
-import { PageUrl } from "@/common/constants/pageUrl";
 
 interface SelectCompanyDialogProps {
   open: boolean;

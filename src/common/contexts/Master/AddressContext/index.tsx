@@ -1,7 +1,8 @@
 "use client";
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, ReactNode, useContext } from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
+import { swrOption } from "@/app/api/swrOption";
 
 export interface ProvinceType {
   id: number;
@@ -37,7 +38,7 @@ interface AddressContextProps {
   setProvinceId: (id: number | null) => void;
   setDistrictId: (id: number | null) => void;
   setSubdistrictId: (id: number | null) => void;
-  isLoading: boolean;
+  loading: boolean;
   error: string;
 }
 
@@ -52,7 +53,7 @@ export const AddressContext = createContext<AddressContextProps>({
   setProvinceId: () => {},
   setDistrictId: () => {},
   setSubdistrictId: () => {},
-  isLoading: false,
+  loading: false,
   error: "",
 });
 
@@ -61,25 +62,25 @@ export const AddressProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [selectedDistrictId, setDistrictId] = useState<number | null>(null);
   const [selectedSubdistrictId, setSubdistrictId] = useState<number | null>(null);
 
-  const { data: provincesData, isLoading: loadingProvinces, error: errorProvinces } = useSWR("/api/master/address/provinces", getFetcher);
+  const { data: provincesData, isLoading: loadingProvinces, error: errorProvinces } = useSWR("/api/master/address/provinces", getFetcher, swrOption);
 
   const {
     data: districtsData,
     isLoading: loadingDistricts,
     error: errorDistricts,
-  } = useSWR(selectedProvinceId ? ["/api/master/address/districts", { provinceId: selectedProvinceId }] : null, getFetcher);
+  } = useSWR(selectedProvinceId ? ["/api/master/address/districts", { provinceId: selectedProvinceId }] : null, getFetcher, swrOption);
 
   const {
     data: subdistrictsData,
     isLoading: loadingSubdistricts,
     error: errorSubdistricts,
-  } = useSWR(selectedDistrictId ? [`/api/master/address/subdistricts`, { districtId: selectedDistrictId }] : null, getFetcher);
+  } = useSWR(selectedDistrictId ? [`/api/master/address/subdistricts`, { districtId: selectedDistrictId }] : null, getFetcher, swrOption);
 
   const {
     data: zipcodeData,
     isLoading: loadingZipcode,
     error: errorZipcode,
-  } = useSWR(selectedSubdistrictId ? [`/api/master/address/zipcodes`, { subdistrictId: selectedSubdistrictId }] : null, getFetcher);
+  } = useSWR(selectedSubdistrictId ? [`/api/master/address/zipcodes`, { subdistrictId: selectedSubdistrictId }] : null, getFetcher, swrOption);
 
   return (
     <AddressContext.Provider
@@ -101,7 +102,7 @@ export const AddressProvider: React.FC<{ children: ReactNode }> = ({ children })
           setSubdistrictId(null);
         },
         setSubdistrictId,
-        isLoading: loadingProvinces || loadingDistricts || loadingSubdistricts || loadingZipcode,
+        loading: loadingProvinces || loadingDistricts || loadingSubdistricts || loadingZipcode,
         error: errorProvinces?.message || errorDistricts?.message || errorSubdistricts?.message || errorZipcode?.message || "",
       }}
     >
@@ -109,3 +110,5 @@ export const AddressProvider: React.FC<{ children: ReactNode }> = ({ children })
     </AddressContext.Provider>
   );
 };
+
+export const useAddress = () => useContext(AddressContext);

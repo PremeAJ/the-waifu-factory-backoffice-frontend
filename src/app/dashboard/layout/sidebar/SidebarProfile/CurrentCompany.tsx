@@ -1,18 +1,15 @@
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, Skeleton, Typography, useMediaQuery } from "@mui/material";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconTransfer } from "@tabler/icons-react";
 import { useContext, useState } from "react";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import { UserContext } from "@/common/contexts/UserContext";
 import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 
 export const CurrentCompany = () => {
   const { isLanguage } = useContext(CustomizerContext);
-  const { user } = useContext(UserContext);
-  const { companies } = user || {};
-  const { activeCompany } = useProfile();
+  const { activeCompany, loading } = useProfile();
   const { name, logoUrl, businessTypeId, branchNameTh, branchNameEn } = activeCompany || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const { isSidebarHover, isCollapse } = useContext(CustomizerContext);
@@ -39,15 +36,17 @@ export const CurrentCompany = () => {
         onMouseLeave={() => setHovered(false)}
       >
         {hideMenu ? (
-          <CompanyAvatar businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
+          <CompanyAvatar loading={loading} businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
         ) : (
           <>
-            <CompanyAvatar businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
+            <CompanyAvatar loading={loading} businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
             <Box sx={{ maxWidth: 120, overflow: "hidden", pl: 0.5, borderRadius: 0 }}>
               <Typography variant="h6" noWrap>
-                {name}
+                {loading ? <Skeleton variant="text" width={100} /> : name}
               </Typography>
-              <Typography variant="caption">สาขา {I18nString(isLanguage, branchNameTh, branchNameEn)}</Typography>
+              <Typography variant="caption">
+                {loading ? <Skeleton variant="text" width={100} /> : `สาขา ${I18nString(isLanguage, branchNameTh, branchNameEn)}`}
+              </Typography>
             </Box>
           </>
         )}

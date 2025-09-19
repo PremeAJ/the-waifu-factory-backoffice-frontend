@@ -6,6 +6,7 @@ import { useDialog } from "../DialogContext";
 import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
+import { swrOption } from "@/app/api/swrOption";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
 const APPEARANCE_KEY = "appearance";
@@ -20,33 +21,21 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     error: companyListError,
     isLoading: conmpanyListLoading,
     mutate: companyListMutate,
-  } = useSWR(session ? "/api/profile/company" : null, getFetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 5000,
-  });
+  } = useSWR(session ? "/api/profile/company" : null, getFetcher, swrOption);
 
   const {
     data: activeCompanyData,
     error: activeCompanyError,
     isLoading: activeCompanyLoading,
     mutate: activeCompanyMutate,
-  } = useSWR(session ? "/api/profile/active-company" : null, getFetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 5000,
-  });
+  } = useSWR(session ? "/api/profile/active-company" : null, getFetcher, swrOption);
 
   const {
     data: appearanceData,
     error: appearanceError,
     isLoading: appearanceLoading,
     mutate: appearanceMutate,
-  } = useSWR(session ? "/api/profile/appearance" : null, getFetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 5000,
-  });
+  } = useSWR(session ? "/api/profile/appearance" : null, getFetcher, swrOption);
 
   const [localAppearance, setLocalAppearance] = useState<Appearance>(defaultAppearance);
 

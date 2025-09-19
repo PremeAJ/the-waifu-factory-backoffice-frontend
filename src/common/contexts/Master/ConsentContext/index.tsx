@@ -2,6 +2,7 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
+import { swrOption } from "@/app/api/swrOption";
 
 export interface ConsentType {
   id: string;
@@ -31,7 +32,7 @@ export const ConsentContext = createContext<ConsentContextProps>({
 });
 
 export const ConsentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data, isLoading, error } = useSWR("/api/master/consent", getFetcher);
+  const { data, isLoading, error } = useSWR("/api/master/consent", getFetcher, swrOption);
 
   const consents: ConsentType[] = data?.data || [];
 

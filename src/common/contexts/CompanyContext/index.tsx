@@ -2,24 +2,28 @@
 import React, { createContext, useState } from "react";
 import { postFetcher } from "@/app/api/globalFetcher";
 import { useDialog } from "../DialogContext";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { PageUrl } from "@/common/constants/pageUrl";
+import { useProfile } from "../ProfileContext";
 
 export interface CompanyType {
   id: string;
-  companyName: string;
-  companyEmail: string;
-  companyAddress: string;
-  contactName: string;
-  contactEmail: string;
-  contactPhone: string;
-  consents: { id: string; accepted: boolean }[];
-  provinceId: number | null;
-  districtId: number | null;
-  subdistrictId: number | null;
-  zipcodeId: number | null;
   businessTypeId: number | null;
-  taxId: string;
-  name?: string;
+  companyAddress: string;
+  companyEmail: string;
+  companyName: string;
+  consents: { id: string; accepted: boolean }[];
+  contactEmail: string;
+  contactName: string;
+  contactPhone: string;
+  districtId: number | null;
   logoUrl?: string;
+  name?: string;
+  provinceId: number | null;
+  subdistrictId: number | null;
+  taxId: string;
+  zipcodeId: number | null;
 }
 
 export type CompanyContextType = {
@@ -34,23 +38,53 @@ export const CompanyContext = createContext<CompanyContextType>({} as CompanyCon
 
 export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [company, setCompany] = useState<CompanyType | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const { showError } = useDialog();
+  const { showError, showSuccess } = useDialog();
+  const { data: session, update: updateSession } = useSession();
+  const { companyList, companyListMutate, activeCompanyMutate } = useProfile();
 
   const createCompany = async (payload: Omit<CompanyType, "id">) => {
     setLoading(true);
     setError(null);
-    try {
-      const response = await postFetcher("/api/company", payload);
-      setLoading(false);
-      if (response.statusCode !== 201) showError({ message: response.message, title: "เกิดข้อผิดพลาด" });
-      return response;
-    } catch (err: any) {
-      setError(err.message);
-      setLoading(false);
-      throw new Error((process.env.NODE_ENV === "development" && err) || "เกิดข้อผิดพลาดในการสร้างบริษัท กรุณาลองใหม่อีกครั้ง");
-    }
+    const response = await postFetcher("/api/company", payload);
+    if (response.statusCode !== 201) showError({ message: response.message, title: "เกิดข้อผิดพลาด" });
+    await updateSession({ profile: { ...session?.profile, activeCompany: response?.data?.company?.id } });
+    const { id, name, logoUrl } = response?.data?.company;
+    const { nameTh: RoleNameTh, nameEn: RoleNameEn } = response?.data?.roles;
+    const { nameTh: branchNameTh, nameTh: branchNameEn } = response?.data?.branch;
+    await companyListMutate(
+      {
+        data: [
+          {
+            companies: {
+              id: id,
+              name: name,
+              logoUrl: logoUrl,
+              businessTypeId: payload.businessTypeId,
+            },
+            roles: {
+              nameTh: RoleNameTh,
+              nameEn: RoleNameEn,
+            },
+          },
+          ...companyList,
+        ],
+      },
+      false
+    );
+    await activeCompanyMutate({
+      data: {
+        name: name,
+        logoUrl: logoUrl,
+        businessTypeId: payload.businessTypeId,
+        branchNameTh: branchNameTh,
+        branchNameEn: branchNameEn,
+      },
+    }, false);
+    showSuccess({ message: "กำลังพาไปหน้า Dashboard...", title: "สำเร็จ", callback: PageUrl.DASHBOARD });
+    setLoading(false);
+    return response;
   };
 
   const value: CompanyContextType = {
@@ -63,3 +97,5 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   return <CompanyContext.Provider value={value}>{children}</CompanyContext.Provider>;
 };
+
+export const useCompany = () => React.useContext(CompanyContext);

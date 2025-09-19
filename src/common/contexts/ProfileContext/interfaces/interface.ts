@@ -32,8 +32,8 @@ export interface ProfileContextType {
   loading: boolean;
   error: any;
   updateProfile: (payload: Partial<ProfilePayload>) => Promise<ProfileResponse>;
-  companyListMutate: () => Promise<any>;
-  activeCompanyMutate: () => Promise<any>;
+  companyListMutate: KeyedMutator<any>;
+  activeCompanyMutate: KeyedMutator<any>;
   appearanceMutate: KeyedMutator<any>;
   refreshProfile: () => Promise<any>;
   updateActiveCompany: (companyId: string) => Promise<any>;

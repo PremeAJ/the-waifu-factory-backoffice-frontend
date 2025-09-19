@@ -3,6 +3,7 @@ import { createContext, useState, useEffect, ReactNode, Dispatch, SetStateAction
 import React from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
+import { swrOption } from "@/app/api/swrOption";
 
 export interface BusinessTypeCategory {
   id: number;
@@ -43,7 +44,7 @@ export const BusinessTypeProvider: React.FC<{ children: ReactNode }> = ({ childr
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  const { data: BusinessTyppeData, isLoading: swrLoading, error: swrError, mutate } = useSWR("/api/master/business-type", getFetcher);
+  const { data: BusinessTyppeData, isLoading: swrLoading, error: swrError, mutate } = useSWR("/api/master/business-type", getFetcher, swrOption);
 
   useEffect(() => {
     if (BusinessTyppeData) {
