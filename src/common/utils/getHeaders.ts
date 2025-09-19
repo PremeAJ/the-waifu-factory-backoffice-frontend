@@ -33,6 +33,9 @@ export const getHeaders = async (headers?: Record<string, string>) => {
     [HeadersKey.IP]: ip || "",
     ...(headers || {}),
   };
+  if (typeof window !== "undefined") {
+    header[HeadersKey.Origin] = window.location.origin;
+  }
   return header;
 };
 
