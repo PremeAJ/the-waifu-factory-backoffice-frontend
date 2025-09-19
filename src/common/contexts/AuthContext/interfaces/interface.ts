@@ -2,6 +2,7 @@ import { ApiResponse } from "@/common/interface/apiResponse";
 
 export interface AuthContextType {
   register: (payload: RegisterPayload) => Promise<RegisterResponse>;
+  signOut: () => Promise<any>;
   forgotPassword: (payload: ForgotPasswordPayload) => Promise<ForgotPasswordResponse>;
   resetPassword: (payload: ResetPasswordPayload) => Promise<any>;
   loading: boolean;

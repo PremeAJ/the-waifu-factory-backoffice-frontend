@@ -5,8 +5,10 @@ import Image from "next/image";
 import Logo from "@/common/components/shared/Logo";
 import PageContainer from "@/components/container/PageContainer";
 import Language from "@/common/components/shared/Language";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 export default function Login() {
+  const { appearance } = useProfile();
   return (
     <PageContainer title="Login Page" description="this is Sample page">
       <Grid container spacing={0} justifyContent="center" sx={{ height: "100vh" }}>
@@ -16,7 +18,7 @@ export default function Login() {
             position: "relative",
             "&:before": {
               content: '""',
-              background: (theme) => `radial-gradient(${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+              background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
               backgroundSize: "400% 400%",
               animation: "gradient 15s ease infinite",
               position: "absolute",
