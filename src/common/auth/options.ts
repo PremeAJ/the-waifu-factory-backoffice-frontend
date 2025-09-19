@@ -12,7 +12,7 @@ async function header(accessToken?: string) {
   let deviceId = cookieStore.get(HeadersKey.DeviceId)?.value;
   if (!deviceId) {
     deviceId = uuidv4();
-    cookieStore.set(HeadersKey.DeviceId, deviceId, { path: "/" });
+    cookieStore.set(HeadersKey.DeviceId, deviceId, { expires: 3560, path: "/", sameSite: "lax", secure: process.env.NODE_ENV === "production" });
   }
   const language = cookieStore.get(HeadersKey.Lang)?.value || "th";
   const userAgent = cookieStore.get(HeadersKey.UserAgent)?.value || "";
@@ -95,7 +95,11 @@ const authOptions: AuthOptions = {
         if (session.profile) token.profile = session.profile;
       }
       if (token.accessToken && isExpired(token.accessToken)) {
-        const refreshed = await postFetcher(`${baseUrl}/api/v1/session/refresh`, { token: token.refreshToken }, { ...(await header(token.accessToken)) });
+        const refreshed = await postFetcher(
+          `${baseUrl}/api/v1/session/refresh`,
+          { token: token.refreshToken },
+          { ...(await header(token.accessToken)) }
+        );
         if (refreshed?.error) {
           throw new Error(refreshed.message);
         }
