@@ -10,6 +10,7 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
   const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${path.join("/")}${search}`.replace("/authentication", "/auth");
   if (session?.accessToken) req.headers.set(HeadersKey.Authorization, `Bearer ${session.accessToken}`);
   try {
+    req.headers.set(HeadersKey.Origin, process.env.NEXTAUTH_URL || "");
     const options: RequestInit = {
       method: req.method,
       headers: req.headers,
