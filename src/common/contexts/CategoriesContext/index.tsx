@@ -5,6 +5,7 @@ import { getFetcher, postFetcher, deleteFetcher, putFetcher } from "@/app/api/gl
 import { useDialog } from "../DialogContext";
 import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
 import useSWR from "swr";
+import { swrOption } from "@/app/api/swrOption";
 
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
 
@@ -49,33 +50,21 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     error: categoriesError,
     isLoading: categoriesLoading,
     mutate: categoriesMutate,
-  } = useSWR(categoriesUrl, getFetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 2000,
-  });
+  } = useSWR(categoriesUrl, getFetcher);
 
   const {
     data: dropdownData,
     error: dropdownError,
     mutate: dropdownMutate,
     isLoading: dropdownLoading,
-  } = useSWR(`${endpoint}/dropdown`, getFetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 300000,
-  });
+  } = useSWR(`${endpoint}/dropdown`, getFetcher, swrOption);
 
   const {
     data: categoryIconsData,
     error: categoryIconsError,
     mutate: categoryIconsMutate,
     isLoading: categoryIconsLoading,
-  } = useSWR(masterIconEndpoint, getFetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 300000,
-  });
+  } = useSWR(masterIconEndpoint, getFetcher, swrOption);
 
   const getCategoryById = async (id: string): Promise<CategoryDetailType> => {
     try {
