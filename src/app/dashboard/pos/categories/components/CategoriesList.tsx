@@ -14,6 +14,7 @@ import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
+import useIsPortrait from "@/common/utils/breakpoints/useIsPortrait";
 
 type DialogState = {
   open: boolean;
@@ -31,7 +32,7 @@ function CategoriesList() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { loading, categories, search, setSearch, isActive, setIsActive, pageOptions, setPage, setPerPage, deleteCategory } = useCategories();
   const isMobile = useIsMobile();
-
+  const isPortrait = useIsPortrait();
   const tableData: any = useMemo(() => {
     return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
   }, [categories]);
@@ -45,7 +46,7 @@ function CategoriesList() {
       render: (iconName: string) => iconName ? renderTablerIcon(iconName) : "-"
     },
     { key: "nameTh", label: "Name (TH)", align: "left", width: "25%" },
-    ...(!isMobile
+    ...(!isPortrait || !isMobile
       ? [
           {
             key: "nameEn",
