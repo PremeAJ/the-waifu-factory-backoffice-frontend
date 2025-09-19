@@ -19,7 +19,7 @@ const ContactInfoStep = ({ formik }: any) => (
       />
     </Grid>
     <Grid size={{ xs: 12, md: 6 }}>
-      <BaseTextField name="contactPhone" label="เบอร์โทรศัพท์" formik={formik} required fullWidth placeholder="กรอกเบอร์โทรศัพท์"/>
+      <BaseTextField name="contactPhone" label="เบอร์โทรศัพท์" formik={formik} required fullWidth placeholder="กรอกเบอร์โทรศัพท์" type="tel"/>
     </Grid>
   </Grid>
 );
