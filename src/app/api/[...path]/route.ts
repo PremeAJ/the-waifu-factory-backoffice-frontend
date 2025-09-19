@@ -17,6 +17,9 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
     };
     const response = await fetch(backendUrl, options);
     const responseData = await response.json();
+    if (response?.status >= 400) {
+      console.log('API ERROR : ', responseData?.message);
+    }
     return NextResponse.json(responseData, { status: response.status });
   } catch (error: any) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
