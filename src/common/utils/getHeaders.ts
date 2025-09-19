@@ -28,6 +28,7 @@ export const getHeaders = (headers?: Record<string, string>) => {
     [HeadersKey.AppVersion]: pkg.version,
     [HeadersKey.Latitude]: latitude,
     [HeadersKey.Longitude]: longitude,
+    [HeadersKey.IP]: "",  
     ...(headers || {}),
   };
   return header;

@@ -1,5 +1,5 @@
 import { AuthOptions } from "next-auth";
-import { cookies } from "next/headers";
+import { cookies, headers as nextHeaders } from "next/headers";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { getHeaders } from "../utils/getHeaders";
 import { HeadersKey } from "../constants/header";
@@ -19,6 +19,17 @@ async function header(accessToken?: string) {
   const latitude = cookieStore.get(HeadersKey.Latitude)?.value || "";
   const longitude = cookieStore.get(HeadersKey.Longitude)?.value || "";
   const headers = getHeaders();
+
+  try {
+    const reqHeaders = await nextHeaders();
+    const xfwd = reqHeaders.get("x-forwarded-for") || reqHeaders.get("x-vercel-forwarded-for") || reqHeaders.get("x-real-ip") || reqHeaders.get("cf-connecting-ip") || "";
+    const clientIp = xfwd ? xfwd.split(",")[0].trim() : "";
+    if (clientIp) {
+     headers[HeadersKey.IP] = clientIp;
+    }
+  } catch {
+  }
+
   if (accessToken) headers[HeadersKey.Authorization] = `Bearer ${accessToken}`;
   if (deviceId) headers[HeadersKey.DeviceId] = deviceId;
   if (language) headers[HeadersKey.Lang] = language;
