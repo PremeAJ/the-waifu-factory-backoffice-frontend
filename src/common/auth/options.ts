@@ -22,20 +22,25 @@ async function header(accessToken?: string) {
 
   try {
     const reqHeaders = await nextHeaders();
-    const xfwd = reqHeaders.get("x-forwarded-for") || reqHeaders.get("x-vercel-forwarded-for") || reqHeaders.get("x-real-ip") || reqHeaders.get("cf-connecting-ip") || "";
+    const xfwd =
+      reqHeaders.get("x-forwarded-for") ||
+      reqHeaders.get("x-vercel-forwarded-for") ||
+      reqHeaders.get("x-real-ip") ||
+      reqHeaders.get("cf-connecting-ip") ||
+      "";
     const clientIp = xfwd ? xfwd.split(",")[0].trim() : "";
     if (clientIp) {
-     headers[HeadersKey.IP] = clientIp;
+      headers[HeadersKey.IP] = clientIp;
     }
-  } catch {
-  }
-
+  } catch {}
+  const origin = process.env.NEXTAUTH_URL;
   if (accessToken) headers[HeadersKey.Authorization] = `Bearer ${accessToken}`;
   if (deviceId) headers[HeadersKey.DeviceId] = deviceId;
   if (language) headers[HeadersKey.Lang] = language;
   if (userAgent) headers[HeadersKey.UserAgent] = userAgent;
   if (latitude) headers[HeadersKey.Latitude] = latitude;
   if (longitude) headers[HeadersKey.Longitude] = longitude;
+  if (origin) headers[HeadersKey.Origin] = origin;
   return headers;
 }
 
