@@ -102,7 +102,7 @@ const baseFetcher = async (
     method,
     cache:'no-store',
     headers:
-      method === Method.GET ? { browserrefreshed: "false", ...getHeaders(headers) } : getHeaders(headers),
+      method === Method.GET ? { browserrefreshed: "false", ...await getHeaders(headers) } : await getHeaders(headers),
     ...(body && method !== Method.GET ? { body: JSON.stringify(body) } : {}),
   };
 

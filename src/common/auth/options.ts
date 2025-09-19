@@ -18,7 +18,7 @@ async function header(accessToken?: string) {
   const userAgent = cookieStore.get(HeadersKey.UserAgent)?.value || "";
   const latitude = cookieStore.get(HeadersKey.Latitude)?.value || "";
   const longitude = cookieStore.get(HeadersKey.Longitude)?.value || "";
-  const headers = getHeaders();
+  const headers = await getHeaders();
 
   try {
     const reqHeaders = await nextHeaders();
