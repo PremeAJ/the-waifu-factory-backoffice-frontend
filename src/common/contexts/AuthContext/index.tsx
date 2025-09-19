@@ -1,7 +1,7 @@
 "use client";
 import { AuthContextType, ForgotPasswordPayload, ForgotPasswordResponse, RegisterPayload, ResetPasswordPayload } from "./interfaces/interface";
 import { postFetcher } from "@/app/api/globalFetcher";
-import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect } from "react";
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -18,10 +18,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     setLoading(true);
-    const response = await postFetcher("/api/authentication/logout", {});
-    await nextAuthSignOut();
+    await postFetcher("/api/authentication/logout", {});
     setLoading(false);
-    return response;
   };
 
   const forgotPassword = async (payload: ForgotPasswordPayload): Promise<ForgotPasswordResponse> => {

@@ -2,25 +2,28 @@ import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack } f
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconMail, IconUser } from "@tabler/icons-react";
-import { useAuth } from "@/common/contexts/AuthContext";
+import { PageUrl } from "@/common/constants/pageUrl";
+import { signOut, useSession } from "next-auth/react";
 import { UserContext } from "@/common/contexts/UserContext";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import * as dropdownData from "../../../app/dashboard/layout/header/data";
 import BaseButton from "@/common/components/base/BaseButton";
 import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDialog";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
+import { useAuth } from "@/common/contexts/AuthContext";
 
 interface ProfileProps {
   loading?: boolean;
 }
 
 const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
+  const router = useRouter();
   const { isLanguage } = useContext(CustomizerContext);
-  const { signOut, loading: authLoading } = useAuth();
   const { user } = useContext(UserContext);
   const { data: session, status } = useSession();
-  const loading = status === "loading" || authLoading;
+  const {signOut: apiSignOut} = useAuth()
+  const loading = status === "loading";
   const { companies } = user || {};
   const { companyUsers } = companies || {};
   const { roles } = companyUsers?.[0] || {};
@@ -28,6 +31,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
 
   const [openSignOut, setOpenSignOut] = useState(false);
+  const [signOutLoading, setSignOutLoading] = useState(false);
 
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget);
@@ -41,7 +45,10 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   };
 
   const handleConfirmSignOut = async () => {
-    await signOut();
+    setSignOutLoading(true);
+    await apiSignOut()
+    await signOut({callbackUrl: PageUrl.AUTH_SIGN_IN});
+    setSignOutLoading(false);
     setOpenSignOut(false);
   };
 
@@ -125,7 +132,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   if (!session) {
     return null;
   }
-  const { firstName, lastName, fullName, email, avatar } = session.profile || {};
+  const {firstName, lastName, fullName ,email, avatar} = session.profile || {};
 
   return (
     <Box>
@@ -287,7 +294,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
           <BaseButton label="Logout" onClick={handleLogout} loading={loading} />
         </Box>
       </Menu>
-      <ConfirmSignOutDialog open={openSignOut} onClose={() => setOpenSignOut(false)} onConfirm={handleConfirmSignOut} loading={loading} />
+      <ConfirmSignOutDialog open={openSignOut} onClose={() => setOpenSignOut(false)} onConfirm={handleConfirmSignOut} loading={signOutLoading} />
     </Box>
   );
 };
