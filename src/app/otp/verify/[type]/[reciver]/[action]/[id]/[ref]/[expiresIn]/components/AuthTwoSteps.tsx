@@ -13,14 +13,14 @@ import BaseOTP from "@/common/components/base/BaseOTP";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 
 const AuthTwoSteps = () => {
-  const params = useParams();
-  const router = useRouter();
-  const { showError } = useDialog();
   const [errorText, setErrorText] = useState("");
   const [otp, setOtp] = useState("");
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
-  const { type, reciver, action, id, ref, expiresIn } = params;
+  const { showError, showSuccess } = useDialog();
   const { verifyOtp, resendOtp, loading } = useOtp();
+  const params = useParams();
+  const router = useRouter();
+  const { type, reciver, action, id, ref, expiresIn } = params;
   const onFocusVerifyOtp = async () => {
     const response = await verifyOtp({
       id: id?.toString() || "",
@@ -34,7 +34,7 @@ const AuthTwoSteps = () => {
       setErrorText("");
       switch (action) {
         case OtpType.sign_up:
-          router.replace(PageUrl.AUTH_SIGN_IN);
+          showSuccess({ message: "สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบด้วยบัญชีของท่าน", title: 'ยืนยันอีเมลสำเร็จ' ,callback: PageUrl.AUTH_SIGN_IN });
           break;
         case OtpType.forgot_password: {
           const url = `/auth/password/reset/${encodeURIComponent(id?.toString() || "")}`;
