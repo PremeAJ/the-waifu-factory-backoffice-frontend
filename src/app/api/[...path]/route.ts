@@ -11,15 +11,23 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
   if (session?.accessToken) req.headers.set(HeadersKey.Authorization, `Bearer ${session.accessToken}`);
   try {
     req.headers.set(HeadersKey.Origin, process.env.NEXTAUTH_URL || "");
+
+    // For binary/multipart bodies, use arrayBuffer() so we forward the raw bytes
     const options: RequestInit = {
       method: req.method,
       headers: req.headers,
-      body: req.method !== "GET" && req.method !== "HEAD" ? await req.text() : undefined,
+      body: req.method !== "GET" && req.method !== "HEAD" ? await req.arrayBuffer() : undefined,
     };
     const response = await fetch(backendUrl, options);
-    const responseData = await response.json();
+    // try safe json parse (some responses may be empty)
+    let responseData: any;
+    try {
+      responseData = await response.json();
+    } catch {
+      responseData = { statusCode: response.status, message: response.statusText };
+    }
     if (response?.status >= 400) {
-      console.log('API ERROR : ', responseData?.message);
+      console.log("API ERROR : ", responseData?.message);
     }
     return NextResponse.json(responseData, { status: response.status });
   } catch (error: any) {

@@ -23,20 +23,31 @@ async function handleResponse(
   body?: any,
   headers?: Record<string, string>
 ): Promise<any> {
- 
+  if (res.status === 204) {
+    return { statusCode: 204, data: null };
+  }
+
+  const tryJson = async () => {
+    try {
+      return await res.json();
+    } catch {
+      return { statusCode: res.status, message: res.statusText };
+    }
+  };
+
   if (res.status !== 401 && res.status !== 403) {
-    return res.json();
+    return tryJson();
   }
 
   if (typeof window === "undefined") {
-    return res.json();
+    return tryJson();
   }
 
   if (res.status === 403) {
     await signOut();
     return Promise.reject(new Error("Forbidden"));
   }
- 
+
   if (isRefreshing) {
     return new Promise((resolve, reject) => {
       failedQueue.push({ resolve, reject });
@@ -98,12 +109,31 @@ const baseFetcher = async (
     }
   }
 
+  const computedHeaders = await getHeaders(headers);
+  const isFormBody =
+    (typeof FormData !== "undefined" && body instanceof FormData) ||
+    (typeof Blob !== "undefined" && body instanceof Blob) ||
+    body instanceof ArrayBuffer ||
+    (typeof URLSearchParams !== "undefined" && body instanceof URLSearchParams);
+  let finalHeaders: Record<string, string> | undefined = computedHeaders ? { ...computedHeaders } : undefined;
+  if (isFormBody && finalHeaders) {
+    const filtered: Record<string, string> = {};
+    Object.entries(finalHeaders).forEach(([k, v]) => {
+      if (k.toLowerCase() !== "content-type") filtered[k] = v;
+    });
+    finalHeaders = filtered;
+  }
+
+  const fetchHeaders: Record<string, string> =
+    method === Method.GET ? { browserrefreshed: "false", ...(finalHeaders || {}) } : { ...(finalHeaders || {}) };
+
   const fetchOptions: RequestInit = {
     method,
-    cache:'no-store',
-    headers:
-      method === Method.GET ? { browserrefreshed: "false", ...await getHeaders(headers) } : await getHeaders(headers),
-    ...(body && method !== Method.GET ? { body: JSON.stringify(body) } : {}),
+    cache: "no-store",
+    headers: fetchHeaders,
+    ...(body && method !== Method.GET && method !== Method.HEAD
+      ? { body: isFormBody ? (body as any) : JSON.stringify(body) }
+      : {}),
   };
 
   const originalRequestUrl = Array.isArray(url) ? url : fullUrl;

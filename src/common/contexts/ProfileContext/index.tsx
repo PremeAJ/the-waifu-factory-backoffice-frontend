@@ -8,6 +8,9 @@ import useSWR from "swr";
 import { swrOption } from "@/app/api/swrOption";
 import { useEncrypt } from "../EncryptContext";
 import { showError } from "@/common/utils/dialog";
+import reduceImageFileSize from "@/common/utils/function/file/reduceImageFileSize";
+import imageCompression from "browser-image-compression";
+import { dataURLToFile } from "@/common/utils/function/file/dataURLToBlob";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
 const APPEARANCE_KEY = "appearance";
@@ -107,6 +110,32 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return response;
   };
 
+  const uploadAvatar = async (base64: string, fileName: string): Promise<any> => {
+    setLoading(true);
+    try {
+      if (!base64) showError({ title: "เกิดข้อผิดพลาด", message: "ไม่มีไฟล์รูปภาพ" });
+      const dataUrl = base64.startsWith("data:") ? base64 : `data:image/jpeg;base64,${base64}`;
+      let file = dataURLToFile(dataUrl, fileName);
+      const options = {
+        maxSizeMB: 0.8,
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      };
+      const compressedFile = await imageCompression(file, options);
+      const fd = new FormData();
+      fd.append("file", compressedFile, fileName);
+      const response = await putFetcher("/api/profile/avatar", fd);
+      if (response?.error) {
+        showError({ title: "เกิดข้อผิดพลาด", message: response.message });
+      }
+      await update({ profile: { ...session?.profile, avatar: response.data } });
+      return response;
+    } catch (error: any) {
+      showError({ title: "เกิดข้อผิดพลาด", message: error?.message || "Upload failed" });
+    } finally {
+      setLoading(false);
+    }
+  };
   const value: ProfileContextType = {
     activeCompany: activeCompanyData?.data || null,
     activeCompanyMutate,
@@ -120,6 +149,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     refreshProfile,
     updateActiveCompany,
     updateProfile,
+    uploadAvatar,
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

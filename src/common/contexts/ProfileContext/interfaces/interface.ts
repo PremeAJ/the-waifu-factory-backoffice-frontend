@@ -38,6 +38,7 @@ export interface ProfileContextType {
   refreshProfile: () => Promise<any>;
   updateActiveCompany: (companyId: string) => Promise<any>;
   changeEmail: (payload: Partial<ChangeEmailPayload>) => Promise<any>;
+  uploadAvatar: (base64: string, fileName:string) => Promise<any>;
 }
 
 export interface ProfileResponse extends ApiResponse {
