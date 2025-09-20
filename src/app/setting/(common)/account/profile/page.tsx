@@ -3,7 +3,7 @@
 import * as React from "react";
 import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
-import { Grid, CardContent, Divider } from "@mui/material";
+import { CardContent } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 // components

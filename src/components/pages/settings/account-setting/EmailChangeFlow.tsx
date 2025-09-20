@@ -79,7 +79,6 @@ const EmailChangeFlow: React.FC<EmailChangeFlowProps> = ({ open, onClose, curren
 
   return (
     <>
-      {/* Dialog สำหรับกรอกอีเมลใหม่ */}
       <BaseDialog
         open={open && step === "input"}
         title="เปลี่ยนอีเมล"

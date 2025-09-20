@@ -10,8 +10,10 @@ const Transition = React.forwardRef(function Transition(props: TransitionProps &
 });
 
 interface BaseDialogProps {
+  cancelDisabled?: boolean;
   cancelText?: string;
   confirmColor?: "primary" | "error" | "success";
+  confirmDisabled?: boolean;
   confirmText?: string;
   content: string | React.ReactNode;
   disableBackdropClose?: boolean; 
@@ -26,13 +28,15 @@ interface BaseDialogProps {
   onConfirm: () => void;
   open: boolean;
   scrolling?: boolean;
-  title: string;
   sx?: SxProps<Theme>;
+  title: string;
 }
 
 const BaseDialog: React.FC<BaseDialogProps> = ({
+  cancelDisabled = false,
   cancelText,
   confirmColor = "primary",
+  confirmDisabled = false,
   confirmText,
   content,
   disableBackdropClose = true,
@@ -47,8 +51,8 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   onConfirm,
   open,
   scrolling = false,
-  title,
   sx,
+  title,
 }) => {
   const handleDialogClose = (event?: object, reason?: string) => {
     if (disableBackdropClose && (reason === "backdropClick" || reason === "escapeKeyDown")) {
@@ -150,7 +154,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
               <BaseButton
                 label={confirmText}
                 onClick={onConfirm}
-                disabled={loading}
+                disabled={loading || confirmDisabled}
                 fullWidth={true}
                 loading={loading}
                 {...(confirmColor ? { color: confirmColor } : null)}
@@ -160,15 +164,15 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
           </>
         ) : (
           <>
-            {cancelText && <BaseButton label={cancelText} onClick={onClose} disabled={loading} fullWidth={false} variant="outlined" />}
+            {cancelText && <BaseButton label={cancelText} onClick={onClose} disabled={loading || cancelDisabled} fullWidth={false} variant="outlined" />}
             {confirmText && (
               <BaseButton
                 label={confirmText}
                 onClick={onConfirm}
-                disabled={loading}
+                disabled={loading || confirmDisabled}
                 fullWidth={false}
                 loading={loading}
-                {...(confirmColor ? { color: "primary" } : null)}
+                {...(confirmColor ? { color: confirmColor } : null)}
               />
             )}
           </>

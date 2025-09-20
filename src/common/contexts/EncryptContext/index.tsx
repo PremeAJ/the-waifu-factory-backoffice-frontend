@@ -3,7 +3,7 @@ import React, { createContext, useContext } from "react";
 import CryptoJS from "crypto-js";
 
 export interface EncryptContextType {
-  encrypt: (text: string) => string;
+  encrypt: (text?: string) => string;
   decrypt: (encrypted: string) => string | void;
   censorEmail: (email: string) => string;
   censorPhone: (phone: string) => string;
@@ -12,7 +12,7 @@ export interface EncryptContextType {
 export const EncryptContext = createContext<EncryptContextType>({} as EncryptContextType);
 
 export const EncryptProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const encrypt = (text: string) => {
+  const encrypt = (text?: string) => {
     if (!text) return "";
     const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY || "";
     const iv = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);

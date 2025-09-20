@@ -37,6 +37,7 @@ export interface ProfileContextType {
   appearanceMutate: KeyedMutator<any>;
   refreshProfile: () => Promise<any>;
   updateActiveCompany: (companyId: string) => Promise<any>;
+  changeEmail: (payload: Partial<ChangeEmailPayload>) => Promise<any>;
 }
 
 export interface ProfileResponse extends ApiResponse {
@@ -71,6 +72,11 @@ export interface Appearance {
   activeMode: ActiveMode;
   activeTheme: string;
   isCollapse: IsCollapse;
+}
+
+export interface ChangeEmailPayload {
+  newEmail: string;
+  password: string;
 }
 
 export type IsLanguage = "en" | "th";

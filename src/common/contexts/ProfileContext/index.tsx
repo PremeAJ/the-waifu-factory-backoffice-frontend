@@ -1,5 +1,5 @@
 "use client";
-import { Appearance, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
+import { Appearance, ChangeEmailPayload, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
 import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
 import { useDialog } from "../DialogContext";
@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import { swrOption } from "@/app/api/swrOption";
+import { useEncrypt } from "../EncryptContext";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
 const APPEARANCE_KEY = "appearance";
@@ -15,6 +16,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session, update } = useSession();
   const { showError } = useDialog();
+  const { encrypt } = useEncrypt();
 
   const {
     data: companyListData,
@@ -98,11 +100,23 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return response;
   };
 
+  const changeEmail = async (payload: Partial<ChangeEmailPayload>): Promise<any> => {
+    setLoading(true);
+    const encryptedPayload = {
+      newEmail: encrypt(payload.newEmail),
+      password: encrypt(payload.password),
+    };
+    const response = await putFetcher("/api/profile/email", encryptedPayload);
+    setLoading(false);
+    return response;
+  };
+
   const value: ProfileContextType = {
     activeCompany: activeCompanyData?.data || null,
     activeCompanyMutate,
     appearance,
     appearanceMutate,
+    changeEmail,
     companyList: companyListData?.data || [],
     companyListMutate,
     error: activeCompanyError || companyListError || appearanceError,

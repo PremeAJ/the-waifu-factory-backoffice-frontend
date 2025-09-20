@@ -8,6 +8,7 @@ interface BaseLinkButtonProps {
   tabIndex?: number;
   role?: string;
   underline?: boolean;
+  bold?: boolean;
 }
 
 const BaseLinkButton: React.FC<BaseLinkButtonProps> = ({
@@ -16,18 +17,20 @@ const BaseLinkButton: React.FC<BaseLinkButtonProps> = ({
   sx,
   tabIndex = 0,
   role = "button",
-  underline = true,
+  underline = false,
+  bold = false,
   ...rest
 }) => (
   <Typography
     component="span"
     sx={{
-      textDecoration: underline ? "underline" : "none",
       color: "primary.main",
       cursor: "pointer",
-      userSelect: "none",
       display: "inline-block",
+      fontWeight: bold ? 700 : "inherit",
+      textDecoration: underline ? "underline" : "none",
       transition: "color 0.18s, transform 0.18s cubic-bezier(0.4,0,0.2,1)",
+      userSelect: "none",
       "&:hover": {
         color: "primary.dark",
         textDecoration: underline ? "underline" : "none",

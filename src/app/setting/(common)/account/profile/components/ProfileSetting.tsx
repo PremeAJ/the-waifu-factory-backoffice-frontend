@@ -17,11 +17,11 @@ import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseLabel from "@/common/components/base/BaseLabel";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Box from "@mui/material/Box";
-import EmailChangeFlow from "@/components/pages/settings/account-setting/EmailChangeFlow";
 import PhoneChangeFlow from "@/components/pages/settings/account-setting/PhoneChangeFlow";
 import React, { useContext, useState, useRef } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import OtpDialog from "@/common/components/dialogs/OtpDialog";
+import ChangeEmail, { ChangeEmailState } from "./ChangeEmail";
+import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -43,7 +43,7 @@ const AccountTab = () => {
   const [openCrop, setOpenCrop] = useState(false);
   const [preview, setPreview] = useState<string | undefined>(avatar);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [showEmailChangeFlow, setShowEmailChangeFlow] = useState(false);
+  const [changeEmailDialog, setChangeEmailDialog] = useState<ChangeEmailState>("");
   const [showPhoneChangeFlow, setShowPhoneChangeFlow] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -164,18 +164,14 @@ const AccountTab = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <BaseLabel htmlFor="email" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <IconMail size={18} style={{ marginRight: 4 }} /> {t("common.email")}
-                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }} onClick={() => setShowEmailChangeFlow(true)}>
-                  เปลี่ยน
-                </span>
+                <BaseLinkButton label="เปลี่ยน" onClick={() => setChangeEmailDialog("newEmail")} bold />
               </BaseLabel>
               <BaseTextField name="email" value={email || "-"} disabled={true} />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <BaseLabel htmlFor="phone" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <IconDeviceMobile size={18} style={{ marginRight: 4 }} /> {t("common.phone")}
-                <span style={{ color: theme.palette.primary.main, cursor: "pointer" }} onClick={() => setShowPhoneChangeFlow(true)}>
-                  {phone ? "เปลี่ยน" : "เพิ่ม"}
-                </span>
+                <BaseLinkButton label={phone ? "เปลี่ยน" : "เพิ่ม"} onClick={() => setShowPhoneChangeFlow(true)} bold />
               </BaseLabel>
               <BaseTextField name="phone" value={phone || "-"} disabled={true} />
             </Grid>
@@ -207,9 +203,10 @@ const AccountTab = () => {
         onConfirm={handleConfirmCancel}
         onClose={() => setShowCancelDialog(false)}
       />
-      <EmailChangeFlow open={showEmailChangeFlow} onClose={() => setShowEmailChangeFlow(false)} currentEmail={email || ""} />
+      <ChangeEmail state={changeEmailDialog} changeState={setChangeEmailDialog}/>
+
       <PhoneChangeFlow open={showPhoneChangeFlow} onClose={() => setShowPhoneChangeFlow(false)} currentPhone={phone || ""} />
-         {/* <OtpDialog
+      {/* <OtpDialog
           open={true}
           onClose={() => console.log("close")}
           params={null}

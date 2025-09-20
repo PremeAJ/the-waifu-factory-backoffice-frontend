@@ -4,6 +4,7 @@ import { emailValidator, requiredPasswordSchema } from "@/common/utils/validator
 import { IconLock, IconMail } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { signIn } from "next-auth/react";
+import { useEncrypt } from "@/common/contexts/EncryptContext";
 import { useFormik } from "formik";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
@@ -28,6 +29,7 @@ const AuthLogin = () => {
   const [captchaToken, setCaptchaToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { appearance } = useProfile();
+  const { encrypt } = useEncrypt();
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const formik = useFormik({
@@ -38,11 +40,14 @@ const AuthLogin = () => {
     validationSchema: validationSchema,
     onSubmit: async (data) => {
       setIsLoading(true);
+      const encryptedPayload = {
+        email: encrypt(data.email),
+        password: encrypt(data.password),
+      }
       const result = await signIn("credentials", {
         redirect: false,
-        email: data.email,
-        password: data.password,
         captchaToken,
+        ...encryptedPayload,
       });
       setIsLoading(false);
       if (result?.error) {
