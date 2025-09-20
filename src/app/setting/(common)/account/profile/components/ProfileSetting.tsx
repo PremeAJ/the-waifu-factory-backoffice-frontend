@@ -7,7 +7,8 @@ import {
 import { Grid, Typography } from "@mui/material";
 import { IconPencil, IconMail, IconDeviceMobile } from "@tabler/icons-react";
 import { ProfilePayload } from "@/common/contexts/ProfileContext/interfaces/interface";
-import { Stack, useTheme } from "@mui/system";
+import { Stack } from "@mui/system";
+import { useDialog } from "@/common/contexts/DialogContext";
 import { useFormik } from "formik";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { UserContext } from "@/common/contexts/UserContext";
@@ -18,15 +19,13 @@ import * as yup from "yup";
 import Avatar from "@mui/material/Avatar";
 import AvatarCropDialog from "@/components/ui-components/dialog/AvatarCropDialog";
 import BaseButton from "@/common/components/base/BaseButton";
-import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseLabel from "@/common/components/base/BaseLabel";
+import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Box from "@mui/material/Box";
+import ChangeEmail, { ChangeEmailState } from "./ChangeEmail";
 import React, { useContext, useState, useRef } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import ChangeEmail, { ChangeEmailState } from "./ChangeEmail";
-import BaseLinkButton from "@/common/components/base/BaseLinkButton";
-import { useDialog } from "@/common/contexts/DialogContext";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
@@ -36,7 +35,6 @@ const validationSchema = yup.object({
 });
 
 const AccountTab = () => {
-  const theme = useTheme();
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const { showError } = useDialog();
@@ -48,12 +46,9 @@ const AccountTab = () => {
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
   const [openCrop, setOpenCrop] = useState(false);
   const [preview, setPreview] = useState<string | undefined>(avatar);
-  const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [changeEmailDialog, setChangeEmailDialog] = useState<ChangeEmailState>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const loading = status === 'loading' || profileLoading
-
-  const router = useRouter();
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -69,16 +64,6 @@ const AccountTab = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleCancel = () => {
-    setShowCancelDialog(true);
-  };
-
-  const handleConfirmCancel = () => {
-    formik.resetForm();
-    setShowCancelDialog(false);
-    if (isMobile) router.replace("/setting");
   };
 
   const formik = useFormik({
@@ -191,7 +176,6 @@ const AccountTab = () => {
             </Grid>
           </Grid>
           <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }} mt={3}>
-            <BaseButton preset="cancel" variant="text" fullWidth={false} loading={loading} onClick={handleCancel} />
             <BaseButton preset="save" fullWidth={false} type="submit" loading={loading} disabled={!formik.dirty || loading} />
           </Stack>
         </form>
@@ -206,16 +190,6 @@ const AccountTab = () => {
           setPreview(croppedImage);
           uploadAvatar(croppedImage);
         }}
-      />
-
-      <BaseDialog
-        open={showCancelDialog}
-        title="ยืนยันการยกเลิก"
-        content="หากยืนยันยกเลิก การเปลี่ยนแปลงทั้งหมดจะไม่ถูกบันทึก"
-        confirmText="ยืนยัน"
-        cancelText="ยกเลิก"
-        onConfirm={handleConfirmCancel}
-        onClose={() => setShowCancelDialog(false)}
       />
       <ChangeEmail state={changeEmailDialog} changeState={setChangeEmailDialog} />
       {/* <PhoneChangeFlow open={showPhoneChangeFlow} onClose={() => setShowPhoneChangeFlow(false)} currentPhone={phone || ""} /> */}

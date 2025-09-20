@@ -57,6 +57,14 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ state, changeState }) => {
       <BaseDialog
         open={state === "newEmail"}
         title="เปลี่ยนอีเมล"
+        confirmText="ยืนยัน"
+        cancelText="ยกเลิก"
+        onConfirm={() => changeState("passwordConfirm")}
+        onClose={() => changeState("")}
+        loading={loading}
+        fullScreen={isMobile}
+        fullScreenCenter={isMobile}
+        confirmDisabled={!formik.values.newEmail || !!formik.errors.newEmail}
         content={
           <Box>
             <Typography variant="body2" color="textSecondary" mb={2}>
@@ -76,17 +84,17 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ state, changeState }) => {
             />
           </Box>
         }
-        confirmText="ยืนยัน"
-        cancelText="ยกเลิก"
-        onConfirm={() => changeState("passwordConfirm")}
-        onClose={() => changeState("")}
-        loading={loading}
-        fullScreen={isMobile}
-        confirmDisabled={!formik.values.newEmail || !!formik.errors.newEmail}
       />
       <BaseDialog
         open={state === "passwordConfirm"}
         title="ยืนยันรหัสผ่าน"
+        confirmText="ยืนยัน"
+        cancelText="ยกเลิก"
+        onConfirm={() => formik.submitForm()}
+        onClose={() => changeState("")}
+        loading={loading}
+        fullScreen={isMobile}
+        fullScreenCenter={isMobile}
         content={
           <Box>
             <Typography variant="body2" color="textSecondary" mb={2}>
@@ -106,12 +114,6 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ state, changeState }) => {
             />
           </Box>
         }
-        confirmText="ยืนยัน"
-        cancelText="ยกเลิก"
-        onConfirm={() => formik.submitForm()}
-        onClose={() => changeState("")}
-        loading={loading}
-        fullScreen={isMobile}
       />
     </>
   );

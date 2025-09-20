@@ -18,6 +18,8 @@ interface BaseDialogProps {
   content: string | React.ReactNode;
   disableBackdropClose?: boolean; 
   fullScreen?: boolean;
+  // new: when fullScreen=true, center content vertically if true; otherwise keep default top-aligned
+  fullScreenCenter?: boolean;
   htmlContent?: boolean;
   icon?: string;
   iconSize?: number;
@@ -41,6 +43,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   content,
   disableBackdropClose = true,
   fullScreen = false,
+  fullScreenCenter = false,
   htmlContent = false,
   icon,
   iconSize = 80,
@@ -80,6 +83,22 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
     }
   };
 
+  // dialog content sx - apply center layout when fullScreen + fullScreenCenter
+  const dialogContentSx: SxProps<Theme> = {
+    minWidth: 320,
+    ...(fullScreen && fullScreenCenter
+      ? {
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          boxSizing: "border-box",
+          textAlign: "center",
+        }
+      : {}),
+  };
+
   return (
     <Dialog
       open={open}
@@ -93,9 +112,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
     >
       <DialogContent
         dividers={scrolling}
-        sx={{
-          minWidth: 320,
-        }}
+        sx={dialogContentSx}
       >
         {(icon || iconType) && (
           <Box display="flex" justifyContent="center">
