@@ -8,9 +8,11 @@ import * as yup from "yup";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Box from "@mui/material/Box";
-import React from "react";
+import React, { useEffect } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import { useDialog } from "@/common/contexts/DialogContext";
+import { genOtpUrl } from "@/common/utils/otpUrl";
+import { useRouter } from "next/navigation";
 
 export type ChangeEmailState = "" | "newEmail" | "passwordConfirm" | "otp";
 
@@ -25,9 +27,10 @@ interface ChangeEmailProps {
 }
 
 const ChangeEmail: React.FC<ChangeEmailProps> = ({ state, changeState }) => {
-  const { changeEmail } = useProfile();
+  const { changeEmail, loading } = useProfile();
   const isMobile = useIsMobile();
-  const {showError} = useDialog();
+  const router = useRouter();
+  const { showError } = useDialog();
   const formik = useFormik({
     initialValues: {
       password: "",
@@ -38,12 +41,20 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ state, changeState }) => {
     onSubmit: async (data: Partial<ChangeEmailPayload>) => {
       const response = await changeEmail(data);
       if (response?.error) {
-        showError({message: response.message});
+        showError({ message: response.message });
         return;
       }
+      const { id, otpRef, otpType, email, expiresIn } = response.data;
+      const url = genOtpUrl({ type: "email", reciver: email, otpType, id, otpRef, expiresIn });
+      router.replace(url);
     },
   });
 
+  useEffect(() => {
+    if (state === "") {
+      formik.resetForm();
+    }
+  }, [state]);
 
   return (
     <>
@@ -69,11 +80,11 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ state, changeState }) => {
             />
           </Box>
         }
-        confirmText="ส่งลิงก์ยืนยัน"
+        confirmText="ยืนยัน"
         cancelText="ยกเลิก"
         onConfirm={() => changeState("passwordConfirm")}
         onClose={() => changeState("")}
-        loading={false}
+        loading={loading}
         fullScreen={isMobile}
         confirmDisabled={!formik.values.newEmail || !!formik.errors.newEmail}
       />
@@ -103,7 +114,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ state, changeState }) => {
         cancelText="ยกเลิก"
         onConfirm={() => formik.submitForm()}
         onClose={() => changeState("")}
-        loading={false}
+        loading={loading}
         fullScreen={isMobile}
       />
     </>

@@ -34,7 +34,7 @@ const AuthTwoSteps = () => {
       setErrorText("");
       switch (action) {
         case OtpType.sign_up:
-          showSuccess({ message: "สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบด้วยบัญชีของท่าน", title: 'ยืนยันอีเมลสำเร็จ' ,callback: PageUrl.AUTH_SIGN_IN });
+          showSuccess({ message: "สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบด้วยบัญชีของท่าน", title: "ยืนยันอีเมลสำเร็จ", callback: PageUrl.AUTH_SIGN_IN });
           break;
         case OtpType.forgot_password: {
           const url = `/auth/password/reset/${encodeURIComponent(id?.toString() || "")}`;
@@ -42,6 +42,13 @@ const AuthTwoSteps = () => {
           router.replace(`${url}?${params.toString()}`);
           break;
         }
+        case OtpType.change_email:
+          showSuccess({
+            message: "เปลี่ยนอีเมลสำเร็จ กรุณา login ใหม่อีกคร้งด้วยอีเมลใหม่",
+            title: "ยืนยันอีเมลสำเร็จ",
+            callback: PageUrl.AUTH_SIGN_IN,
+          });
+          break;
         default:
           router.replace(PageUrl.AUTH_SIGN_IN);
           break;
