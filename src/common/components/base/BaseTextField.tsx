@@ -15,6 +15,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   required?: boolean;
   tooltip?: string;
   loading?: boolean; // <-- 1. เพิ่ม prop loading
+  labelIcon?: React.ReactNode; // <-- new prop to show icon before label
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -67,6 +68,7 @@ const BaseTextField = ({
   required,
   tooltip,
   loading = false, 
+  labelIcon,
   ...rest
 }: CustomTextFieldProps) => {
   // ✅ Hooks ต้องอยู่ที่ top level เสมอ
@@ -105,9 +107,13 @@ const BaseTextField = ({
     return (
       <>
         {label && (
-          <BaseLabel>
-            {label}
-            {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
+          <BaseLabel htmlFor={name}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              {/** label icon if provided */}
+              {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
+              <span>{label}</span>
+              {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
+            </span>
           </BaseLabel>
         )}
         {tooltip ? (
@@ -220,8 +226,11 @@ const BaseTextField = ({
     <>
       {label && (
         <BaseLabel htmlFor={name}>
-          {label}
-          {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+            {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
+            <span>{label}</span>
+            {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
+          </span>
         </BaseLabel>
       )}
       {tooltip ? (

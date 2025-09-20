@@ -1,4 +1,9 @@
-import { firstNameSchemaNotRequired, lastNameSchemaNotRequired, nickNameSchemaNotRequired } from "@/common/utils/validator/yup";
+import {
+  firstNameSchemaNotRequired,
+  lastNameSchemaNotRequired,
+  nickNameSchemaNotRequired,
+  phoneSchemaNotRequired,
+} from "@/common/utils/validator/yup";
 import { Grid, Typography } from "@mui/material";
 import { IconPencil, IconMail, IconDeviceMobile } from "@tabler/icons-react";
 import { ProfilePayload } from "@/common/contexts/ProfileContext/interfaces/interface";
@@ -17,26 +22,27 @@ import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseLabel from "@/common/components/base/BaseLabel";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Box from "@mui/material/Box";
-import PhoneChangeFlow from "@/components/pages/settings/account-setting/PhoneChangeFlow";
 import React, { useContext, useState, useRef } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
 import ChangeEmail, { ChangeEmailState } from "./ChangeEmail";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
+import { useDialog } from "@/common/contexts/DialogContext";
 
 const validationSchema = yup.object({
   firstName: firstNameSchemaNotRequired,
   lastName: lastNameSchemaNotRequired,
   nickName: nickNameSchemaNotRequired,
+  phone: phoneSchemaNotRequired,
 });
 
 const AccountTab = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const isMobile = useIsMobile();
-
+  const { showError } = useDialog();
   const { uploadAvatar } = useContext(UserContext);
-  const { data: session } = useSession();
-  const { updateProfile, loading } = useProfile();
+  const { data: session, status } = useSession();
+  const { updateProfile, loading:profileLoading } = useProfile();
   const { firstName, lastName, nickName, avatar, email, phone } = session?.profile || {};
   const [hover, setHover] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
@@ -44,8 +50,8 @@ const AccountTab = () => {
   const [preview, setPreview] = useState<string | undefined>(avatar);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [changeEmailDialog, setChangeEmailDialog] = useState<ChangeEmailState>("");
-  const [showPhoneChangeFlow, setShowPhoneChangeFlow] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const loading = status === 'loading' || profileLoading
 
   const router = useRouter();
 
@@ -80,11 +86,16 @@ const AccountTab = () => {
       firstName: firstName || "",
       lastName: lastName || "",
       nickName: nickName || "",
+      phone: phone || "",
     },
     validationSchema: validationSchema,
     enableReinitialize: true,
     onSubmit: async (data: Partial<ProfilePayload>) => {
-      await updateProfile(data);
+      const response = await updateProfile(data);
+      console.log("🚀 ~ AccountTab ~ response:", response)
+      if (response?.error) {
+        showError({ message: response.message });
+      }
     },
   });
 
@@ -153,7 +164,7 @@ const AccountTab = () => {
         <form onSubmit={formik.handleSubmit}>
           <Grid container columnSpacing={3}>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" />
+              <BaseTextField formik={formik} name="firstName" label={t("common.firstName")} placeholder="-" loading={status === 'loading'}/>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <BaseTextField formik={formik} name="lastName" label={t("common.lastName")} placeholder="-" />
@@ -162,18 +173,21 @@ const AccountTab = () => {
               <BaseTextField formik={formik} name="nickName" label={t("common.nickName")} placeholder="-" />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
+              <BaseTextField
+                name="phone"
+                formik={formik}
+                label={t("common.phone")}
+                labelIcon={<IconDeviceMobile size={18} style={{ marginRight: 4 }} />}
+                placeholder="-"
+                type="tel"
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <BaseLabel htmlFor="email" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <IconMail size={18} style={{ marginRight: 4 }} /> {t("common.email")}
                 <BaseLinkButton label="เปลี่ยน" onClick={() => setChangeEmailDialog("newEmail")} bold />
               </BaseLabel>
               <BaseTextField name="email" value={email || "-"} disabled={true} />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <BaseLabel htmlFor="phone" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <IconDeviceMobile size={18} style={{ marginRight: 4 }} /> {t("common.phone")}
-                <BaseLinkButton label={phone ? "เปลี่ยน" : "เพิ่ม"} onClick={() => setShowPhoneChangeFlow(true)} bold />
-              </BaseLabel>
-              <BaseTextField name="phone" value={phone || "-"} disabled={true} />
             </Grid>
           </Grid>
           <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }} mt={3}>
@@ -203,9 +217,8 @@ const AccountTab = () => {
         onConfirm={handleConfirmCancel}
         onClose={() => setShowCancelDialog(false)}
       />
-      <ChangeEmail state={changeEmailDialog} changeState={setChangeEmailDialog}/>
-
-      <PhoneChangeFlow open={showPhoneChangeFlow} onClose={() => setShowPhoneChangeFlow(false)} currentPhone={phone || ""} />
+      <ChangeEmail state={changeEmailDialog} changeState={setChangeEmailDialog} />
+      {/* <PhoneChangeFlow open={showPhoneChangeFlow} onClose={() => setShowPhoneChangeFlow(false)} currentPhone={phone || ""} /> */}
       {/* <OtpDialog
           open={true}
           onClose={() => console.log("close")}

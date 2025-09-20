@@ -1,18 +1,18 @@
 import { ChangeEmailPayload } from "@/common/contexts/ProfileContext/interfaces/interface";
 import { emailValidator, passwordRequired } from "@/common/utils/validator/yup";
+import { genOtpUrl } from "@/common/utils/otpUrl";
 import { IconKey, IconMail } from "@tabler/icons-react";
 import { InputAdornment, Typography } from "@mui/material";
+import { useDialog } from "@/common/contexts/DialogContext";
 import { useFormik } from "formik";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { useRouter } from "next/navigation";
 import * as yup from "yup";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Box from "@mui/material/Box";
 import React, { useEffect } from "react";
 import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import { useDialog } from "@/common/contexts/DialogContext";
-import { genOtpUrl } from "@/common/utils/otpUrl";
-import { useRouter } from "next/navigation";
 
 export type ChangeEmailState = "" | "newEmail" | "passwordConfirm" | "otp";
 
@@ -40,10 +40,6 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ state, changeState }) => {
     enableReinitialize: true,
     onSubmit: async (data: Partial<ChangeEmailPayload>) => {
       const response = await changeEmail(data);
-      if (response?.error) {
-        showError({ message: response.message });
-        return;
-      }
       const { id, otpRef, otpType, email, expiresIn } = response.data;
       const url = genOtpUrl({ type: "email", reciver: email, otpType, id, otpRef, expiresIn });
       router.replace(url);

@@ -1,3 +1,9 @@
-export const phoneRegex = /^0[0-9]{9}$/;
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const enAndNumberRegex = /^[a-zA-Z0-9\s]*$/;
+export const lowerEn = /[a-z]/
+export const number = /\d/;
+export const phoneRegex = /^0[0-9]{9}$/;
+export const specialChar = /[^a-zA-Z0-9]/;
+export const ThAndEnRegex = /^[ก-๙a-zA-Z\s]+$/;
+export const upperEn = /[A-Z]/
 export const uuidV4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

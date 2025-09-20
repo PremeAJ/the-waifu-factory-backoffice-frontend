@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import ErrorDialog from "@/common/components/dialogs/ErrorDialog";
 import SuccessDialog from "@/common/components/dialogs/SuccessDialog";
+import { registerDialogHandlers, unregisterDialogHandlers } from "@/common/utils/dialog";
 
 type DialogType = "error" | "success";
 
@@ -72,6 +73,12 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       open: false,
     }));
   }, []);
+
+  // register handlers so util can call them
+  React.useEffect(() => {
+    registerDialogHandlers({ showError, showSuccess, hideDialog });
+    return () => unregisterDialogHandlers();
+  }, [showError, showSuccess, hideDialog]);
 
   return (
     <DialogContext.Provider value={{ showError, showSuccess, hideDialog }}>

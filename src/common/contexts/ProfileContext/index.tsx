@@ -2,12 +2,12 @@
 import { Appearance, ChangeEmailPayload, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
 import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
-import { useDialog } from "../DialogContext";
 import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import { swrOption } from "@/app/api/swrOption";
 import { useEncrypt } from "../EncryptContext";
+import { showError } from "@/common/utils/dialog";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
 const APPEARANCE_KEY = "appearance";
@@ -15,7 +15,6 @@ const APPEARANCE_KEY = "appearance";
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session, update } = useSession();
-  const { showError } = useDialog();
   const { encrypt } = useEncrypt();
 
   const {
@@ -71,20 +70,14 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
       await companyListMutate();
       setLoading(false);
     } catch (error: any) {
-      showError({
-        message: error.message,
-        title: "เกิดข้อผิดพลาด",
-      });
+      showError({ title: "เกิดข้อผิดพลาด", message: error.message });
     }
   };
 
   const refreshProfile = async () => {
     const response = await getFetcher("/api/profile");
     if (response.statusCode !== 200) {
-      showError({
-        message: response.message,
-        title: "เกิดข้อผิดพลาด",
-      });
+      showError({ title: "เกิดข้อผิดพลาด", message: response.message });
     }
     await update({ profile: response.data });
   };
@@ -94,7 +87,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const response = await putFetcher("/api/profile", payload);
     setLoading(false);
     if (response?.error) {
-      showError({ message: response.message });
+      showError({ title: "เกิดข้อผิดพลาด", message: response.message });
     }
     await update({ profile: response.data });
     return response;
@@ -108,6 +101,9 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
     const response = await putFetcher("/api/profile/email", encryptedPayload);
     setLoading(false);
+    if (response?.error) {
+      showError({ title: "เกิดข้อผิดพลาด", message: response.message });
+    }
     return response;
   };
 
