@@ -3,7 +3,6 @@ import "./global.css";
 import "@/common/utils/i18n/i18n";
 import { Analytics } from "@vercel/analytics/next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import { Box, Typography } from "@mui/material";
 import { DialogProvider } from "@/common/contexts/DialogContext";
 import { HeadersKey } from "@/common/constants/header";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -14,6 +13,7 @@ import Cookies from "js-cookie";
 import CssBaseline from "@mui/material/CssBaseline";
 import packageJson from "../../package.json";
 import React, { useEffect } from "react";
+import { Box, Typography } from "@mui/material";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   const theme = ThemeSettings();
@@ -29,6 +29,24 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
         });
       }
     }
+
+    // ---- NEW: set --vh to avoid 100vh issues on iOS (status bar changes) ----
+    const setVh = () => {
+      const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+      document.documentElement.style.setProperty("--vh", `${h * 0.01}px`);
+    };
+
+    setVh();
+    window.addEventListener("resize", setVh);
+    window.addEventListener("orientationchange", setVh);
+    window.visualViewport?.addEventListener("resize", setVh);
+
+    return () => {
+      window.removeEventListener("resize", setVh);
+      window.removeEventListener("orientationchange", setVh);
+      window.visualViewport?.removeEventListener("resize", setVh);
+    };
+    // -----------------------------------------------------------------------
   }, []);
 
   return (
@@ -39,7 +57,7 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
           <UserProvider>
             <Analytics />
             <SpeedInsights />
-            {children}
+            <Box sx={{ minHeight: "calc(var(--vh, 1vh) * 100)" }}>{children}</Box>
             {/* <Box
               sx={{
                 position: "fixed",
