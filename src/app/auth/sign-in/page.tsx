@@ -11,7 +11,7 @@ export default function Login() {
   const { appearance } = useProfile();
   return (
     <PageContainer title="Login Page" description="this is Sample page">
-      <Grid container spacing={0} justifyContent="center" sx={{ height: "100vh" }}>
+      <Grid container spacing={0} justifyContent="center" sx={{ height: "90vh" }}>
         <Grid
           sx={{
             display: { xs: "none", lg: "block" },
@@ -22,6 +22,7 @@ export default function Login() {
               backgroundSize: "400% 400%",
               animation: "gradient 15s ease infinite",
               position: "absolute",
+              height: "100%",
               width: "100%",
               opacity: "0.3",
             },
@@ -37,6 +38,7 @@ export default function Login() {
             <Box
               alignItems="center"
               justifyContent="center"
+              height={"calc(100vh - 75px)"}
               sx={{
                 display: {
                   xs: "none",
