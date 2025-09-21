@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import { styled } from "@mui/material/styles";
@@ -32,12 +32,20 @@ const Header = () => {
             <Notifications />
             {!isMobile && <AppShortcut />}
             <Box display="flex" flexDirection="column" alignItems="flex-end" mr={1} sx={{ cursor: "default" }}>
-              <Typography variant="subtitle1" fontWeight="bold" noWrap>
-                {firstName}
-              </Typography>
-              <Typography variant="caption" color="text.secondary" noWrap>
-                {I18nString(isLanguage, roleNameTh, roleNameEn)}
-              </Typography>
+              {firstName ? (
+                <Typography variant="subtitle1" fontWeight="bold" noWrap>
+                  {firstName}
+                </Typography>
+              ) : (
+                <Skeleton variant="text" width={100} />
+              )}
+              {roleNameTh || roleNameEn ? (
+                <Typography variant="caption" color="text.secondary" noWrap>
+                  {I18nString(isLanguage, roleNameTh, roleNameEn)}
+                </Typography>
+              ) : (
+                <Skeleton variant="text" width={100} />
+              )}
             </Box>
             <Profile />
           </Stack>
