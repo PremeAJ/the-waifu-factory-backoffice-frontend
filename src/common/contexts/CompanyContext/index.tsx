@@ -51,7 +51,7 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (response.statusCode !== 201) showError({ message: response.message, title: "เกิดข้อผิดพลาด" });
     await updateSession({ profile: { ...session?.profile, activeCompany: response?.data?.company?.id } });
     const { id, name, logoUrl } = response?.data?.company;
-    const { nameTh: RoleNameTh, nameEn: RoleNameEn } = response?.data?.roles;
+    const { nameTh: roleNameTh, nameEn: roleNameEn } = response?.data?.roles;
     const { nameTh: branchNameTh, nameTh: branchNameEn } = response?.data?.branch;
     await companyListMutate(
       {
@@ -64,8 +64,8 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
               businessTypeId: payload.businessTypeId,
             },
             roles: {
-              nameTh: RoleNameTh,
-              nameEn: RoleNameEn,
+              nameTh: roleNameTh,
+              nameEn: roleNameEn,
             },
           },
           ...companyList,
@@ -80,6 +80,8 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
         businessTypeId: payload.businessTypeId,
         branchNameTh: branchNameTh,
         branchNameEn: branchNameEn,
+        roleNameTh: roleNameTh,
+        roleNameEn: roleNameEn,
       },
     }, false);
     showSuccess({ message: "กำลังพาไปหน้า Dashboard...", title: "สำเร็จ", callback: PageUrl.DASHBOARD });
