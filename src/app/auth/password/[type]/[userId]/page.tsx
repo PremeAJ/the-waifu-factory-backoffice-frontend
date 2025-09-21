@@ -3,13 +3,14 @@ import { Grid, Box, Typography } from "@mui/material";
 import AuthResetPassword from "../../components/AuthResetPassword";
 import Image from "next/image";
 import PageContainer from "@/components/container/PageContainer";
+import useIsPWA from "@/common/utils/state/useIsPWA";
 
 export default function ResetPassword() {
-
+  const isPWA = useIsPWA();
 
   return (
     <PageContainer title="Forgot Password Page" description="this is Sample page">
-      <Grid height={"100vh"} container justifyContent="center" spacing={0} sx={{ overflowX: "hidden" }}>
+      <Grid container spacing={0} justifyContent="center" sx={{ height: isPWA ? "90vh" : "100vh" }}>
         <Grid
           sx={{
             display: { xs: "none", lg: "block" },

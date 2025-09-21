@@ -3,7 +3,6 @@ import "./global.css";
 import "@/common/utils/i18n/i18n";
 import { Analytics } from "@vercel/analytics/next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import { Box, Typography } from "@mui/material";
 import { DialogProvider } from "@/common/contexts/DialogContext";
 import { HeadersKey } from "@/common/constants/header";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -14,14 +13,10 @@ import Cookies from "js-cookie";
 import CssBaseline from "@mui/material/CssBaseline";
 import packageJson from "../../package.json";
 import React, { useEffect } from "react";
-import useIsPWA from "@/common/utils/state/useIsPWA";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   const theme = ThemeSettings();
   const version = (packageJson as any)?.version ?? "0.0.0";
-
-  // call hook at top-level
-  const isPWA = useIsPWA();
 
   useEffect(() => {
     if (typeof navigator !== "undefined") {
@@ -35,25 +30,6 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  useEffect(() => {
-    const setVh = () => {
-      const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-      document.documentElement.style.setProperty("--vh", `${h * 0.01}px`);
-    };
-
-    setVh();
-    if (isPWA) {
-      window.addEventListener("resize", setVh);
-      window.visualViewport?.addEventListener("resize", setVh);
-      window.addEventListener("orientationchange", setVh);
-      return () => {
-        window.removeEventListener("resize", setVh);
-        window.visualViewport?.removeEventListener("resize", setVh);
-        window.removeEventListener("orientationchange", setVh);
-      };
-    }
-  }, [isPWA]);
-
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <ThemeProvider theme={theme}>
@@ -63,19 +39,6 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
             <Analytics />
             <SpeedInsights />
             {children}
-            {/* <Box
-              sx={{
-                position: "fixed",
-                left: 8,
-                bottom: 8,
-                zIndex: 1400,
-                pointerEvents: "none",
-              }}
-            >
-              <Typography variant="caption" color="textSecondary">
-                v{version}
-              </Typography>
-            </Box> */}
           </UserProvider>
         </DialogProvider>
       </ThemeProvider>

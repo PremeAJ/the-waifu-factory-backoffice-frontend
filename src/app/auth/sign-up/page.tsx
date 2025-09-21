@@ -5,11 +5,14 @@ import Image from "next/image";
 import Logo from "@/common/components/shared/Logo";
 import PageContainer from "@/components/container/PageContainer";
 import Language from "@/common/components/shared/Language";
+import useIsPWA from "@/common/utils/state/useIsPWA";
 
 export default function Register() {
+  const isPWA = useIsPWA();
+
   return (
     <PageContainer title="Register Page" description="this is Sample page">
-      <Grid container spacing={0} justifyContent="center" sx={{ overflowX: "hidden" }} height={"100vh"}>
+      <Grid container spacing={0} justifyContent="center" sx={{ height: isPWA ? "90vh" : "100vh" }}>
         <Grid
           sx={{
             display: { xs: "none", lg: "block" },
