@@ -35,7 +35,8 @@ const PageWrapper = styled("div")(() => ({
 
 const ignoreLayout = ["/dashboard/pos/cashier"];
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isLayout, isCollapse } = useContext(CustomizerContext);
+  const { isLayout } = useContext(CustomizerContext);
+  const {isCollapse } = useProfile().appearance;
   const { appearance } = useProfile();
   const { activeMode } = appearance || {};
   const theme = useTheme();

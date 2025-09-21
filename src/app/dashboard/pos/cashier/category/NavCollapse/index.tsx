@@ -1,27 +1,18 @@
-import React, { useContext, useState } from "react";
-
-
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import { isNull } from "lodash";
+import { NavCollapseProps, NavGroup } from "@/common/utils/types/layout/sidebar";
+import { styled, useTheme } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
 import { usePathname } from "next/navigation";
-
-// mui imports
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { useTranslation } from "react-i18next";
 import Collapse from '@mui/material/Collapse';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Theme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { styled, useTheme } from '@mui/material/styles';
-
-// custom imports
 import NavItem from "../NavItem";
-import { isNull } from "lodash";
-
-// plugins
-import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
-import { useTranslation } from "react-i18next";
-import { NavCollapseProps, NavGroup } from "@/common/utils/types/layout/sidebar";
+import React, {  useState } from "react";
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 
@@ -36,7 +27,7 @@ export default function NavCollapse({
 }: NavCollapseProps) {
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
-  const { isBorderRadius } = useContext(CustomizerContext);
+  const { isBorderRadius} = useProfile().appearance;
   const Icon = menu?.icon;
   const theme = useTheme();
   const pathname = usePathname();

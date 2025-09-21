@@ -5,4 +5,5 @@ export const defaultAppearance:Appearance = {
   activeMode: "light",
   activeTheme: "ORANGE_THEME",
   isCollapse: "full_sidebar",
+  isBorderRadius: 8,
 };

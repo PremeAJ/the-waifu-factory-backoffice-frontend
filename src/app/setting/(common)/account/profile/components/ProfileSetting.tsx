@@ -105,7 +105,7 @@ const AccountTab = () => {
               onClick={handleAvatarClick}
             >
               <Avatar
-                src={preview ?? "/images/profile/user-1.jpg"}
+                src={preview}
                 alt={`${firstName} profile`}
                 sx={{
                   width: 120,

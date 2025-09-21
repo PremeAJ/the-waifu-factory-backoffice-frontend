@@ -6,6 +6,7 @@ import useMediaQuery from "@mui/system/useMediaQuery";
 import useTheme from "@mui/system/useTheme";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { useContext } from "react";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const marks = [
   { value: 4, label: "" },
@@ -17,9 +18,10 @@ const marks = [
 ];
 
 const Border = () => {
-  const { updateAppearance, isBorderRadius, setIsBorderRadius } = useContext(CustomizerContext);
+  const { setIsBorderRadius } = useContext(CustomizerContext);
+  const { updateAppearance, appearance } = useProfile();
+  const { isBorderRadius } = appearance || {};
   const updateSetting = (border: number) => {
-    setIsBorderRadius(border);
     updateAppearance({ isBorderRadius: border });
   };
   const theme = useTheme();

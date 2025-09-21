@@ -29,7 +29,8 @@ const PageWrapper = styled("div")(() => ({
 }));
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isLayout, isCollapse } = useContext(CustomizerContext);
+  const { isCollapse } = useProfile().appearance;
+  const { isLayout } = useContext(CustomizerContext);
   const { appearance } = useProfile();
   const { activeMode } = appearance || {};
   const isMobile = useIsMobile();

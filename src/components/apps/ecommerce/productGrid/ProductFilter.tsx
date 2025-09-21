@@ -1,5 +1,10 @@
 "use client"
-import React, { useContext } from 'react';
+import { IconCheck } from '@tabler/icons-react';
+import { IconHanger, IconCircles, IconNotebook, IconMoodSmile, IconDeviceLaptop, IconSortAscending2, IconSortDescending2, IconAd2, } from '@tabler/icons-react';
+import { ProductContext } from "@/context/Ecommercecontext/index";
+import { ProductFiterType } from '../../../../common/utils/types/apps/eCommerce';
+import { Stack } from '@mui/system';
+import { useProfile } from '@/common/contexts/ProfileContext';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -11,23 +16,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Radio from '@mui/material/Radio';
+import React, { useContext } from 'react';
 import Typography from '@mui/material/Typography';
-import { ProductContext } from "@/context/Ecommercecontext/index";
-
-import { IconCheck } from '@tabler/icons-react';
-import {
-  IconHanger,
-  IconCircles,
-  IconNotebook,
-  IconMoodSmile,
-  IconDeviceLaptop,
-  IconSortAscending2,
-  IconSortDescending2,
-  IconAd2,
-} from '@tabler/icons-react';
-import { Stack } from '@mui/system';
-import { ProductFiterType } from '../../../../common/utils/types/apps/eCommerce';
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
 
 
 const ProductFilter = () => {
@@ -46,7 +36,7 @@ const ProductFilter = () => {
     filterReset,
   } = useContext(ProductContext);
 
-  const { isBorderRadius } = useContext(CustomizerContext);
+  const { isBorderRadius } = useProfile().appearance;
   const br = `${isBorderRadius}px`;
 
 

@@ -7,10 +7,12 @@ import Drawer from "@mui/material/Drawer";
 import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import SidebarItems from "./SidebarItems";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isCollapse } = useProfile().appearance;
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
 

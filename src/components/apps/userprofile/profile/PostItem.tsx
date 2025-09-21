@@ -1,6 +1,10 @@
 'use client'
-import React, { useContext, useState } from 'react';
+import { Comment as CommentType, PostType } from '../../../../common/utils/types/apps/userProfile';
+import { IconCircle, IconMessage2, IconShare, IconThumbUp } from '@tabler/icons-react';
+import { useProfile } from '@/common/contexts/ProfileContext';
+import { UserDataContext } from '@/context/UserDataContext';
 import Avatar from '@mui/material/Avatar';
+import BlankCard from '../../../shared/BlankCard';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CardMedia from '@mui/material/CardMedia';
@@ -8,17 +12,13 @@ import Divider from '@mui/material/Divider';
 import Fab from '@mui/material/Fab';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import PostComments from './PostComments';
+import React, { useContext, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { IconCircle, IconMessage2, IconShare, IconThumbUp } from '@tabler/icons-react';
 import uniqueId from 'lodash/uniqueId';
-import PostComments from './PostComments';
-import BlankCard from '../../../shared/BlankCard';
-import { Comment as CommentType, PostType } from '../../../../common/utils/types/apps/userProfile';
-import { UserDataContext } from '@/context/UserDataContext';
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
 
 
 interface Props {
@@ -28,7 +28,7 @@ interface Props {
 const PostItem = ({ post }: Props) => {
 
   const { likePost, addComment } = useContext(UserDataContext);
-  const { isBorderRadius } = useContext(CustomizerContext);
+  const { isBorderRadius } = useProfile().appearance;
 
 
   const [comText, setComText] = useState<string>('');

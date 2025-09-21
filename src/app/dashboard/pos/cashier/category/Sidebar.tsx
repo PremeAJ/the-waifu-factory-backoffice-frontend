@@ -8,10 +8,12 @@ import config from "@/common/contexts/setting/config";
 
 import Scrollbar from "@/components/custom-scroll/Scrollbar";
 import { useContext } from "react";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isCollapse } = useProfile().appearance;
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
 
@@ -56,7 +58,7 @@ const Sidebar = () => {
                   width: toggleWidth,
                   boxSizing: "border-box",
                   zIndex: 99,
-                  mt:8
+                  mt: 8,
                 },
               },
             }}
@@ -84,7 +86,7 @@ const Sidebar = () => {
                 width: SidebarWidth,
                 border: "0 !important",
                 boxShadow: (theme) => theme.shadows[8],
-                zIndex:99
+                zIndex: 99,
               },
             },
           }}

@@ -1,22 +1,17 @@
-import React, { useContext } from "react";
-import Link from "next/link";
-
-// mui imports
+import { ItemType } from "@/common/utils/types/layout/sidebar";
+import { styled, useTheme } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { useTranslation } from "react-i18next";
 import Chip from '@mui/material/Chip';
+import Link from "next/link";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Theme } from '@mui/material/styles';
+import React from "react";
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { styled, useTheme } from '@mui/material/styles';
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { useTranslation } from "react-i18next";
-import { ItemType } from "@/common/utils/types/layout/sidebar";
-
-
-
 
 export default function NavItem({
   item,
@@ -26,7 +21,7 @@ export default function NavItem({
   onClick,
 }: ItemType) {
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
-  const { isBorderRadius } = useContext(CustomizerContext);
+  const { isBorderRadius } = useProfile().appearance;
   const Icon = item?.icon;
   const theme = useTheme();
   const { t } = useTranslation();

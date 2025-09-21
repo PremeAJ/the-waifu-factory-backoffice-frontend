@@ -1,23 +1,17 @@
-
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Typography from '@mui/material/Typography';
-import { ContactContext } from '@/context/Conatactcontext';
-import Scrollbar from "../../custom-scroll/Scrollbar";
-import {
-  IconMail,
-  IconSend,
-  IconBucket,
-  IconFolder,
-} from "@tabler/icons-react";
+import { ContactContext } from "@/context/Conatactcontext";
+import { ElementType, useContext, useEffect } from "react";
+import { IconMail, IconSend, IconBucket, IconFolder } from "@tabler/icons-react";
+import { mutate } from "swr";
+import { usePathname } from "next/navigation";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import ContactAdd from "./ContactAdd";
-import { ElementType, useContext, useEffect } from 'react';
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
-import { usePathname } from 'next/navigation';
-import { mutate } from 'swr';
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Scrollbar from "../../custom-scroll/Scrollbar";
+import Typography from "@mui/material/Typography";
 
 interface DataType {
   id: number;
@@ -30,8 +24,7 @@ interface DataType {
 }
 
 const ContactFilter = () => {
-
-  const { isBorderRadius } = useContext(CustomizerContext);
+  const { isBorderRadius } = useProfile().appearance;
   const br = `${isBorderRadius}px`;
 
   const { setSelectedDepartment, updateSearchTerm, selectedDepartment } = useContext(ContactContext);
@@ -39,20 +32,20 @@ const ContactFilter = () => {
   const filterData: DataType[] = [
     {
       id: 2,
-      name: 'All',
-      sort: 'show_all',
+      name: "All",
+      sort: "show_all",
       icon: IconMail,
     },
     {
       id: 3,
-      name: 'Frequent',
-      sort: 'frequent_contact',
+      name: "Frequent",
+      sort: "frequent_contact",
       icon: IconSend,
     },
     {
       id: 4,
-      name: 'Starred',
-      sort: 'starred_contact',
+      name: "Starred",
+      sort: "starred_contact",
       icon: IconBucket,
     },
     {
@@ -61,29 +54,29 @@ const ContactFilter = () => {
     },
     {
       id: 5,
-      filterbyTitle: 'Categories',
+      filterbyTitle: "Categories",
     },
 
     {
       id: 7,
-      name: 'Engineering',
-      sort: 'engineering_department',
+      name: "Engineering",
+      sort: "engineering_department",
       icon: IconFolder,
-      color: 'primary.main',
+      color: "primary.main",
     },
     {
       id: 8,
-      name: 'Support',
-      sort: 'support_department',
+      name: "Support",
+      sort: "support_department",
       icon: IconFolder,
-      color: 'error.main',
+      color: "error.main",
     },
     {
       id: 9,
-      name: 'Sales',
-      sort: 'sales_department',
+      name: "Sales",
+      sort: "sales_department",
       icon: IconFolder,
-      color: 'success.main',
+      color: "success.main",
     },
   ];
 
@@ -97,14 +90,14 @@ const ContactFilter = () => {
   // Reset Contacts on browser refresh
   const handleResetTickets = async () => {
     const response = await fetch("/api/contacts", {
-      method: 'GET',
+      method: "GET",
       headers: {
-        "broserRefreshed": "true"
-      }
+        broserRefreshed: "true",
+      },
     });
     const result = await response.json();
     await mutate("/api/contacts");
-  }
+  };
 
   useEffect(() => {
     const isPageRefreshed = sessionStorage.getItem("isPageRefreshed");
@@ -125,24 +118,15 @@ const ContactFilter = () => {
     };
   }, []);
 
-
-
   return (
     <>
       <ContactAdd />
       <List>
-        <Scrollbar sx={{ height: { lg: 'calc(100vh - 100px)', md: '100vh' }, maxHeight: '800px' }}>
+        <Scrollbar sx={{ height: { lg: "calc(100vh - 100px)", md: "100vh" }, maxHeight: "800px" }}>
           {filterData.map((filter) => {
             if (filter.filterbyTitle) {
               return (
-                <Typography
-                  variant="subtitle1"
-                  fontWeight={600}
-                  pl={5.1}
-                  mt={1}
-                  pb={2}
-                  key={filter.id}
-                >
+                <Typography variant="subtitle1" fontWeight={600} pl={5.1} mt={1} pb={2} key={filter.id}>
                   {filter.filterbyTitle}
                 </Typography>
               );
@@ -154,13 +138,10 @@ const ContactFilter = () => {
               <ListItemButton
                 sx={{ mb: 1, mx: 3, borderRadius: br }}
                 selected={selectedDepartment === `${filter.name}`}
-
-                onClick={() => handleDepartmentClick(filter.name || '')}
+                onClick={() => handleDepartmentClick(filter.name || "")}
                 key={filter.id}
               >
-                <ListItemIcon sx={{ minWidth: '30px', color: filter.color }}>
-                  {filter.icon && <filter.icon stroke="1.5" size={19} />}
-                </ListItemIcon>
+                <ListItemIcon sx={{ minWidth: "30px", color: filter.color }}>{filter.icon && <filter.icon stroke="1.5" size={19} />}</ListItemIcon>
                 <ListItemText>{filter.name}</ListItemText>
               </ListItemButton>
             );

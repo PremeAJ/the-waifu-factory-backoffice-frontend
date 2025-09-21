@@ -1,16 +1,14 @@
-import React, { useContext } from 'react';
-
+import { IconStar, IconTrash } from '@tabler/icons-react';
+import { useProfile } from '@/common/contexts/ProfileContext';
+import { useTheme } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import React from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
-import { IconStar, IconTrash } from '@tabler/icons-react';
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
-
 
 type Props = {
   onContactClick: (event: React.MouseEvent<HTMLElement>) => void;
@@ -38,7 +36,7 @@ const ContactListItem = ({
   active,
 }: Props) => {
 
-  const { isBorderRadius } = useContext(CustomizerContext);
+  const { isBorderRadius } = useProfile().appearance;
 
   const br = `${isBorderRadius}px`;
 

@@ -1,33 +1,17 @@
 import Box from "@mui/material/Box";
 import { Avatar, Stack, Typography } from "@mui/material";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { useContext } from "react";
 import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
 import ViewSidebarTwoToneIcon from "@mui/icons-material/ViewSidebarTwoTone";
 import useTheme from "@mui/system/useTheme";
-
-const marks = [
-  { value: 4, label: "" },
-  { value: 8, label: "" },
-  { value: 12, label: "" },
-  { value: 16, label: "" },
-  { value: 20, label: "" },
-  { value: 24, label: "" },
-];
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { AppearanceSettings } from "@/common/contexts/ProfileContext/interfaces/interface";
 
 const Others = () => {
   const theme = useTheme();
-  const { updateAppearance, isCollapse, setIsCollapse } = useContext(CustomizerContext);
+  const { updateAppearance, appearance } = useProfile();
+  const { isCollapse } = appearance || {};
   const isChecked = isCollapse === "mini_sidebar" ? true : false;
-  const updateSetting = (
-    payload: Partial<{
-      activeTheme: string;
-      activeMode: string;
-      isCollapse: string;
-      isBorderRadius: number;
-    }>
-  ) => {
-    if (payload.isCollapse !== undefined) setIsCollapse(payload.isCollapse);
+  const updateSetting = (payload: Partial<AppearanceSettings>) => {
     updateAppearance(payload);
   };
   return (
@@ -44,10 +28,7 @@ const Others = () => {
         </Typography>
       </Box>
       <Box sx={{ ml: "auto !important" }}>
-        <CustomSwitch
-          checked={isChecked}
-          onChange={() => updateSetting({ isCollapse: isChecked ? "full_sidebar" : "mini_sidebar" })}
-        />
+        <CustomSwitch checked={isChecked} onChange={() => updateSetting({ isCollapse: isChecked ? "full_sidebar" : "mini_sidebar" })} />
       </Box>
     </Stack>
   );

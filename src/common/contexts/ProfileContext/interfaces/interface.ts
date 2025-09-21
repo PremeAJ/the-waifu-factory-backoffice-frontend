@@ -39,6 +39,7 @@ export interface ProfileContextType {
   updateActiveCompany: (companyId: string) => Promise<any>;
   changeEmail: (payload: Partial<ChangeEmailPayload>) => Promise<any>;
   uploadAvatar: (base64: string, fileName:string) => Promise<any>;
+  updateAppearance: (payload: Partial<AppearanceSettings>) => Promise<any>;
 }
 
 export interface ProfileResponse extends ApiResponse {
@@ -73,7 +74,10 @@ export interface Appearance {
   activeMode: ActiveMode;
   activeTheme: string;
   isCollapse: IsCollapse;
+  isBorderRadius: number;
 }
+
+export interface AppearanceSettings extends Appearance {}
 
 export interface ChangeEmailPayload {
   newEmail: string;

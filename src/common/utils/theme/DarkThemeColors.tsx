@@ -1,5 +1,21 @@
-
 const DarkThemeColors = [
+  {
+    name: "NAMCHA_THEME",
+    palette: {
+      primary: {
+        main: "#89EB74",   
+        light: "#1c3517ff",  
+        dark: "#5AC34A",  
+        contrastText: "#ffffff",
+      },
+      secondary: {
+        main: "#7dcb65",
+        light: "#1c3517ff",
+        dark: "#4CAF50",
+        contrastText: "#ffffff",
+      },
+    },
+  },
   {
     name: "BLUE_THEME",
     palette: {
@@ -176,8 +192,8 @@ const DarkThemeColors = [
         contrastText: "#ffffff",
       },
       secondary: {
-        main: "#ff4fa3", 
-        light: "#3a1b2a", 
+        main: "#ff4fa3",
+        light: "#3a1b2a",
         dark: "#c2185b",
         contrastText: "#ffffff",
       },

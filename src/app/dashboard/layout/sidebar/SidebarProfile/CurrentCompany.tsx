@@ -9,10 +9,11 @@ import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog
 
 export const CurrentCompany = () => {
   const { isLanguage } = useContext(CustomizerContext);
-  const { activeCompany, loading } = useProfile();
+  const { activeCompany, loading, appearance } = useProfile();
+  const { isCollapse } = appearance || {};
   const { name, logoUrl, businessTypeId, branchNameTh, branchNameEn } = activeCompany || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-  const { isSidebarHover, isCollapse } = useContext(CustomizerContext);
+  const { isSidebarHover } = useContext(CustomizerContext);
   const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";
 
   const [openSwitchCompany, setOpenSwitchCompany] = useState(false);

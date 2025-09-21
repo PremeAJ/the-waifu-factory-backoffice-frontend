@@ -1,22 +1,22 @@
 import { Box } from "@mui/material";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { isNull } from "lodash";
 import { NavCollapseProps, NavGroup } from "@/common/utils/types/layout/sidebar";
 import { styled, useTheme } from "@mui/material/styles";
 import { Theme } from "@mui/material/styles";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import { useTranslation } from "react-i18next";
 import Collapse from "@mui/material/Collapse";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import NavItem from "../NavItem";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
-  const { isBorderRadius } = useContext(CustomizerContext);
+  const { isBorderRadius} = useProfile().appearance;
   const Icon = menu?.icon;
   const theme = useTheme();
   const { t } = useTranslation();

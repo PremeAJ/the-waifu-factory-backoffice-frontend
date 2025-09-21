@@ -9,12 +9,14 @@ import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
 import { useContext } from "react";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const SidebarItems = () => {
   const pathname = usePathname();
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
-  const { isSidebarHover, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isCollapse } = useProfile().appearance;
   const { loading: isLoading } = useContext(CustomizerContext);
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));

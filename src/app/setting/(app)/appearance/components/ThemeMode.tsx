@@ -1,18 +1,15 @@
-import { Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import WbSunnyTwoToneIcon from "@mui/icons-material/WbSunnyTwoTone";
 import DarkModeTwoToneIcon from "@mui/icons-material/DarkModeTwoTone";
 import StyledBox from "../StyledBox";
-import { useContext } from "react";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { ActiveMode } from "@/common/contexts/ProfileContext/interfaces/interface";
 
 const ThemeMode = () => {
-  const { updateAppearance, setActiveMode } = useContext(CustomizerContext);
+  const { updateAppearance } = useProfile();
   const { appearance } = useProfile();
   const { activeMode } = appearance || {};
-  const updateSetting = (mode: string) => {
-    setActiveMode(mode);
+  const updateSetting = (mode: ActiveMode) => {
     updateAppearance({ activeMode: mode });
   };
 

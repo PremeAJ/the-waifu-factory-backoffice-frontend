@@ -1,28 +1,18 @@
-import React, { ElementType, useContext, useEffect } from 'react';
+import { EmailContext } from "@/context/EmailContext";
+import { IconMail, IconSend, IconFlag, IconTrash, IconStar, IconAlertCircle, IconFolder, IconNote, } from '@tabler/icons-react';
+import { mutate } from 'swr';
+import { usePathname } from 'next/navigation';
+import { useProfile } from '@/common/contexts/ProfileContext';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import EmailCompose from './EmailCompose';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Typography from '@mui/material/Typography';
-import { EmailContext } from "@/context/EmailContext";
-import EmailCompose from './EmailCompose';
-
+import React, { ElementType, useContext, useEffect } from 'react';
 import Scrollbar from '../../custom-scroll/Scrollbar';
-import {
-  IconMail,
-  IconSend,
-  IconFlag,
-  IconTrash,
-  IconStar,
-  IconAlertCircle,
-  IconFolder,
-  IconNote,
-} from '@tabler/icons-react';
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
-import { usePathname } from 'next/navigation';
-import { mutate } from 'swr';
+import Typography from '@mui/material/Typography';
 
 
 interface fitlerType {
@@ -37,7 +27,7 @@ interface fitlerType {
 
 const EmailFilter = () => {
 
-  const { isBorderRadius } = useContext(CustomizerContext);
+  const { isBorderRadius } = useProfile().appearance;
   const br = `${isBorderRadius}px`;
 
   const { setFilter, filter } = useContext(EmailContext);

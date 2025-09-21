@@ -5,14 +5,13 @@ import { IconChevronRight, IconChevronDown, IconMoon } from "@tabler/icons-react
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useSetting } from "@/common/contexts/SettingContext";
 import { useTheme } from "@mui/material/styles";
 import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
-import Menuitems from "../layout/sidebar/MenuItems"; // นำเข้า Menuitems
+import Menuitems from "../layout/sidebar/MenuItems";
 import React, { useContext, useState } from "react";
 
 const MobileSettingsList = () => {
-  const { updateAppearance } = useSetting();
+  const { updateAppearance } = useProfile();
   const theme = useTheme();
   const router = useRouter();
   const { data: session } = useSession();
@@ -51,7 +50,6 @@ const MobileSettingsList = () => {
     </Box>
   );
 
-  const { setActiveMode } = useContext(CustomizerContext);
   const { appearance } = useProfile();
   const { activeMode } = appearance || {};
   const toggleDarkMode = () => {

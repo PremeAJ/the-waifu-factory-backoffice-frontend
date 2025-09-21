@@ -10,9 +10,9 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import { PageUrl } from "@/common/constants/pageUrl";
 
 const Logo = () => {
-  const { isCollapse, isSidebarHover } = useContext(CustomizerContext);
-    const { appearance } = useProfile();
-    const { activeMode } = appearance || {};
+  const { isSidebarHover } = useContext(CustomizerContext);
+  const { isCollapse, activeMode } = useProfile().appearance;
+
   const path = usePathname();
   const url = path.includes(PageUrl.DASHBOARD) || path.includes("/setting") ? PageUrl.DASHBOARD : "/";
   const TopbarHeight = config.topbarHeight;

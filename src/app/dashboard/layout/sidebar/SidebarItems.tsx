@@ -9,13 +9,15 @@ import NavGroup from "./NavGroup/NavGroup";
 import NavItem from "./NavItem";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const SidebarItems = () => {
   const currentPath = usePathname();
   const pathname = currentPath.split("/").slice(0, 4).join("/") || "/";
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
-  const { isSidebarHover, isCollapse, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isCollapse } = useProfile().appearance;
   const { loading: isLoading } = useContext(CustomizerContext);
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
@@ -41,13 +43,7 @@ const SidebarItems = () => {
             );
           } else {
             return (
-              <NavItem
-                item={item}
-                key={item.id}
-                pathDirect={pathDirect}
-                hideMenu={hideMenu}
-                onClick={() => setIsMobileSidebar(!isMobileSidebar)}
-              />
+              <NavItem item={item} key={item.id} pathDirect={pathDirect} hideMenu={hideMenu} onClick={() => setIsMobileSidebar(!isMobileSidebar)} />
             );
           }
         })}

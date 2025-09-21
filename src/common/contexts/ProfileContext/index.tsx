@@ -1,5 +1,5 @@
 "use client";
-import { Appearance, ChangeEmailPayload, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
+import { Appearance, AppearanceSettings, ChangeEmailPayload, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
 import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
 import { useSession } from "next-auth/react";
@@ -8,7 +8,6 @@ import useSWR from "swr";
 import { swrOption } from "@/app/api/swrOption";
 import { useEncrypt } from "../EncryptContext";
 import { showError } from "@/common/utils/dialog";
-import reduceImageFileSize from "@/common/utils/function/file/reduceImageFileSize";
 import imageCompression from "browser-image-compression";
 import { dataURLToFile } from "@/common/utils/function/file/dataURLToBlob";
 
@@ -96,6 +95,17 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return response;
   };
 
+  const updateAppearance = async (payload: Partial<AppearanceSettings>) => {
+    setLoading(true);
+    await appearanceMutate({ data: { ...appearance, ...payload } }, false);
+    const response = await putFetcher("/api/profile/appearance", payload);
+    setLoading(false);
+    if (response?.error) {
+      showError({ message: response.message });
+    }
+    return response;
+  };
+
   const changeEmail = async (payload: Partial<ChangeEmailPayload>): Promise<any> => {
     setLoading(true);
     const encryptedPayload = {
@@ -150,6 +160,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     updateActiveCompany,
     updateProfile,
     uploadAvatar,
+    updateAppearance,
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

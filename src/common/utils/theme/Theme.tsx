@@ -13,10 +13,9 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 
 export const BuildTheme = (config: any = {}) => {
   const { appearance } = useProfile();
-  const { activeMode } = appearance || {};
+  const { activeMode, isBorderRadius } = appearance || {};
   const themeOptions = LightThemeColors.find((theme) => theme.name === config.theme);
   const darkthemeOptions = DarkThemeColors.find((theme) => theme.name === config.theme);
-  const { isBorderRadius } = useContext(CustomizerContext);
   const defaultTheme = activeMode === "dark" ? baseDarkTheme : baselightTheme;
   const defaultShadow = activeMode === "dark" ? darkshadows : shadows;
   const themeSelect = activeMode === "dark" ? darkthemeOptions : themeOptions;

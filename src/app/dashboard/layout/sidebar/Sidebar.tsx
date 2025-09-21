@@ -8,10 +8,12 @@ import config from "@/common/contexts/setting/config";
 import Drawer from "@mui/material/Drawer";
 import SidebarItems from "./SidebarItems";
 import useIsMobile from "@/common/utils/state/isMobile";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const Sidebar = () => {
-  const isMobie = useIsMobile()
-  const { isCollapse, isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const isMobie = useIsMobile();
+  const { isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isCollapse } = useProfile().appearance;
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
   const theme = useTheme();
@@ -66,15 +68,15 @@ const Sidebar = () => {
                 overflow: "hidden",
               }}
             >
-              <BaseScrollbar 
-                sx={{ 
+              <BaseScrollbar
+                sx={{
                   height: "calc(100% - 120px)",
-                  '& .simplebar-content-wrapper': {
-                    overflow: 'hidden auto !important',
+                  "& .simplebar-content-wrapper": {
+                    overflow: "hidden auto !important",
                   },
-                  '& .simplebar-content': {
-                    paddingRight: '0 !important',
-                  }
+                  "& .simplebar-content": {
+                    paddingRight: "0 !important",
+                  },
                 }}
               >
                 <SidebarItems />
@@ -96,38 +98,42 @@ const Sidebar = () => {
                 border: "0 !important",
                 boxShadow: (theme) => theme.shadows[8],
                 overflow: "auto",
-                '&::-webkit-scrollbar': {
-                  width: '4px',
+                "&::-webkit-scrollbar": {
+                  width: "4px",
                 },
-                '&::-webkit-scrollbar-track': {
-                  background: 'transparent',
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent",
                 },
-                '&::-webkit-scrollbar-thumb': {
+                "&::-webkit-scrollbar-thumb": {
                   background: theme.palette.grey[300],
-                  borderRadius: '2px',
+                  borderRadius: "2px",
                 },
-                '&::-webkit-scrollbar-thumb:hover': {
+                "&::-webkit-scrollbar-thumb:hover": {
                   background: theme.palette.grey[400],
                 },
               },
             },
           }}
         >
-          <Box sx={{ 
-            height: "100%", 
-            display: "flex", 
-            flexDirection: "column" 
-          }}>
-            <Box sx={{ 
-              flex: 1, 
-              overflow: "auto",
-              WebkitOverflowScrolling: "touch",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
-            }}>
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Box
+              sx={{
+                flex: 1,
+                overflow: "auto",
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
+            >
               <SidebarItems />
             </Box>
             <CurrentCompany />

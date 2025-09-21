@@ -8,6 +8,7 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import useIsSubMenu from "@/common/utils/state/isSubMenu";
 import { useSession } from "next-auth/react";
 import { PageUrl } from "@/common/constants/pageUrl";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 const hideButton = ["/", "/auth/callback", PageUrl.AUTH_SIGN_IN, PageUrl.AUTH_SIGN_UP];
 
@@ -20,7 +21,9 @@ const ActionButton = () => {
 
   const [show, setShow] = useState(false);
   const [visible, setVisible] = useState(false);
-  const { isMobileSidebar, setIsMobileSidebar, isCollapse, setIsCollapse, loading } = useCustomize();
+  const { isMobileSidebar, setIsMobileSidebar, setIsCollapse, loading } = useCustomize();
+    const { isCollapse } = useProfile().appearance;
+  
 
   useEffect(() => {
     if (!hideButton.includes(pathname)) {

@@ -1,6 +1,5 @@
 "use client";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { SettingProvider } from "@/common/contexts/SettingContext";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 import { styled, useTheme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
@@ -27,14 +26,12 @@ const PageWrapper = styled("div")(() => ({
 }));
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isLayout, isCollapse } = useContext(CustomizerContext);
-  const { appearance } = useProfile();
-  const { activeMode } = appearance || {};
+  const { isLayout } = useContext(CustomizerContext);
+  const { isCollapse, activeMode } = useProfile().appearance;
   const theme = useTheme();
   const isMobile = useIsMobile();
 
   return (
-    <SettingProvider>
       <SidebarStateProvider>
         <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
           <Sidebar />
@@ -51,6 +48,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </PageWrapper>
         </MainWrapper>
       </SidebarStateProvider>
-    </SettingProvider>
   );
 }
