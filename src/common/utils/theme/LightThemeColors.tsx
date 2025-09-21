@@ -1,5 +1,22 @@
 const LightThemeColors = [
   {
+    name: "NAMCHA_THEME",
+    palette: {
+      primary: {
+        main: "#89EB74",   
+        light: "#F2FFEF",  
+        dark: "#5AC34A",  
+        contrastText: "#ffffff",
+      },
+      secondary: {
+        main: "#7dcb65",
+        light: "#E8FBEA",
+        dark: "#4CAF50",
+        contrastText: "#ffffff",
+      },
+    },
+  },
+  {
     name: "BLUE_THEME",
     palette: {
       primary: {
