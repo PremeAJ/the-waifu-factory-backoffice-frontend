@@ -1,27 +1,18 @@
 "use client";
-import React, { useContext } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
+import { IconRocket } from "@tabler/icons-react";
+import { motion } from "framer-motion";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { Theme } from "@mui/material/styles";
+import { useSession } from "next-auth/react";
+import BaseButton from "@/common/components/base/BaseButton";
+import Box from "@mui/material/Box";
+import React from "react";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { styled } from "@mui/material/styles";
-import { IconRocket } from "@tabler/icons-react";
-
-// third party
-import { motion } from "framer-motion";
-import { UserContext } from "@/common/contexts/UserContext";
-import { PageUrl } from "@/common/constants/pageUrl";
-import BaseButton from "@/common/components/base/BaseButton";
-
-const StyledButton = styled(Button)(() => ({
-  padding: "13px 48px",
-  fontSize: "16px",
-}));
 
 const BannerContent = () => {
-  const { user } = useContext(UserContext);
+  const sesson = useSession().data;
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
   return (
@@ -88,7 +79,7 @@ const BannerContent = () => {
         }}
       >
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mt={3}>
-          {!user && <BaseButton label="Login" href={PageUrl.AUTH_SIGN_IN} fullWidth={false} sx={{ padding: "13px 48px" }} />}
+          {!sesson && <BaseButton label="Login" href={PageUrl.AUTH_SIGN_IN} fullWidth={false} sx={{ padding: "13px 48px" }} />}
           <BaseButton variant="outlined" label="Live Preview" href="#demos" fullWidth={false} sx={{ padding: "13px 48px" }} />
         </Stack>
       </motion.div>

@@ -1,5 +1,5 @@
 "use client";
-import { Appearance, AppearanceSettings, ChangeEmailPayload, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
+import { Appearance, AppearanceSettings, ChangeEmailPayload, IsLanguage, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
 import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
 import { useSession } from "next-auth/react";
@@ -18,6 +18,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session, update } = useSession();
   const { encrypt } = useEncrypt();
+  const [isLanguage , setIsLanguage] = useState<IsLanguage>("th");
 
   const {
     data: companyListData,
@@ -56,7 +57,13 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [appearanceData?.data]);
 
-  const appearance: Appearance = appearanceData?.data || localAppearance || defaultAppearance;
+  // const appearance: Appearance = appearanceData?.data || localAppearance || defaultAppearance;
+  const appearance: Appearance = {
+    ...defaultAppearance,
+    ...localAppearance,
+    ...appearanceData?.data,
+    isLanguage: isLanguage || appearanceData?.data?.isLanguage || localAppearance?.isLanguage || defaultAppearance.isLanguage,
+  }
 
   useEffect(() => {
     document.documentElement.setAttribute("class", appearance.activeMode);
@@ -97,13 +104,17 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const updateAppearance = async (payload: Partial<AppearanceSettings>) => {
     setLoading(true);
-    await appearanceMutate({ data: { ...appearance, ...payload } }, false);
-    const response = await putFetcher("/api/profile/appearance", payload);
-    setLoading(false);
-    if (response?.error) {
-      showError({ message: response.message });
+    if (payload.isLanguage) {
+      setIsLanguage(payload.isLanguage);
     }
-    return response;
+    await appearanceMutate({ data: { ...appearance, ...payload } }, false);
+    if (session) {
+      const response = await putFetcher("/api/profile/appearance", payload);
+      if (response?.error) {
+        showError({ message: response.message });
+      }
+    }
+    setLoading(false);
   };
 
   const changeEmail = async (payload: Partial<ChangeEmailPayload>): Promise<any> => {

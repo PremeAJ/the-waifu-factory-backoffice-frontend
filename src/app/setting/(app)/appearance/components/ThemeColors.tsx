@@ -1,7 +1,5 @@
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { IconCheck } from "@tabler/icons-react";
 import { LightThemeColors } from "@/common/utils/theme/LightThemeColors";
-import { useContext } from "react";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import Grid from "@mui/material/Grid";
 import StyledBox from "../StyledBox";

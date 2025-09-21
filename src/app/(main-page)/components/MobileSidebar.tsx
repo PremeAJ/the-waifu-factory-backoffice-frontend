@@ -12,11 +12,14 @@ import Logo from "@/common/components/shared/Logo";
 import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
 import React, { useContext, useState } from "react";
 import Stack from "@mui/material/Stack";
+import { useSession } from "next-auth/react";
+import { stat } from "fs";
 
 const MobileSidebar = () => {
   const [toggle, setToggle] = useState(false);
   const [toggle2, setToggle2] = useState(false);
   const { user, loading } = useContext(UserContext);
+  const { data: session, status } = useSession();
 
   return (
     <>
@@ -63,12 +66,12 @@ const MobileSidebar = () => {
               </Box>
             </Collapse>
           )} */}
-       
-           <BaseButton
+
+          <BaseButton
             label="Documentation"
             variant="text"
             color="inherit"
-           href="#"
+            href="#"
             sx={{
               justifyContent: "start",
             }}
@@ -82,7 +85,7 @@ const MobileSidebar = () => {
               justifyContent: "start",
             }}
           />
-          {user && !loading ? null : <BaseButton variant="contained" label="Login" href={PageUrl.AUTH_SIGN_IN} />}
+          {!session && <BaseButton variant="contained" label="Login" href={PageUrl.AUTH_SIGN_IN} />}
         </Stack>
       </Box>
     </>

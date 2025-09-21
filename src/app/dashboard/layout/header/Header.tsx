@@ -1,23 +1,23 @@
 import { Box, Typography } from "@mui/material";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import { styled } from "@mui/material/styles";
-import { useContext } from "react";
-import { UserContext } from "@/common/contexts/UserContext";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { useSession } from "next-auth/react";
 import AppBarStyled from "@/common/components/shared/AppBarStyled";
+import AppShortcut from "./AppShortcu";
 import Language from "@/common/components/shared/Language";
+import Notifications from "./Notification";
 import Profile from "@/common/components/shared/Profile";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
-import Notifications from "./Notification";
-import AppShortcut from "./AppShortcu";
 import useIsMobile from "@/common/utils/state/isMobile";
+
 const Header = () => {
-  const { loading, user } = useContext(UserContext);
-  const { firstName, companies } = user || {};
-  const { companyUsers } = companies || {};
-  const { roles } = companyUsers?.[0] || {};
-  const { nameTh: roleNameTh, nameEn: roleNameEN } = roles || {};
-  const isMobile = useIsMobile()
+  const { firstName } = useSession().data?.profile || {};
+  const { roleNameTh, roleNameEn } = useProfile().activeCompany || {};
+  const { isLanguage } = useProfile().appearance || {};
+  const isMobile = useIsMobile();
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
     width: "100%",
     color: theme.palette.text.secondary,
@@ -36,10 +36,10 @@ const Header = () => {
                 {firstName}
               </Typography>
               <Typography variant="caption" color="text.secondary" noWrap>
-                {roleNameTh}
+                {I18nString(isLanguage, roleNameTh, roleNameEn)}
               </Typography>
             </Box>
-            <Profile loading={loading || !user} />
+            <Profile />
           </Stack>
         </ToolbarStyled>
       </AppBarStyled>

@@ -1,13 +1,18 @@
 "use client";
-import React, { useContext, useEffect } from "react";
 import { Avatar, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-
+import { HeadersKey } from "@/common/constants/header";
+import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
 import { Stack } from "@mui/system";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
-import { HeadersKey } from "@/common/constants/header";
-const Languages = [
+import React, { useContext, useEffect } from "react";
+const Languages: {
+  flagname: string;
+  icon: string;
+  value: IsLanguage;
+}[] = [
   {
     flagname: "ภาษาไทย (TH)",
     icon: "/images/flag/icon-flag-th.svg",
@@ -24,7 +29,8 @@ const Language = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const open = Boolean(anchorEl);
-  const { isLanguage, setIsLanguage, updateAppearance } = useContext(CustomizerContext);
+  const { appearance, updateAppearance } = useProfile();
+  const { isLanguage } = appearance || {};
 
   const currentLang = Languages.find((_lang) => _lang.value === isLanguage) || Languages[1];
   const { i18n } = useTranslation();
@@ -69,7 +75,7 @@ const Language = () => {
             key={index}
             sx={{ py: 2, px: 3 }}
             onClick={() => {
-              setIsLanguage(option.value);
+              // setIsLanguage(option.value);
               updateAppearance({ isLanguage: option.value });
               setAnchorEl(null);
             }}

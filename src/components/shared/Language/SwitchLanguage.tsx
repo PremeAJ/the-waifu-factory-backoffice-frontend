@@ -2,8 +2,13 @@
 import React from "react";
 import { Box, Typography, Avatar } from "@mui/material";
 import { styled } from "@mui/system";
+import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
 
-const Languages = [
+const Languages: {
+  label: string;
+  icon: string;
+  value: IsLanguage;
+}[] = [
   {
     label: "TH",
     icon: "/images/flag/icon-flag-th.svg",
@@ -93,11 +98,7 @@ const SwitchLanguage = () => {
         {Languages[0].label}
       </Typography>
       <Thumb checked={checked}>
-        <FlagAvatar
-          variant="square"
-          src={checked ? Languages[1].icon : Languages[0].icon}
-          alt={checked ? Languages[1].label : Languages[0].label}
-        />
+        <FlagAvatar variant="square" src={checked ? Languages[1].icon : Languages[0].icon} alt={checked ? Languages[1].label : Languages[0].label} />
       </Thumb>
     </SwitchBox>
   );

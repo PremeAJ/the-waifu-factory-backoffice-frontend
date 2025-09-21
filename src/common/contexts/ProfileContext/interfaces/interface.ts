@@ -23,6 +23,8 @@ export interface ActiveCompany {
   businessTypeId: number;
   branchNameTh: string;
   branchNameEn: string;
+  roleNameTh: string;
+  roleNameEn: string;
 }
 
 export interface ProfileContextType {

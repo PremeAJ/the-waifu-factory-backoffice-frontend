@@ -1,20 +1,13 @@
+import { ProductProvider } from "@/context/Ecommercecontext/index";
+import { styled } from "@mui/material/styles";
+import AppBarStyled from "@/common/components/shared/AppBarStyled";
+import Box from "@mui/material/Box";
 import Language from "@/common/components/shared/Language";
 import Profile from "@/common/components/shared/Profile";
-import AppBarStyled from "@/common/components/shared/AppBarStyled";
-import { ProductProvider } from "@/context/Ecommercecontext/index";
-import config from "@/common/contexts/setting/config";
-import { UserContext } from "@/common/contexts/UserContext";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
-import { useContext } from "react";
 
 const Header = () => {
-  const { loading, user } = useContext(UserContext);
-  const TopbarHeight = config.topbarHeight;
-
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
     width: "100%",
     color: theme.palette.text.secondary,
@@ -27,7 +20,7 @@ const Header = () => {
           <Box flexGrow={1} />
           <Stack spacing={1} direction="row" alignItems="center">
             <Language />
-            <Profile loading={loading || !user} />
+            <Profile />
           </Stack>
         </ToolbarStyled>
       </AppBarStyled>

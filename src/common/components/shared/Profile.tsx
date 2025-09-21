@@ -1,36 +1,29 @@
-import { Box, Menu, Avatar, Typography, Divider, IconButton, Skeleton, Stack, useTheme } from "@mui/material";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { Avatar, Box, Divider, IconButton, Menu, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconMail, IconUser } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { signOut, useSession } from "next-auth/react";
 import { useAuth } from "@/common/contexts/AuthContext";
-import { UserContext } from "@/common/contexts/UserContext";
-import { useRouter } from "next/navigation";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import * as dropdownData from "../../../app/dashboard/layout/header/data";
 import BaseButton from "@/common/components/base/BaseButton";
 import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDialog";
 import Link from "next/link";
-import React, { useContext, useState } from "react";
+import React, { FC, useState } from "react";
 
 interface ProfileProps {
   loading?: boolean;
 }
 
-const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
-  const router = useRouter();
+const Profile: FC<ProfileProps> = () => {
   const theme = useTheme();
-  const { isLanguage } = useContext(CustomizerContext);
-  const { user } = useContext(UserContext);
+  const { activeCompany, appearance } = useProfile();
+  const { isLanguage } = appearance || {};
+  const { roleNameTh, roleNameEn } = activeCompany || {};
   const { data: session, status } = useSession();
-  const {signOut: apiSignOut} = useAuth()
+  const { signOut: apiSignOut } = useAuth();
   const loading = status === "loading";
-  const { companies } = user || {};
-  const { companyUsers } = companies || {};
-  const { roles } = companyUsers?.[0] || {};
-  const { nameTh: roleNameTh, nameEn: roleNameEn } = roles || {};
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
-
   const [openSignOut, setOpenSignOut] = useState(false);
   const [signOutLoading, setSignOutLoading] = useState(false);
 
@@ -47,8 +40,8 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
 
   const handleConfirmSignOut = async () => {
     setSignOutLoading(true);
-    await apiSignOut()
-    await signOut({callbackUrl: PageUrl.AUTH_SIGN_IN});
+    await apiSignOut();
+    await signOut({ callbackUrl: PageUrl.AUTH_SIGN_IN });
     setSignOutLoading(false);
     setOpenSignOut(false);
   };
@@ -68,7 +61,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
       );
     } else {
       const IconComponent = icon;
-      return <IconComponent size={24} stroke={1.5} color={theme.palette.primary.main} />;
+      return <IconComponent size={24} stroke={1.5} color="currentColor" />;
     }
   };
   if (loading) {
@@ -133,7 +126,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
   if (!session) {
     return null;
   }
-  const {firstName, lastName, fullName ,email, avatar} = session.profile || {};
+  const { firstName, lastName, fullName, email, avatar } = session.profile || {};
 
   return (
     <Box>
@@ -180,7 +173,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
               {fullName}
             </Typography>
-            {companies && (
+            {session.profile?.activeCompany && (
               <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
                 <IconUser size={15} stroke={1.5} color={theme.palette.text.secondary} />
                 <Box sx={{ maxWidth: 160, overflow: "hidden" }}>
@@ -241,7 +234,7 @@ const Profile: React.FC<ProfileProps> = ({ loading: loadingProp }) => {
               }}
               className="hover-text-primary"
             >
-              <Link href={profile.href} >
+              <Link href={profile.href}>
                 <Stack direction="row" spacing={2}>
                   <Box
                     className="profile-icon-box"
