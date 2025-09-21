@@ -4,8 +4,8 @@ import { useCustomize } from "@/common/contexts/setting/customizerContext";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import BaseFab from "../base/BaseFab";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
+import useIsMobile from "@/common/utils/state/isMobile";
+import useIsSubMenu from "@/common/utils/state/isSubMenu";
 import { useSession } from "next-auth/react";
 import { PageUrl } from "@/common/constants/pageUrl";
 

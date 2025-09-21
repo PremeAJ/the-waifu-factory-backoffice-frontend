@@ -11,7 +11,7 @@ import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import CategoryDialog from "./CategoryDialog";
 import React, { useState, useMemo } from "react";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
 import { Navigate } from "react-big-calendar";

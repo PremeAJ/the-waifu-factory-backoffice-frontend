@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import config from "@/common/contexts/setting/config";
 import Drawer from "@mui/material/Drawer";
 import SidebarItems from "./SidebarItems";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 const Sidebar = () => {
   const isMobie = useIsMobile()

@@ -12,7 +12,7 @@ import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Box from "@mui/material/Box";
 import React, { useEffect } from "react";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 export type ChangeEmailState = "" | "newEmail" | "passwordConfirm" | "otp";
 

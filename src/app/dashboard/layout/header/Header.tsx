@@ -10,7 +10,7 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Notifications from "./Notification";
 import AppShortcut from "./AppShortcu";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 const Header = () => {
   const { loading, user } = useContext(UserContext);
   const { firstName, companies } = user || {};

@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext } from "react";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 import BaseFab from "../base/BaseFab";
 import { IconCategory } from "@tabler/icons-react";
 

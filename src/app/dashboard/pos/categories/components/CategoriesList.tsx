@@ -13,8 +13,8 @@ import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
 import CategoryDialog from "./CategoryDialog";
 import React, { useState, useMemo } from "react";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import useIsPortrait from "@/common/utils/breakpoints/useIsPortrait";
+import useIsMobile from "@/common/utils/state/isMobile";
+import useIsPortrait from "@/common/utils/state/useIsPortrait";
 
 type DialogState = {
   open: boolean;

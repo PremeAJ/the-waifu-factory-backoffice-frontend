@@ -8,7 +8,7 @@ import Header from "@/components/layout/header/DashboardUserHeader";
 import { CompanyProvider } from "@/common/contexts/CompanyContext";
 import Sidebar from "../setting/layout/sidebar/Sidebar";
 import { usePathname } from "next/navigation";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 import SessionGuard from "@/common/guards/sessionGuard";
 import { useProfile } from "@/common/contexts/ProfileContext";
 

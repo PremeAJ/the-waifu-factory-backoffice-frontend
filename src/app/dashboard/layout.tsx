@@ -11,11 +11,11 @@ import Header from "./layout/header/Header";
 import React, { useContext } from "react";
 import SessionGuard from "@/common/guards/sessionGuard";
 import Sidebar from "./layout/sidebar/Sidebar";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 import AppShortcutDrawer from "@/common/components/shared/AppShortcutDrawer";
 import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
+import useIsSubMenu from "@/common/utils/state/isSubMenu";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",

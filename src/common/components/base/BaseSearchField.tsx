@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 interface StyledProps {
   expanded?: boolean;

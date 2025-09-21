@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { IconSearch, IconX } from "@tabler/icons-react";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
 

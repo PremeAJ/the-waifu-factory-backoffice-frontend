@@ -3,7 +3,7 @@ import "simplebar-react/dist/simplebar.min.css";
 import Box from '@mui/material/Box'
 import { SxProps } from '@mui/system';
 import { styled } from '@mui/material/styles'
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 const SimpleBarStyle = styled(SimpleBar)(() => ({
   maxHeight: "100%",

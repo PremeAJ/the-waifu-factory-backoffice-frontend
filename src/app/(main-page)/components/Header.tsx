@@ -16,7 +16,7 @@ import React, { useContext } from "react";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 const Header = () => {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({

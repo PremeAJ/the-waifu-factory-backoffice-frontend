@@ -14,10 +14,14 @@ import Cookies from "js-cookie";
 import CssBaseline from "@mui/material/CssBaseline";
 import packageJson from "../../package.json";
 import React, { useEffect } from "react";
+import useIsPWA from "@/common/utils/state/useIsPWA";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   const theme = ThemeSettings();
   const version = (packageJson as any)?.version ?? "0.0.0";
+
+  // call hook at top-level
+  const isPWA = useIsPWA();
 
   useEffect(() => {
     if (typeof navigator !== "undefined") {
@@ -30,6 +34,25 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    const setVh = () => {
+      const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+      document.documentElement.style.setProperty("--vh", `${h * 0.01}px`);
+    };
+
+    setVh();
+    if (isPWA) {
+      window.addEventListener("resize", setVh);
+      window.visualViewport?.addEventListener("resize", setVh);
+      window.addEventListener("orientationchange", setVh);
+      return () => {
+        window.removeEventListener("resize", setVh);
+        window.visualViewport?.removeEventListener("resize", setVh);
+        window.removeEventListener("orientationchange", setVh);
+      };
+    }
+  }, [isPWA]);
 
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>

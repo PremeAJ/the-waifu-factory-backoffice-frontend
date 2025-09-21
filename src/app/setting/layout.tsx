@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import React, { useContext } from "react";
 import Sidebar from "./layout/sidebar/Sidebar";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",

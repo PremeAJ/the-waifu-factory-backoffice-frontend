@@ -3,7 +3,7 @@ import { PageUrl } from "@/common/constants/pageUrl";
 import { redirect } from "next/navigation";
 import MobileSettingsList from "./components/MobileSettingsList";
 import PageContainer from "@/components/container/PageContainer";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
+import useIsMobile from "@/common/utils/state/isMobile";
 import { useEffect } from "react";
 
 export default function SettingPage() {

@@ -3,8 +3,8 @@ import { IconGridDots } from "@tabler/icons-react";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import BaseFab from "../base/BaseFab";
 import React from "react";
-import useIsMobile from "@/common/utils/breakpoints/isMobile";
-import useIsSubMenu from "@/common/utils/breakpoints/isSubMenu";
+import useIsMobile from "@/common/utils/state/isMobile";
+import useIsSubMenu from "@/common/utils/state/isSubMenu";
 
 const AppShortcutButton = () => {
   const { toggleAppShortcut } = useSidebarState();
