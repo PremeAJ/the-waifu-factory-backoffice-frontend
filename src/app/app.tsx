@@ -40,7 +40,7 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
             <Analytics />
             <SpeedInsights />
             {children}
-            <Box
+            {/* <Box
               sx={{
                 position: "fixed",
                 left: 8,
@@ -52,7 +52,7 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
               <Typography variant="caption" color="textSecondary">
                 v{version}
               </Typography>
-            </Box>
+            </Box> */}
           </UserProvider>
         </DialogProvider>
       </ThemeProvider>
