@@ -1,21 +1,21 @@
 {
-    "name": "Meow Som",
-    "short_name": "Meow Som",
-    "icons": [
-        {
-            "src": "/PWA/icons/icon-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/PWA/icons/icon-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ],
-    "theme_color": "#FFFFFF",
-    "background_color": "#FFFFFF",
-    "start_url": "/dashboard",
-    "display": "standalone",
-    "orientation": "portrait"
+  "name": "NamCha POS",
+  "short_name": "NamCha POS",
+  "icons": [
+    {
+      "src": "/PWA/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/PWA/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "orientation": "portrait"
 }
