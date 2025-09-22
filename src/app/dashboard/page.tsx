@@ -29,7 +29,6 @@ export default function Dashboard() {
     <PageContainer title="Dashboard" description="this is Dashboard">
       <Box mt={3}>
         <Grid container spacing={3}>
-          {/* column */}
           <Grid
             size={{
               xs: 12,
