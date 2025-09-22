@@ -13,12 +13,11 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import BaseTextField from "@/common/components/base/BaseTextField";
-import Link from "next/link";
-import SignInWithGoogleButton from "../../components/SignInWithGoogleButton";
-import Turnstile from "react-turnstile";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import SignInWithGoogleButton from "../../components/SignInWithGoogleButton";
+import Turnstile from "react-turnstile";
 
 const validationSchema = yup.object({
   email: emailValidator,
@@ -29,6 +28,7 @@ const validationSchema = yup.object({
 });
 
 const AuthRegister = () => {
+  const isDev = process.env.NODE_ENV === "development";
   const [captchaToken, setCaptchaToken] = useState("");
   const { register, loading } = useAuth();
   const { appearance } = useProfile();
@@ -112,7 +112,7 @@ const AuthRegister = () => {
               }
             />
           </Stack>
-          {formik.isValid && formik.dirty && (
+          {formik.isValid && formik.dirty && !isDev &&(
             <Turnstile
               sitekey={siteKey}
               theme={appearance.activeMode}
@@ -122,7 +122,7 @@ const AuthRegister = () => {
               language={i18n.language}
             />
           )}
-          <BaseButton type="submit" disabled={!captchaToken} loading={loading} label="Sign Up" />
+          <BaseButton type="submit" disabled={!captchaToken && !isDev} loading={loading} label="Sign Up" />
         </form>
       </Box>
       <Stack direction="row" spacing={1} mt={3}>

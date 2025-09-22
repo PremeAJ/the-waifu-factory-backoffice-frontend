@@ -1,5 +1,5 @@
 "use client";
-import { Grid, Box, Typography } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import AuthLogin from "./components/AuthLogin";
 import Image from "next/image";
 import Logo from "@/common/components/shared/Logo";
@@ -13,7 +13,7 @@ export default function Login() {
   const { appearance } = useProfile();
   return (
     <PageContainer title="Login Page" description="this is Sample page">
-      <Grid container spacing={0} justifyContent="center" sx={{ height: isPWA ? "90vh" : '100vh'}}>
+      <Grid container spacing={0} justifyContent="center" sx={{ height: isPWA ? "90vh" : "100vh" }}>
         <Grid
           sx={{
             display: { xs: "none", lg: "block" },
@@ -77,7 +77,7 @@ export default function Login() {
             <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ width: "100%" }}>
               <Box sx={{ flex: 1 }} />
               <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
-                <Logo />
+                <Logo size="large"/>
               </Box>
               <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
                 <Language />

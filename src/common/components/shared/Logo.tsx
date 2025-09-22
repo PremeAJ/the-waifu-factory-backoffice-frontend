@@ -15,7 +15,7 @@ interface LogoProps {
 const sizeMap = {
   small: { height: 40, width: 40 },
   medium: { height: 70, width: 70 },
-  large: { height: 150, width: 150 },
+  large: { height: 100, width: 100 },
 };
 
 const Logo = ({ size = "medium" }: LogoProps) => {

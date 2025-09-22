@@ -3,6 +3,7 @@ import { Grid, Box, Typography } from "@mui/material";
 import AuthForgotPassword from "./components/AuthForgotPassword";
 import Image from "next/image";
 import PageContainer from "@/components/container/PageContainer";
+import Logo from "@/common/components/shared/Logo";
 
 export default function ForgotPassword() {
   return (
@@ -77,6 +78,9 @@ export default function ForgotPassword() {
             xl: 3
           }}>
           <Box p={4} width={'100%'} maxWidth={500}>
+            <Box display="flex" alignItems="center" justifyContent="center" sx={{ width: "100%", mb: 2 }}>
+              <Logo size="large" />
+            </Box>
             <Typography variant="h4" fontWeight="700">
               ลืมรหัสผ่าน?
             </Typography>

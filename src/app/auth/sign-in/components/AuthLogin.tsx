@@ -24,6 +24,7 @@ const validationSchema = yup.object({
 });
 
 const AuthLogin = () => {
+  const isDev = process.env.NODE_ENV === "development";
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const [captchaToken, setCaptchaToken] = useState("");
@@ -43,7 +44,7 @@ const AuthLogin = () => {
       const encryptedPayload = {
         email: encrypt(data.email),
         password: encrypt(data.password),
-      }
+      };
       const result = await signIn("credentials", {
         redirect: false,
         captchaToken,
@@ -105,7 +106,7 @@ const AuthLogin = () => {
           </Stack>
         </Stack>
         <Box>
-          {formik.isValid && formik.dirty && formik.values.password.length > 6 && (
+          {formik.isValid && formik.dirty && formik.values.password.length > 6 && !isDev && (
             <Turnstile
               sitekey={siteKey}
               theme={appearance.activeMode || "light"}
@@ -115,7 +116,7 @@ const AuthLogin = () => {
               language={i18n.language}
             />
           )}
-          <BaseButton type="submit" loading={isLoading} disabled={!captchaToken} label={t("Page.Login.SignIn")} />
+          <BaseButton type="submit" loading={isLoading} disabled={!captchaToken && !isDev} label={t("Page.Login.SignIn")} />
         </Box>
       </form>
       <Stack direction="row" spacing={1} mt={3}>

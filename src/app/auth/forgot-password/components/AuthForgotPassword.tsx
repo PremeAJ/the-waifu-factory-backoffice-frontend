@@ -27,6 +27,7 @@ export default function AuthForgotPassword() {
   const { forgotPassword, loading } = useAuth();
   const { showError } = useDialog();
   const { t, i18n } = useTranslation();
+  const isDev = process.env.NODE_ENV === "development";
   const router = useRouter();
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
@@ -69,10 +70,10 @@ export default function AuthForgotPassword() {
             </InputAdornment>
           }
         />
-        {formik.isValid && formik.dirty && (
+        {formik.isValid && formik.dirty && !isDev &&(
           <Turnstile sitekey={siteKey} theme="light" action="forgot-password" size="flexible" onSuccess={setCaptchaToken} language={i18n.language} />
         )}
-        <BaseButton label="ส่งลิงก์รีเซ็ตรหัสผ่าน" type="submit" disabled={!captchaToken} loading={loading} />
+        <BaseButton label="ส่งลิงก์รีเซ็ตรหัสผ่าน" type="submit" disabled={!captchaToken && !isDev} loading={loading} />
         <BaseButton label="กลับไปหน้าเข้าสู่ระบบ" href={PageUrl.AUTH_SIGN_IN} variant="outlined" loading={loading} />
       </Stack>
     </form>

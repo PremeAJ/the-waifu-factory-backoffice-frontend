@@ -1,7 +1,9 @@
 "use client";
-import { Box, IconButton, Stack, Tooltip } from "@mui/material";
+import { Box, IconButton, Stack } from "@mui/material";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import { useCategories } from "@/common/contexts/CategoriesContext";
+import { useRouter } from "next/navigation";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseChip from "@/common/components/base/BaseChip"; // เพิ่ม import
 import BaseDialog from "@/common/components/base/BaseDialog";
@@ -9,13 +11,10 @@ import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
 import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
+import BaseTooltip from "@/common/components/base/BaseTooltip";
 import CategoryDialog from "./CategoryDialog";
 import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
-import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
-import BaseTooltip from "@/common/components/base/BaseTooltip";
-import { Navigate } from "react-big-calendar";
-import { useRouter } from "next/navigation";
 
 type DialogState = {
   open: boolean;
@@ -164,7 +163,7 @@ function CategoriesList() {
             onClick={() => onClickAdd()}
             fullWidth={false}
             preset="add"
-            label="Add Category"
+            label="Add Product"
           />
         )}
       </Stack>

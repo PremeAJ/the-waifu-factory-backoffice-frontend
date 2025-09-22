@@ -10,7 +10,14 @@ import { useSession } from "next-auth/react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { useProfile } from "@/common/contexts/ProfileContext";
 
-const hideButton = ["/", "/auth/callback", PageUrl.AUTH_SIGN_IN, PageUrl.AUTH_SIGN_UP, PageUrl.PRICING];
+const hideButton: string[] = [
+  PageUrl.AUTH_SIGN_IN, 
+  PageUrl.AUTH_SIGN_UP, 
+  PageUrl.CALLBACK, 
+  PageUrl.FORGOT_PASSWORD,
+  PageUrl.MAIN, 
+  PageUrl.PRICING, 
+];
 
 const ActionButton = () => {
   const isMobie = useIsMobile();
@@ -22,8 +29,7 @@ const ActionButton = () => {
   const [show, setShow] = useState(false);
   const [visible, setVisible] = useState(false);
   const { isMobileSidebar, setIsMobileSidebar, setIsCollapse, loading } = useCustomize();
-    const { isCollapse } = useProfile().appearance;
-  
+  const { isCollapse } = useProfile().appearance;
 
   useEffect(() => {
     if (!hideButton.includes(pathname)) {
@@ -44,11 +50,11 @@ const ActionButton = () => {
   };
 
   if (!show || loading) return null;
-  
+
   return (
     <BaseFab
       fadeDirection="left"
-      sx={{ position: "fixed", top: 16, left: 16}}
+      sx={{ position: "fixed", top: 16, left: 16 }}
       onClick={() => (isSubMenu ? router.back() : sidebarAction())}
       aria-label="action"
       open={visible}

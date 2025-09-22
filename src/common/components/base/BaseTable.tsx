@@ -165,7 +165,6 @@ const BaseTable = <T extends readonly TableHeader[]>({
           align={header.align || "left"}
           sx={{
             ...getColumnWidth(header),
-            ...(isSubItem && header.key === headers[0].key && { pl: 4 }),
           }}
         >
           {renderCell(header, item)}
