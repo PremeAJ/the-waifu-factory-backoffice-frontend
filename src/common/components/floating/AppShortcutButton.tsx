@@ -19,7 +19,7 @@ const AppShortcutButton = () => {
       onClick={toggleAppShortcut}
       sx={{
         position: "fixed",
-        bottom: 16,
+        bottom: '90vh',
         left: "50%",
         transform: "translateX(-50%)",
       }}
