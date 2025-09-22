@@ -1,11 +1,3 @@
-html, body, #__next {
-  height: 90vh;
-  min-height: 90vh;
-  max-height: 90vh;
-  margin: 0;
-  padding: 0;
-}
-
 html { overflow-y: scroll; }
 
 img {
