@@ -6,3 +6,7 @@ pointer-events: none;
 -webkit-user-select: none;
 user-select: none;
 }
+
+a, [draggable] {
+  -webkit-user-drag: none;
+}
