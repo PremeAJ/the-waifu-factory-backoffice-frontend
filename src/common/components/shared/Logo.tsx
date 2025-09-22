@@ -1,25 +1,34 @@
 "use client";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import Link from "next/link";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { styled } from "@mui/material/styles";
-import config from "@/common/contexts/setting/config";
-import Image from "next/image";
-import { useContext } from "react";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import { PageUrl } from "@/common/constants/pageUrl";
+import Image from "next/image";
+import Link from "next/link";
 
-const Logo = () => {
-  const { isSidebarHover } = useContext(CustomizerContext);
-  const { isCollapse, activeMode } = useProfile().appearance;
+type LogoSize = "small" | "medium" | "large";
 
+interface LogoProps {
+  size?: LogoSize;
+}
+
+const sizeMap = {
+  small: { height: 40, width: 40 },
+  medium: { height: 70, width: 70 },
+  large: { height: 150, width: 150 },
+};
+
+const Logo = ({ size = "medium" }: LogoProps) => {
+  const {activeMode } = useProfile().appearance;
   const path = usePathname();
-  const url = path.includes(PageUrl.DASHBOARD) || path.includes("/setting") ? PageUrl.DASHBOARD : "/";
-  const TopbarHeight = config.topbarHeight;
-
+  const url =
+    path.includes(PageUrl.DASHBOARD) || path.includes("/setting")
+      ? PageUrl.DASHBOARD
+      : "/";
+  const { height, width } = sizeMap[size];
   const LinkStyled = styled(Link)(() => ({
-    height: TopbarHeight,
-    width: isCollapse == "mini_sidebar" && !isSidebarHover ? "40px" : "180px",
+    height,
+    width,
     overflow: "hidden",
     display: "block",
   }));
@@ -27,9 +36,21 @@ const Logo = () => {
   return (
     <LinkStyled href={url}>
       {activeMode === "dark" ? (
-        <Image src="/images/logos/light-logo.svg" alt="logo" height={TopbarHeight} width={174} priority />
+        <Image
+          src="/images/logos/logo.png"
+          alt="logo"
+          height={height}
+          width={width === 70 ? 174 : width}
+          priority
+        />
       ) : (
-        <Image src={"/images/logos/dark-logo.svg"} alt="logo" height={TopbarHeight} width={174} priority />
+        <Image
+          src={"/images/logos/logo.png"}
+          alt="logo"
+          height={height}
+          width={width}
+          priority
+        />
       )}
     </LinkStyled>
   );
