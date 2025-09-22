@@ -30,6 +30,7 @@ const MobileSettingsList = () => {
         alignItems: "center",
         p: 3,
         mb: 1,
+        height:'90vh'
       }}
     >
       <Avatar

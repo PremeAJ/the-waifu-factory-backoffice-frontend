@@ -49,7 +49,7 @@ const Header = () => {
     <AppBarStyled position="sticky" elevation={8}>
       <Container maxWidth="lg">
         <ToolbarStyled>
-          <Logo />
+          <Logo size="small"/>
           <Box flexGrow={1} />
           {isMobile ? (
             <IconButton
