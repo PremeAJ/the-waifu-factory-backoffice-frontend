@@ -33,8 +33,8 @@ const MobileSettingsList = () => {
       }}
     >
       <Avatar
-        src={avatar || "/images/profile/user-1.jpg"}
-        alt="User"
+        src={avatar || ""}
+        alt={fullName}
         sx={{
           width: 80,
           height: 80,

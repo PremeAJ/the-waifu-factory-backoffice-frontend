@@ -4,9 +4,12 @@ import { redirect } from "next/navigation";
 import MobileSettingsList from "./components/MobileSettingsList";
 import PageContainer from "@/components/container/PageContainer";
 import useIsMobile from "@/common/utils/state/isMobile";
-import { useEffect } from "react";
+import useIsPWA from "@/common/utils/state/useIsPWA";
+import { Grid } from "@mui/material";
 
 export default function SettingPage() {
+  const isPWA = useIsPWA();
+
   const isMobile = useIsMobile();
   if (!isMobile) {
     redirect(`${PageUrl.SETTING}/account/profile`);
@@ -14,7 +17,9 @@ export default function SettingPage() {
 
   return (
     <PageContainer title="Setting" description="This is setting">
-      <MobileSettingsList />
+      <Grid sx={{ height: isPWA ? "90vh" : "100vh" }}>
+        <MobileSettingsList />
+      </Grid>
     </PageContainer>
   );
 }

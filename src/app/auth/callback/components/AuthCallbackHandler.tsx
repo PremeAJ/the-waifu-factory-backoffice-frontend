@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 import Loading from "@/app/loading";
 
 export default function AuthCallbackHandler() {
-  console.log("AuthCallbackHandler -----");
   const router = useRouter();
   const { data: session, status } = useSession();
   

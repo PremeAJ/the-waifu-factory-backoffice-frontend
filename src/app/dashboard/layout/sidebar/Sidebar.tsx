@@ -129,6 +129,7 @@ const Sidebar = () => {
                 WebkitOverflowScrolling: "touch",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
+                mt: 8,
                 "&::-webkit-scrollbar": {
                   display: "none",
                 },
