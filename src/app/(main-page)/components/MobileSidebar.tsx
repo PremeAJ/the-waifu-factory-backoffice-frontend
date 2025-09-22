@@ -1,7 +1,9 @@
 "use client";
 import { IconChevronDown } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
+import { stat } from "fs";
 import { UserContext } from "@/common/contexts/UserContext";
+import { useSession } from "next-auth/react";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
 import BaseButton from "@/common/components/base/BaseButton";
 import Box from "@mui/material/Box";
@@ -12,8 +14,6 @@ import Logo from "@/common/components/shared/Logo";
 import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
 import React, { useContext, useState } from "react";
 import Stack from "@mui/material/Stack";
-import { useSession } from "next-auth/react";
-import { stat } from "fs";
 
 const MobileSidebar = () => {
   const [toggle, setToggle] = useState(false);
@@ -24,7 +24,7 @@ const MobileSidebar = () => {
   return (
     <>
       <Box px={3}>
-        <Logo />
+        <Logo size="small"/>
       </Box>
       <Box p={3}>
         <Stack direction="column" spacing={2}>
