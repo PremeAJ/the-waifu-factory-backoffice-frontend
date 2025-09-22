@@ -9,6 +9,7 @@ import useIsSubMenu from "@/common/utils/state/isSubMenu";
 import { useSession } from "next-auth/react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import zIndex from "@mui/material/styles/zIndex";
 
 const hideButton = ["/", "/auth/callback", PageUrl.AUTH_SIGN_IN, PageUrl.AUTH_SIGN_UP];
 
@@ -48,7 +49,7 @@ const ActionButton = () => {
   return (
     <BaseFab
       fadeDirection="left"
-      sx={{ position: "fixed", top: 16, left: 16 }}
+      sx={{ position: "fixed", top: 16, left: 16, zIndex:9999 }}
       onClick={() => (isSubMenu ? router.back() : sidebarAction())}
       aria-label="action"
       open={visible}

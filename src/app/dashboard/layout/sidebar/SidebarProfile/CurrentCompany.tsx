@@ -6,18 +6,24 @@ import { useContext, useState } from "react";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 
 export const CurrentCompany = () => {
-  const { isLanguage } = useContext(CustomizerContext);
+  const [hovered, setHovered] = useState(false);
+  const [openSwitchCompany, setOpenSwitchCompany] = useState(false);
   const { activeCompany, loading, appearance } = useProfile();
   const { isCollapse } = appearance || {};
+  const { isLanguage } = useContext(CustomizerContext);
+  const { isSidebarHover } = useContext(CustomizerContext);
+  const {} = useSidebarState();
   const { name, logoUrl, businessTypeId, branchNameTh, branchNameEn } = activeCompany || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-  const { isSidebarHover } = useContext(CustomizerContext);
   const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";
 
-  const [openSwitchCompany, setOpenSwitchCompany] = useState(false);
-  const [hovered, setHovered] = useState(false);
+  const onClickCompanyList = () => {
+
+    setOpenSwitchCompany(true)
+  }
 
   return (
     <>
