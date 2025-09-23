@@ -8,7 +8,7 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
 import React, { useContext, useEffect } from "react";
-import { CookiesKey, setCookiesOption } from "@/common/constants/cookies";
+import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
 const Languages: {
   flagname: string;
   icon: string;
@@ -43,7 +43,7 @@ const Language = () => {
   };
   useEffect(() => {
     i18n.changeLanguage(isLanguage);
-    Cookies.set(CookiesKey.Lang, isLanguage, setCookiesOption);
+    Cookies.set(CookiesKey.Lang, isLanguage, setCookiesOption1Y);
   }, [isLanguage]);
 
   return (
