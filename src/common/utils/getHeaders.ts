@@ -1,54 +1,9 @@
 import { HeadersKey } from "../constants/header";
-import { v4 as uuidv4 } from "uuid";
-import Cookies from "js-cookie";
-import pkg from "../../../package.json";
 
 export const getHeaders = async (headers?: Record<string, string>) => {
-  const deviceIdCookie = Cookies.get(HeadersKey.DeviceId);
-  const deviceId = deviceIdCookie || uuidv4();
-  if (!deviceIdCookie) {
-    Cookies.set(HeadersKey.DeviceId, deviceId, {
-      expires: 3650,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
-  }
-  const lang = Cookies.get(HeadersKey.Lang) || "";
-  const userAgent = Cookies.get(HeadersKey.UserAgent) || "";
-  const latitude = Cookies.get(HeadersKey.Latitude) || "";
-  const longitude = Cookies.get(HeadersKey.Longitude) || "";
-  const ip = await fetchPublicIPv4();
-
   const header = {
-    [HeadersKey.Authorization]: "",
     [HeadersKey.ContentType]: "application/json",
-    [HeadersKey.DeviceId]: deviceId,
-    [HeadersKey.Lang]: lang,
-    [HeadersKey.Origin]: process.env.NEXTAUTH_URL || "",
-    [HeadersKey.UserAgent]: userAgent,
-    [HeadersKey.AppVersion]: pkg.version,
-    [HeadersKey.Latitude]: latitude,
-    [HeadersKey.Longitude]: longitude,
-    [HeadersKey.IP]: ip || "",
     ...(headers || {}),
   };
-  if (typeof window !== "undefined") {
-    header[HeadersKey.Origin] = window.location.origin;
-  }
   return header;
 };
-
-async function fetchPublicIPv4(timeout = 3000): Promise<string> {
-  try {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    const res = await fetch("https://api4.ipify.org?format=json", { signal: controller.signal });
-    clearTimeout(id);
-    if (!res.ok) return "";
-    const data = await res.json();
-    return data?.ip || "";
-  } catch {
-    return "";
-  }
-}

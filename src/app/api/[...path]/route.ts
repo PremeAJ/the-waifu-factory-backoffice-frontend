@@ -10,16 +10,12 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
   const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${path.join("/")}${search}`.replace("/authentication", "/auth");
   if (session?.accessToken) req.headers.set(HeadersKey.Authorization, `Bearer ${session.accessToken}`);
   try {
-    req.headers.set(HeadersKey.Origin, process.env.NEXTAUTH_URL || "");
-
-    // For binary/multipart bodies, use arrayBuffer() so we forward the raw bytes
     const options: RequestInit = {
       method: req.method,
       headers: req.headers,
       body: req.method !== "GET" && req.method !== "HEAD" ? await req.arrayBuffer() : undefined,
     };
     const response = await fetch(backendUrl, options);
-    // try safe json parse (some responses may be empty)
     let responseData: any;
     try {
       responseData = await response.json();
