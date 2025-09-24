@@ -9,6 +9,7 @@ async function handleRequest(req: NextRequest, context: { params: Promise<{ path
   const search = req.nextUrl.search;
   const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${path.join("/")}${search}`.replace("/authentication", "/auth");
   if (session?.accessToken) req.headers.set(HeadersKey.Authorization, `Bearer ${session.accessToken}`);
+  req.headers.set(HeadersKey.Origin, process.env.NEXTAUTH_URL || "");
   try {
     const options: RequestInit = {
       method: req.method,

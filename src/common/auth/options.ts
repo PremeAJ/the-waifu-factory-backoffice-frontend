@@ -1,16 +1,14 @@
 import { AuthOptions } from "next-auth";
-import { cookies, headers as nextHeaders } from "next/headers";
-import { CookiesKey } from "../constants/cookies";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
+import { headers as nextHeaders } from "next/headers";
 import { HeadersKey } from "../constants/header";
-import { v4 as uuidv4 } from "uuid";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
 async function header(accessToken?: string) {
   const reqHeaders = await nextHeaders();
   const ua = reqHeaders.get("user-agent") || "";
-  const origin = reqHeaders.get("origin") || "";
+  const origin = reqHeaders.get("origin") || process.env.NEXTAUTH_URL ||"";
   const coolies = reqHeaders.get("cookie") || "";
 
   return {

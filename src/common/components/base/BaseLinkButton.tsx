@@ -24,7 +24,7 @@ const BaseLinkButton: React.FC<BaseLinkButtonProps> = ({
   <Typography
     component="span"
     sx={{
-      color: "primary.main",
+      color: "primary.dark",
       cursor: "pointer",
       display: "inline-block",
       fontWeight: bold ? 700 : "inherit",
