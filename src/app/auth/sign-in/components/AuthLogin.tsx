@@ -1,6 +1,6 @@
 "use client";
 import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Divider, InputAdornment } from "@mui/material";
-import { emailValidator, requiredPasswordSchema } from "@/common/utils/validator/yup";
+import { emailValidator, isBoolean, requiredPasswordSchema } from "@/common/utils/validator/yup";
 import { IconLock, IconMail } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { signIn } from "next-auth/react";
@@ -17,10 +17,12 @@ import CustomCheckbox from "@/components/forms/theme-elements/CustomCheckbox";
 import React, { useEffect, useState } from "react";
 import SignInWithGoogleButton from "../../components/SignInWithGoogleButton";
 import Turnstile from "react-turnstile";
+import BaseCheckBox from "@/common/components/base/BaseCheckBox";
 
 const validationSchema = yup.object({
   email: emailValidator,
   password: requiredPasswordSchema,
+  rememberMe: isBoolean,
 });
 
 const AuthLogin = () => {
@@ -37,6 +39,7 @@ const AuthLogin = () => {
     initialValues: {
       email: "",
       password: "",
+      rememberMe: true,
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
@@ -44,6 +47,7 @@ const AuthLogin = () => {
       const encryptedPayload = {
         email: encrypt(data.email),
         password: encrypt(data.password),
+        rememberMe: data.rememberMe,
       };
       const result = await signIn("credentials", {
         redirect: false,
@@ -99,9 +103,12 @@ const AuthLogin = () => {
             />
           </Box>
           <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
-            <FormGroup>
-              <FormControlLabel control={<CustomCheckbox defaultChecked />} label={t("Page.Login.RememberThisDevice")} />
-            </FormGroup>
+            <BaseCheckBox
+              name="consents"
+              checked={formik.values.rememberMe}
+              onChange={() => formik.setFieldValue("rememberMe", !formik.values.rememberMe)}
+              label={t("Page.Login.RememberThisDevice")}
+            />
             <BaseLinkButton underline={false} onClick={() => router.push("/auth/forgot-password")} label={`${t("Page.Login.ForgotPassword")} ?`} />
           </Stack>
         </Stack>

@@ -19,3 +19,4 @@ export const phoneSchemaNotRequired = yup .string() .nullable() .notRequired() .
 export const requiredPasswordSchema = yup.string().required("กรุณากรอกรหัสผ่าน");
 export const statusRequired = yup.boolean().required("กรุณาเลือกสถานะ");
 export const stringOptional = yup.string().optional();
+export const isBoolean = yup.boolean();

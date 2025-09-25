@@ -8,7 +8,7 @@ import GoogleProvider from "next-auth/providers/google";
 async function header(accessToken?: string) {
   const reqHeaders = await nextHeaders();
   const ua = reqHeaders.get("user-agent") || "";
-  const origin = reqHeaders.get("origin") || process.env.NEXTAUTH_URL ||"";
+  const origin = reqHeaders.get("origin") || process.env.NEXTAUTH_URL || "";
   const coolies = reqHeaders.get("cookie") || "";
 
   return {
@@ -38,10 +38,15 @@ const authOptions: AuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
         captchaToken: { label: "CaptchaToken", type: "text" },
+        rememberMe: { label: "rememberMe", type: "boolean" },
       },
       async authorize(credentials) {
-        const { email, password } = credentials || {};
-        const login = await postFetcher(`${baseUrl}/api/v1/auth/login`, { email, password }, { ...(await header()) });
+        const { email, password, rememberMe } = credentials || {};
+        const login = await postFetcher(
+          `${baseUrl}/api/v1/auth/login`,
+          { email, password, rememberMe: rememberMe === "true" },
+          { ...(await header()) }
+        );
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
 
         const { accessToken } = login.data;
