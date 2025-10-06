@@ -40,7 +40,6 @@ const BaseChip: React.FC<BaseChipProps> = ({
 }) => {
   const theme = useTheme();
 
-  // Preset configurations
   const getPresetConfig = () => {
     switch (preset) {
       case "active":
