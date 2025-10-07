@@ -1,4 +1,4 @@
-import { CardContent } from "@mui/material";
+"use client";
 import { CategoriesProvider } from "@/common/contexts/CategoriesContext";
 import { ProductsProvider } from "@/common/contexts/ProductsContext";
 import BlankCard from "@/components/shared/BlankCard";

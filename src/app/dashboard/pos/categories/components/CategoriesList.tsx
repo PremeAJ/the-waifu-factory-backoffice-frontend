@@ -1,12 +1,14 @@
 "use client";
 import { Box, IconButton, Stack } from "@mui/material";
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconFilter, IconPlus, IconTrash } from "@tabler/icons-react";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import { useCategories } from "@/common/contexts/CategoriesContext";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import { useState, useMemo, ChangeEvent } from "react";
+import BaseButton from "@/common/components/base/BaseButton";
 import BaseChip from "@/common/components/base/BaseChip"; // เพิ่ม import
 import BaseDialog from "@/common/components/base/BaseDialog";
-import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
+import BaseFloatingButton, { FloatingButtonPosition } from "@/common/components/base/BaseFloatingButton";
 import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
@@ -14,8 +16,6 @@ import BaseTooltip from "@/common/components/base/BaseTooltip";
 import CategoryDialog from "./CategoryDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
-import BaseButton from "@/common/components/base/BaseButton";
-import { useProfile } from "@/common/contexts/ProfileContext";
 
 type DialogState = {
   open: boolean;
@@ -150,7 +150,11 @@ function CategoriesList() {
         )}
 
         {isMobile ? (
-          <BaseFloatingButton icon={<IconPlus />} onClick={() => setDialogState({ open: true, type: "create" })} />
+          <BaseFloatingButton
+            position={FloatingButtonPosition.BOTTOM_RIGHT}
+            icon={<IconPlus />}
+            onClick={() => setDialogState({ open: true, type: "create" })}
+          />
         ) : (
           <BaseButton
             variant="contained"
@@ -158,6 +162,14 @@ function CategoriesList() {
             fullWidth={false}
             preset="add"
             label="Add Category"
+          />
+        )}
+
+        {isMobile && (
+          <BaseFloatingButton
+            position={FloatingButtonPosition.TOP_RIGHT}
+            icon={<IconFilter />}
+            onClick={() => setDialogState({ open: true, type: "create" })}
           />
         )}
       </Stack>

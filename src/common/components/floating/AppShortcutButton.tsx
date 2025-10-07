@@ -1,5 +1,5 @@
 "use client";
-import { IconGridDots } from "@tabler/icons-react";
+import { IconApps, IconGridDots } from "@tabler/icons-react";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import BaseFab from "../base/BaseFab";
 import React from "react";
@@ -9,23 +9,22 @@ import useIsSubMenu from "@/common/utils/state/isSubMenu";
 const AppShortcutButton = () => {
   const { toggleAppShortcut } = useSidebarState();
   const isMobile = useIsMobile();
-  const isSubmenu = useIsSubMenu()
+  const isSubmenu = useIsSubMenu();
 
   return (
     <BaseFab
-      animation={false}
+      fadeDirection="up"
       color="primary"
       size="large"
       onClick={toggleAppShortcut}
       sx={{
         position: "fixed",
         bottom: 16,
-        left: "50%",
-        transform: "translateX(-50%)",
+        left: "45%",
       }}
       open={isMobile && !isSubmenu}
     >
-      <IconGridDots />
+      <IconApps />
     </BaseFab>
   );
 };

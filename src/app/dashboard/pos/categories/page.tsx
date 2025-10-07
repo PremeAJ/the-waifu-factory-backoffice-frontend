@@ -1,3 +1,4 @@
+"use client";
 import { CategoriesProvider } from "@/common/contexts/CategoriesContext";
 import BlankCard from "@/components/shared/BlankCard";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";

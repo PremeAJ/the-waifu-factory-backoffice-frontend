@@ -17,6 +17,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  Divider,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -137,16 +138,10 @@ const BaseTable = <T extends readonly TableHeader[]>({
   // Render empty state
   const renderEmptyState = () => (
     <TableRow>
-      <TableCell
-        colSpan={headers.length + (enableSelection ? 1 : 0) + (actions ? 1 : 0) + 1}
-        align="center"
-        sx={{ py: 8 }}
-      >
+      <TableCell colSpan={headers.length + (enableSelection ? 1 : 0) + (actions ? 1 : 0) + 1} align="center" sx={{ py: 8 }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
           <Box sx={{ color: "text.secondary", fontSize: "1.2rem" }}>ไม่พบข้อมูล</Box>
-          <Box sx={{ color: "text.disabled", fontSize: "0.875rem" }}>
-            ลองเปลี่ยนเงื่อนไขการค้นหา หรือรีเฟรชหน้าใหม่
-          </Box>
+          <Box sx={{ color: "text.disabled", fontSize: "0.875rem" }}>ลองเปลี่ยนเงื่อนไขการค้นหา หรือรีเฟรชหน้าใหม่</Box>
         </Box>
       </TableCell>
     </TableRow>
@@ -186,9 +181,10 @@ const BaseTable = <T extends readonly TableHeader[]>({
     </TableRow>
   );
 
-  {/* Row version มือถือ */}
+  {
+    /* Row version มือถือ */
+  }
   if (isMobilePortrait) {
-    // เลือก primary header ถ้ามี, ถ้าไม่มีใช้ headers[0]
     const primaryHeader = headers.find((h: any) => h.primary === true) || headers[0];
 
     return (
@@ -204,59 +200,43 @@ const BaseTable = <T extends readonly TableHeader[]>({
               overflow: "hidden",
             }}
           >
-            {/* Header สีเขียว */}
             <Box
               sx={{
                 bgcolor: theme.palette[rowHeaderColor || "primary"].main,
                 color: theme.palette[rowHeaderColor || "primary"].contrastText,
                 px: 2,
-                py: 1.5,
+                py: 1,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                cursor: item.subItems?.length && item.subItems.length > 0 ? "pointer" : "default",
+              }}
+              onClick={() => {
+                if (item.subItems?.length && item.subItems.length > 0) toggleRow(item.id);
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                {item.subItems?.length && item.subItems.length > 0 && (
-                  <IconButton size="small" onClick={() => toggleRow(item.id)}>
-                    {openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                  </IconButton>
-                )}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, my: 1 }}>
+                {item.subItems?.length && item.subItems.length > 0 ? (
+                  openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
+                ) : null}
                 <Typography fontWeight={600}>
-                  {primaryHeader.render
-                    ? primaryHeader.render(item[primaryHeader.key], item)
-                    : item[primaryHeader.key]}
+                  {primaryHeader.render ? primaryHeader.render(item[primaryHeader.key], item) : item[primaryHeader.key]}
                 </Typography>
               </Box>
-              {actions && (
-                <Box sx={{ display: "flex", gap: 1 }}>
-                  {actions(item)}
-                </Box>
-              )}
             </Box>
-            {/* เนื้อหา row */}
-            <Box sx={{ px: 2, py: 1.5 }}>
-              {headers
-                .map((header) => {
-                  const cellValue = header.render ? header.render(item[header.key], item) : item[header.key];
 
+            <Box sx={{ display: "flex", gap: 0, alignItems: "stretch" }}>
+              <Box sx={{ px: 2, py: 1.5, width: "90%" }}>
+                {headers.map((header) => {
+                  const cellValue = header.render ? header.render(item[header.key], item) : item[header.key];
                   return (
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      key={header.key}
-                      mb={1}
-                    >
-                      <Box sx={{ width: "50%" }}>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          sx={{ fontWeight: 700 }}
-                        >
+                    <Stack direction="row" alignItems="center" key={header.key} my={1}>
+                      <Box sx={{ width: "75%" }}>
+                        <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 700 }}>
                           {header.label}
                         </Typography>
                       </Box>
-                      <Box sx={{ width: "50%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                      <Box sx={{ width: "25%", display: "flex", justifyContent: "center", alignItems: "center" }}>
                         {typeof cellValue === "string" || typeof cellValue === "number" ? (
                           <Typography variant="body2">{cellValue}</Typography>
                         ) : (
@@ -266,43 +246,82 @@ const BaseTable = <T extends readonly TableHeader[]>({
                     </Stack>
                   );
                 })}
+              </Box>
+              {actions && (
+                <Box
+                  sx={{
+                    width: "10%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    mr: 2,
+                  }}
+                >
+                  {React.Children.toArray(actions(item)).map((child, idx) => (
+                    <Box key={idx} sx={{ display: "flex", flexDirection: "column" }}>
+                      {child}
+                    </Box>
+                  ))}
+                </Box>
+              )}
             </Box>
+            {/* divider between main and subitems when expanded */}
+            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 && <Divider sx={{ my: 1 }} />}
+
             {/* SubItems (expand) */}
             {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 && (
-              <Box sx={{ px: 2, pb: 2 }}>
-                {item.subItems!.map((subItem) => (
-                  <Box key={subItem.id} sx={{ mb: 1, bgcolor: "#f9f9f9", borderRadius: 1, p: 1 }}>
-                    {headers.map((header) => {
-                      const cellValue = header.render ? header.render(subItem[header.key], subItem) : subItem[header.key];
-                      return (
-                        <Stack
-                          direction="row"
-                          alignItems="center"
-                          key={header.key}
-                          mb={0.5}
+              <>
+                {item.subItems!.map((subItem, idx) => (
+                  <Box key={subItem.id} sx={{ width: "100%" }}>
+                    <Box sx={{ display: "flex", gap: 0, alignItems: "flex-start", width: "100%" }}>
+                      <Box sx={{ px: 2, width: "90%" }}>
+                        {headers.map((header) => {
+                          const cellValue = header.render ? header.render(subItem[header.key], subItem) : subItem[header.key];
+                          return (
+                            <Stack direction="row" alignItems="center" key={header.key} my={1}>
+                              <Box sx={{ width: "75%" }}>
+                                <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 700 }}>
+                                  {header.label}
+                                </Typography>
+                              </Box>
+                              <Box sx={{ width: "25%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                {typeof cellValue === "string" || typeof cellValue === "number" ? (
+                                  <Typography variant="body2">{cellValue}</Typography>
+                                ) : (
+                                  cellValue
+                                )}
+                              </Box>
+                            </Stack>
+                          );
+                        })}
+                      </Box>
+                      {actions && (
+                        <Box
+                          sx={{
+                            width: "10%",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            alignSelf: "center",
+                            mr: 2,
+                          }}
                         >
-                          <Box sx={{ width: "50%" }}>
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
-                              sx={{ fontWeight: 700 }}
-                            >
-                              {header.label}
-                            </Typography>
-                          </Box>
-                          <Box sx={{ width: "50%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            {typeof cellValue === "string" || typeof cellValue === "number" ? (
-                              <Typography variant="body2">{cellValue}</Typography>
-                            ) : (
-                              cellValue
-                            )}
-                          </Box>
-                        </Stack>
-                      );
-                    })}
+                          {React.Children.toArray(actions(subItem)).map((child, idx2) => (
+                            <Box key={idx2} sx={{ display: "flex", flexDirection: "column" }}>
+                              {child}
+                            </Box>
+                          ))}
+                        </Box>
+                      )}
+                    </Box>
+                    {/* divider between sub-items (not after last) */}
+                    {idx < item.subItems!.length - 1 && <Divider sx={{ my: 1 }} />}
                   </Box>
                 ))}
-              </Box>
+              </>
             )}
           </Box>
         ))}
@@ -351,18 +370,16 @@ const BaseTable = <T extends readonly TableHeader[]>({
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
-              renderLoadingRows()
-            ) : paginatedData.length === 0 ? (
-              renderEmptyState()
-            ) : (
-              paginatedData.map((item) => (
-                <React.Fragment key={item.id}>
-                  {renderRow(item)}
-                  {openRows[item.id] && item.subItems?.map((subItem) => renderRow(subItem, true))}
-                </React.Fragment>
-              ))
-            )}
+            {loading
+              ? renderLoadingRows()
+              : paginatedData.length === 0
+              ? renderEmptyState()
+              : paginatedData.map((item) => (
+                  <React.Fragment key={item.id}>
+                    {renderRow(item)}
+                    {openRows[item.id] && item.subItems?.map((subItem) => renderRow(subItem, true))}
+                  </React.Fragment>
+                ))}
           </TableBody>
         </Table>
       </TableContainer>
