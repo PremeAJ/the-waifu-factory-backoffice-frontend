@@ -58,6 +58,7 @@ function CategoriesList() {
       align: "left",
       width: "25%",
       render: (value: string) => value || "-",
+      ...(isLanguage === "en" ? { primary: true } : {}),
     },
     {
       key: "isActive",

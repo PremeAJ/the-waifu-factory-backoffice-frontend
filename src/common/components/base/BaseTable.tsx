@@ -188,7 +188,8 @@ const BaseTable = <T extends readonly TableHeader[]>({
 
   {/* Row version มือถือ */}
   if (isMobilePortrait) {
-    const primaryHeader = headers.find((h: any) => h.primary) || headers[0];
+    // เลือก primary header ถ้ามี, ถ้าไม่มีใช้ headers[0]
+    const primaryHeader = headers.find((h: any) => h.primary === true) || headers[0];
 
     return (
       <Stack spacing={2}>
@@ -236,7 +237,6 @@ const BaseTable = <T extends readonly TableHeader[]>({
             {/* เนื้อหา row */}
             <Box sx={{ px: 2, py: 1.5 }}>
               {headers
-                
                 .map((header) => {
                   const cellValue = header.render ? header.render(item[header.key], item) : item[header.key];
 
