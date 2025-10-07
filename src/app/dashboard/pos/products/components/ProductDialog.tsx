@@ -15,7 +15,7 @@ import { categoryNameEn, categoryNameThRequired, statusRequired, stringOptional 
 
 type DialogType = "create" | "edit";
 
-interface CategoryDialogProps {
+interface ProductDialogProps {
   open: boolean;
   onClose: () => void;
   type: DialogType;
@@ -29,7 +29,7 @@ const validationSchema = yup.object({
   isActive: statusRequired,
 });
 
-const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, categoryId }) => {
+const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, type, categoryId }) => {
   const {user} = useUser();
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
@@ -268,4 +268,4 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   );
 };
 
-export default CategoryDialog;
+export default ProductDialog;

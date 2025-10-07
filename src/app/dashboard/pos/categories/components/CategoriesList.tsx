@@ -3,7 +3,7 @@ import { Box, IconButton, Stack } from "@mui/material";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import { useCategories } from "@/common/contexts/CategoriesContext";
-import BaseButton from "@/common/components/base/BaseButton";
+import { useState, useMemo, ChangeEvent } from "react";
 import BaseChip from "@/common/components/base/BaseChip"; // เพิ่ม import
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
@@ -12,9 +12,10 @@ import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
 import CategoryDialog from "./CategoryDialog";
-import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import BaseButton from "@/common/components/base/BaseButton";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 type DialogState = {
   open: boolean;
@@ -23,49 +24,48 @@ type DialogState = {
 };
 
 function CategoriesList() {
+  const [dialogState, setDialogState] = useState<DialogState>({ open: false, type: "create", categoryId: null });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [dialogState, setDialogState] = useState<DialogState>({
-    open: false,
-    type: "create",
-    categoryId: null,
-  });
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { loading, categories, search, setSearch, isActive, setIsActive, pageOptions, setPage, setPerPage, deleteCategory } = useCategories();
+  const { isLanguage } = useProfile().appearance || {};
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
+  const isMobilePortrait = isMobile && isPortrait;
   const tableData: any = useMemo(() => {
     return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
   }, [categories]);
 
   const headers: any = [
-    { 
-      key: "icon", 
-      label: "Icon", 
-      align: "center", 
+    {
+      key: "icon",
+      label: "Icon",
+      align: "center",
       width: "10%",
-      render: (iconName: string) => iconName ? renderTablerIcon(iconName) : "-"
+      render: (iconName: string) => (iconName ? renderTablerIcon(iconName) : "-"),
     },
-    { key: "nameTh", label: "Name (TH)", align: "left", width: "25%" },
-    ...(!isPortrait || !isMobile
-      ? [
-          {
-            key: "nameEn",
-            label: "Name (EN)",
-            align: "left",
-            width: "25%",
-            render: (value: string) => value || "-",
-          },
-          {
-            key: "isActive",
-            label: "Active",
-            align: "center",
-            width: "20%",
-            render: (isActive: boolean) => (
-              <BaseChip preset={isActive ? "active" : "inactive"} />
-            ),
-          },
-        ]
-      : []),
+    {
+      key: "nameTh",
+      label: "Name (TH)",
+      align: "left",
+      width: "25%",
+      render: (value: string) => value || "-",
+      ...(isLanguage === "th" ? { primary: true } : {}),
+    },
+    {
+      key: "nameEn",
+      label: "Name (EN)",
+      align: "left",
+      width: "25%",
+      render: (value: string) => value || "-",
+    },
+    {
+      key: "isActive",
+      label: "Active",
+      align: "center",
+      width: "20%",
+      render: (isActive: boolean) => <BaseChip preset={isActive ? "active" : "inactive"} />,
+    },
   ];
 
   const tableActions = (item: any) => {
@@ -80,18 +80,12 @@ function CategoriesList() {
                 categoryId: item.id,
               });
             }}
-            color="primary"
+            color={isMobilePortrait ? "inherit" : "primary"}
           >
             <IconEdit width={22} />
           </IconButton>
         </BaseTooltip>
-        <BaseTooltip
-          title={
-            item?.subItems?.length > 0
-              ? "ไม่สามารถลบได้ เนื่องจากมีหมวดหมู่ย่อย"
-              : "ลบ"
-          }
-        >
+        <BaseTooltip title={item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีหมวดหมู่ย่อย" : "ลบ"}>
           <span>
             <IconButton
               disabled={item?.subItems?.length > 0}
@@ -130,7 +124,7 @@ function CategoriesList() {
     setPage(newPage + 1);
   };
 
-  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPerPage(parseInt(event.target.value, 10));
     setPage(1);
   };

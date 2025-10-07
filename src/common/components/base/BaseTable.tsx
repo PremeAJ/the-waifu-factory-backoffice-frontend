@@ -15,11 +15,14 @@ import {
   Paper,
   useTheme,
   Skeleton,
+  Stack,
+  Typography,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import useIsMobile from "@/common/utils/state/isMobile";
+import useIsPortrait from "@/common/utils/state/useIsPortrait";
 
-// --- Interfaces ---
 interface TableHeader {
   key: string;
   label: string;
@@ -47,6 +50,7 @@ interface BaseTableProps<T extends readonly TableHeader[]> {
     onPageChange: (event: unknown, newPage: number) => void;
     onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   };
+  rowHeaderColor?: "primary" | "success" | "error"; // เพิ่ม prop นี้
 }
 
 // --- Component ---
@@ -58,12 +62,16 @@ const BaseTable = <T extends readonly TableHeader[]>({
   onSelectionChange,
   loading = false,
   pagination,
+  rowHeaderColor,
 }: BaseTableProps<T>) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const theme = useTheme();
+  const isMobile = useIsMobile();
+  const isPortrait = useIsPortrait();
+  const isMobilePortrait = isMobile && isPortrait;
 
   // เรียก useMemo เสมอ แล้วใช้ conditional ใน assignment
   const slicedData = useMemo(() => {
@@ -177,6 +185,130 @@ const BaseTable = <T extends readonly TableHeader[]>({
       )}
     </TableRow>
   );
+
+  {/* Row version มือถือ */}
+  if (isMobilePortrait) {
+    const primaryHeader = headers.find((h: any) => h.primary) || headers[0];
+
+    return (
+      <Stack spacing={2}>
+        {paginatedData.map((item) => (
+          <Box
+            key={item.id}
+            sx={{
+              p: 0,
+              borderRadius: 2,
+              boxShadow: 1,
+              bgcolor: "#fff",
+              overflow: "hidden",
+            }}
+          >
+            {/* Header สีเขียว */}
+            <Box
+              sx={{
+                bgcolor: theme.palette[rowHeaderColor || "primary"].main,
+                color: theme.palette[rowHeaderColor || "primary"].contrastText,
+                px: 2,
+                py: 1.5,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {item.subItems?.length && item.subItems.length > 0 && (
+                  <IconButton size="small" onClick={() => toggleRow(item.id)}>
+                    {openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                  </IconButton>
+                )}
+                <Typography fontWeight={600}>
+                  {primaryHeader.render
+                    ? primaryHeader.render(item[primaryHeader.key], item)
+                    : item[primaryHeader.key]}
+                </Typography>
+              </Box>
+              {actions && (
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  {actions(item)}
+                </Box>
+              )}
+            </Box>
+            {/* เนื้อหา row */}
+            <Box sx={{ px: 2, py: 1.5 }}>
+              {headers
+                
+                .map((header) => {
+                  const cellValue = header.render ? header.render(item[header.key], item) : item[header.key];
+
+                  return (
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      key={header.key}
+                      mb={1}
+                    >
+                      <Box sx={{ width: "50%" }}>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          {header.label}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ width: "50%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        {typeof cellValue === "string" || typeof cellValue === "number" ? (
+                          <Typography variant="body2">{cellValue}</Typography>
+                        ) : (
+                          cellValue
+                        )}
+                      </Box>
+                    </Stack>
+                  );
+                })}
+            </Box>
+            {/* SubItems (expand) */}
+            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 && (
+              <Box sx={{ px: 2, pb: 2 }}>
+                {item.subItems!.map((subItem) => (
+                  <Box key={subItem.id} sx={{ mb: 1, bgcolor: "#f9f9f9", borderRadius: 1, p: 1 }}>
+                    {headers.map((header) => {
+                      const cellValue = header.render ? header.render(subItem[header.key], subItem) : subItem[header.key];
+                      return (
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          key={header.key}
+                          mb={0.5}
+                        >
+                          <Box sx={{ width: "50%" }}>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              sx={{ fontWeight: 700 }}
+                            >
+                              {header.label}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ width: "50%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            {typeof cellValue === "string" || typeof cellValue === "number" ? (
+                              <Typography variant="body2">{cellValue}</Typography>
+                            ) : (
+                              cellValue
+                            )}
+                          </Box>
+                        </Stack>
+                      );
+                    })}
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+        ))}
+      </Stack>
+    );
+  }
 
   return (
     <Box>

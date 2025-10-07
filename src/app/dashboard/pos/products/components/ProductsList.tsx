@@ -12,9 +12,10 @@ import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
-import CategoryDialog from "./ProductDialog";
+import ProductDialog from "./ProductDialog";
 import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
+import useIsPortrait from "@/common/utils/state/useIsPortrait";
 
 type DialogState = {
   open: boolean;
@@ -28,6 +29,8 @@ function ProductsList() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct } = useProducts();
   const isMobile = useIsMobile();
+  const isPortrait = useIsPortrait();
+  const isMobilePortrait = isMobile && isPortrait;
   const router = useRouter();
 
   const tableData: any = useMemo(() => {
@@ -47,6 +50,7 @@ function ProductsList() {
       label: "SKU / UPC",
       align: "left",
       width: "20%",
+      primary: true,
       render: (_val: any, item: any) => item.sku ?? item.upc ?? "-",
     },
     {
@@ -98,7 +102,7 @@ function ProductsList() {
                 categoryId: item.id,
               });
             }}
-            color="primary"
+            color={isMobilePortrait ? "inherit" : "primary"}
           >
             <IconEdit width={22} />
           </IconButton>
@@ -190,7 +194,7 @@ function ProductsList() {
           onRowsPerPageChange: handleRowsPerPageChange,
         }}
       />
-      <CategoryDialog open={dialogState.open} onClose={handleCloseDialog} type={dialogState.type} categoryId={dialogState.categoryId} />
+      <ProductDialog open={dialogState.open} onClose={handleCloseDialog} type={dialogState.type} categoryId={dialogState.categoryId} />
       <BaseDialog
         loading={loading}
         cancelText="Cancel"

@@ -3,9 +3,10 @@ import { CategoriesProvider } from "@/common/contexts/CategoriesContext";
 import { ProductsProvider } from "@/common/contexts/ProductsContext";
 import BlankCard from "@/components/shared/BlankCard";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
-import CategoriesList from "./components/ProductsList";
+import ProductsList from "./components/ProductsList";
 import PageContainer from "@/components/container/PageContainer";
 import React from "react";
+import BaseCardContent from "@/common/components/base/BaseCardContent";
 
 const BCrumb = [{ title: "POS" }, { title: "Products" }];
 const ProductsPage = () => {
@@ -13,13 +14,13 @@ const ProductsPage = () => {
     <PageContainer title="Products" description="Products">
       <Breadcrumb title="Products" items={BCrumb} />
       <BlankCard>
-        <CardContent>
+        <BaseCardContent >
           <ProductsProvider>
             <CategoriesProvider>
-              <CategoriesList />
+              <ProductsList />
             </CategoriesProvider>
           </ProductsProvider>
-        </CardContent>
+        </BaseCardContent>
       </BlankCard>
     </PageContainer>
   );
