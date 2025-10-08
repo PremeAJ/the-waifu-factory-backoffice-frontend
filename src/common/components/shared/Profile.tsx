@@ -61,7 +61,7 @@ const Profile: FC<ProfileProps> = () => {
       );
     } else {
       const IconComponent = icon;
-      return <IconComponent size={24} stroke={1.5} color="currentColor" />;
+      return <IconComponent size={24} stroke={1.5} color={theme.palette.primary.contrastText} />;
     }
   };
   if (loading) {
@@ -240,16 +240,15 @@ const Profile: FC<ProfileProps> = () => {
                     className="profile-icon-box"
                     width="45px"
                     height="45px"
-                    bgcolor="primary.light"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                     flexShrink="0"
                     sx={{
-                      bgcolor: (theme) => theme.palette.primary.light,
+                      bgcolor: (theme) => theme.palette.primary.main,
                       transition: "all 0.18s",
                       "& svg": {
-                        color: "primary.main",
+                        color: "primary.light",
                         transition: "color 0.18s",
                       },
                     }}

@@ -20,11 +20,6 @@ export const CurrentCompany = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";
 
-  const onClickCompanyList = () => {
-
-    setOpenSwitchCompany(true)
-  }
-
   return (
     <>
       <Box
@@ -34,7 +29,7 @@ export const CurrentCompany = () => {
         sx={{
           m: 3,
           p: hideMenu ? 0 : 2,
-          bgcolor: hideMenu ? "none" : "secondary.light",
+          bgcolor: hideMenu ? "none" : "primary.main",
           cursor: "pointer",
           position: "relative",
         }}

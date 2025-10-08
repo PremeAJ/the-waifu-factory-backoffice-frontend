@@ -187,6 +187,67 @@ const BaseTable = <T extends readonly TableHeader[]>({
   if (isMobilePortrait) {
     const primaryHeader = headers.find((h: any) => h.primary === true) || headers[0];
 
+    // Mobile skeleton view when loading
+    if (loading) {
+      const skeletonCount = pagination?.rowsPerPage || rowsPerPage;
+      return (
+        <Stack spacing={2}>
+          {Array.from({ length: skeletonCount }).map((_, si) => (
+            <Box
+              key={`mobile-skel-${si}`}
+              sx={{
+                p: 0,
+                borderRadius: 2,
+                boxShadow: 1,
+                bgcolor: "#fff",
+                overflow: "hidden",
+              }}
+            >
+              <Box
+                sx={{
+                  bgcolor: theme.palette[rowHeaderColor || "primary"].main,
+                  color: theme.palette[rowHeaderColor || "primary"].contrastText,
+                  px: 2,
+                  py: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Skeleton variant="circular" width={20} height={20} />
+                  <Skeleton variant="text" width={120} height={24} />
+                </Box>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Skeleton variant="rectangular" width={28} height={28} />
+                  <Skeleton variant="rectangular" width={28} height={28} />
+                </Box>
+              </Box>
+
+              <Box sx={{ display: "flex", gap: 0, alignItems: "stretch" }}>
+                <Box sx={{ px: 2, py: 1.5, width: "90%" }}>
+                  {headers.map((header) => (
+                    <Stack direction="row" alignItems="center" key={`${header.key}-${si}`} my={1}>
+                      <Box sx={{ width: "75%" }}>
+                        <Skeleton variant="text" width="40%" />
+                      </Box>
+                      <Box sx={{ width: "25%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <Skeleton variant="text" width="60%" />
+                      </Box>
+                    </Stack>
+                  ))}
+                </Box>
+                <Box sx={{ width: "10%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", mr: 2 }}>
+                  <Skeleton variant="rectangular" width={28} height={28} />
+                </Box>
+              </Box>
+            </Box>
+          ))}
+        </Stack>
+      );
+    }
+
+
     return (
       <Stack spacing={2}>
         {paginatedData.map((item) => (
@@ -216,9 +277,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, my: 1 }}>
-                {item.subItems?.length && item.subItems.length > 0 ? (
-                  openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
-                ) : null}
+                {item.subItems?.length && item.subItems.length > 0 ? openRows[item.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null}
                 <Typography fontWeight={600}>
                   {primaryHeader.render ? primaryHeader.render(item[primaryHeader.key], item) : item[primaryHeader.key]}
                 </Typography>
@@ -268,10 +327,10 @@ const BaseTable = <T extends readonly TableHeader[]>({
               )}
             </Box>
             {/* divider between main and subitems when expanded */}
-            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 && <Divider sx={{ my: 1 }} />}
+            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 ? <Divider sx={{ my: 1 }} /> : null}
 
             {/* SubItems (expand) */}
-            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 && (
+            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 ? (
               <>
                 {item.subItems!.map((subItem, idx) => (
                   <Box key={subItem.id} sx={{ width: "100%" }}>
@@ -322,7 +381,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
                   </Box>
                 ))}
               </>
-            )}
+            ) : null}
           </Box>
         ))}
       </Stack>
