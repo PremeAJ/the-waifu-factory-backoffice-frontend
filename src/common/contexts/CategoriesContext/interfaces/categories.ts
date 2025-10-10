@@ -1,5 +1,6 @@
 import { PageOptions } from "@/common/interface/paginate";
 
+export type CategoryStatus = "active" | "inactive" | "deleted";
 export interface CategoryType {
   id: string;
   companyId: string;
@@ -9,6 +10,7 @@ export interface CategoryType {
   icon: string | null;
   parent: string | null;
   isActive: boolean;
+  status: CategoryStatus;
   createdAt: string;
   updatedAt: string | null;
   deletedAt: string | null;
@@ -31,6 +33,7 @@ export interface CreateCategoryDto {
   icon?: string;
   parent?: string;
   isActive?: boolean;
+  status?: CategoryStatus;
 }
 
 export interface UpdateCategoryDto {
@@ -39,6 +42,7 @@ export interface UpdateCategoryDto {
   icon?: string;
   parent?: string;
   isActive?: boolean;
+  status?: CategoryStatus;
 }
 
 export interface CategoryDetailType extends CategoryType {
@@ -46,8 +50,8 @@ export interface CategoryDetailType extends CategoryType {
 }
 
 export interface CategoryIconType {
-  value:string
-  text:string
+  value: string;
+  text: string;
 }
 
 export interface CategoriesContextType {

@@ -26,7 +26,7 @@ const validationSchema = yup.object({
   nameTh: categoryNameThRequired,
   nameEn: categoryNameEn,
   parent: stringOptional,
-  isActive: statusRequired,
+  status: statusRequired,
 });
 
 const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, categoryId }) => {
@@ -55,8 +55,8 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   }, [dropdown, type, categoryId]);
 
   const statusOptions = [
-    { value: true, text: "เปิดใช้งาน" },
-    { value: false, text: "ปิดใช้งาน" },
+    { value: 'active', text: "เปิดใช้งาน" },
+    { value: 'inactive', text: "ปิดใช้งาน" },
   ];
   
   const handleSubmit = async (values: any) => {
@@ -67,7 +67,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
         await createCategory({
           nameTh: values.nameTh,
           nameEn: values.nameEn || undefined,
-          isActive: values.isActive,
+          status: values.status,
           parent: values.parent || null,
           icon: values.icon || null,
         });
@@ -75,7 +75,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
         await updateCategory(categoryId, {
           nameTh: values.nameTh,
           nameEn: values.nameEn || undefined,
-          isActive: values.isActive,
+          status: values.status,
           parent: hasSubCategories ? undefined : values.parent || null,
           icon: values.icon || null,
         });
@@ -97,7 +97,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       nameTh: "",
       nameEn: "",
       parent: "",
-      isActive: true,
+      status: 'active',
       icon: "",
     },
     validationSchema,
@@ -120,7 +120,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           nameTh: fetchedCategoryData.nameTh,
           nameEn: fetchedCategoryData.nameEn || "",
           parent: fetchedCategoryData.parent || "",
-          isActive: fetchedCategoryData.isActive,
+          status: fetchedCategoryData.status,
           icon: fetchedCategoryData.icon || "",
         });
       } catch (error: any) {
@@ -211,7 +211,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
               <BaseDropdown 
                 loading={fetchLoading} 
                 formik={formik} 
-                name="isActive" 
+                name="status" 
                 label="สถานะ" 
                 options={statusOptions} 
                 required 

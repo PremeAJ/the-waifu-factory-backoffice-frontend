@@ -16,6 +16,7 @@ import BaseTooltip from "@/common/components/base/BaseTooltip";
 import CategoryDialog from "./CategoryDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import { CategoryStatus } from "@/common/contexts/CategoriesContext/interfaces/categories";
 
 type DialogState = {
   open: boolean;
@@ -61,11 +62,11 @@ function CategoriesList() {
       ...(isLanguage === "en" ? { primary: true } : {}),
     },
     {
-      key: "isActive",
-      label: "Active",
+      key: "status",
+      label: "Status",
       align: "center",
       width: "20%",
-      render: (isActive: boolean) => <BaseChip preset={isActive ? "active" : "inactive"} />,
+      render: (status: CategoryStatus) => <BaseChip preset={status} />,
     },
   ];
 

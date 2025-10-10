@@ -4,7 +4,7 @@ import { Chip, ChipProps, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 interface BaseChipProps extends Omit<ChipProps, "color"> {
-  preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary";
+  preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary" | "deleted";
   customColor?: string;
   customBgColor?: string;
 }
