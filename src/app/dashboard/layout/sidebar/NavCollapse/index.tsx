@@ -16,7 +16,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
-  const { isBorderRadius} = useProfile().appearance;
+  const { isBorderRadius } = useProfile().appearance;
   const Icon = menu?.icon;
   const theme = useTheme();
   const { t } = useTranslation();
@@ -28,7 +28,6 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
     setOpen(!open);
   };
 
-  // menu collapse for sub-levels
   React.useEffect(() => {
     setOpen(false);
     menu?.children?.forEach((item: NavGroup) => {
@@ -52,7 +51,6 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
     borderRadius: `${isBorderRadius}px`,
   }));
 
-  // If Menu has Children
   const submenus = menu.children?.map((item: any) => {
     if (item.children) {
       return (
@@ -68,7 +66,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
       );
     } else {
       return (
-        <Box sx={{ ml: 2 }} key={item.id}>
+        <Box sx={{ pl: '3px' }} key={item.id}>
           <NavItem key={item.id} item={item} level={level + 1} pathDirect={pathDirect} hideMenu={hideMenu} onClick={lgDown ? onClick : isNull} />
         </Box>
       );
