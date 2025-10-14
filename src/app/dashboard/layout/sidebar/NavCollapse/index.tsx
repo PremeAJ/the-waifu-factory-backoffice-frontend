@@ -13,6 +13,8 @@ import ListItemText from "@mui/material/ListItemText";
 import NavItem from "../NavItem";
 import React, { useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import BaseTooltip from "@/common/components/base/BaseTooltip";
+
 export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
@@ -75,19 +77,39 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
 
   return (
     <>
-      <ListItemStyled onClick={handleClick} selected={pathWithoutLastPart === menu.href} key={menu?.id}>
-        <ListItemIcon
-          sx={{
-            minWidth: "36px",
-            p: "3px 0 0 3px",
-            color: "inherit",
-          }}
-        >
-          {menuIcon}
-        </ListItemIcon>
-        <ListItemText color="inherit">{hideMenu ? "" : <>{t(`${menu.title}`)}</>}</ListItemText>
-        {!open ? <IconChevronDown size="1rem" /> : <IconChevronUp size="1rem" />}
-      </ListItemStyled>
+      {hideMenu ? (
+        <BaseTooltip title={t(`${menu.title}`)} placement='right'>
+          <span>
+            <ListItemStyled onClick={handleClick} selected={pathWithoutLastPart === menu.href} key={menu?.id}>
+              <ListItemIcon
+                sx={{
+                  minWidth: "36px",
+                  p: "3px 0 0 3px",
+                  color: "inherit",
+                }}
+              >
+                {menuIcon}
+              </ListItemIcon>
+              <ListItemText color="inherit">{""}</ListItemText>
+              {!open ? <IconChevronDown size="1rem" /> : <IconChevronUp size="1rem" />}
+            </ListItemStyled>
+          </span>
+        </BaseTooltip>
+      ) : (
+        <ListItemStyled onClick={handleClick} selected={pathWithoutLastPart === menu.href} key={menu?.id}>
+          <ListItemIcon
+            sx={{
+              minWidth: "36px",
+              p: "3px 0 0 3px",
+              color: "inherit",
+            }}
+          >
+            {menuIcon}
+          </ListItemIcon>
+          <ListItemText color="inherit">{t(`${menu.title}`)}</ListItemText>
+          {!open ? <IconChevronDown size="1rem" /> : <IconChevronUp size="1rem" />}
+        </ListItemStyled>
+      )}
       <Collapse in={open} timeout="auto">
         {submenus}
       </Collapse>

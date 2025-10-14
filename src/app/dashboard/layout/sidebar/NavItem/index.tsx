@@ -12,6 +12,7 @@ import ListItemText from '@mui/material/ListItemText';
 import React from "react";
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import BaseTooltip from "@/common/components/base/BaseTooltip";
 
 export default function NavItem({
   item,
@@ -63,52 +64,59 @@ export default function NavItem({
   }));
 
 
+  const content = (
+    <ListItemStyled
+      disabled={item?.disabled}
+      selected={pathDirect === item?.href}
+      onClick={lgDown ? onClick : undefined}
+    >
+      <ListItemIcon
+        sx={{
+          minWidth: hideMenu ? "unset" : "36px",
+          p: "3px 0 0 3px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color:
+            (level ?? 1) > 1 && pathDirect === item?.href
+              ? `${theme.palette.primary.main}!important`
+              : "inherit",
+        }}
+      >
+        {itemIcon}
+      </ListItemIcon>
+      <ListItemText>
+        {hideMenu ? "" : <>{t(`${item?.title}`)}</>}
+        <br />
+        {item?.subtitle ? (
+          <Typography variant="caption">
+            {hideMenu ? "" : item?.subtitle}
+          </Typography>
+        ) : (
+          ""
+        )}
+      </ListItemText>
+      {!item?.chip || hideMenu ? null : (
+        <Chip
+          color={(item?.chipColor as "default" | "error" | "primary" | "secondary" | "info" | "success" | "warning") || "default"}
+          variant={(item?.variant as "filled" | "outlined") || "filled"}
+          size="small"
+          label={item?.chip}
+        />
+      )}
+    </ListItemStyled>
+  );
+
   return (
     <List component="li" disablePadding key={item?.id && item.title}>
       <Link href={item.href || ''}>
-        <ListItemStyled
-          disabled={item?.disabled}
-          selected={pathDirect === item?.href}
-          onClick={lgDown ? onClick : undefined}
-        >
-          <ListItemIcon
-            sx={{
-              minWidth: hideMenu ? "unset" : "36px",
-              p: "3px 0 0 3px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color:
-                (level ?? 1) > 1 && pathDirect === item?.href
-                  ? `${theme.palette.primary.main}!important`
-                  : "inherit",
-            }}
-          >
-            {itemIcon}
-          </ListItemIcon>
-          <ListItemText>
-            {hideMenu ? "" : <>{t(`${item?.title}`)}</>}
-            <br />
-            {item?.subtitle ? (
-              <Typography variant="caption">
-                {hideMenu ? "" : item?.subtitle}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </ListItemText>
-
-
-          {!item?.chip || hideMenu ? null : (
-            <Chip
-              color={(item?.chipColor as "default" | "error" | "primary" | "secondary" | "info" | "success" | "warning") || "default"}
-              variant={(item?.variant as "filled" | "outlined") || "filled"}
-              size="small"
-              label={item?.chip}
-            />
-          )}
-
-        </ListItemStyled>
+        {hideMenu ? (
+          <BaseTooltip title={t(`${item?.title}`)} placement="right">
+            <span>{content}</span>
+          </BaseTooltip>
+        ) : (
+          content
+        )}
       </Link>
     </List>
   );

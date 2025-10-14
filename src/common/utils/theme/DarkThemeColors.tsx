@@ -164,7 +164,7 @@ const DarkThemeColors = [
         main: "#7CA16C",    // เขียวกลาง
         light: "#AFC9A0",   // เขียวอ่อน
         dark: "#4C6B3C",    // เขียวเข้ม
-        contrastText: "#23281E",
+        contrastText: "#ffffff",
       },
       secondary: {
         main: "#BFA980",    // น้ำตาลกลาง
@@ -173,8 +173,8 @@ const DarkThemeColors = [
         contrastText: "#ffffff",
       },
       background: {
-        default: "#23281E", // ดำเขียว
-        paper: "#2E3326",   // ดำเขียวอ่อน
+        default: "#222222ff", // ดำเขียว
+        paper: "#2e2e2eff",   // ดำเขียวอ่อน
       },
       text: {
         primary: "#ffffff",
