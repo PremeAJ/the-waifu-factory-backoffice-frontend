@@ -19,15 +19,15 @@ const Sidebar = () => {
   const theme = useTheme();
   const toggleWidth = isCollapse == "mini_sidebar" && !isSidebarHover ? MiniSidebarWidth : SidebarWidth;
 
-  const onHoverEnter = () => {
-    if (isCollapse == "mini_sidebar") {
-      setIsSidebarHover(true);
-    }
-  };
+  // const onHoverEnter = () => {
+  //   if (isCollapse == "mini_sidebar") {
+  //     setIsSidebarHover(true);
+  //   }
+  // };
 
-  const onHoverLeave = () => {
-    setIsSidebarHover(false);
-  };
+  // const onHoverLeave = () => {
+  //   setIsSidebarHover(false);
+  // };
 
   return (
     <>
@@ -45,8 +45,8 @@ const Sidebar = () => {
           <Drawer
             anchor="left"
             open
-            onMouseEnter={onHoverEnter}
-            onMouseLeave={onHoverLeave}
+            // onMouseEnter={onHoverEnter}
+            // onMouseLeave={onHoverLeave}
             variant="permanent"
             slotProps={{
               paper: {

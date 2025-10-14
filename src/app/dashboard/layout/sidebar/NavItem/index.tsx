@@ -9,7 +9,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import React, { useContext } from "react";
+import React from "react";
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -46,7 +46,7 @@ export default function NavItem({
         : theme.palette.text.secondary,
     paddingLeft: hideMenu ? "10px" : (level ?? 2) > 2 ? `${(level ?? 1) * 15}px` : "10px",
     "&:hover": {
-      backgroundColor: theme.palette.primary.light,
+      backgroundColor: theme.palette.secondary.main,
       color:
         (level ?? 1) === 1
           ? theme.palette.primary.contrastText
@@ -74,7 +74,7 @@ export default function NavItem({
           <ListItemIcon
             sx={{
               minWidth: "36px",
-              p: "3px 0",
+              p: "3px 0 0 3px",
               color:
                 (level ?? 1) > 1 && pathDirect === item?.href
                   ? `${theme.palette.primary.main}!important`

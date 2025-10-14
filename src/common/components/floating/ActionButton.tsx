@@ -9,15 +9,9 @@ import useIsSubMenu from "@/common/utils/state/isSubMenu";
 import { useSession } from "next-auth/react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { AppearanceSettings } from "@/common/contexts/ProfileContext/interfaces/interface";
 
-const hideButton: string[] = [
-  PageUrl.AUTH_SIGN_IN, 
-  PageUrl.AUTH_SIGN_UP, 
-  PageUrl.CALLBACK, 
-  PageUrl.FORGOT_PASSWORD,
-  PageUrl.MAIN, 
-  PageUrl.PRICING, 
-];
+const hideButton: string[] = [PageUrl.AUTH_SIGN_IN, PageUrl.AUTH_SIGN_UP, PageUrl.CALLBACK, PageUrl.FORGOT_PASSWORD, PageUrl.MAIN, PageUrl.PRICING];
 
 const ActionButton = () => {
   const isMobie = useIsMobile();
@@ -29,7 +23,12 @@ const ActionButton = () => {
   const [show, setShow] = useState(false);
   const [visible, setVisible] = useState(false);
   const { isMobileSidebar, setIsMobileSidebar, setIsCollapse, loading } = useCustomize();
-  const { isCollapse } = useProfile().appearance;
+  const { updateAppearance, appearance } = useProfile();
+  const { isCollapse } = appearance;
+  const updateSetting = (payload: Partial<AppearanceSettings>) => {
+    updateAppearance(payload);
+  };
+  const isChecked = isCollapse === "mini_sidebar" ? true : false;
 
   useEffect(() => {
     if (!hideButton.includes(pathname)) {
@@ -42,11 +41,7 @@ const ActionButton = () => {
 
   const handleExited = () => setShow(false);
   const sidebarAction = () => {
-    return isMobie
-      ? setIsMobileSidebar(!isMobileSidebar)
-      : isCollapse === "full_sidebar"
-      ? setIsCollapse("mini_sidebar")
-      : setIsCollapse("full_sidebar");
+    return isMobie ? setIsMobileSidebar(!isMobileSidebar) : updateSetting({ isCollapse: isChecked ? "full_sidebar" : "mini_sidebar" });
   };
 
   if (!show || loading) return null;
@@ -54,7 +49,7 @@ const ActionButton = () => {
   return (
     <BaseFab
       fadeDirection="left"
-      sx={{ position: "fixed", top: 16, left: 16 }}
+      sx={{ position: "fixed", top: 16, left: 20,zIndex:2000 }}
       onClick={() => (isSubMenu ? router.back() : sidebarAction())}
       aria-label="action"
       open={visible}

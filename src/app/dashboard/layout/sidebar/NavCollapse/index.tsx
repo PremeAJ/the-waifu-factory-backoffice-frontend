@@ -45,7 +45,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
     backgroundColor: open && level < 2 ? theme.palette.primary.main : "",
     whiteSpace: "nowrap",
     "&:hover": {
-      backgroundColor: pathDirect.includes(menu.href || "") || open ? theme.palette.primary.main : theme.palette.primary.light,
+      backgroundColor: pathDirect.includes(menu.href || "") || open ? theme.palette.primary.main : theme.palette.secondary.main,
       color: pathDirect.includes(menu.href || "") || open ? "white" : theme.palette.primary.contrastText,
     },
     color: open && level < 2 ? "white" : level > 1 && open ? theme.palette.primary.main : theme.palette.text.secondary,
