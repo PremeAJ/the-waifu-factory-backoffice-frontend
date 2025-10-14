@@ -81,7 +81,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
         <ListItemIcon
           sx={{
             minWidth: "36px",
-            p: "3px 0",
+            p: "3px 0 0 3px",
             color: "inherit",
           }}
         >

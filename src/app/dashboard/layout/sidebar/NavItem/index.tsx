@@ -73,8 +73,11 @@ export default function NavItem({
         >
           <ListItemIcon
             sx={{
-              minWidth: "36px",
-              p: "3px 0 0 3px",
+              minWidth: hideMenu ? "unset" : "36px",
+              p: hideMenu ? 0 : "3px 0 0 3px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               color:
                 (level ?? 1) > 1 && pathDirect === item?.href
                   ? `${theme.palette.primary.main}!important`
