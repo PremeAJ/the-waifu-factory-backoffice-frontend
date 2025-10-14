@@ -156,15 +156,15 @@ const LightThemeColors = [
     name: "MATCHA_THEME",
     palette: {
       primary: {
-        main: "#729753",
-        light: "#EAF6E2",
-        dark: "#8CBF5D",
+        main: "#658C5E",      // เขียวกลาง
+        light: "#ebffdfff",     // เขียวอ่อน
+        dark: "#6F5840",      // น้ำตาลเข้ม
         contrastText: "#ffffff",
       },
       secondary: {
-        main: "#F7E7CE",
-        light: "#FFF9F2",
-        dark: "#E6D3B3",
+        main: "#9E7C5F",      // น้ำตาลกลาง
+        light: "#FFF0D6",     // ครีม
+        dark: "#6F5840",      // น้ำตาลเข้ม
         contrastText: "#3E4C2C",
       },
     },

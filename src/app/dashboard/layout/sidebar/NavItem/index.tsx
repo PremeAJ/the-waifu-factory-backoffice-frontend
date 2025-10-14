@@ -47,14 +47,17 @@ export default function NavItem({
     paddingLeft: hideMenu ? "10px" : (level ?? 2) > 2 ? `${(level ?? 1) * 15}px` : "10px",
     "&:hover": {
       backgroundColor: theme.palette.primary.light,
-      color: theme.palette.primary.main,
+      color:
+        (level ?? 1) === 1
+          ? theme.palette.primary.contrastText
+          : theme.palette.primary.main,
     },
     "&.Mui-selected": {
-      color: "white",
+      color: (level ?? 1) === 1 ? theme.palette.primary.contrastText : "white",
       backgroundColor: theme.palette.primary.main,
       "&:hover": {
         backgroundColor: theme.palette.primary.main,
-        color: "white",
+        color: (level ?? 1) === 1 ? theme.palette.primary.contrastText : "white",
       },
     },
   }));

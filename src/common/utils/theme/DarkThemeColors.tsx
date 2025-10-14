@@ -161,20 +161,20 @@ const DarkThemeColors = [
     name: "MATCHA_THEME",
     palette: {
       primary: {
-        main: "#7CA16C",
-        light: "#AFC9A0",
-        dark: "#4C6B3C",
+        main: "#7CA16C",    // เขียวกลาง
+        light: "#AFC9A0",   // เขียวอ่อน
+        dark: "#4C6B3C",    // เขียวเข้ม
         contrastText: "#23281E",
       },
       secondary: {
-        main: "#BFA980",
-        light: "#8C7A4F",
-        dark: "#6B5736",
+        main: "#BFA980",    // น้ำตาลกลาง
+        light: "#8C7A4F",   // น้ำตาลเข้ม
+        dark: "#6B5736",    // น้ำตาลเข้มกว่า
         contrastText: "#ffffff",
       },
       background: {
-        default: "#23281E",
-        paper: "#2E3326",
+        default: "#23281E", // ดำเขียว
+        paper: "#2E3326",   // ดำเขียวอ่อน
       },
       text: {
         primary: "#ffffff",

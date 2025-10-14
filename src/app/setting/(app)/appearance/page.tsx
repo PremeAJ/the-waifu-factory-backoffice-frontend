@@ -23,7 +23,6 @@ const BCrumb = [
 
 const AppearanceSetting = () => {
 
-
   return (
     <PageContainer title="Appearance" description="this is setting appearance">
       <Breadcrumb title="Appearance" items={BCrumb} />
