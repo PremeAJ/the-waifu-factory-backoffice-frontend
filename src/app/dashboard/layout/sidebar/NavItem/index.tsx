@@ -74,7 +74,7 @@ export default function NavItem({
           <ListItemIcon
             sx={{
               minWidth: hideMenu ? "unset" : "36px",
-              p: hideMenu ? 0 : "3px 0 0 3px",
+              p: "3px 0 0 3px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
