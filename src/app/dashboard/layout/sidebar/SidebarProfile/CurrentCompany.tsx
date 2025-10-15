@@ -16,7 +16,7 @@ export const CurrentCompany = () => {
   const { isLanguage } = useContext(CustomizerContext);
   const { isSidebarHover } = useContext(CustomizerContext);
   const {} = useSidebarState();
-  const { name:companyName, logoUrl, businessTypeId, branchNameTh, branchNameEn } = activeCompany || {};
+  const { name: companyName, logoUrl, branchNameTh, branchNameEn, icon = "" } = activeCompany || {};
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";
 
@@ -38,10 +38,10 @@ export const CurrentCompany = () => {
         onMouseLeave={() => setHovered(false)}
       >
         {hideMenu ? (
-          <CompanyAvatar loading={loading} businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
+          <CompanyAvatar loading={loading} icon={icon} imageUrl={logoUrl || ""} />
         ) : (
           <>
-            <CompanyAvatar loading={loading} businessTypeId={businessTypeId || 0} imageUrl={logoUrl || ""} />
+            <CompanyAvatar loading={loading} icon={icon} imageUrl={logoUrl || ""} />
             <Box sx={{ maxWidth: 120, overflow: "hidden", pl: 0.5, borderRadius: 0 }}>
               <Typography variant="h6" noWrap sx={{ color: (theme) => theme.palette.primary.contrastText }}>
                 {loading ? <Skeleton variant="text" width={100} /> : companyName}

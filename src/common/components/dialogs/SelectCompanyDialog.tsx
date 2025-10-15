@@ -43,7 +43,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
             sx={isActive ? { opacity: 0.7, cursor: "not-allowed" } : {}}
           >
             <ListItemAvatar>
-              <CompanyAvatar businessTypeId={company.companies.businessTypeId} />
+              <CompanyAvatar  icon={company.companies.icon}/>
             </ListItemAvatar>
             <ListItemText
               primary={

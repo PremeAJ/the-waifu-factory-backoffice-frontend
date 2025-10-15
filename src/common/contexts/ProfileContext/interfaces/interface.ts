@@ -10,6 +10,7 @@ export interface Company {
   name: string;
   logoUrl: string | null;
   businessTypeId: number;
+  icon:string;
 }
 
 export interface Role {
@@ -21,6 +22,7 @@ export interface ActiveCompany {
   name: string;
   logoUrl: string;
   businessTypeId: number;
+  icon:string
   branchNameTh: string;
   branchNameEn: string;
   roleNameTh: string;
