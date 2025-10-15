@@ -1,5 +1,5 @@
 "use client";
-import "./global.css";
+// import "./global.css";
 import "@/common/utils/i18n/i18n";
 import { Analytics } from "@vercel/analytics/next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";

@@ -1,4 +1,4 @@
-import "./global.css";
+// import "./global.css";
 import { AuthProvider } from "@/common/contexts/AuthContext";
 import { CustomizerContextProvider } from "../common/contexts/setting/customizerContext";
 import { EncryptProvider } from "@/common/contexts/EncryptContext";

@@ -2,22 +2,20 @@
 import { createContext, useState, ReactNode, useEffect, useContext } from "react";
 import config from "./config";
 import React from "react";
-import Cookies from "js-cookie";
 import useSWR from "swr";
-import { set } from "lodash";
 import { getFetcher, patchFetcher } from "@/app/api/globalFetcher";
 
-// Define the shape of the context state
+//// Define the shape of the context state
 interface CustomizerContextState {
   updateAppearance: () => Promise<void>;
-  activeDir: string;
-  setActiveDir: (dir: string) => void;
+  //// activeDir: string;
+  //// setActiveDir: (dir: string) => void;
   activeMode: string;
   setActiveMode: (mode: string) => void;
   activeTheme: string;
   setActiveTheme: (theme: string) => void;
-  activeLayout: string;
-  setActiveLayout: (layout: string) => void;
+  ////activeLayout: string;
+  ////setActiveLayout: (layout: string) => void;
   isCardShadow: boolean;
   setIsCardShadow: (shadow: boolean) => void;
   isLayout: string;
@@ -28,7 +26,7 @@ interface CustomizerContextState {
   setIsCollapse: (collapse: string) => void;
   isSidebarHover: boolean;
   setIsSidebarHover: (isHover: boolean) => void;
-  isMobileSidebar: boolean; // Add this
+  isMobileSidebar: boolean; //// Add this
   setIsMobileSidebar: (isMobileSidebar: boolean) => void;
   appearanceMutate: () => Promise<void>;
   loading: boolean;
@@ -46,15 +44,15 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   
   const [error, setError] = useState<Error | null>(null);
 
-  const [activeDir, setActiveDir] = useState<string>(config.activeDir);
-  const [activeMode, setActiveMode] = useState<string>(config.activeMode);
-  const [activeTheme, setActiveTheme] = useState<string>(config.activeTheme);
-  const [activeLayout, setActiveLayout] = useState<string>(config.activeLayout);
+  //// const [activeDir, setActiveDir] = useState<string>(config.activeDir);
+  //// const [activeMode, setActiveMode] = useState<string>(config.activeMode);
+  //// const [activeTheme, setActiveTheme] = useState<string>(config.activeTheme);
+  //// const [activeLayout, setActiveLayout] = useState<string>(config.activeLayout);
   const [isCardShadow, setIsCardShadow] = useState<boolean>(config.isCardShadow);
   const [isLayout, setIsLayout] = useState<string>(config.isLayout);
-  const [isBorderRadius, setIsBorderRadius] = useState<number>(config.isBorderRadius);
-  const [isCollapse, setIsCollapse] = useState<string>(config.isCollapse);
-  const [isLanguage, setIsLanguage] = useState<string>(config.isLanguage);
+  //// const [isBorderRadius, setIsBorderRadius] = useState<number>(config.isBorderRadius);
+  //// const [isCollapse, setIsCollapse] = useState<string>(config.isCollapse);
+  //// const [isLanguage, setIsLanguage] = useState<string>(config.isLanguage);
   const [isSidebarHover, setIsSidebarHover] = useState<boolean>(false);
   const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
 
@@ -66,22 +64,22 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   } = useSWR( null , getFetcher);
 
   useEffect(() => {
-    // if () {
-    //   setLoading(false);
-    // }
+    //// if () {
+    ////   setLoading(false);
+    //// }
     if (userAppearanceData) {
       const appearanceData = userAppearanceData.data || {};
-      // if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);
-      // if (appearanceData.activeTheme) setActiveTheme(appearanceData.activeTheme);
-      // if (appearanceData.activeLayout) setActiveLayout(appearanceData.activeLayout);
-      // if (appearanceData.activeDir) setActiveDir(appearanceData.activeDir);
-      // if (appearanceData.isCardShadow !== undefined) setIsCardShadow(appearanceData.isCardShadow);
-      // if (appearanceData.isLayout) setIsLayout(appearanceData.isLayout);
-      // if (appearanceData.isBorderRadius !== undefined) setIsBorderRadius(appearanceData.isBorderRadius);
-      // if (appearanceData.isCollapse) setIsCollapse(appearanceData.isCollapse);
-      // if (appearanceData.isLanguage) setIsLanguage(appearanceData.isLanguage);
-      // if (appearanceData.isSidebarHover !== undefined) setIsSidebarHover(appearanceData.isSidebarHover);
-      // if (appearanceData.isMobileSidebar !== undefined) setIsMobileSidebar(appearanceData.isMobileSidebar);
+      //// if (appearanceData.activeMode) setActiveMode(appearanceData.activeMode);
+      //// if (appearanceData.activeTheme) setActiveTheme(appearanceData.activeTheme);
+      //// if (appearanceData.activeLayout) setActiveLayout(appearanceData.activeLayout);
+      //// if (appearanceData.activeDir) setActiveDir(appearanceData.activeDir);
+      //// if (appearanceData.isCardShadow !== undefined) setIsCardShadow(appearanceData.isCardShadow);
+      //// if (appearanceData.isLayout) setIsLayout(appearanceData.isLayout);
+      //// if (appearanceData.isBorderRadius !== undefined) setIsBorderRadius(appearanceData.isBorderRadius);
+      //// if (appearanceData.isCollapse) setIsCollapse(appearanceData.isCollapse);
+      //// if (appearanceData.isLanguage) setIsLanguage(appearanceData.isLanguage);
+      //// if (appearanceData.isSidebarHover !== undefined) setIsSidebarHover(appearanceData.isSidebarHover);
+      //// if (appearanceData.isMobileSidebar !== undefined) setIsMobileSidebar(appearanceData.isMobileSidebar);
       setLoading(isAppearanceLoading);
       if (appearanceError) {
         setError(appearanceError);
@@ -91,24 +89,31 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   }, [userAppearanceData, isAppearanceLoading, appearanceError]);
 
   useEffect(() => {
-    // document.documentElement.setAttribute("class", activeMode);
-    // document.documentElement.setAttribute("dir", activeDir);
-    // document.documentElement.setAttribute("data-color-theme", activeTheme);
-    // document.documentElement.setAttribute("data-layout", activeLayout);
-    // document.documentElement.setAttribute("data-boxed-layout", isLayout);
-    // document.documentElement.setAttribute("data-sidebar-type", isCollapse);
-  }, [activeMode, activeDir, activeTheme, activeLayout, isLayout, isCollapse]);
+    //// document.documentElement.setAttribute("class", activeMode);
+    //// document.documentElement.setAttribute("dir", activeDir);
+    //// document.documentElement.setAttribute("data-color-theme", activeTheme);
+    //// document.documentElement.setAttribute("data-layout", activeLayout);
+    //// document.documentElement.setAttribute("data-boxed-layout", isLayout);
+    //// document.documentElement.setAttribute("data-sidebar-type", isCollapse);
+  }, [
+    //// activeMode, 
+    //// activeDir, 
+    //// activeTheme, 
+    ////activeLayout, 
+    isLayout, 
+    //// isCollapse
+  ]);
 
   type AppearancePayload = {
-    activeDir: string;
-    activeMode: string;
-    activeTheme: string;
-    activeLayout: string;
+    //// activeDir: string;
+    //// activeMode: string;
+    //// activeTheme: string;
+    ////activeLayout: string;
     isCardShadow: boolean;
     isLayout: string;
-    isBorderRadius: number;
-    isCollapse: string;
-    isLanguage: string;
+    //// isBorderRadius: number;
+    //// isCollapse: string;
+    //// isLanguage: string;
     isSidebarHover: boolean;
     isMobileSidebar: boolean;
   };
@@ -116,15 +121,15 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   const updateAppearance = async (customPayload?: Partial<AppearancePayload>) => {
     try {
       const payload: AppearancePayload = {
-        activeDir,
-        activeMode,
-        activeTheme,
-        activeLayout,
+        //// activeDir,
+        //// activeMode,
+        //// activeTheme,
+        /////activeLayout,
         isCardShadow,
         isLayout,
-        isBorderRadius,
-        isCollapse,
-        isLanguage,
+        //// isBorderRadius,
+        //// isCollapse,
+        //// isLanguage,
         isSidebarHover,
         isMobileSidebar,
         ...customPayload,
@@ -138,28 +143,28 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   return (
     <CustomizerContext.Provider
       value={{
-        activeDir,
-        activeLayout,
-        activeMode,
-        activeTheme,
+        //// activeDir,
+        /////activeLayout,
+        //// activeMode,
+        //// activeTheme,
         appearanceMutate,
         error,
-        isBorderRadius,
+        //// isBorderRadius,
         isCardShadow,
-        isCollapse,
-        isLanguage,
+        //// isCollapse,
+        //// isLanguage,
         isLayout,
         isMobileSidebar,
         isSidebarHover,
         loading: false,
-        setActiveDir,
-        setActiveLayout,
-        setActiveMode,
-        setActiveTheme,
-        setIsBorderRadius,
+        //// setActiveDir,
+        /////setActiveLayout,
+        //// setActiveMode,
+        //// setActiveTheme,
+        //// setIsBorderRadius,
         setIsCardShadow,
-        setIsCollapse,
-        setIsLanguage,
+        //// setIsCollapse,
+        //// setIsLanguage,
         setIsLayout,
         setIsMobileSidebar,
         setIsSidebarHover,

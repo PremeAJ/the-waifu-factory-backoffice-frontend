@@ -1,15 +1,15 @@
 "use client";
 import { Appearance, AppearanceSettings, ChangeEmailPayload, IsLanguage, ProfileContextType, ProfilePayload, ProfileResponse } from "./interfaces/interface";
+import { dataURLToFile } from "@/common/utils/function/file/dataURLToBlob";
 import { defaultAppearance } from "./constants/defaultAppearance";
 import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
-import { useSession } from "next-auth/react";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import useSWR from "swr";
+import { showError } from "@/common/utils/dialog";
 import { swrOption } from "@/app/api/swrOption";
 import { useEncrypt } from "../EncryptContext";
-import { showError } from "@/common/utils/dialog";
+import { useSession } from "next-auth/react";
 import imageCompression from "browser-image-compression";
-import { dataURLToFile } from "@/common/utils/function/file/dataURLToBlob";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import useSWR from "swr";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
 const APPEARANCE_KEY = "appearance";

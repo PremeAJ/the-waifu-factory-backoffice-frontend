@@ -1,15 +1,13 @@
 import _ from "lodash";
+import { baseDarkTheme, baselightTheme } from "./DefaultColors";
 import { createTheme } from "@mui/material/styles";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { useContext, useEffect } from "react";
-import components from "./Components";
-import typography from "./Typography";
-import { shadows, darkshadows } from "./Shadows";
 import { DarkThemeColors } from "./DarkThemeColors";
 import { LightThemeColors } from "./LightThemeColors";
-import { baseDarkTheme, baselightTheme } from "./DefaultColors";
-import * as locales from "@mui/material/locale";
+import { shadows, darkshadows } from "./Shadows";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import * as locales from "@mui/material/locale";
+import components from "./Components";
+import typography from "./Typography";
 
 export const BuildTheme = (config: any = {}) => {
   const { appearance } = useProfile();
@@ -40,16 +38,16 @@ export const BuildTheme = (config: any = {}) => {
 };
 
 const ThemeSettings = () => {
-  const { activeDir } = useContext(CustomizerContext);
+  //// const { activeDir } = useContext(CustomizerContext);
   const { appearance } = useProfile();
   const { activeTheme } = appearance || {};
   const theme = BuildTheme({
-    direction: activeDir,
+    //// direction: activeDir,
     theme: activeTheme,
   });
-  useEffect(() => {
-    document.dir = activeDir;
-  }, [activeDir]);
+  //// useEffect(() => {
+  ////   document.dir = activeDir;
+  //// }, [activeDir]);
 
   return theme;
 };

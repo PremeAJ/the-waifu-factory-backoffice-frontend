@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import "./global.css";
+// import "./global.css";
 import { ThemeSettings } from "@/common/utils/theme/Theme";
 
 export default function Head() {
