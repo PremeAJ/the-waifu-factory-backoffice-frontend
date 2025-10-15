@@ -47,7 +47,7 @@ export default function NavItem({
         : theme.palette.text.secondary,
     paddingLeft: hideMenu ? "10px" : (level ?? 2) > 2 ? `${(level ?? 1) * 15}px` : "10px",
     "&:hover": {
-      backgroundColor: theme.palette.secondary.main,
+      backgroundColor: theme.palette.primary.main,
       color:
         (level ?? 1) === 1
           ? theme.palette.primary.contrastText
