@@ -80,6 +80,7 @@ export interface Appearance {
   isCollapse: IsCollapse;
   isBorderRadius: number;
   isLayout: IsLayout;
+  isCardShadow: boolean;
 }
 
 export interface AppearanceSettings extends Appearance {}

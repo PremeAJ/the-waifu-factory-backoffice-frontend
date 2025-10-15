@@ -1,11 +1,11 @@
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import { styled } from "@mui/material/styles";
-import AppBarStyled from "@/common/components/shared/AppBarStyled";
 import Box from "@mui/material/Box";
 import Language from "@/common/components/shared/Language";
 import Profile from "@/common/components/shared/Profile";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
+import BaseAppBar from "@/common/components/base/BaseAppBar";
 
 const Header = () => {
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
@@ -15,7 +15,7 @@ const Header = () => {
 
   return (
     <ProductProvider>
-      <AppBarStyled position="sticky" color="default">
+      <BaseAppBar position="sticky" color="default">
         <ToolbarStyled>
           <Box flexGrow={1} />
           <Stack spacing={1} direction="row" alignItems="center">
@@ -23,7 +23,7 @@ const Header = () => {
             <Profile />
           </Stack>
         </ToolbarStyled>
-      </AppBarStyled>
+      </BaseAppBar>
     </ProductProvider>
   );
 };

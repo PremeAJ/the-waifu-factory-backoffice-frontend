@@ -23,6 +23,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 interface TableHeader {
   key: string;
@@ -54,7 +55,6 @@ interface BaseTableProps<T extends readonly TableHeader[]> {
   rowHeaderColor?: "primary" | "success" | "error"; // เพิ่ม prop นี้
 }
 
-// --- Component ---
 const BaseTable = <T extends readonly TableHeader[]>({
   headers,
   data,
@@ -73,8 +73,8 @@ const BaseTable = <T extends readonly TableHeader[]>({
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
   const isMobilePortrait = isMobile && isPortrait;
+  const { isCardShadow } = useProfile().appearance;
 
-  // เรียก useMemo เสมอ แล้วใช้ conditional ใน assignment
   const slicedData = useMemo(() => {
     return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }, [data, page, rowsPerPage]);
@@ -181,13 +181,9 @@ const BaseTable = <T extends readonly TableHeader[]>({
     </TableRow>
   );
 
-  {
-    /* Row version มือถือ */
-  }
   if (isMobilePortrait) {
     const primaryHeader = headers.find((h: any) => h.primary === true) || headers[0];
 
-    // Mobile skeleton view when loading
     if (loading) {
       const skeletonCount = pagination?.rowsPerPage || rowsPerPage;
       return (
@@ -197,7 +193,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
               key={`mobile-skel-${si}`}
               sx={{
                 p: 0,
-                boxShadow: 1,
+                boxShadow: isCardShadow ? 1 : 0,
                 overflow: "hidden",
               }}
             >
@@ -245,7 +241,6 @@ const BaseTable = <T extends readonly TableHeader[]>({
       );
     }
 
-
     return (
       <Stack spacing={2}>
         {paginatedData.map((item) => (
@@ -253,7 +248,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
             key={item.id}
             sx={{
               p: 0,
-              boxShadow: 1,
+              boxShadow: isCardShadow ? 1 : 0,
               overflow: "hidden",
             }}
           >

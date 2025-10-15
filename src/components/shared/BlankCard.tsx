@@ -1,18 +1,19 @@
 "use client"
 import { Card } from '@mui/material';
-import React, { useContext } from 'react';
+import { useProfile } from '@/common/contexts/ProfileContext';
 import { useTheme } from '@mui/material/styles';
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
+import React from 'react';
 
 type Props = {
   className?: string;
   children: React.ReactNode;
   sx?: any;
-  [key: string]: any; // รองรับ prop อื่นๆ เช่น onClick, onMouseEnter ฯลฯ
+  [key: string]: any; 
 };
 
 const BlankCard = ({ children, className, sx, ...rest }: Props) => {
-  const { isCardShadow } = useContext(CustomizerContext);
+  const { isCardShadow } = useProfile().appearance;
+  
   const theme = useTheme();
   const borderColor = theme.palette.grey[200];
 
@@ -22,7 +23,7 @@ const BlankCard = ({ children, className, sx, ...rest }: Props) => {
       className={className}
       elevation={isCardShadow ? 9 : 0}
       variant={!isCardShadow ? 'outlined' : undefined}
-      {...rest} // กระจาย prop อื่นๆ เช่น onClick
+      {...rest} 
     >
       {children}
     </Card>

@@ -6,9 +6,9 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import { ActiveMode } from "@/common/contexts/ProfileContext/interfaces/interface";
 
 const ThemeMode = () => {
-  const { updateAppearance } = useProfile();
-  const { appearance } = useProfile();
-  const { activeMode } = appearance || {};
+  const { updateAppearance, appearance } = useProfile();
+  const { isCardShadow = true, activeMode } = appearance || {};
+
   const updateSetting = (mode: ActiveMode) => {
     updateAppearance({ activeMode: mode });
   };
@@ -16,11 +16,11 @@ const ThemeMode = () => {
   return (
     <>
       <Stack direction={"row"} gap={2} my={2}>
-        <StyledBox onClick={() => updateSetting("light")} display="flex" gap={1} selected={activeMode === "light"}>
+        <StyledBox onClick={() => updateSetting("light")} display="flex" gap={1} selected={activeMode === "light"} isCardShadow={isCardShadow}>
           <WbSunnyTwoToneIcon color={activeMode === "light" ? "primary" : "inherit"} />
           Light
         </StyledBox>
-        <StyledBox onClick={() => updateSetting("dark")} display="flex" gap={1} selected={activeMode === "dark"}>
+        <StyledBox onClick={() => updateSetting("dark")} display="flex" gap={1} selected={activeMode === "dark"} isCardShadow={isCardShadow}>
           <DarkModeTwoToneIcon color={activeMode === "dark" ? "primary" : "inherit"} />
           Dark
         </StyledBox>

@@ -1,9 +1,8 @@
 "use client";
-import React, { useContext } from "react";
-import { useTheme } from "@mui/material/styles";
 import { Card, CardHeader, CardContent, Divider, Box } from "@mui/material";
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
-
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { useTheme } from "@mui/material/styles";
+import React from "react";
 
 type Props = {
   title: string;
@@ -13,8 +12,7 @@ type Props = {
 };
 
 const ParentCard = ({ title, children, footer, codeModel }: Props) => {
-  const { isCardShadow } = useContext(CustomizerContext);
-
+  const { isCardShadow } = useProfile().appearance;
   const theme = useTheme();
   const borderColor = theme.palette.divider;
 

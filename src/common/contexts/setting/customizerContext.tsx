@@ -16,8 +16,8 @@ interface CustomizerContextState {
   setActiveTheme: (theme: string) => void;
   ////activeLayout: string;
   ////setActiveLayout: (layout: string) => void;
-  isCardShadow: boolean;
-  setIsCardShadow: (shadow: boolean) => void;
+  ////isCardShadow: boolean;
+  ////setIsCardShadow: (shadow: boolean) => void;
   ////isLayout: string;
   /////setIsLayout: (layout: string) => void;
   isBorderRadius: number;
@@ -48,7 +48,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   //// const [activeMode, setActiveMode] = useState<string>(config.activeMode);
   //// const [activeTheme, setActiveTheme] = useState<string>(config.activeTheme);
   //// const [activeLayout, setActiveLayout] = useState<string>(config.activeLayout);
-  const [isCardShadow, setIsCardShadow] = useState<boolean>(config.isCardShadow);
+  ////const [isCardShadow, setIsCardShadow] = useState<boolean>(config.isCardShadow);
   // const [isLayout, setIsLayout] = useState<string>(config.isLayout);
   //// const [isBorderRadius, setIsBorderRadius] = useState<number>(config.isBorderRadius);
   //// const [isCollapse, setIsCollapse] = useState<string>(config.isCollapse);
@@ -109,7 +109,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     //// activeMode: string;
     //// activeTheme: string;
     ////activeLayout: string;
-    isCardShadow: boolean;
+    ////isCardShadow: boolean;
     //// isLayout: string;
     //// isBorderRadius: number;
     //// isCollapse: string;
@@ -125,7 +125,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// activeMode,
         //// activeTheme,
         /////activeLayout,
-        isCardShadow,
+        ////isCardShadow,
         ////isLayout,
         //// isBorderRadius,
         //// isCollapse,
@@ -150,7 +150,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         appearanceMutate,
         error,
         //// isBorderRadius,
-        isCardShadow,
+        ////isCardShadow,
         //// isCollapse,
         //// isLanguage,
         // isLayout,
@@ -162,7 +162,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// setActiveMode,
         //// setActiveTheme,
         //// setIsBorderRadius,
-        setIsCardShadow,
+        //// setIsCardShadow,
         //// setIsCollapse,
         //// setIsLanguage,
         //// setIsLayout,

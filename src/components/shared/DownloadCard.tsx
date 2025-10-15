@@ -1,14 +1,13 @@
 "use client";
-import React, { useContext } from "react";
-import PropTypes from "prop-types";
-import { useTheme } from "@mui/material/styles";
 import { Card, CardHeader, Tooltip, Divider, IconButton } from "@mui/material";
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
 import { IconDownload } from "@tabler/icons-react";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { useTheme } from "@mui/material/styles";
+import PropTypes from "prop-types";
+import React from "react";
 
 const DownloadCard = ({ title, children, onDownload }: any) => {
-  const { isCardShadow } = useContext(CustomizerContext);
-
+  const { isCardShadow } = useProfile().appearance;
   const theme = useTheme();
   const borderColor = theme.palette.divider;
 

@@ -41,7 +41,6 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     mutate: appearanceMutate,
   } = useSWR(session ? "/api/profile/appearance" : null, getFetcher, swrOption);
 
-  // fetch profile info (SWR)
   const {
     data: profileData,
     error: profileError,

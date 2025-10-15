@@ -1,10 +1,8 @@
-'use client'
-import { useTheme } from '@mui/material/styles';
-import { Card, CardContent, Typography, Box, Stack } from '@mui/material';
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-
-import { IconGridDots } from '@tabler/icons-react';
-import { useContext } from 'react';
+"use client";
+import { Card, CardContent, Typography, Box, Stack } from "@mui/material";
+import { IconGridDots } from "@tabler/icons-react";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { useTheme } from "@mui/material/styles";
 
 type Props = {
   title: string;
@@ -16,37 +14,29 @@ type Props = {
   children: React.ReactNode;
 };
 
-const DashboardWidgetCard = ({
-  title,
-  subtitle,
-  children,
-  dataLabel1,
-  dataItem1,
-  dataLabel2,
-  dataItem2,
-}: Props) => {
-  const { isCardShadow } = useContext(CustomizerContext);
+const DashboardWidgetCard = ({ title, subtitle, children, dataLabel1, dataItem1, dataLabel2, dataItem2 }: Props) => {
+  const { isCardShadow } = useProfile().appearance;
 
   const theme = useTheme();
   const borderColor = theme.palette.grey[100];
 
   return (
     <Card
-      sx={{ padding: 0, border: !isCardShadow ? `1px solid ${borderColor}` : 'none' }}
+      sx={{ padding: 0, border: !isCardShadow ? `1px solid ${borderColor}` : "none" }}
       elevation={isCardShadow ? 9 : 0}
-      variant={!isCardShadow ? 'outlined' : undefined}
+      variant={!isCardShadow ? "outlined" : undefined}
     >
-      <CardContent sx={{ p: '30px' }}>
+      <CardContent sx={{ p: "30px" }}>
         {title ? (
           <Box>
-            {title ? <Typography variant="h5">{title}</Typography> : ''}
+            {title ? <Typography variant="h5">{title}</Typography> : ""}
 
             {subtitle ? (
               <Typography variant="subtitle2" color="textSecondary">
                 {subtitle}
               </Typography>
             ) : (
-              ''
+              ""
             )}
           </Box>
         ) : null}
@@ -55,20 +45,8 @@ const DashboardWidgetCard = ({
 
         <Stack direction="row" spacing={2} justifyContent="space-between" mt={2}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Box
-              width={38}
-              height={38}
-              bgcolor="primary.light"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Typography
-                color="primary.main"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
+            <Box width={38} height={38} bgcolor="primary.light" display="flex" alignItems="center" justifyContent="center">
+              <Typography color="primary.main" display="flex" alignItems="center" justifyContent="center">
                 <IconGridDots width={22} />
               </Typography>
             </Box>
@@ -82,20 +60,8 @@ const DashboardWidgetCard = ({
             </Box>
           </Stack>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Box
-              width={38}
-              height={38}
-              bgcolor="grey.200"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Typography
-                color="grey.400"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
+            <Box width={38} height={38} bgcolor="grey.200" display="flex" alignItems="center" justifyContent="center">
+              <Typography color="grey.400" display="flex" alignItems="center" justifyContent="center">
                 <IconGridDots width={22} />
               </Typography>
             </Box>

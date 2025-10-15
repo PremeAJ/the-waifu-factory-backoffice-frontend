@@ -7,7 +7,7 @@ const config = {
   //// isSidebarHover: false, //TODO ยังไม่ได้ย้าย
   ////isCollapse: "full_sidebar",
   ////isLanguage: "th", 
-  isCardShadow: true, //TODO ยังไม่ได้ย้าย
+  ////isCardShadow: true, //TODO ยังไม่ได้ย้าย
   isMobileSidebar: false, //TODO ยังไม่ได้ย้าย
   //// isHorizontal: false, //TODO ยังไม่ได้ย้าย
   //// isBorderRadius: 7,

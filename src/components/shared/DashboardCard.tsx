@@ -1,8 +1,7 @@
 'use client'
-import { useTheme } from '@mui/material/styles';
 import { Card, CardContent, Typography, Stack, Box } from '@mui/material';
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
-import { useContext } from 'react';
+import { useProfile } from '@/common/contexts/ProfileContext';
+import { useTheme } from '@mui/material/styles';
 
 type Props = {
   title?: string;
@@ -27,7 +26,7 @@ const DashboardCard = ({
   headsubtitle,
   middlecontent,
 }: Props) => {
-  const { isCardShadow } = useContext(CustomizerContext);
+const { isCardShadow } = useProfile().appearance;
 
   const theme = useTheme();
   const borderColor = theme.palette.divider;

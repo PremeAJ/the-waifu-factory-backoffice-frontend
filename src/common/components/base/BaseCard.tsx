@@ -1,8 +1,7 @@
-"use client"
-import React, { useContext } from 'react';
-import { Card, CardHeader, CardContent, Divider } from '@mui/material';
-import { CustomizerContext } from '@/common/contexts/setting/customizerContext';
-
+"use client";
+import { Card, CardHeader, CardContent, Divider } from "@mui/material";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import React from "react";
 
 type Props = {
   title: string;
@@ -10,15 +9,10 @@ type Props = {
 };
 
 const BaseCard = ({ title, children }: Props) => {
-  const { isCardShadow } = useContext(CustomizerContext);
-
+  const { isCardShadow } = useProfile().appearance;
 
   return (
-    <Card
-      sx={{ padding: 0 }}
-      elevation={isCardShadow ? 9 : 0}
-      variant={!isCardShadow ? 'outlined' : undefined}
-    >
+    <Card sx={{ padding: 0 }} elevation={isCardShadow ? 9 : 0} variant={!isCardShadow ? "outlined" : undefined}>
       <CardHeader title={title} />
       <Divider />
       <CardContent>{children}</CardContent>
