@@ -41,6 +41,20 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     mutate: appearanceMutate,
   } = useSWR(session ? "/api/profile/appearance" : null, getFetcher, swrOption);
 
+  // fetch profile info (SWR)
+  const {
+    data: profileData,
+    error: profileError,
+    isLoading: profileLoading,
+    mutate: profileMutate,
+  } = useSWR(session ? "/api/profile" : null, getFetcher, swrOption);
+
+  useEffect(() => {
+    if (profileData?.data) {
+      update({ profile: profileData.data });
+    }
+  }, [profileData?.data]);
+
   const [localAppearance, setLocalAppearance] = useState<Appearance>(defaultAppearance);
 
   useEffect(() => {
@@ -170,8 +184,8 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     updateActiveCompany,
     companyList: companyListData?.data || [],
     activeCompany: activeCompanyData?.data || null,
-    error: activeCompanyError || companyListError || appearanceError,
-    loading: activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
+    error: profileError || activeCompanyError || companyListError || appearanceError,
+    loading: profileLoading || activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

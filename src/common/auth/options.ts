@@ -51,6 +51,7 @@ const authOptions: AuthOptions = {
 
         const { accessToken } = login.data;
         const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
+        console.log("🚀 ~ authorize ~ profile:", profile)
         if (profile.statusCode !== 200) throw new Error(profile.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         return { ...login.data, profile: profile.data };
       },
@@ -75,6 +76,7 @@ const authOptions: AuthOptions = {
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         const { accessToken } = login.data;
         const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
+        console.log("🚀 ~ jwt ~ profile:", profile)
         if (profile.statusCode !== 200) throw new Error(profile.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         return { ...login.data, profile: profile.data };
       }
