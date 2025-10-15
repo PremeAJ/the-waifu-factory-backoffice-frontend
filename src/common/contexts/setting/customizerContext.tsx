@@ -24,8 +24,8 @@ interface CustomizerContextState {
   setIsBorderRadius: (radius: number) => void;
   ////isCollapse: string;
   setIsCollapse: (collapse: string) => void;
-  isSidebarHover: boolean;
-  setIsSidebarHover: (isHover: boolean) => void;
+  ////isSidebarHover: boolean;
+  ////setIsSidebarHover: (isHover: boolean) => void;
   isMobileSidebar: boolean; //// Add this
   setIsMobileSidebar: (isMobileSidebar: boolean) => void;
   appearanceMutate: () => Promise<void>;
@@ -53,7 +53,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   //// const [isBorderRadius, setIsBorderRadius] = useState<number>(config.isBorderRadius);
   //// const [isCollapse, setIsCollapse] = useState<string>(config.isCollapse);
   //// const [isLanguage, setIsLanguage] = useState<string>(config.isLanguage);
-  const [isSidebarHover, setIsSidebarHover] = useState<boolean>(false);
+  ////const [isSidebarHover, setIsSidebarHover] = useState<boolean>(false);
   const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
 
   const {
@@ -114,7 +114,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     //// isBorderRadius: number;
     //// isCollapse: string;
     //// isLanguage: string;
-    isSidebarHover: boolean;
+    ////isSidebarHover: boolean;
     isMobileSidebar: boolean;
   };
 
@@ -130,7 +130,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// isBorderRadius,
         //// isCollapse,
         //// isLanguage,
-        isSidebarHover,
+        ////isSidebarHover,
         isMobileSidebar,
         ...customPayload,
       };
@@ -155,7 +155,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// isLanguage,
         // isLayout,
         isMobileSidebar,
-        isSidebarHover,
+        ////isSidebarHover,
         loading: false,
         //// setActiveDir,
         /////setActiveLayout,
@@ -167,7 +167,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// setIsLanguage,
         //// setIsLayout,
         setIsMobileSidebar,
-        setIsSidebarHover,
+        ////setIsSidebarHover,
         updateAppearance,
       }}
     >

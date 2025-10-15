@@ -12,12 +12,12 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 
 const Sidebar = () => {
   const isMobie = useIsMobile();
-  const { isSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const {  isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
   const { isCollapse } = useProfile().appearance;
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
   const theme = useTheme();
-  const toggleWidth = isCollapse == "mini_sidebar" && !isSidebarHover ? MiniSidebarWidth : SidebarWidth;
+  const toggleWidth = isCollapse == "mini_sidebar"  ? MiniSidebarWidth : SidebarWidth;
 
   return (
     <>

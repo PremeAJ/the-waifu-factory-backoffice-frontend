@@ -7,6 +7,7 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 export const CurrentCompany = () => {
   const [hovered, setHovered] = useState(false);
@@ -14,11 +15,10 @@ export const CurrentCompany = () => {
   const { activeCompany, loading, appearance } = useProfile();
   const { isCollapse } = appearance || {};
   const { isLanguage } = useContext(CustomizerContext);
-  const { isSidebarHover } = useContext(CustomizerContext);
   const {} = useSidebarState();
   const { name: companyName, logoUrl, branchNameTh, branchNameEn, icon = "" } = activeCompany || {};
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-  const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";
+  const isMobile = useIsMobile();
+  const hideMenu = !isMobile ? isCollapse == "mini_sidebar"  : "";
 
   return (
     <>

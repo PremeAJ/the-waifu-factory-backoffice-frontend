@@ -16,12 +16,12 @@ const SidebarItems = () => {
   const pathname = currentPath.split("/").slice(0, 4).join("/") || "/";
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
-  const { isSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
   const { isCollapse } = useProfile().appearance;
   const { loading: isLoading } = useContext(CustomizerContext);
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-  const hideMenu = lgUp ? isCollapse == "mini_sidebar" && !isSidebarHover : "";
+  const hideMenu = lgUp ? isCollapse == "mini_sidebar" : "";
   if (isLoading) return <SidebarItemsSkeleton />;
   return (
     <Box sx={{ px: 3 }}>

@@ -12,23 +12,12 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const { isSidebarHover, setIsSidebarHover, isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const {  isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
   const { isCollapse } = useProfile().appearance;
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
-
   const theme = useTheme();
-  const toggleWidth = isCollapse == "mini_sidebar" && !isSidebarHover ? MiniSidebarWidth : SidebarWidth;
-
-  const onHoverEnter = () => {
-    if (isCollapse == "mini_sidebar") {
-      setIsSidebarHover(true);
-    }
-  };
-
-  const onHoverLeave = () => {
-    setIsSidebarHover(false);
-  };
+  const toggleWidth = isCollapse == "mini_sidebar"  ? MiniSidebarWidth : SidebarWidth;
 
   return (
     <>
@@ -46,8 +35,6 @@ const Sidebar = () => {
           <Drawer
             anchor="left"
             open
-            onMouseEnter={onHoverEnter}
-            onMouseLeave={onHoverLeave}
             variant="permanent"
             slotProps={{
               paper: {

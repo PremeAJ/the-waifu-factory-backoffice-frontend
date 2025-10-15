@@ -65,12 +65,10 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }
 
   useEffect(() => {
-    console.log("🚀 ~ ProfileProvider ~ appearance:", appearance)
     document.documentElement.setAttribute("class", appearance.activeMode);
     document.documentElement.setAttribute("data-color-theme", appearance.activeTheme);
     document.documentElement.setAttribute("data-sidebar-type", appearance.isCollapse);
     document.documentElement.setAttribute("data-boxed-layout", appearance.isLayout);
-
   }, [appearance]);
 
   const updateActiveCompany = async (companyId: string) => {
