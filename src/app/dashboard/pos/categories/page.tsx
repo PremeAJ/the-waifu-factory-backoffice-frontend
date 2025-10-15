@@ -12,8 +12,8 @@ const CategoriesPage = () => {
   return (
     <PageContainer title="Categories" description="Categories">
       <Breadcrumb title="Categories" items={BCrumb} />
-      <BlankCard>
-        <BaseCardContent>
+      <BlankCard >
+        <BaseCardContent >
           <CategoriesProvider>
             <CategoriesList />
           </CategoriesProvider>

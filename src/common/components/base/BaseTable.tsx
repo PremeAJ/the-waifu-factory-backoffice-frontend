@@ -197,9 +197,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
               key={`mobile-skel-${si}`}
               sx={{
                 p: 0,
-                borderRadius: 2,
                 boxShadow: 1,
-                bgcolor: "#fff",
                 overflow: "hidden",
               }}
             >
