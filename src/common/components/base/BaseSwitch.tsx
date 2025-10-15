@@ -1,0 +1,36 @@
+import { Switch, SwitchProps } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const BaseSwitch = styled((props: SwitchProps) => <Switch {...props} />)(({ theme }) => ({
+  '&.MuiSwitch-root': {
+    width: '68px',
+    height: '49px',
+  },
+  '&  .MuiButtonBase-root': {
+    top: '6px',
+    left: '6px',
+  },
+  '&  .MuiButtonBase-root.Mui-checked .MuiSwitch-thumb': {
+    backgroundColor: theme.palette.primary.main,
+  },
+  '& .MuiSwitch-thumb': {
+    width: '18px',
+    height: '18px',
+    borderRadius: '6px',
+  },
+  '& .MuiSwitch-track': {
+    backgroundColor: theme.palette.grey[200],
+    opacity: 1,
+    borderRadius: '5px',
+  },
+  '& .MuiSwitch-switchBase': {
+    '&.Mui-checked': {
+      '& + .MuiSwitch-track': {
+        backgroundColor: theme.palette.primary.main,
+        opacity: 0.18,
+      },
+    },
+  },
+}));
+
+export default BaseSwitch;
