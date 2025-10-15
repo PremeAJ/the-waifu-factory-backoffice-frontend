@@ -18,11 +18,11 @@ interface CustomizerContextState {
   ////setActiveLayout: (layout: string) => void;
   isCardShadow: boolean;
   setIsCardShadow: (shadow: boolean) => void;
-  isLayout: string;
-  setIsLayout: (layout: string) => void;
+  ////isLayout: string;
+  /////setIsLayout: (layout: string) => void;
   isBorderRadius: number;
   setIsBorderRadius: (radius: number) => void;
-  isCollapse: string;
+  ////isCollapse: string;
   setIsCollapse: (collapse: string) => void;
   isSidebarHover: boolean;
   setIsSidebarHover: (isHover: boolean) => void;
@@ -49,7 +49,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   //// const [activeTheme, setActiveTheme] = useState<string>(config.activeTheme);
   //// const [activeLayout, setActiveLayout] = useState<string>(config.activeLayout);
   const [isCardShadow, setIsCardShadow] = useState<boolean>(config.isCardShadow);
-  const [isLayout, setIsLayout] = useState<string>(config.isLayout);
+  // const [isLayout, setIsLayout] = useState<string>(config.isLayout);
   //// const [isBorderRadius, setIsBorderRadius] = useState<number>(config.isBorderRadius);
   //// const [isCollapse, setIsCollapse] = useState<string>(config.isCollapse);
   //// const [isLanguage, setIsLanguage] = useState<string>(config.isLanguage);
@@ -100,7 +100,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     //// activeDir, 
     //// activeTheme, 
     ////activeLayout, 
-    isLayout, 
+    //// isLayout, 
     //// isCollapse
   ]);
 
@@ -110,7 +110,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     //// activeTheme: string;
     ////activeLayout: string;
     isCardShadow: boolean;
-    isLayout: string;
+    //// isLayout: string;
     //// isBorderRadius: number;
     //// isCollapse: string;
     //// isLanguage: string;
@@ -126,7 +126,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// activeTheme,
         /////activeLayout,
         isCardShadow,
-        isLayout,
+        ////isLayout,
         //// isBorderRadius,
         //// isCollapse,
         //// isLanguage,
@@ -153,7 +153,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         isCardShadow,
         //// isCollapse,
         //// isLanguage,
-        isLayout,
+        // isLayout,
         isMobileSidebar,
         isSidebarHover,
         loading: false,
@@ -165,7 +165,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         setIsCardShadow,
         //// setIsCollapse,
         //// setIsLanguage,
-        setIsLayout,
+        //// setIsLayout,
         setIsMobileSidebar,
         setIsSidebarHover,
         updateAppearance,

@@ -57,7 +57,6 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [appearanceData?.data]);
 
-  // const appearance: Appearance = appearanceData?.data || localAppearance || defaultAppearance;
   const appearance: Appearance = {
     ...defaultAppearance,
     ...localAppearance,
@@ -66,9 +65,12 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }
 
   useEffect(() => {
+    console.log("🚀 ~ ProfileProvider ~ appearance:", appearance)
     document.documentElement.setAttribute("class", appearance.activeMode);
     document.documentElement.setAttribute("data-color-theme", appearance.activeTheme);
     document.documentElement.setAttribute("data-sidebar-type", appearance.isCollapse);
+    document.documentElement.setAttribute("data-boxed-layout", appearance.isLayout);
+
   }, [appearance]);
 
   const updateActiveCompany = async (companyId: string) => {
@@ -158,20 +160,20 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
   const value: ProfileContextType = {
-    activeCompany: activeCompanyData?.data || null,
-    activeCompanyMutate,
     appearance,
-    appearanceMutate,
     changeEmail,
-    companyList: companyListData?.data || [],
+    uploadAvatar,
+    updateProfile,
+    refreshProfile,
+    appearanceMutate,
+    updateAppearance,
     companyListMutate,
+    activeCompanyMutate,
+    updateActiveCompany,
+    companyList: companyListData?.data || [],
+    activeCompany: activeCompanyData?.data || null,
     error: activeCompanyError || companyListError || appearanceError,
     loading: activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
-    refreshProfile,
-    updateActiveCompany,
-    updateProfile,
-    uploadAvatar,
-    updateAppearance,
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

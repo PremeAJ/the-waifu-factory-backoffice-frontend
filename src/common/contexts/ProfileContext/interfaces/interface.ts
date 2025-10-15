@@ -79,6 +79,7 @@ export interface Appearance {
   activeTheme: string;
   isCollapse: IsCollapse;
   isBorderRadius: number;
+  isLayout: IsLayout;
 }
 
 export interface AppearanceSettings extends Appearance {}
@@ -91,3 +92,4 @@ export interface ChangeEmailPayload {
 export type IsLanguage = "en" | "th";
 export type ActiveMode = "light" | "dark";
 export type IsCollapse = "full_sidebar" | "mini_sidebar";
+export type IsLayout = 'boxed' | 'full'

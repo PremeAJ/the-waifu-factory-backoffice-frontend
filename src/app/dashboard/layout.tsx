@@ -1,20 +1,19 @@
 "use client";
 import { CompanyProvider } from "@/common/contexts/CompanyContext";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 import { styled, useTheme } from "@mui/material/styles";
 import { usePathname } from "next/navigation";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
+import AppShortcutDrawer from "@/common/components/shared/AppShortcutDrawer";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import DashboardGuard from "@/common/guards/dashboardGuard";
 import Header from "./layout/header/Header";
-import React, { useContext } from "react";
+import React from "react";
 import SessionGuard from "@/common/guards/sessionGuard";
 import Sidebar from "./layout/sidebar/Sidebar";
 import useIsMobile from "@/common/utils/state/isMobile";
-import AppShortcutDrawer from "@/common/components/shared/AppShortcutDrawer";
-import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
-import { useProfile } from "@/common/contexts/ProfileContext";
 import useIsSubMenu from "@/common/utils/state/isSubMenu";
 
 const MainWrapper = styled("div")(() => ({
@@ -35,7 +34,7 @@ const PageWrapper = styled("div")(() => ({
 
 const ignoreLayout = ["/dashboard/pos/cashier"];
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isLayout } = useContext(CustomizerContext);
+  const {isLayout} = useProfile().appearance;
   const {isCollapse } = useProfile().appearance;
   const { appearance } = useProfile();
   const { activeMode } = appearance || {};

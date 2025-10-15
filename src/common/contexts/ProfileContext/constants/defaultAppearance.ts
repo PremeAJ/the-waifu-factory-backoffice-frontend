@@ -6,4 +6,5 @@ export const defaultAppearance:Appearance = {
   activeTheme: "MATCHA_THEME",
   isCollapse: "full_sidebar",
   isBorderRadius: 8,
+  isLayout: "boxed"
 };

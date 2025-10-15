@@ -1,16 +1,15 @@
 "use client";
+import { CompanyProvider } from "@/common/contexts/CompanyContext";
+import { styled, useTheme } from "@mui/material/styles";
+import { usePathname } from "next/navigation";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { styled, useTheme } from "@mui/material/styles";
-import React, { useContext } from "react";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import Header from "@/components/layout/header/DashboardUserHeader";
-import { CompanyProvider } from "@/common/contexts/CompanyContext";
-import Sidebar from "../setting/layout/sidebar/Sidebar";
-import { usePathname } from "next/navigation";
-import useIsMobile from "@/common/utils/state/isMobile";
+import React from "react";
 import SessionGuard from "@/common/guards/sessionGuard";
-import { useProfile } from "@/common/contexts/ProfileContext";
+import Sidebar from "../setting/layout/sidebar/Sidebar";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -30,7 +29,7 @@ const PageWrapper = styled("div")(() => ({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const { isCollapse } = useProfile().appearance;
-  const { isLayout } = useContext(CustomizerContext);
+  const { isLayout } = useProfile().appearance;
   const { appearance } = useProfile();
   const { activeMode } = appearance || {};
   const isMobile = useIsMobile();
