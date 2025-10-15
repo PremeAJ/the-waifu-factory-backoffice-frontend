@@ -4,6 +4,7 @@ import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import useIsMobile from "@/common/utils/state/isMobile";
 import BaseFab from "../base/BaseFab";
 import { IconCategory } from "@tabler/icons-react";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 
 type SidebarOpenButtonProps = {
   onClick: () => void;
@@ -12,7 +13,7 @@ type SidebarOpenButtonProps = {
 
 const CategoryButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) => {
   const isMobile = useIsMobile();
-  const { isMobileSidebar } = useContext(CustomizerContext);
+  const { isMobileSidebar } = useSidebarState();
   if (isMobileSidebar || !isMobile) return null;
 
   return (

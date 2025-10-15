@@ -1,23 +1,21 @@
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles";
-import SidebarItems from "./SidebarItems";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import config from "@/common/contexts/setting/config";
-
-import Scrollbar from "@/components/custom-scroll/Scrollbar";
-import { useContext } from "react";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import config from "@/common/contexts/setting/config";
+import Drawer from "@mui/material/Drawer";
+import Scrollbar from "@/components/custom-scroll/Scrollbar";
+import SidebarItems from "./SidebarItems";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Sidebar = () => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const {  isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { isCollapse } = useProfile().appearance;
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
   const theme = useTheme();
-  const toggleWidth = isCollapse == "mini_sidebar"  ? MiniSidebarWidth : SidebarWidth;
+  const toggleWidth = isCollapse == "mini_sidebar" ? MiniSidebarWidth : SidebarWidth;
 
   return (
     <>

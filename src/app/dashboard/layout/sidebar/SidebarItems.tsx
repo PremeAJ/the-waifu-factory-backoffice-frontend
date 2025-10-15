@@ -10,13 +10,14 @@ import NavItem from "./NavItem";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 
 const SidebarItems = () => {
   const currentPath = usePathname();
   const pathname = currentPath.split("/").slice(0, 4).join("/") || "/";
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
-  const { isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const { isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { isCollapse } = useProfile().appearance;
   const { loading: isLoading } = useContext(CustomizerContext);
 

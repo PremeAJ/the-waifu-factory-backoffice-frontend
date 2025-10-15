@@ -1,24 +1,22 @@
-import { Box, Skeleton, Typography, useMediaQuery } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconTransfer } from "@tabler/icons-react";
 import { useContext, useState } from "react";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
-import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import useIsMobile from "@/common/utils/state/isMobile";
 
 export const CurrentCompany = () => {
   const [hovered, setHovered] = useState(false);
-  const [openSwitchCompany, setOpenSwitchCompany] = useState(false);
   const { activeCompany, loading, appearance } = useProfile();
   const { isCollapse } = appearance || {};
   const { isLanguage } = useContext(CustomizerContext);
-  const {} = useSidebarState();
+  const { setIsMobileSidebar, setOpenSwitchCompany } = useSidebarState();
   const { name: companyName, logoUrl, branchNameTh, branchNameEn, icon = "" } = activeCompany || {};
   const isMobile = useIsMobile();
-  const hideMenu = !isMobile ? isCollapse == "mini_sidebar"  : "";
+  const hideMenu = !isMobile ? isCollapse == "mini_sidebar" : "";
 
   return (
     <>
@@ -33,7 +31,10 @@ export const CurrentCompany = () => {
           cursor: "pointer",
           position: "relative",
         }}
-        onClick={() => setOpenSwitchCompany(true)}
+        onClick={() => {
+          setOpenSwitchCompany(true);
+          setIsMobileSidebar(false);
+        }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -87,7 +88,6 @@ export const CurrentCompany = () => {
           </Box>
         )}
       </Box>
-      <SelectCompanyDialog open={openSwitchCompany} onClose={() => setOpenSwitchCompany(false)} />
     </>
   );
 };

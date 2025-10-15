@@ -26,8 +26,8 @@ interface CustomizerContextState {
   setIsCollapse: (collapse: string) => void;
   ////isSidebarHover: boolean;
   ////setIsSidebarHover: (isHover: boolean) => void;
-  isMobileSidebar: boolean; //// Add this
-  setIsMobileSidebar: (isMobileSidebar: boolean) => void;
+  /////isMobileSidebar: boolean; //// Add this
+  ////setIsMobileSidebar: (isMobileSidebar: boolean) => void;
   appearanceMutate: () => Promise<void>;
   loading: boolean;
   error: Error | null;
@@ -54,7 +54,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
   //// const [isCollapse, setIsCollapse] = useState<string>(config.isCollapse);
   //// const [isLanguage, setIsLanguage] = useState<string>(config.isLanguage);
   ////const [isSidebarHover, setIsSidebarHover] = useState<boolean>(false);
-  const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
+  ////const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
 
   const {
     data: userAppearanceData,
@@ -115,7 +115,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
     //// isCollapse: string;
     //// isLanguage: string;
     ////isSidebarHover: boolean;
-    isMobileSidebar: boolean;
+    ////isMobileSidebar: boolean;
   };
 
   const updateAppearance = async (customPayload?: Partial<AppearancePayload>) => {
@@ -131,7 +131,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// isCollapse,
         //// isLanguage,
         ////isSidebarHover,
-        isMobileSidebar,
+        ////isMobileSidebar,
         ...customPayload,
       };
       await appearanceMutate(patchFetcher("/api/user/setting/appearnce", payload));
@@ -154,7 +154,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// isCollapse,
         //// isLanguage,
         // isLayout,
-        isMobileSidebar,
+        ////isMobileSidebar,
         ////isSidebarHover,
         loading: false,
         //// setActiveDir,
@@ -166,7 +166,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         //// setIsCollapse,
         //// setIsLanguage,
         //// setIsLayout,
-        setIsMobileSidebar,
+        ////setIsMobileSidebar,
         ////setIsSidebarHover,
         updateAppearance,
       }}

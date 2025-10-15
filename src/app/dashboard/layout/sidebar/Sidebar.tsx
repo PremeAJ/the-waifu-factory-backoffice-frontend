@@ -1,6 +1,4 @@
 import { CurrentCompany } from "./SidebarProfile/CurrentCompany";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { useContext } from "react";
 import { useTheme } from "@mui/material/styles";
 import BaseScrollbar from "@/common/components/base/BaseScrollBar";
 import Box from "@mui/material/Box";
@@ -9,10 +7,11 @@ import Drawer from "@mui/material/Drawer";
 import SidebarItems from "./SidebarItems";
 import useIsMobile from "@/common/utils/state/isMobile";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 
 const Sidebar = () => {
   const isMobie = useIsMobile();
-  const {  isMobileSidebar, setIsMobileSidebar } = useContext(CustomizerContext);
+  const {  isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { isCollapse } = useProfile().appearance;
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;

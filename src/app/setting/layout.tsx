@@ -1,5 +1,4 @@
 "use client";
-import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 import { styled, useTheme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import Box from "@mui/material/Box";
@@ -31,7 +30,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const isMobile = useIsMobile();
 
   return (
-    <SidebarStateProvider>
       <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
         <Sidebar />
         <PageWrapper className="page-wrapper" sx={{ ...(isCollapse === "mini_sidebar" && { [theme.breakpoints.up("lg")]: { ml: `87px` } }) }}>
@@ -46,6 +44,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </Container>
         </PageWrapper>
       </MainWrapper>
-    </SidebarStateProvider>
   );
 }

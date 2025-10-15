@@ -11,6 +11,7 @@ import MyApp from "./app";
 import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 import React from "react";
 import ScrollToTopButton from "../common/components/floating/ScrollToTopButton";
+import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 
 export const metadata: Metadata = {
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
@@ -27,25 +28,27 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <EncryptProvider>
-      <NextAuthProvider>
-        <ProfileProvider>
-          <AuthProvider>
-            <CustomizerContextProvider>
-              <html lang="en" suppressHydrationWarning>
-                <Head />
-                <body>
-                  <MyApp>
-                    {children}
-                    <ThemeAwareTopLoader />
-                    <ActionButton />
-                    <ScrollToTopButton />
-                  </MyApp>
-                </body>
-              </html>
-            </CustomizerContextProvider>
-          </AuthProvider>
-        </ProfileProvider>
-      </NextAuthProvider>
+      <SidebarStateProvider>
+        <NextAuthProvider>
+          <ProfileProvider>
+            <AuthProvider>
+              <CustomizerContextProvider>
+                <html lang="en" suppressHydrationWarning>
+                  <Head />
+                  <body>
+                    <MyApp>
+                      {children}
+                      <ThemeAwareTopLoader />
+                      <ActionButton />
+                      <ScrollToTopButton />
+                    </MyApp>
+                  </body>
+                </html>
+              </CustomizerContextProvider>
+            </AuthProvider>
+          </ProfileProvider>
+        </NextAuthProvider>
+      </SidebarStateProvider>
     </EncryptProvider>
   );
 }
