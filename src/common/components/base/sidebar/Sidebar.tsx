@@ -1,4 +1,4 @@
-import { CurrentCompany } from "./SidebarProfile/CurrentCompany";
+import { CurrentCompany } from "../../../../app/dashboard/layout/sidebar/SidebarProfile/CurrentCompany";
 import { useTheme } from "@mui/material/styles";
 import BaseScrollbar from "@/common/components/base/BaseScrollBar";
 import Box from "@mui/material/Box";
@@ -8,8 +8,13 @@ import SidebarItems from "./SidebarItems";
 import useIsMobile from "@/common/utils/state/isMobile";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import type { NavGroup as NavGroupType } from "@/common/utils/types/layout/sidebar";
 
-const Sidebar = () => {
+interface SidebarProps {
+  menuItems?: NavGroupType[];
+}
+
+const Sidebar = ({ menuItems }: SidebarProps) => {
   const isMobie = useIsMobile();
   const {  isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { isCollapse } = useProfile().appearance;
@@ -66,7 +71,7 @@ const Sidebar = () => {
                   },
                 }}
               >
-                <SidebarItems />
+                <SidebarItems menuItems={menuItems} />
               </BaseScrollbar>
               <CurrentCompany />
             </Box>
@@ -122,7 +127,7 @@ const Sidebar = () => {
                 },
               }}
             >
-              <SidebarItems />
+              <SidebarItems menuItems={menuItems} />
             </Box>
             <CurrentCompany />
           </Box>

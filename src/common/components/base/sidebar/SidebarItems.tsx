@@ -1,18 +1,22 @@
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { useContext } from "react";
 import { usePathname } from "next/navigation";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import Menuitems from "@/common/constants/sidebarMenuList/MenuItems";
 import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
 import NavItem from "./NavItem";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useProfile } from "@/common/contexts/ProfileContext";
-import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import type { NavGroup as NavGroupType } from "@/common/utils/types/layout/sidebar";
 
-const SidebarItems = () => {
+interface SidebarItemsProps {
+  menuItems?: NavGroupType[];
+}
+
+const SidebarItems = ({ menuItems = [] }: SidebarItemsProps) => {
   const currentPath = usePathname();
   const pathname = currentPath.split("/").slice(0, 4).join("/") || "/";
   const pathDirect = pathname;
@@ -27,7 +31,7 @@ const SidebarItems = () => {
   return (
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
-        {Menuitems.map((item) => {
+        {menuItems.map((item) => {
           if (item.subheader) {
             return <NavGroup item={item} hideMenu={hideMenu} key={item.subheader} />;
           } else if (item.children) {

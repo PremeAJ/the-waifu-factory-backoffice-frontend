@@ -13,9 +13,10 @@ import Header from "./layout/header/Header";
 import React from "react";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 import SessionGuard from "@/common/guards/sessionGuard";
-import Sidebar from "./layout/sidebar/Sidebar";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsSubMenu from "@/common/utils/state/isSubMenu";
+import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
+import dashboardMenu from "@/common/components/base/sidebar/item/dashboardMenu";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
@@ -52,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <DashboardGuard>
         <CompanyProvider>
           <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-            <Sidebar />
+            <BaseSidebar menuItems={dashboardMenu} />
             <PageWrapper
               className="page-wrapper"
               sx={{

@@ -18,9 +18,9 @@ import {
   IconBasket,
 } from "@tabler/icons-react";
 import { NavGroup } from "@/common/utils/types/layout/sidebar";
-import { PageUrl } from "../pageUrl";
+import { PageUrl } from "../../../../constants/pageUrl";
 
-const Menuitems: NavGroup[] = [
+const dashboardMenu: NavGroup[] = [
   {
     navlabel: true,
     subheader: "หน้าหลัก",
@@ -156,4 +156,4 @@ const Menuitems: NavGroup[] = [
   },
 ];
 
-export default Menuitems;
+export default dashboardMenu;
