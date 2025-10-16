@@ -69,7 +69,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
               <div key={item.title}>
                 {item.to ? (
                   <Link href={item.to} passHref>
-                    <Typography color="textSecondary">{item.title}</Typography>
+                    <Typography color="textPrimary" sx={{textDecoration:'underline'}}>{item.title}</Typography>
                   </Link>
                 ) : (
                   <Typography color="textPrimary">{item.title}</Typography>

@@ -88,7 +88,15 @@ const BaseTable = <T extends readonly TableHeader[]>({
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
   const isMobilePortrait = isMobile && isPortrait;
-  const { isCardShadow } = useProfile().appearance;
+  const { isCardShadow, activeMode } = useProfile().appearance;
+
+  // card boxShadow value: use white-toned shadow when activeMode === 'dark'
+  const cardBoxShadow =
+    isCardShadow
+      ? activeMode === "dark"
+        ? "0 6px 18px -6px rgba(255, 255, 255, 0.14)"
+        : theme.shadows?.[1] ?? "0 1px 3px rgba(0,0,0,0.08)"
+      : "none";
 
   // consider either legacy actions prop or new actionTemplates
   const hasActions = (actionTemplates && actionTemplates.length > 0) || !!actions;
@@ -270,7 +278,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
               key={`mobile-skel-${si}`}
               sx={{
                 p: 0,
-                boxShadow: isCardShadow ? 1 : 0,
+                boxShadow: cardBoxShadow,
                 overflow: "hidden",
               }}
             >
@@ -325,7 +333,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
             key={item.id}
             sx={{
               p: 0,
-              boxShadow: isCardShadow ? 1 : 0,
+              boxShadow: cardBoxShadow,
               overflow: "hidden",
             }}
           >

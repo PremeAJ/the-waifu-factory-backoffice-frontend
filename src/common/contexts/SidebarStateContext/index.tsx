@@ -13,13 +13,13 @@ interface SidebarStateContextProps {
 }
 
 const SidebarStateContext = createContext<SidebarStateContextProps>({
-  appShortcutisOpen: false,
   isMobileSidebar: false,
+  appShortcutisOpen: false,
+  openSwitchCompany: false,
   openAppShortcut: () => {},
   closeAppShortcut: () => {},
   toggleAppShortcut: () => {},
   setIsMobileSidebar: () => {},
-  openSwitchCompany: false,
   setOpenSwitchCompany: () => {},
 });
 
