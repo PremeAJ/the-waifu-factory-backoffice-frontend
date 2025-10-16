@@ -1,7 +1,9 @@
 'use client'
-import { Card, CardContent, Typography, Stack, Box } from '@mui/material';
+import { Card,  Typography, Stack, Box } from '@mui/material';
 import { useProfile } from '@/common/contexts/ProfileContext';
 import { useTheme } from '@mui/material/styles';
+import BaseCardContent from '@/common/components/base/BaseCardContent';
+import BaseCard from '@/common/components/base/BaseCard';
 
 type Props = {
   title?: string;
@@ -32,20 +34,20 @@ const { isCardShadow } = useProfile().appearance;
   const borderColor = theme.palette.divider;
 
   return (
-    <Card
+    <BaseCard
       sx={{ padding: 0, border: !isCardShadow ? `1px solid ${borderColor}` : 'none' }}
       elevation={isCardShadow ? 9 : 0}
       variant={!isCardShadow ? 'outlined' : undefined}
     >
       {cardheading ? (
-        <CardContent>
+        <BaseCardContent>
           <Typography variant="h5">{headtitle}</Typography>
           <Typography variant="subtitle2" color="textSecondary">
             {headsubtitle}
           </Typography>
-        </CardContent>
+        </BaseCardContent>
       ) : (
-        <CardContent sx={{ p: "30px" }}>
+        <BaseCardContent sx={{ p: "30px" }}>
           {title ? (
             <Stack
               direction="row"
@@ -70,12 +72,12 @@ const { isCardShadow } = useProfile().appearance;
           ) : null}
 
           {children}
-        </CardContent>
+        </BaseCardContent>
       )}
 
       {middlecontent}
       {footer}
-    </Card>
+    </BaseCard>
   );
 };
 
