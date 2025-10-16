@@ -12,8 +12,8 @@ export const CurrentCompany = () => {
   const [hovered, setHovered] = useState(false);
   const { activeCompany, loading, appearance } = useProfile();
   const { isCollapse } = appearance || {};
-  const { isLanguage } = useContext(CustomizerContext);
   const { setIsMobileSidebar, setOpenSwitchCompany } = useSidebarState();
+  const { isLanguage } = useContext(CustomizerContext);
   const { name: companyName, logoUrl, branchNameTh, branchNameEn, icon = "" } = activeCompany || {};
   const isMobile = useIsMobile();
   const hideMenu = !isMobile ? isCollapse == "mini_sidebar" : "";

@@ -318,7 +318,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
               )}
             </Box>
             {/* divider between main and subitems when expanded */}
-            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 ? <Divider sx={{ my: 1 }} /> : null}
+            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 ? <Divider sx={{ my: 1, }} /> : null}
 
             {/* SubItems (expand) */}
             {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 ? (
@@ -367,7 +367,6 @@ const BaseTable = <T extends readonly TableHeader[]>({
                         </Box>
                       )}
                     </Box>
-                    {/* divider between sub-items (not after last) */}
                     {idx < item.subItems!.length - 1 && <Divider sx={{ my: 1 }} />}
                   </Box>
                 ))}

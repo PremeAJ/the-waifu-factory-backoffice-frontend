@@ -1,4 +1,4 @@
-import { CurrentCompany } from "../../../../app/dashboard/layout/sidebar/SidebarProfile/CurrentCompany";
+import { CurrentCompany } from "./CurrentCompany";
 import { useTheme } from "@mui/material/styles";
 import BaseScrollbar from "@/common/components/base/BaseScrollBar";
 import Box from "@mui/material/Box";

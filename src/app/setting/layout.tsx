@@ -1,13 +1,14 @@
 "use client";
 import { styled, useTheme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import React from "react";
-import Sidebar from "./layout/sidebar/Sidebar";
-import useIsMobile from "@/common/utils/state/isMobile";
 import settingSidebarItem from "@/common/components/base/sidebar/item/settingSidebarItem";
-import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
+import useIsMobile from "@/common/utils/state/isMobile";
+import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
@@ -26,25 +27,26 @@ const PageWrapper = styled("div")(() => ({
 }));
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isLayout } = useProfile().appearance;
-  const { isCollapse, activeMode } = useProfile().appearance;
-  const theme = useTheme();
+  const { isCollapse, activeMode, isLayout } = useProfile().appearance;
+  const { openSwitchCompany, setOpenSwitchCompany } = useSidebarState();
   const isMobile = useIsMobile();
+  const theme = useTheme();
 
   return (
-      <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-            <BaseSidebar menuItems={settingSidebarItem} />
-        <PageWrapper className="page-wrapper" sx={{ ...(isCollapse === "mini_sidebar" && { [theme.breakpoints.up("lg")]: { ml: `87px` } }) }}>
-          <Container
-            sx={{
-              pt: "30px",
-              maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
-              mt: isMobile ? undefined : 6,
-            }}
-          >
-            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
-          </Container>
-        </PageWrapper>
-      </MainWrapper>
+    <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
+      <BaseSidebar menuItems={settingSidebarItem} />
+      <PageWrapper className="page-wrapper" sx={{ ...(isCollapse === "mini_sidebar" && { [theme.breakpoints.up("lg")]: { ml: `87px` } }) }}>
+        <Container
+          sx={{
+            pt: "30px",
+            maxWidth: isLayout === "boxed" ? "lg" : "100%!important",
+            mt: isMobile ? undefined : 6,
+          }}
+        >
+          <SelectCompanyDialog open={openSwitchCompany} onClose={() => setOpenSwitchCompany(false)} />
+          <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
+        </Container>
+      </PageWrapper>
+    </MainWrapper>
   );
 }
