@@ -6,6 +6,8 @@ import Container from "@mui/material/Container";
 import React from "react";
 import Sidebar from "./layout/sidebar/Sidebar";
 import useIsMobile from "@/common/utils/state/isMobile";
+import settingSidebarItem from "@/common/components/base/sidebar/item/settingSidebarItem";
+import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
@@ -31,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
       <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-        <Sidebar />
+            <BaseSidebar menuItems={settingSidebarItem} />
         <PageWrapper className="page-wrapper" sx={{ ...(isCollapse === "mini_sidebar" && { [theme.breakpoints.up("lg")]: { ml: `87px` } }) }}>
           <Container
             sx={{

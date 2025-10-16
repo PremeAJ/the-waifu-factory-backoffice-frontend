@@ -20,7 +20,7 @@ import {
 import { NavGroup } from "@/common/utils/types/layout/sidebar";
 import { PageUrl } from "../../../../constants/pageUrl";
 
-const dashboardMenu: NavGroup[] = [
+const dashboardSidebarItem: NavGroup[] = [
   {
     navlabel: true,
     subheader: "หน้าหลัก",
@@ -156,4 +156,4 @@ const dashboardMenu: NavGroup[] = [
   },
 ];
 
-export default dashboardMenu;
+export default dashboardSidebarItem;

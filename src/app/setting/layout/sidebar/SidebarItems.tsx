@@ -5,7 +5,7 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import Menuitems from "./MenuItems";
+import Menuitems from "../../../../common/components/base/sidebar/item/settingSidebarItem";
 import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
 import NavItem from "./NavItem";

@@ -16,7 +16,7 @@ import SessionGuard from "@/common/guards/sessionGuard";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsSubMenu from "@/common/utils/state/isSubMenu";
 import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
-import dashboardMenu from "@/common/components/base/sidebar/item/dashboardMenu";
+import dashboardSidebarItem from "@/common/components/base/sidebar/item/dashboardSidebarItem";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <DashboardGuard>
         <CompanyProvider>
           <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-            <BaseSidebar menuItems={dashboardMenu} />
+            <BaseSidebar menuItems={dashboardSidebarItem} />
             <PageWrapper
               className="page-wrapper"
               sx={{

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@mui/material/styles";
 import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
-import Menuitems from "../layout/sidebar/MenuItems";
+import Menuitems from "../../../common/components/base/sidebar/item/settingSidebarItem";
 import React, { useContext, useState } from "react";
 
 const MobileSettingsList = () => {
