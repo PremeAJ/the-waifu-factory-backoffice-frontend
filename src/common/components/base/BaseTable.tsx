@@ -24,6 +24,9 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import BaseTooltip from "./BaseTooltip";
+// add default action icons
+import { IconEdit, IconPlus, IconTrash, IconEye } from "@tabler/icons-react";
 
 interface TableHeader {
   key: string;
@@ -37,6 +40,16 @@ interface DataItem extends Record<string, any> {
   id: string;
   subItems?: DataItem[];
 }
+
+type ActionTemplate = {
+  key?: string;
+  type?: string;
+  icon?: React.ReactNode;
+  tooltip?: string | ((item: DataItem) => string);
+  color?: "inherit" | "primary" | "error" | "default" | "secondary" | "info" | "success" | "warning" | string;
+  disabled?: (item: DataItem) => boolean;
+  onClick?: (item: DataItem) => void;
+};
 
 interface BaseTableProps<T extends readonly TableHeader[]> {
   headers: T;
@@ -52,7 +65,8 @@ interface BaseTableProps<T extends readonly TableHeader[]> {
     onPageChange: (event: unknown, newPage: number) => void;
     onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   };
-  rowHeaderColor?: "primary" | "success" | "error"; // เพิ่ม prop นี้
+  rowHeaderColor?: "primary" | "success" | "error";
+  actionTemplates?: ActionTemplate[]; // template-driven actions (merged with defaults below)
 }
 
 const BaseTable = <T extends readonly TableHeader[]>({
@@ -64,6 +78,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
   loading = false,
   pagination,
   rowHeaderColor,
+  actionTemplates, // added
 }: BaseTableProps<T>) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -74,6 +89,9 @@ const BaseTable = <T extends readonly TableHeader[]>({
   const isPortrait = useIsPortrait();
   const isMobilePortrait = isMobile && isPortrait;
   const { isCardShadow } = useProfile().appearance;
+
+  // consider either legacy actions prop or new actionTemplates
+  const hasActions = (actionTemplates && actionTemplates.length > 0) || !!actions;
 
   const slicedData = useMemo(() => {
     return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -126,7 +144,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
             <Skeleton variant="text" width="80%" />
           </TableCell>
         ))}
-        {actions && (
+        {hasActions && (
           <TableCell size="small" align="center">
             <Skeleton variant="rectangular" width={80} height={32} />
           </TableCell>
@@ -138,7 +156,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
   // Render empty state
   const renderEmptyState = () => (
     <TableRow>
-      <TableCell colSpan={headers.length + (enableSelection ? 1 : 0) + (actions ? 1 : 0) + 1} align="center" sx={{ py: 8 }}>
+      <TableCell colSpan={headers.length + (enableSelection ? 1 : 0) + (hasActions ? 1 : 0) + 1} align="center" sx={{ py: 8 }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
           <Box sx={{ color: "text.secondary", fontSize: "1.2rem" }}>ไม่พบข้อมูล</Box>
           <Box sx={{ color: "text.disabled", fontSize: "0.875rem" }}>ลองเปลี่ยนเงื่อนไขการค้นหา หรือรีเฟรชหน้าใหม่</Box>
@@ -146,6 +164,65 @@ const BaseTable = <T extends readonly TableHeader[]>({
       </TableCell>
     </TableRow>
   );
+
+  // default templates (can be overridden by provided actionTemplates entries)
+  const defaultActionTemplates: Record<string, Partial<ActionTemplate>> = {
+    add: {
+      type: "add",
+      icon: <IconPlus />,
+      tooltip: "Add",
+      color: "primary",
+    },
+    edit: {
+      type: "edit",
+      icon: <IconEdit />,
+      tooltip: "Edit",
+      color: "primary",
+    },
+    delete: {
+      type: "delete",
+      icon: <IconTrash />,
+      tooltip: "Delete",
+      color: "error",
+    },
+    view: {
+      type: "view",
+      icon: <IconEye />,
+      tooltip: "View",
+      color: "info",
+    },
+  };
+
+  const renderActionButtons = (item: DataItem) => {
+    if (actionTemplates && actionTemplates.length > 0) {
+      return (
+        <>
+          {actionTemplates.map((tpl, idx) => {
+            // merge defaults for tpl.type with provided tpl (provided tpl overrides defaults)
+            const defaults = tpl.type ? defaultActionTemplates[tpl.type] || {} : {};
+            const resolved: ActionTemplate = { ...(defaults as ActionTemplate), ...(tpl as ActionTemplate) };
+
+            const disabled = resolved.disabled ? resolved.disabled(item) : false;
+            const tooltipText = typeof resolved.tooltip === "function" ? resolved.tooltip(item) : resolved.tooltip || "";
+            return (
+              <Box key={resolved.key ?? `${resolved.type ?? "action"}-${idx}`} sx={{ display: "inline-flex", mx: 0.5 }}>
+                <BaseTooltip title={tooltipText}>
+                  <span>
+                    <IconButton size="small" disabled={disabled} onClick={() => resolved.onClick?.(item)} color={resolved.color as any}>
+                      {resolved.icon ?? <span style={{ fontSize: 12 }}>{resolved.type}</span>}
+                    </IconButton>
+                  </span>
+                </BaseTooltip>
+              </Box>
+            );
+          })}
+        </>
+      );
+    }
+
+    if (actions) return actions(item);
+    return null;
+  };
 
   const renderRow = (item: DataItem, isSubItem = false) => (
     <TableRow key={item.id} hover sx={isSubItem ? { backgroundColor: "rgba(0, 0, 0, 0.02)" } : {}}>
@@ -173,11 +250,11 @@ const BaseTable = <T extends readonly TableHeader[]>({
           {renderCell(header, item)}
         </TableCell>
       ))}
-      {actions && (
+      {hasActions ? (
         <TableCell size="small" align="center">
-          {actions(item)}
+          {renderActionButtons(item)}
         </TableCell>
-      )}
+      ) : null}
     </TableRow>
   );
 
@@ -297,7 +374,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
                   );
                 })}
               </Box>
-              {actions && (
+              {hasActions && (
                 <Box
                   sx={{
                     width: "10%",
@@ -309,11 +386,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
                     mr: 2,
                   }}
                 >
-                  {React.Children.toArray(actions(item)).map((child, idx) => (
-                    <Box key={idx} sx={{ display: "flex", flexDirection: "column" }}>
-                      {child}
-                    </Box>
-                  ))}
+                  {renderActionButtons(item)}
                 </Box>
               )}
             </Box>
@@ -347,7 +420,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
                           );
                         })}
                       </Box>
-                      {actions && (
+                      {hasActions && (
                         <Box
                           sx={{
                             width: "10%",
@@ -359,11 +432,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
                             mr: 2,
                           }}
                         >
-                          {React.Children.toArray(actions(subItem)).map((child, idx2) => (
-                            <Box key={idx2} sx={{ display: "flex", flexDirection: "column" }}>
-                              {child}
-                            </Box>
-                          ))}
+                          {renderActionButtons(subItem)}
                         </Box>
                       )}
                     </Box>
@@ -411,7 +480,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
                   {header.label}
                 </TableCell>
               ))}
-              {actions && (
+              {hasActions && (
                 <TableCell size="small" align="center" sx={{ border: 0 }}>
                   Actions
                 </TableCell>

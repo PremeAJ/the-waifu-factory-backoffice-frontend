@@ -1,21 +1,21 @@
 "use client";
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useRouter } from "next/navigation";
 import BaseButton from "@/common/components/base/BaseButton";
-import BaseChip from "@/common/components/base/BaseChip"; // เพิ่ม import
+import BaseChip from "@/common/components/base/BaseChip";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
 import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
-import BaseTooltip from "@/common/components/base/BaseTooltip";
-import ProductDialog from "./ProductDialog";
 import React, { useState, useMemo } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import { getProductHeaders } from "../constants/productHeaders";
+import ProductDialog from "./ProductDialog";
 
 type DialogState = {
   open: boolean;
@@ -44,87 +44,39 @@ function ProductsList() {
     }));
   }, [products]);
 
-  const headers: any = [
-    {
-      key: "sku",
-      label: "SKU / UPC",
-      align: "left",
-      width: "20%",
-      primary: true,
-      render: (_val: any, item: any) => item.sku ?? item.upc ?? "-",
-    },
-    {
-      key: "nameTh",
-      label: "Name (TH)",
-      align: "center",
-      width: "20%",
-      render: (_val: any, item: any) => (item.parentNameTh ? item.variantOption?.nameTh || item.parentNameTh : item.nameTh),
-    },
-    {
-      key: "price",
-      label: "Price",
-      align: "center",
-      width: "15%",
-      render: (_val: any, item: any) => (typeof item.price === "number" ? item.price : "-"),
-    },
-    {
-      key: "stock",
-      label: "Stock",
-      align: "center",
-      width: "10%",
-      render: (_val: any, item: any) => {
-        if (typeof item.totalStock === "number") return `${item.totalStock} ${item.unit || ""}`;
-        if (item.inventory?.stock !== undefined) return `${item.inventory.stock} ${item.unit || ""}`;
-        return "-";
-      },
-    },
-    {
-      key: "status",
-      label: "Status",
-      align: "center",
-      width: "20%",
-      render: (_val: any, item: any) => {
-        const s = item.status ?? item.inventory?.status;
-        return s ? <BaseChip preset={s} /> : "-";
-      },
-    },
-  ];
+  const headers = useMemo(() => getProductHeaders(), []);
 
-  const tableActions = (item: any) => {
-    return (
-      <>
-        <BaseTooltip title="แก้ไข">
-          <IconButton
-            onClick={() => {
-              setDialogState({
-                open: true,
-                type: "edit",
-                categoryId: item.id,
-              });
-            }}
-            color={isMobilePortrait ? "inherit" : "primary"}
-          >
-            <IconEdit width={22} />
-          </IconButton>
-        </BaseTooltip>
-        <BaseTooltip title={item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีหมวดหมู่ย่อย" : "ลบ"}>
-          <span>
-            <IconButton
-              disabled={item?.subItems?.length > 0}
-              onClick={() => {
-                setSelectedItems([item.id]);
-                setOpenDeleteDialog(true);
-              }}
-              color="error"
-              style={item?.subItems?.length > 0 ? { pointerEvents: "none" } : undefined}
-            >
-              <IconTrash width={22} />
-            </IconButton>
-          </span>
-        </BaseTooltip>
-      </>
-    );
-  };
+  // new: actionTemplates (BaseTable will merge with defaults like edit/delete icons)
+  const actionTemplates = useMemo(
+    () => [
+      {
+        key: "edit",
+        type: "edit",
+        icon: <IconEdit width={18} />,
+        tooltip: "แก้ไข",
+        color: isMobilePortrait ? "inherit" : "primary",
+        onClick: (item: any) =>
+          setDialogState({
+            open: true,
+            type: "edit",
+            categoryId: item.id,
+          }),
+      },
+      {
+        key: "delete",
+        type: "delete",
+        icon: <IconTrash width={18} />,
+        tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีหมวดหมู่ย่อย" : "ลบ"),
+        color: "error",
+        disabled: (item: any) => !!(item?.subItems?.length > 0),
+        onClick: (item: any) => {
+          setSelectedItems([item.id]);
+          setOpenDeleteDialog(true);
+        },
+      },
+    ],
+    [isMobilePortrait]
+  );
 
   const handleConfirmDelete = async () => {
     for (const id of selectedItems) {
@@ -180,11 +132,13 @@ function ProductsList() {
           <BaseButton variant="contained" onClick={() => onClickAdd()} fullWidth={false} preset="add" label="Add Product" />
         )}
       </Stack>
+
       <BaseTable
         loading={loading}
         headers={headers}
         data={tableData}
-        actions={tableActions}
+        // use template-driven actions (BaseTable will apply defaults and render)
+        actionTemplates={actionTemplates}
         enableSelection={false}
         pagination={{
           total: pageOptions.total || 0,
@@ -194,13 +148,14 @@ function ProductsList() {
           onRowsPerPageChange: handleRowsPerPageChange,
         }}
       />
+
       <ProductDialog open={dialogState.open} onClose={handleCloseDialog} type={dialogState.type} categoryId={dialogState.categoryId} />
       <BaseDialog
         loading={loading}
         cancelText="Cancel"
         confirmColor="error"
         confirmText="Delete"
-        content="Are you sure you want to delete the selected categories?"
+        content="Are you sure you want to delete the selected products?"
         onClose={() => setOpenDeleteDialog(false)}
         onConfirm={handleConfirmDelete}
         open={openDeleteDialog}

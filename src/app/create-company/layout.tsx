@@ -8,7 +8,6 @@ import Container from "@mui/material/Container";
 import Header from "@/components/layout/header/DashboardUserHeader";
 import React from "react";
 import SessionGuard from "@/common/guards/sessionGuard";
-import Sidebar from "../setting/layout/sidebar/Sidebar";
 import useIsMobile from "@/common/utils/state/isMobile";
 
 const MainWrapper = styled("div")(() => ({
@@ -41,7 +40,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <CompanyProvider>
       <SessionGuard>
         <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-          {settingsPath && <Sidebar />}
           <PageWrapper
             className="page-wrapper"
             sx={{
