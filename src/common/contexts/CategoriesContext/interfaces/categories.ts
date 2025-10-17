@@ -11,12 +11,6 @@ export interface CategoryType {
   parent: string | null;
   isActive: boolean;
   status: CategoryStatus;
-  createdAt: string;
-  updatedAt: string | null;
-  deletedAt: string | null;
-  createdBy: string;
-  updatedBy: string | null;
-  deletedBy: string | null;
   subCategories: CategoryType[];
 }
 

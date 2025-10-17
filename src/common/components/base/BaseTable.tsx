@@ -25,7 +25,7 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import BaseTooltip from "./BaseTooltip";
-// add default action icons
+// create default action icons
 import { IconEdit, IconPlus, IconTrash, IconEye } from "@tabler/icons-react";
 
 interface TableHeader {
@@ -46,6 +46,7 @@ type ActionTemplate = {
   type?: string;
   icon?: React.ReactNode;
   tooltip?: string | ((item: DataItem) => string);
+  hide?: boolean | ((item: DataItem) => boolean);
   color?: "inherit" | "primary" | "error" | "default" | "secondary" | "info" | "success" | "warning" | string;
   disabled?: (item: DataItem) => boolean;
   onClick?: (item: DataItem) => void;
@@ -91,12 +92,11 @@ const BaseTable = <T extends readonly TableHeader[]>({
   const { isCardShadow, activeMode } = useProfile().appearance;
 
   // card boxShadow value: use white-toned shadow when activeMode === 'dark'
-  const cardBoxShadow =
-    isCardShadow
-      ? activeMode === "dark"
-        ? "0 6px 18px -6px rgba(255, 255, 255, 0.14)"
-        : theme.shadows?.[1] ?? "0 1px 3px rgba(0,0,0,0.08)"
-      : "none";
+  const cardBoxShadow = isCardShadow
+    ? activeMode === "dark"
+      ? "0 6px 18px -6px rgba(255, 255, 255, 0.14)"
+      : theme.shadows?.[1] ?? "0 1px 3px rgba(0,0,0,0.08)"
+    : "none";
 
   // consider either legacy actions prop or new actionTemplates
   const hasActions = (actionTemplates && actionTemplates.length > 0) || !!actions;
@@ -175,8 +175,8 @@ const BaseTable = <T extends readonly TableHeader[]>({
 
   // default templates (can be overridden by provided actionTemplates entries)
   const defaultActionTemplates: Record<string, Partial<ActionTemplate>> = {
-    add: {
-      type: "add",
+    create: {
+      type: "create",
       icon: <IconPlus />,
       tooltip: "Add",
       color: "primary",
@@ -209,7 +209,8 @@ const BaseTable = <T extends readonly TableHeader[]>({
             // merge defaults for tpl.type with provided tpl (provided tpl overrides defaults)
             const defaults = tpl.type ? defaultActionTemplates[tpl.type] || {} : {};
             const resolved: ActionTemplate = { ...(defaults as ActionTemplate), ...(tpl as ActionTemplate) };
-
+            const isHidden = typeof resolved.hide === "function" ? resolved.hide(item) : resolved.hide;
+            if (isHidden) return null;
             const disabled = resolved.disabled ? resolved.disabled(item) : false;
             const tooltipText = typeof resolved.tooltip === "function" ? resolved.tooltip(item) : resolved.tooltip || "";
             return (
@@ -259,7 +260,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
         </TableCell>
       ))}
       {hasActions ? (
-        <TableCell size="small" align="center">
+        <TableCell size="small" sx={{ display: "flex", justifyContent: "flex-end", gap: 1, pr: 2 }}>
           {renderActionButtons(item)}
         </TableCell>
       ) : null}
@@ -389,7 +390,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "flex-end",
                     alignSelf: "center",
                     mr: 2,
                   }}
@@ -399,7 +400,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
               )}
             </Box>
             {/* divider between main and subitems when expanded */}
-            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 ? <Divider sx={{ my: 1, }} /> : null}
+            {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 ? <Divider sx={{ my: 1 }} /> : null}
 
             {/* SubItems (expand) */}
             {openRows[item.id] && item.subItems?.length && item.subItems.length > 0 ? (
@@ -435,7 +436,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
-                            justifyContent: "center",
+                            justifyContent: "flex-end",
                             alignSelf: "center",
                             mr: 2,
                           }}

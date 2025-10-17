@@ -9,7 +9,7 @@ import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 import useIsMobile from "@/common/utils/state/isMobile";
-import {  renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import { useUser } from "@/common/contexts/UserContext";
 import { categoryNameEn, categoryNameThRequired, statusRequired, stringOptional } from "@/common/utils/validator/yup";
 
@@ -20,6 +20,7 @@ interface CategoryDialogProps {
   onClose: () => void;
   type: DialogType;
   categoryId?: string | null;
+  parent?: string | null;
 }
 
 const validationSchema = yup.object({
@@ -29,8 +30,7 @@ const validationSchema = yup.object({
   status: statusRequired,
 });
 
-const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, categoryId }) => {
-  const {user} = useUser();
+const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, categoryId, parent }) => {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [categoryData, setCategoryData] = useState<any>(null);
@@ -39,11 +39,11 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   const hasSubCategories = categoryData?.subCategories?.length > 0;
   const parentCategoryOptions = useMemo(() => {
     if (!dropdown || dropdown.length === 0) return [];
-    
+
     return dropdown
       .filter((cat) => {
         if (type === "edit" && categoryId) {
-          return cat.id !== categoryId; 
+          return cat.id !== categoryId;
         }
         return true;
       })
@@ -54,11 +54,17 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       }));
   }, [dropdown, type, categoryId]);
 
+  useEffect(() => {
+    if (type === "create" && open && parent) {
+      formik.setFieldValue("parent", parent);
+    }
+  }, [type, open, parent]);
+
   const statusOptions = [
-    { value: 'active', text: "เปิดใช้งาน" },
-    { value: 'inactive', text: "ปิดใช้งาน" },
+    { value: "active", text: "เปิดใช้งาน" },
+    { value: "inactive", text: "ปิดใช้งาน" },
   ];
-  
+
   const handleSubmit = async (values: any) => {
     setLoading(true);
 
@@ -68,7 +74,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           nameTh: values.nameTh,
           nameEn: values.nameEn || undefined,
           status: values.status,
-          parent: values.parent || null,
+          parent: parent || values.parent || null,
           icon: values.icon || null,
         });
       } else if (type === "edit" && categoryId) {
@@ -76,7 +82,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           nameTh: values.nameTh,
           nameEn: values.nameEn || undefined,
           status: values.status,
-          parent: hasSubCategories ? undefined : values.parent || null,
+          parent: hasSubCategories ? undefined : parent || values.parent || null,
           icon: values.icon || null,
         });
       }
@@ -97,7 +103,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       nameTh: "",
       nameEn: "",
       parent: "",
-      status: 'active',
+      status: "active",
       icon: "",
     },
     validationSchema,
@@ -177,45 +183,27 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
             </Grid>
 
             <Grid size={isMobile ? 12 : 6}>
-              <BaseAutoComplete
+              <BaseDropdown
+                loading={fetchLoading}
                 formik={formik}
                 name="parent"
                 label="หมวดหมู่หลัก"
                 options={parentCategoryOptions}
                 placeholder="ค้นหาหมวดหมู่หลัก หรือปล่อยว่างเพื่อเป็นหมวดหมู่หลัก"
-                loading={fetchLoading}
-                disabled={type === "edit" && hasSubCategories}
-                freeSolo={false}
-                clearOnEscape
+                // disable when editing and has subcategories OR when a parent is provided (readonly prefill)
+                disabled={!!parent || (type === "edit" && hasSubCategories)}
                 orderBy={(a, b) => a.text.localeCompare(b.text)}
-                renderOption={(props, option) => {
-                  const { key, ...otherProps } = props;
-                  return (
-                    <Box 
-                      component="li" 
-                      key={key} 
-                      {...otherProps} 
-                      display="flex" 
-                      alignItems="center" 
-                      gap={1}
-                    >
-                      {option.icon && renderTablerIcon(option.icon, { size: 16 })}
-                      {option.text}
-                    </Box>
-                  );
+                renderOption={(option) => {
+                  return <Box display="flex" alignItems="center" gap={1}>
+                    {option.icon && renderTablerIcon(option.icon, { size: 16 })}
+                    {option.text}
+                  </Box>;
                 }}
               />
             </Grid>
 
             <Grid size={isMobile ? 12 : 6}>
-              <BaseDropdown 
-                loading={fetchLoading} 
-                formik={formik} 
-                name="status" 
-                label="สถานะ" 
-                options={statusOptions} 
-                required 
-              />
+              <BaseDropdown loading={fetchLoading} formik={formik} name="status" label="สถานะ" options={statusOptions} required />
             </Grid>
 
             <Grid size={isMobile ? 12 : 6}>
@@ -238,9 +226,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
 
             {formik.status && (
               <Grid size={12}>
-                <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>
-                  {formik.status}
-                </Box>
+                <Box sx={{ color: "error.main", fontSize: "0.875rem" }}>{formik.status}</Box>
               </Grid>
             )}
           </Grid>

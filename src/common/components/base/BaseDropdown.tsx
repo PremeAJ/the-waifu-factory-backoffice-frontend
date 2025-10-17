@@ -8,6 +8,7 @@ interface OptionType {
   value: any;
   text: string;
   disabled?: boolean;
+  icon?: string | null;
 }
 
 interface BaseDropdownProps extends Omit<SelectProps, "onChange" | "value"> {

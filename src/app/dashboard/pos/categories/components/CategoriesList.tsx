@@ -1,5 +1,6 @@
 "use client";
 import { Box, Stack } from "@mui/material";
+import { getCategoryHeaders } from "../constants/categoryHeaders";
 import { IconFilter, IconPlus } from "@tabler/icons-react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import { useProfile } from "@/common/contexts/ProfileContext";
@@ -12,16 +13,16 @@ import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import CategoryDialog from "./CategoryDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
-import { getCategoryHeaders } from "../constants/categoryHeaders";
 
 type DialogState = {
   open: boolean;
   type: "create" | "edit";
   categoryId?: string | null;
+  parent?: string | null;
 };
 
 function CategoriesList() {
-  const [dialogState, setDialogState] = useState<DialogState>({ open: false, type: "create", categoryId: null });
+  const [dialogState, setDialogState] = useState<DialogState>({ open: false, type: "create", categoryId: null, parent: null });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { loading, categories, search, setSearch, isActive, setIsActive, pageOptions, setPage, setPerPage, deleteCategory } = useCategories();
@@ -32,6 +33,18 @@ function CategoriesList() {
   }, [categories]);
   const headers = useMemo(() => getCategoryHeaders(isLanguage), [isLanguage]);
   const actionTemplates = [
+    {
+      type: "create",
+      tooltip: "เพิ่มหมวดหมู่ย่อย",
+      hide: (item: any) => item.parent,
+      onClick: (item: any) => {
+        setDialogState({
+          open: true,
+          type: "create",
+          parent: item.id,
+        });
+      },
+    },
     {
       type: "edit",
       tooltip: "แก้ไข",
@@ -134,9 +147,14 @@ function CategoriesList() {
           onPageChange: handlePageChange,
           onRowsPerPageChange: handleRowsPerPageChange,
         }}
-     
       />
-      <CategoryDialog open={dialogState.open} onClose={handleCloseDialog} type={dialogState.type} categoryId={dialogState.categoryId} />
+      <CategoryDialog
+        open={dialogState.open}
+        onClose={handleCloseDialog}
+        type={dialogState.type}
+        categoryId={dialogState.categoryId}
+        parent={dialogState.parent ?? undefined}
+      />
       <BaseDialog
         loading={loading}
         cancelText="Cancel"
