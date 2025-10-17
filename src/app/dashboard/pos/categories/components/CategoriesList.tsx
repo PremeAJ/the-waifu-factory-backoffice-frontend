@@ -29,22 +29,11 @@ function CategoriesList() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const {
-    loading,
-    categories,
-    filters,
-    setFilters,
-    pageOptions,
-    setPage,
-    setPerPage,
-    deleteCategory,
-    loadMore,
-    isLoadingMore,
-    isReachingEnd,
-  } = useCategories();
+  const { loading, categories, filters, setFilters, pageOptions, setPage, setPerPage, deleteCategory, loadMore, isLoadingMore, isReachingEnd } =
+    useCategories();
   const { isLanguage } = useProfile().appearance || {};
   const isMobile = useIsMobile();
-  
+
   const tableData: any = useMemo(() => {
     return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
   }, [categories]);
@@ -108,7 +97,7 @@ function CategoriesList() {
     });
   };
 
-   const handlePageChange = (event: unknown, newPage: number) => {
+  const handlePageChange = (event: unknown, newPage: number) => {
     setPage(newPage + 1);
   };
 

@@ -46,7 +46,6 @@ function ProductsList() {
 
   const headers = useMemo(() => getProductHeaders(), []);
 
-  // new: actionTemplates (BaseTable will merge with defaults like edit/delete icons)
   const actionTemplates = useMemo(
     () => [
       {
@@ -137,7 +136,6 @@ function ProductsList() {
         loading={loading}
         headers={headers}
         data={tableData}
-        // use template-driven actions (BaseTable will apply defaults and render)
         actionTemplates={actionTemplates}
         enableSelection={false}
         pagination={{
