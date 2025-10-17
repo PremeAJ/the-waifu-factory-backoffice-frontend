@@ -129,7 +129,7 @@ function CategoriesList() {
               onClick={() => setOpenFilterDialog(true)}
               fullWidth={false}
               label="Filter"
-              startIcon={
+              endIcon={
                 <Badge badgeContent={activeFilterCount} color="primary">
                   <IconAdjustmentsAlt size={20} />
                 </Badge>
