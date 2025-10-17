@@ -58,15 +58,20 @@ export interface CategoriesContextType {
   categories: CategoryType[];
   categoryIconsLoading: boolean;
   categoryIcons: CategoryIconType[];
-  filters: CategoryFilters; 
+  filters: CategoryFilters;
   dropdownMutate: () => void;
   categoriesMutate: () => void;
   categoryIconsMutate: () => void;
   setPage: (page: number) => void;
   setPerPage: (perPage: number) => void;
-  setFilters: (newFilters: Partial<CategoryFilters>) => void; 
+  setFilters: (newFilters: Partial<CategoryFilters>) => void;
   deleteCategory: (id: string) => Promise<void>;
   getCategoryById: (id: string) => Promise<CategoryDetailType>;
   createCategory: (payload: CreateCategoryDto) => Promise<void>;
   updateCategory: (id: string, payload: UpdateCategoryDto) => Promise<void>;
+
+  // --- เพิ่มสำหรับ Infinite Scroll ---
+  loadMore: () => void;
+  isLoadingMore: boolean;
+  isReachingEnd: boolean;
 }

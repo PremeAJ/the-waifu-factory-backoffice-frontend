@@ -4,23 +4,24 @@ import {
   CategoryDetailType,
   CreateCategoryDto,
   UpdateCategoryDto,
-  CategoryStatus,
-  CategoryFilters, // เพิ่ม import
+  CategoryFilters,
 } from "./interfaces/categories";
-import { defaultPageOptions } from "@/common/interface/paginate";
+import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { getFetcher, postFetcher, deleteFetcher, putFetcher } from "@/app/api/globalFetcher";
-import { useDialog } from "../DialogContext";
-import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
-import useSWR from "swr";
 import { swrOption } from "@/app/api/swrOption";
+import { useDialog } from "../DialogContext";
+import config from "../setting/config";
+import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
+import useIsMobile from "@/common/utils/state/isMobile";
+import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
-
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const isMobile = useIsMobile();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
+  const [page, setPage] = useState(config.defaultPage);
+  const [perPage, setPerPage] = useState(config.defaultPerPage);
   const [filters, setFiltersState] = useState<CategoryFilters>({
     search: "",
     status: "all",
@@ -29,40 +30,70 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const endpoint = "/api/categories";
   const masterIconEndpoint = "/api/master/icon/category";
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setDebouncedSearch(filters.search);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [filters.search]);
-
   const setFilters = (newFilters: Partial<CategoryFilters>) => {
-    const updatedFilters = { ...filters, ...newFilters };
-    // Reset page if search term changes
-    if (newFilters.search !== undefined && newFilters.search !== filters.search) {
-      setPage(1);
-    }
-    setFiltersState(updatedFilters);
+    setPage(1); 
+    setFiltersState((prev) => ({ ...prev, ...newFilters }));
   };
 
-  const categoriesUrl = useMemo(() => {
+  const desktopKey = useMemo(() => {
+    if (isMobile) return null; 
     const queryParams = new URLSearchParams();
     queryParams.set("page", page.toString());
     queryParams.set("perPage", perPage.toString());
-    if (debouncedSearch && debouncedSearch.trim()) {
-      queryParams.set("search", debouncedSearch.trim());
-    }
-    // เพิ่ม status เข้า query param เฉพาะเมื่อไม่ใช่ 'all'
-    if (filters.status && filters.status !== "all") {
-      queryParams.set("status", filters.status);
-    }
-
+    if (filters.search) queryParams.set("search", filters.search);
+    if (filters.status !== "all") queryParams.set("status", filters.status);
     return `${endpoint}?${queryParams.toString()}`;
-  }, [page, perPage, debouncedSearch, filters.status]);
+  }, [isMobile, page, perPage, filters]);
 
-  const { data: categoriesData, error: categoriesError, isLoading: categoriesLoading, mutate: categoriesMutate } = useSWR(categoriesUrl, getFetcher);
+  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher);
 
+  const getMobileKey = (pageIndex: number, previousPageData: any) => {
+    if (!isMobile || (previousPageData && !previousPageData.data.data.length)) return null; // ไม่ทำงานถ้าเป็น Desktop หรือถึงหน้าสุดท้าย
+    const queryParams = new URLSearchParams();
+    queryParams.set("page", (pageIndex + 1).toString());
+    queryParams.set("perPage", perPage.toString());
+    if (filters.search) queryParams.set("search", filters.search);
+    if (filters.status !== "all") queryParams.set("status", filters.status);
+    return `${endpoint}?${queryParams.toString()}`;
+  };
+
+  const {
+    data: mobilePages,
+    error: mobileError,
+    isLoading: mobileLoading,
+    mutate: mobileMutate,
+    size,
+    setSize,
+    isValidating,
+  } = useSWRInfinite(getMobileKey, getFetcher);
+
+  const categories = useMemo(() => {
+    return isMobile ? mobilePages?.flatMap((p) => p.data.data) ?? [] : desktopData?.data?.data ?? [];
+  }, [isMobile, mobilePages, desktopData]);
+
+  const pageOptions: PageOptions = useMemo(() => {
+    const source = isMobile ? mobilePages?.[mobilePages.length - 1]?.data : desktopData?.data;
+    return source?.pageOptions ?? defaultPageOptions;
+  }, [isMobile, mobilePages, desktopData]);
+
+  const loading = isMobile ? mobileLoading : desktopLoading;
+  const error = isMobile ? mobileError : desktopError;
+  const categoriesMutate = isMobile ? mobileMutate : desktopMutate;
+
+  const isLoadingMore = isMobile ? mobileLoading || (isValidating && (mobilePages?.length ?? 0) > 0) : false;
+  const isReachingEnd = isMobile
+    ? !mobilePages ||
+      (mobilePages[mobilePages.length - 1]?.data.data.length ?? 0) < perPage ||
+      !!(pageOptions.total && categories.length >= pageOptions.total) 
+    : true;
+
+  const loadMore = () => {
+    if (isMobile && !isLoadingMore && !isReachingEnd) {
+      setSize(size + 1);
+    }
+  };
+
+  // ... (ส่วนของ dropdown, create, update, delete ยังคงเหมือนเดิม) ...
   const {
     data: dropdownData,
     error: dropdownError,
@@ -140,11 +171,14 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     categoryIconsMutate,
     categoryIconsLoading,
     dropdown: dropdownData?.data || [],
-    loading: categoriesLoading || isLoading,
-    categories: categoriesData?.data?.data || [],
+    loading: loading || isLoading,
+    categories: categories,
     categoryIcons: categoryIconsData?.data || [],
-    pageOptions: categoriesData?.data?.pageOptions || defaultPageOptions,
-    error: categoriesError || dropdownError || categoryIconsError || null,
+    pageOptions: pageOptions,
+    error: error || dropdownError || categoryIconsError || null,
+    loadMore,
+    isLoadingMore,
+    isReachingEnd,
   };
 
   return <CategoriesContext.Provider value={value}>{children}</CategoriesContext.Provider>;

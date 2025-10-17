@@ -15,6 +15,7 @@ import BaseTextField from "@/common/components/base/BaseTextField";
 import CategoryDialog from "./CategoryDialog";
 import CategoryFilterDialog from "./CategoryFilterDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
+import config from "@/common/contexts/setting/config";
 
 type DialogState = {
   open: boolean;
@@ -28,9 +29,22 @@ function CategoriesList() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const { loading, categories, filters, setFilters, pageOptions, setPage, setPerPage, deleteCategory } = useCategories();
+  const {
+    loading,
+    categories,
+    filters,
+    setFilters,
+    pageOptions,
+    setPage,
+    setPerPage,
+    deleteCategory,
+    loadMore,
+    isLoadingMore,
+    isReachingEnd,
+  } = useCategories();
   const { isLanguage } = useProfile().appearance || {};
   const isMobile = useIsMobile();
+  
   const tableData: any = useMemo(() => {
     return categories.map((cat) => ({ ...cat, subItems: cat.subCategories }));
   }, [categories]);
@@ -94,12 +108,12 @@ function CategoriesList() {
     });
   };
 
-  const handlePageChange = (event: unknown, newPage: number) => {
+   const handlePageChange = (event: unknown, newPage: number) => {
     setPage(newPage + 1);
   };
 
   const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setPerPage(parseInt(event.target.value, 10));
+    setPerPage(parseInt(event.target.value));
     setPage(1);
   };
 
@@ -160,18 +174,21 @@ function CategoriesList() {
         )}
       </Stack>
       <BaseTable
-        loading={loading}
+        loading={loading && categories.length === 0}
         headers={headers}
         data={tableData}
         actionTemplates={actionTemplates}
         enableSelection={false}
         pagination={{
-          total: pageOptions.total || 0,
-          page: (pageOptions.page || 1) - 1,
-          rowsPerPage: pageOptions?.perPage || 5,
+          total: pageOptions.total,
+          page: (pageOptions.page || config.defaultPage) - 1,
+          rowsPerPage: pageOptions.perPage || config.defaultPerPage,
           onPageChange: handlePageChange,
           onRowsPerPageChange: handleRowsPerPageChange,
         }}
+        onLoadMore={loadMore}
+        isLoadingMore={isLoadingMore}
+        isReachingEnd={isReachingEnd}
       />
       <CategoryDialog
         open={dialogState.open}

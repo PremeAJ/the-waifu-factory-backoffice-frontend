@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Table,
@@ -18,15 +18,17 @@ import {
   Stack,
   Typography,
   Divider,
+  CircularProgress,
 } from "@mui/material";
+import { useInView } from "react-intersection-observer";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import BaseTooltip from "./BaseTooltip";
-// create default action icons
 import { IconEdit, IconPlus, IconTrash, IconEye } from "@tabler/icons-react";
+import config from "@/common/contexts/setting/config";
 
 interface TableHeader {
   key: string;
@@ -67,7 +69,10 @@ interface BaseTableProps<T extends readonly TableHeader[]> {
     onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   };
   rowHeaderColor?: "primary" | "success" | "error";
-  actionTemplates?: ActionTemplate[]; // template-driven actions (merged with defaults below)
+  actionTemplates?: ActionTemplate[];
+  onLoadMore?: () => void;
+  isLoadingMore?: boolean;
+  isReachingEnd?: boolean;
 }
 
 const BaseTable = <T extends readonly TableHeader[]>({
@@ -79,10 +84,11 @@ const BaseTable = <T extends readonly TableHeader[]>({
   loading = false,
   pagination,
   rowHeaderColor,
-  actionTemplates, // added
+  actionTemplates,
+  onLoadMore,
+  isLoadingMore,
+  isReachingEnd,
 }: BaseTableProps<T>) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openRows, setOpenRows] = useState<Record<string, boolean>>({});
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const theme = useTheme();
@@ -91,24 +97,28 @@ const BaseTable = <T extends readonly TableHeader[]>({
   const isMobilePortrait = isMobile && isPortrait;
   const { isCardShadow, activeMode } = useProfile().appearance;
 
+  const { ref, inView } = useInView({
+    threshold: 0,
+    triggerOnce: false,
+  });
+
+  useEffect(() => {
+    if (inView && onLoadMore) {
+      onLoadMore();
+    }
+  }, [inView, onLoadMore]);
+
   const noDataText = "ไม่พบข้อมูล";
   const noDataSubtext = "ลองเปลี่ยนเงื่อนไขการค้นหา หรือรีเฟรชหน้าใหม่";
 
-  // card boxShadow value: use white-toned shadow when activeMode === 'dark'
   const cardBoxShadow = isCardShadow
     ? activeMode === "dark"
       ? "0 6px 18px -6px rgba(255, 255, 255, 0.14)"
       : theme.shadows?.[1] ?? "0 1px 3px rgba(0,0,0,0.08)"
     : "none";
 
-  // consider either legacy actions prop or new actionTemplates
   const hasActions = (actionTemplates && actionTemplates.length > 0) || !!actions;
 
-  const slicedData = useMemo(() => {
-    return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  }, [data, page, rowsPerPage]);
-
-  const paginatedData = pagination ? data : slicedData;
 
   const toggleRow = (id: string) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -139,9 +149,8 @@ const BaseTable = <T extends readonly TableHeader[]>({
     return item[header.key];
   };
 
-  // Render loading skeleton rows
   const renderLoadingRows = () => {
-    const skeletonCount = pagination?.rowsPerPage || rowsPerPage;
+    const skeletonCount = pagination?.rowsPerPage || config.defaultPerPage;
     return Array.from({ length: skeletonCount }, (_, index) => (
       <TableRow key={`skeleton-${index}`}>
         <TableCell size="small" padding="none" sx={{ width: 40 }} />
@@ -164,7 +173,6 @@ const BaseTable = <T extends readonly TableHeader[]>({
     ));
   };
 
-  // Render empty state
   const renderEmptyState = () => (
     <TableRow>
       <TableCell colSpan={headers.length + (enableSelection ? 1 : 0) + (hasActions ? 1 : 0) + 1} align="center" sx={{ py: 8 }}>
@@ -180,7 +188,6 @@ const BaseTable = <T extends readonly TableHeader[]>({
     </TableRow>
   );
 
-  // default templates (can be overridden by provided actionTemplates entries)
   const defaultActionTemplates: Record<string, Partial<ActionTemplate>> = {
     create: {
       type: "create",
@@ -213,7 +220,6 @@ const BaseTable = <T extends readonly TableHeader[]>({
       return (
         <>
           {actionTemplates.map((tpl, idx) => {
-            // merge defaults for tpl.type with provided tpl (provided tpl overrides defaults)
             const defaults = tpl.type ? defaultActionTemplates[tpl.type] || {} : {};
             const resolved: ActionTemplate = { ...(defaults as ActionTemplate), ...(tpl as ActionTemplate) };
             const isHidden = typeof resolved.hide === "function" ? resolved.hide(item) : resolved.hide;
@@ -278,7 +284,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
     const primaryHeader = headers.find((h: any) => h.primary === true) || headers[0];
 
     if (loading) {
-      const skeletonCount = pagination?.rowsPerPage || rowsPerPage;
+      const skeletonCount = pagination?.rowsPerPage || config.defaultPerPage;
       return (
         <Stack spacing={2}>
           {Array.from({ length: skeletonCount }).map((_, si) => (
@@ -334,8 +340,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
       );
     }
 
-    // เพิ่ม: แสดง "ไม่พบข้อมูล" เมื่อไม่มีข้อมูล
-    if (paginatedData.length === 0) {
+    if (data.length === 0 && !loading) { 
       return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, py: 8 }}>
           <Typography variant="h6" color="text.secondary">
@@ -350,7 +355,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
 
     return (
       <Stack spacing={2}>
-        {paginatedData.map((item) => (
+        {data.map((item) => (
           <Box
             key={item.id}
             sx={{
@@ -473,6 +478,15 @@ const BaseTable = <T extends readonly TableHeader[]>({
             ) : null}
           </Box>
         ))}
+        {/* --- ส่วนของ Infinite Scroll --- */}
+        <Box ref={ref} sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+          {isLoadingMore && <CircularProgress />}
+          {isReachingEnd && data.length > 0 && !isLoadingMore && (
+            <Typography variant="caption" color="text.secondary">
+              ไม่มีข้อมูลเพิ่มเติม
+            </Typography>
+          )}
+        </Box>
       </Stack>
     );
   }
@@ -520,9 +534,9 @@ const BaseTable = <T extends readonly TableHeader[]>({
           <TableBody>
             {loading
               ? renderLoadingRows()
-              : paginatedData.length === 0
+              : data.length === 0
               ? renderEmptyState()
-              : paginatedData.map((item) => (
+              : data.map((item) => ( 
                   <React.Fragment key={item.id}>
                     {renderRow(item)}
                     {openRows[item.id] && item.subItems?.map((subItem) => renderRow(subItem, true))}
@@ -531,22 +545,18 @@ const BaseTable = <T extends readonly TableHeader[]>({
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        component="div"
-        count={pagination?.total || data.length}
-        page={pagination?.page || page}
-        onPageChange={pagination?.onPageChange || ((_, newPage) => setPage(newPage))}
-        rowsPerPage={pagination?.rowsPerPage || rowsPerPage}
-        onRowsPerPageChange={
-          pagination?.onRowsPerPageChange ||
-          ((e) => {
-            setRowsPerPage(parseInt(e.target.value, 10));
-            setPage(0);
-          })
-        }
-        rowsPerPageOptions={[5, 10, 25]}
-        disabled={loading}
-      />
+      {!isMobilePortrait && pagination && (
+        <TablePagination
+          component="div"
+          count={pagination.total || 0}
+          page={pagination.page} 
+          onPageChange={pagination.onPageChange}
+          rowsPerPage={pagination.rowsPerPage}
+          onRowsPerPageChange={pagination.onRowsPerPageChange}
+          rowsPerPageOptions={[3, 5, 10, 25]}
+          disabled={loading}
+        />
+      )}
     </Box>
   );
 };
