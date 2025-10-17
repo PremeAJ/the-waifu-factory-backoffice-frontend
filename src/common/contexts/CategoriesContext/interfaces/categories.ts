@@ -9,7 +9,6 @@ export interface CategoryType {
   nameEn?: string | null;
   icon: string | null;
   parent: string | null;
-  isActive: boolean;
   status: CategoryStatus;
   subCategories: CategoryType[];
 }
@@ -24,23 +23,26 @@ export interface CategoryDropdownType {
 export interface CreateCategoryDto {
   nameTh: string;
   nameEn?: string;
-  icon?: string;
-  parent?: string;
-  isActive?: boolean;
-  status?: CategoryStatus;
+  parent?: string | null;
+  status: CategoryStatus;
+  icon?: string | null;
 }
 
 export interface UpdateCategoryDto {
   nameTh?: string;
   nameEn?: string;
-  icon?: string;
-  parent?: string;
-  isActive?: boolean;
+  parent?: string | null;
   status?: CategoryStatus;
+  icon?: string | null;
 }
 
 export interface CategoryDetailType extends CategoryType {
-  // เพิ่ม fields พิเศษสำหรับ detail ถ้าจำเป็น
+  subCategories: CategoryType[];
+}
+
+export interface CategoryFilters {
+  search: string;
+  status: CategoryStatus | "all";
 }
 
 export interface CategoryIconType {
@@ -49,26 +51,22 @@ export interface CategoryIconType {
 }
 
 export interface CategoriesContextType {
-  categories: CategoryType[];
-  categoriesMutate: () => void;
-  createCategory: (payload: CreateCategoryDto) => Promise<void>;
-  deleteCategory: (id: string) => Promise<void>;
-  dropdown: CategoryType[];
-  dropdownMutate: () => void;
   error: any;
-  getCategoryById: (id: string) => Promise<CategoryDetailType>;
-  isActive: boolean | null;
   loading: boolean;
+  dropdown: CategoryType[];
   pageOptions: PageOptions;
-  search: string;
-  setIsActive: (value: boolean | null) => void;
+  categories: CategoryType[];
+  categoryIconsLoading: boolean;
+  categoryIcons: CategoryIconType[];
+  filters: CategoryFilters; 
+  dropdownMutate: () => void;
+  categoriesMutate: () => void;
+  categoryIconsMutate: () => void;
   setPage: (page: number) => void;
   setPerPage: (perPage: number) => void;
-  setSearch: (search: string) => void;
+  setFilters: (newFilters: Partial<CategoryFilters>) => void; 
+  deleteCategory: (id: string) => Promise<void>;
+  getCategoryById: (id: string) => Promise<CategoryDetailType>;
+  createCategory: (payload: CreateCategoryDto) => Promise<void>;
   updateCategory: (id: string, payload: UpdateCategoryDto) => Promise<void>;
-
-  // เพิ่ม properties ใหม่
-  categoryIcons: CategoryIconType[];
-  categoryIconsLoading: boolean;
-  categoryIconsMutate: () => void;
 }

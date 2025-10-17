@@ -2,6 +2,7 @@
 import React from "react";
 import BaseFab from "./BaseFab";
 import { FabProps } from "@mui/material/Fab";
+import { IconPlus, IconFilter, IconAdjustmentsAlt } from "@tabler/icons-react";
 
 export enum FloatingButtonPosition {
   TOP_LEFT = "top-left",
@@ -13,8 +14,10 @@ export enum FloatingButtonPosition {
 }
 
 interface BaseFloatingButtonProps extends Omit<FabProps, "children"> {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   position?: FloatingButtonPosition;
+  // new preset prop: maps to default position + icon (can be overridden by explicit props)
+  preset?: "create" | "filter" | "add";
   // sx prop is already included in FabProps
 }
 
@@ -37,14 +40,29 @@ const getPositionStyles = (position: FloatingButtonPosition) => {
   }
 };
 
-const BaseFloatingButton: React.FC<BaseFloatingButtonProps> = ({ 
-  icon, 
-  onClick, 
-  position = FloatingButtonPosition.TOP_RIGHT, 
-  sx, 
-  ...rest 
+const presetMap: Record<
+  NonNullable<BaseFloatingButtonProps["preset"]>,
+  { position: FloatingButtonPosition; icon: React.ReactNode }
+> = {
+  create: { position: FloatingButtonPosition.BOTTOM_RIGHT, icon: <IconPlus /> },
+  add: { position: FloatingButtonPosition.BOTTOM_RIGHT, icon: <IconPlus /> },
+  filter: { position: FloatingButtonPosition.TOP_RIGHT, icon: <IconAdjustmentsAlt /> },
+};
+
+const BaseFloatingButton: React.FC<BaseFloatingButtonProps> = ({
+  icon,
+  onClick,
+  position,
+  preset,
+  sx,
+  ...rest
 }) => {
-  const positionStyles = getPositionStyles(position);
+  // preset provides defaults, explicit props override preset
+  const presetDefaults = preset ? presetMap[preset] : undefined;
+  const finalPosition =
+    position ?? presetDefaults?.position ?? FloatingButtonPosition.TOP_RIGHT;
+  const finalIcon = icon ?? presetDefaults?.icon ?? null;
+  const positionStyles = getPositionStyles(finalPosition);
 
   return (
     <BaseFab
@@ -56,7 +74,7 @@ const BaseFloatingButton: React.FC<BaseFloatingButtonProps> = ({
       }}
       {...rest}
     >
-      {icon}
+      {finalIcon}
     </BaseFab>
   );
 };

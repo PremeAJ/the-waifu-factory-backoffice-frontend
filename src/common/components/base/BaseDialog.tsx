@@ -16,18 +16,19 @@ interface BaseDialogProps {
   confirmDisabled?: boolean;
   confirmText?: string;
   content: string | React.ReactNode;
-  disableBackdropClose?: boolean; 
+  disableBackdropClose?: boolean;
   fullScreen?: boolean;
   // new: when fullScreen=true, center content vertically if true; otherwise keep default top-aligned
   fullScreenCenter?: boolean;
   htmlContent?: boolean;
-  icon?: string;
+  icon?: string | React.ReactNode; // เปลี่ยน type ให้รองรับ ReactNode
   iconSize?: number;
   iconType?: "success" | "error" | "warning" | "info";
   loading?: boolean;
   noAction?: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm?: () => void; // ทำให้ onConfirm เป็น optional
+  onCancel?: () => void; // เพิ่ม onCancel
   open: boolean;
   scrolling?: boolean;
   sx?: SxProps<Theme>;
@@ -52,6 +53,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   noAction = false,
   onClose,
   onConfirm,
+  onCancel, // เพิ่ม onCancel
   open,
   scrolling = false,
   sx,
@@ -110,15 +112,12 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
       scroll={scrolling ? "paper" : undefined}
       sx={sx}
     >
-      <DialogContent
-        dividers={scrolling}
-        sx={dialogContentSx}
-      >
+      <DialogContent dividers={scrolling} sx={dialogContentSx}>
         {(icon || iconType) && (
-          <Box display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center" mb={2}>
             {iconType ? (
               getIconComponent()
-            ) : (
+            ) : typeof icon === "string" ? (
               <Avatar
                 src={icon}
                 sx={{
@@ -127,10 +126,12 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
                   bgcolor: "transparent",
                 }}
               />
+            ) : (
+              icon 
             )}
           </Box>
         )}
-        <DialogTitle sx={{ textAlign: "center", pb: 1 }}>{title}</DialogTitle>
+        <DialogTitle sx={{ textAlign: "center", pt: 0, pb: 1 }}>{title}</DialogTitle>
         {typeof content === "string" && htmlContent ? (
           <Box>
             <DialogContentText
@@ -177,11 +178,11 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
                 {...(confirmColor ? { color: confirmColor } : null)}
               />
             )}
-            {cancelText && <BaseButton label={cancelText} onClick={onClose} disabled={loading} fullWidth={true} variant="outlined" />}
+            {cancelText && <BaseButton label={cancelText} onClick={onCancel || onClose} disabled={loading} fullWidth={true} variant="outlined" />}
           </>
         ) : (
           <>
-            {cancelText && <BaseButton label={cancelText} onClick={onClose} disabled={loading || cancelDisabled} fullWidth={false} variant="outlined" />}
+            {cancelText && <BaseButton label={cancelText} onClick={onCancel || onClose} disabled={loading || cancelDisabled} fullWidth={false} variant="outlined" />}
             {confirmText && (
               <BaseButton
                 label={confirmText}
