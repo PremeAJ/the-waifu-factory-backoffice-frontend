@@ -63,23 +63,23 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, type, cate
     setLoading(true);
 
     try {
-      if (type === "create") {
-        await createCategory({
-          nameTh: values.nameTh,
-          nameEn: values.nameEn || undefined,
-          isActive: values.isActive,
-          parent: values.parent || null,
-          icon: values.icon || null,
-        });
-      } else if (type === "edit" && categoryId) {
-        await updateCategory(categoryId, {
-          nameTh: values.nameTh,
-          nameEn: values.nameEn || undefined,
-          isActive: values.isActive,
-          parent: hasSubCategories ? undefined : values.parent || null,
-          icon: values.icon || null,
-        });
-      }
+      // if (type === "create") {
+      //   await createCategory({
+      //     nameTh: values.nameTh,
+      //     nameEn: values.nameEn || undefined,
+      //     isActive: values.isActive,
+      //     parent: values.parent || null,
+      //     icon: values.icon || null,
+      //   });
+      // } else if (type === "edit" && categoryId) {
+      //   await updateCategory(categoryId, {
+      //     nameTh: values.nameTh,
+      //     nameEn: values.nameEn || undefined,
+      //     isActive: values.isActive,
+      //     parent: hasSubCategories ? undefined : values.parent || null,
+      //     icon: values.icon || null,
+      //   });
+      // }
 
       formik.resetForm();
       setCategoryData(null);
@@ -116,13 +116,13 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, type, cate
         const fetchedCategoryData = await getCategoryById(categoryId);
         setCategoryData(fetchedCategoryData);
 
-        formik.setValues({
-          nameTh: fetchedCategoryData.nameTh,
-          nameEn: fetchedCategoryData.nameEn || "",
-          parent: fetchedCategoryData.parent || "",
-          isActive: fetchedCategoryData.isActive,
-          icon: fetchedCategoryData.icon || "",
-        });
+        // formik.setValues({
+        //   nameTh: fetchedCategoryData.nameTh,
+        //   nameEn: fetchedCategoryData.nameEn || "",
+        //   parent: fetchedCategoryData.parent || "",
+        //   isActive: fetchedCategoryData.isActive,
+        //   icon: fetchedCategoryData.icon || "",
+        // });
       } catch (error: any) {
         formik.setStatus(error.message || "เกิดข้อผิดพลาดในการโหลดข้อมูลหมวดหมู่");
       }
