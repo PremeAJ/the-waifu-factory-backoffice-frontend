@@ -4,7 +4,7 @@ import { Chip, ChipProps, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 interface BaseChipProps extends Omit<ChipProps, "color"> {
-  preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary" | "deleted";
+  preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary" | "deleted" | "all";
   customColor?: string;
   customBgColor?: string;
 }
@@ -51,6 +51,16 @@ const BaseChip: React.FC<BaseChipProps> = ({
         return {
           color: "error" as const,
           label: label || "ปิดใช้งาน",
+        };
+      case "deleted":
+        return {
+          color: "warning" as const,
+          label: label || "ถูกลบ",
+        };
+      case "all":
+        return {
+          color: "info" as const,
+          label: label || "ทั้งหมด",
         };
       case "success":
         return {

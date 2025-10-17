@@ -10,6 +10,7 @@ import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import React, { useState, useMemo, useEffect } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
+import BaseChip from "@/common/components/base/BaseChip";
 
 type DialogType = "create" | "edit";
 
@@ -59,8 +60,8 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   }, [type, open, parent]);
 
   const statusOptions = [
-    { value: "active", text: "เปิดใช้งาน" },
-    { value: "inactive", text: "ปิดใช้งาน" },
+    { value: "active", text: "" },
+    { value: "inactive", text: "" },
   ];
 
   const handleSubmit = async (values: any) => {
@@ -180,31 +181,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
               />
             </Grid>
 
-            <Grid size={isMobile ? 12 : 6}>
-              <BaseDropdown
-                loading={fetchLoading}
-                formik={formik}
-                name="parent"
-                label="หมวดหมู่หลัก"
-                options={parentCategoryOptions}
-                placeholder="ค้นหาหมวดหมู่หลัก หรือปล่อยว่างเพื่อเป็นหมวดหมู่หลัก"
-                showEmptyOption
-                disabled={!!parent || (type === "edit" && hasSubCategories)}
-                orderBy={(a, b) => a.text.localeCompare(b.text)}
-                renderOption={(option) => {
-                  return <Box display="flex" alignItems="center" gap={1}>
-                    {option.icon && renderTablerIcon(option.icon, { size: 16 })}
-                    {option.text}
-                  </Box>;
-                }}
-              />
-            </Grid>
-
-            <Grid size={isMobile ? 12 : 6}>
-              <BaseDropdown loading={fetchLoading} formik={formik} name="status" label="สถานะ" options={statusOptions} required />
-            </Grid>
-
-            <Grid size={isMobile ? 12 : 6}>
+            <Grid size={6}>
               <BaseDropdown
                 loading={fetchLoading}
                 formik={formik}
@@ -219,6 +196,40 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                     {option.text}
                   </Box>
                 )}
+              />
+            </Grid>
+
+            <Grid size={6}>
+              <BaseDropdown
+                loading={fetchLoading}
+                formik={formik}
+                name="status"
+                label="สถานะ"
+                options={statusOptions}
+                required
+                renderOption={(option) => <BaseChip preset={option.value} />}
+              />
+            </Grid>
+
+            <Grid size={isMobile ? 12 : 6}>
+              <BaseDropdown
+                loading={fetchLoading}
+                formik={formik}
+                name="parent"
+                label="หมวดหมู่หลัก"
+                options={parentCategoryOptions}
+                placeholder="ค้นหาหมวดหมู่หลัก หรือปล่อยว่างเพื่อเป็นหมวดหมู่หลัก"
+                showEmptyOption
+                disabled={!!parent || (type === "edit" && hasSubCategories)}
+                orderBy={(a, b) => a.text.localeCompare(b.text)}
+                renderOption={(option) => {
+                  return (
+                    <Box display="flex" alignItems="center" gap={1}>
+                      {option.icon && renderTablerIcon(option.icon, { size: 16 })}
+                      {option.text}
+                    </Box>
+                  );
+                }}
               />
             </Grid>
 
