@@ -3,7 +3,7 @@ const config = {
   miniSidebarWidth: 95,
   topbarHeight: 70,
   defaultPage: 1,
-  defaultPerPage: 5,
+  defaultPerPage: 10,
 };
 
 export default config;

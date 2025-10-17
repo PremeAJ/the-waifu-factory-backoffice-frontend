@@ -193,13 +193,13 @@ const BaseTable = <T extends readonly TableHeader[]>({
       type: "create",
       icon: <IconPlus />,
       tooltip: "Add",
-      color: "primary",
+      color: "success",
     },
     edit: {
       type: "edit",
       icon: <IconEdit />,
       tooltip: "Edit",
-      color: "primary",
+      color: "warning",
     },
     delete: {
       type: "delete",
@@ -553,7 +553,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
           onPageChange={pagination.onPageChange}
           rowsPerPage={pagination.rowsPerPage}
           onRowsPerPageChange={pagination.onRowsPerPageChange}
-          rowsPerPageOptions={[3, 5, 10, 25]}
+          rowsPerPageOptions={[10, 20, 30, 50, 100]}
           disabled={loading}
         />
       )}
