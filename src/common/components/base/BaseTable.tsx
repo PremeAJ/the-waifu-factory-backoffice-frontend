@@ -91,6 +91,9 @@ const BaseTable = <T extends readonly TableHeader[]>({
   const isMobilePortrait = isMobile && isPortrait;
   const { isCardShadow, activeMode } = useProfile().appearance;
 
+  const noDataText = "ไม่พบข้อมูล";
+  const noDataSubtext = "ลองเปลี่ยนเงื่อนไขการค้นหา หรือรีเฟรชหน้าใหม่";
+
   // card boxShadow value: use white-toned shadow when activeMode === 'dark'
   const cardBoxShadow = isCardShadow
     ? activeMode === "dark"
@@ -166,8 +169,12 @@ const BaseTable = <T extends readonly TableHeader[]>({
     <TableRow>
       <TableCell colSpan={headers.length + (enableSelection ? 1 : 0) + (hasActions ? 1 : 0) + 1} align="center" sx={{ py: 8 }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-          <Box sx={{ color: "text.secondary", fontSize: "1.2rem" }}>ไม่พบข้อมูล</Box>
-          <Box sx={{ color: "text.disabled", fontSize: "0.875rem" }}>ลองเปลี่ยนเงื่อนไขการค้นหา หรือรีเฟรชหน้าใหม่</Box>
+          <Typography variant="h6" color="text.secondary">
+            {noDataText}
+          </Typography>
+          <Typography variant="body2" color="text.disabled">
+            {noDataSubtext}
+          </Typography>
         </Box>
       </TableCell>
     </TableRow>
@@ -324,6 +331,20 @@ const BaseTable = <T extends readonly TableHeader[]>({
             </Box>
           ))}
         </Stack>
+      );
+    }
+
+    // เพิ่ม: แสดง "ไม่พบข้อมูล" เมื่อไม่มีข้อมูล
+    if (paginatedData.length === 0) {
+      return (
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, py: 8 }}>
+          <Typography variant="h6" color="text.secondary">
+            {noDataText}
+          </Typography>
+          <Typography variant="body2" color="text.disabled">
+            {noDataSubtext}
+          </Typography>
+        </Box>
       );
     }
 

@@ -1,6 +1,8 @@
 "use client";
 import { Box, Stack, Badge } from "@mui/material";
+import { CategoryStatus } from "@/common/contexts/CategoriesContext/interfaces/categories";
 import { getCategoryHeaders } from "../constants/categoryHeaders";
+import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useState, useMemo, ChangeEvent } from "react";
@@ -11,10 +13,8 @@ import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BaseTable from "@/common/components/base/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import CategoryDialog from "./CategoryDialog";
-import CategoryFilterDialog from "./CategoryFilterDialog"; // เพิ่ม import
+import CategoryFilterDialog from "./CategoryFilterDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
-import { CategoryStatus } from "@/common/contexts/CategoriesContext/interfaces/categories";
-import { IconAdjustmentsAlt } from "@tabler/icons-react";
 
 type DialogState = {
   open: boolean;
@@ -26,7 +26,7 @@ type DialogState = {
 function CategoriesList() {
   const [dialogState, setDialogState] = useState<DialogState>({ open: false, type: "create", categoryId: null, parent: null });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openFilterDialog, setOpenFilterDialog] = useState(false); 
+  const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { loading, categories, filters, setFilters, pageOptions, setPage, setPerPage, deleteCategory } = useCategories();
   const { isLanguage } = useProfile().appearance || {};
@@ -38,7 +38,6 @@ function CategoriesList() {
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
-    // นับเฉพาะ filter จาก dialog (ไม่นับ search)
     if (filters.status && filters.status !== "all") {
       count++;
     }
@@ -124,17 +123,15 @@ function CategoriesList() {
               sx={{ width: 300 }}
               type="search"
             />
-            <BaseButton
-              variant="outlined"
-              onClick={() => setOpenFilterDialog(true)}
-              fullWidth={false}
-              label="Filter"
-              endIcon={
-                <Badge badgeContent={activeFilterCount} color="primary">
-                  <IconAdjustmentsAlt size={20} />
-                </Badge>
-              }
-            />
+            <Badge badgeContent={activeFilterCount} color="error">
+              <BaseButton
+                variant="outlined"
+                onClick={() => setOpenFilterDialog(true)}
+                fullWidth={false}
+                label="Filter"
+                startIcon={<IconAdjustmentsAlt size={20} />}
+              />
+            </Badge>
           </Stack>
         )}
 
@@ -150,13 +147,12 @@ function CategoriesList() {
           />
         )}
 
-        {/* Mobile Filter Button */}
         {isMobile && (
           <BaseFloatingButton
             preset="filter"
             onClick={() => setOpenFilterDialog(true)}
             icon={
-              <Badge badgeContent={activeFilterCount} color="primary">
+              <Badge badgeContent={activeFilterCount} color="error">
                 <IconAdjustmentsAlt />
               </Badge>
             }
@@ -184,7 +180,6 @@ function CategoriesList() {
         categoryId={dialogState.categoryId}
         parent={dialogState.parent ?? undefined}
       />
-      {/* Filter Dialog */}
       <CategoryFilterDialog
         open={openFilterDialog}
         onClose={() => setOpenFilterDialog(false)}

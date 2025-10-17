@@ -1,17 +1,15 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
-import { Box, CircularProgress, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
+import { categoryNameEn, categoryNameThRequired, statusRequired, stringOptional } from "@/common/utils/validator/yup";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import { useCategories } from "@/common/contexts/CategoriesContext";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseDialog from "@/common/components/base/BaseDialog";
-import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
-import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
+import BaseTextField from "@/common/components/base/BaseTextField";
+import React, { useState, useMemo, useEffect } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
-import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
-import { useUser } from "@/common/contexts/UserContext";
-import { categoryNameEn, categoryNameThRequired, statusRequired, stringOptional } from "@/common/utils/validator/yup";
 
 type DialogType = "create" | "edit";
 
@@ -190,7 +188,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                 label="หมวดหมู่หลัก"
                 options={parentCategoryOptions}
                 placeholder="ค้นหาหมวดหมู่หลัก หรือปล่อยว่างเพื่อเป็นหมวดหมู่หลัก"
-                // disable when editing and has subcategories OR when a parent is provided (readonly prefill)
+                showEmptyOption
                 disabled={!!parent || (type === "edit" && hasSubCategories)}
                 orderBy={(a, b) => a.text.localeCompare(b.text)}
                 renderOption={(option) => {
