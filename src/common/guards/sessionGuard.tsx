@@ -16,5 +16,5 @@ export default function SessionGuard({ children }: { children: React.ReactNode }
     }
   }, [status, session, router]);
 
-  return <>{(status === "authenticated" && session?.profile && children && !profileLoading) || <PageLoader />}</>;
+  return <>{status === "authenticated" && session?.profile && children && !profileLoading ? children : <PageLoader />}</>;
 }
