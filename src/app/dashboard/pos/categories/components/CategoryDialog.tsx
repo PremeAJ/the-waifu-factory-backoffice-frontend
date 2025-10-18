@@ -33,14 +33,16 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [categoryData, setCategoryData] = useState<any>(null);
-  const { createCategory, updateCategory, getCategoryById, dropdown, categoryIcons } = useCategories();
+  const { createCategory, updateCategory, getCategoryById, dropdown, categoryIcons, categories } = useCategories();
   const isMobile = useIsMobile();
   const hasSubCategories = categoryData?.subCategories?.length > 0;
+  // use full categories list (same source as table) for parent dropdown
   const parentCategoryOptions = useMemo(() => {
-    if (!dropdown || dropdown.length === 0) return [];
+    if (!categories || categories.length === 0) return [];
 
-    return dropdown
+    return categories
       .filter((cat) => {
+        // when editing, exclude the current category itself
         if (type === "edit" && categoryId) {
           return cat.id !== categoryId;
         }
@@ -51,7 +53,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
         text: `${cat.nameTh}${cat.nameEn ? ` (${cat.nameEn})` : ""}`,
         icon: cat.icon,
       }));
-  }, [dropdown, type, categoryId]);
+  }, [categories, type, categoryId]);
 
   useEffect(() => {
     if (type === "create" && open && parent) {
