@@ -10,7 +10,6 @@ import { useSession } from "next-auth/react";
 import imageCompression from "browser-image-compression";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
-import PageLoader from "@/common/components/loaders/PageLoader";
 
 export const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType);
 const APPEARANCE_KEY = "appearance";
@@ -48,10 +47,6 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     isLoading: profileLoading,
     mutate: profileMutate,
   } = useSWR(session ? "/api/profile" : null, getFetcher, swrOption);
-
-  if (profileLoading) {
-    return <PageLoader />;
-  }
 
   useEffect(() => {
     if (profileData?.data) {
@@ -180,6 +175,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     changeEmail,
     uploadAvatar,
     updateProfile,
+    profileLoading,
     refreshProfile,
     appearanceMutate,
     updateAppearance,

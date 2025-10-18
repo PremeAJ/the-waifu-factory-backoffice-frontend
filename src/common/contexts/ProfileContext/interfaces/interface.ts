@@ -34,6 +34,7 @@ export interface ProfileContextType {
   companyList: CompanyListItem[];
   appearance: Appearance;
   loading: boolean;
+  profileLoading: boolean;
   error: any;
   updateProfile: (payload: Partial<ProfilePayload>) => Promise<ProfileResponse>;
   companyListMutate: KeyedMutator<any>;
