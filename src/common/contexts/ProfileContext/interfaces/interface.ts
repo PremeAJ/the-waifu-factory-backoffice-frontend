@@ -30,21 +30,22 @@ export interface ActiveCompany {
 }
 
 export interface ProfileContextType {
-  activeCompany: ActiveCompany | null;
-  companyList: CompanyListItem[];
-  appearance: Appearance;
-  loading: boolean;
-  profileLoading: boolean;
   error: any;
-  updateProfile: (payload: Partial<ProfilePayload>) => Promise<ProfileResponse>;
+  loading: boolean;
+  appearance: Appearance;
+  profileLoading: boolean;
+  appearanceLoading: boolean;
+  companyList: CompanyListItem[];
+  activeCompany: ActiveCompany | null;
+  refreshProfile: () => Promise<any>;
+  appearanceMutate: KeyedMutator<any>;
   companyListMutate: KeyedMutator<any>;
   activeCompanyMutate: KeyedMutator<any>;
-  appearanceMutate: KeyedMutator<any>;
-  refreshProfile: () => Promise<any>;
   updateActiveCompany: (companyId: string) => Promise<any>;
-  changeEmail: (payload: Partial<ChangeEmailPayload>) => Promise<any>;
   uploadAvatar: (base64: string, fileName:string) => Promise<any>;
+  changeEmail: (payload: Partial<ChangeEmailPayload>) => Promise<any>;
   updateAppearance: (payload: Partial<AppearanceSettings>) => Promise<any>;
+  updateProfile: (payload: Partial<ProfilePayload>) => Promise<ProfileResponse>;
 }
 
 export interface ProfileResponse extends ApiResponse {

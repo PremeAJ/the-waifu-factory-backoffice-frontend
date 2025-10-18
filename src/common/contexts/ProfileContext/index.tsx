@@ -186,6 +186,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     activeCompany: activeCompanyData?.data || null,
     error: profileError || activeCompanyError || companyListError || appearanceError,
     loading: profileLoading || activeCompanyLoading || conmpanyListLoading || appearanceLoading || loading,
+    appearanceLoading,
   };
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

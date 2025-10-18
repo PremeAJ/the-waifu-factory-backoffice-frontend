@@ -38,16 +38,11 @@ export const BuildTheme = (config: any = {}) => {
 };
 
 const ThemeSettings = () => {
-  //// const { activeDir } = useContext(CustomizerContext);
   const { appearance } = useProfile();
   const { activeTheme } = appearance || {};
   const theme = BuildTheme({
-    //// direction: activeDir,
     theme: activeTheme,
   });
-  //// useEffect(() => {
-  ////   document.dir = activeDir;
-  //// }, [activeDir]);
 
   return theme;
 };
