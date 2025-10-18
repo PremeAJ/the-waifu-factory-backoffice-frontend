@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import Loading from "@/app/loading";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
+import PageLoader from "../components/loaders/PageLoader";
 
 export default function DashboardGuard({ children }: { children: React.ReactNode }) {
   //#region Context
@@ -22,7 +22,7 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
   //#endregion
 
   //#region loading
-  if (status === "loading") return <Loading />;
+  if (status === "loading") return <PageLoader />;
   //#endregion
 
   return (

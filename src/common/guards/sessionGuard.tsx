@@ -1,8 +1,8 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Loading from "@/app/loading";
 import { useEffect } from "react";
 import { PageUrl } from "../constants/pageUrl";
+import PageLoader from "../components/loaders/PageLoader";
 
 export default function SessionGuard({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -16,7 +16,7 @@ export default function SessionGuard({ children }: { children: React.ReactNode }
 
   return (
     <>
-      {(status === "authenticated" && session?.profile && children) || <Loading />}
+      {(status === "authenticated" && session?.profile && children) || <PageLoader />}
     </>
   );
 }

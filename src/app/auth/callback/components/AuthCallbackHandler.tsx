@@ -3,7 +3,7 @@ import { PageUrl } from "@/common/constants/pageUrl";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Loading from "@/app/loading";
+import PageLoader from "@/common/components/loaders/PageLoader";
 
 export default function AuthCallbackHandler() {
   const router = useRouter();
@@ -17,5 +17,5 @@ export default function AuthCallbackHandler() {
       router.replace(PageUrl.AUTH_SIGN_IN);
     }
   }, [session, status]);
-  if (status === "loading") return <Loading />;
+  if (status === "loading") return <PageLoader />;
 }
