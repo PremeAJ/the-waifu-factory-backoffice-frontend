@@ -220,6 +220,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                 options={parentCategoryOptions}
                 placeholder="ค้นหาหมวดหมู่หลัก หรือปล่อยว่างเพื่อเป็นหมวดหมู่หลัก"
                 showEmptyOption
+                emptyOptionText="ไม่มี"
                 disabled={!!parent || (type === "edit" && hasSubCategories)}
                 orderBy={(a, b) => a.text.localeCompare(b.text)}
                 renderOption={(option) => {

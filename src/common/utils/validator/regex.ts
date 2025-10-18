@@ -1,4 +1,5 @@
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const enAndNumberAndSpecialRegex = /^[\x20-\x7E]*$/;
 export const enAndNumberRegex = /^[a-zA-Z0-9\s]*$/;
 export const lowerEn = /[a-z]/
 export const number = /\d/;

@@ -1,7 +1,7 @@
 import * as yup from "yup";
-import { enAndNumberRegex, lowerEn, number, phoneRegex, specialChar, ThAndEnRegex, upperEn } from "./regex";
+import { enAndNumberAndSpecialRegex, lowerEn, number, phoneRegex, specialChar, ThAndEnRegex, upperEn } from "./regex";
 
-export const categoryNameEn = yup .string() .max(50, "ชื่อหมวดหมู่ต้องไม่เกิน 50 ตัวอักษร") .matches(enAndNumberRegex, "ชื่อภาษาอังกฤษต้องใช้ตัวอักษรภาษาอังกฤษเท่านั้น");
+export const categoryNameEn = yup .string() .max(50, "ชื่อหมวดหมู่ต้องไม่เกิน 50 ตัวอักษร") .matches(enAndNumberAndSpecialRegex, "ชื่อภาษาอังกฤษต้องใช้ตัวอักษรภาษาอังกฤษเท่านั้น");
 export const categoryNameThRequired = yup .string() .required("กรุณากรอกชื่อหมวดหมู่ (ภาษาไทย)") .min(2, "ชื่อหมวดหมู่ต้องมีอย่างน้อย 2 ตัวอักษร") .max(50, "ชื่อหมวดหมู่ต้องไม่เกิน 50 ตัวอักษร");
 export const confirmPasswordSchema = yup .string() .oneOf([yup.ref("password")], "รหัสผ่านไม่ตรงกัน") .required("กรุณายืนยันรหัสผ่าน");
 export const emailValidator = yup.string().email("รูปแบบอีเมลไม่ถูกต้อง").required("กรุณากรอกอีเมล");
