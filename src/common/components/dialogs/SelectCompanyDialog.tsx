@@ -1,5 +1,5 @@
 import { IconPlus } from "@tabler/icons-react";
-import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip } from "@mui/material";
+import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip, Skeleton, Box } from "@mui/material";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,7 @@ interface SelectCompanyDialogProps {
 }
 
 const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose, disableBackdropClose = false }) => {
-  const { companyList, updateActiveCompany } = useProfile();
+  const { companyList, updateActiveCompany, loading } = useProfile();
   const { data: session } = useSession();
   const { activeCompany } = session?.profile || {};
   const router = useRouter();
@@ -30,6 +30,22 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
     if (onClose) onClose();
   };
 
+  const skeletonList = (
+    <List sx={{ pt: 0 }}>
+      {[1, 2, 3].map((i) => (
+        <ListItemButton key={i} disabled sx={{ px: 2, py: 1 }}>
+          <ListItemAvatar>
+            <Skeleton variant="circular" width={40} height={40} />
+          </ListItemAvatar>
+          <Box sx={{ flex: 1 }}>
+            <Skeleton variant="text" width="60%" />
+            <Skeleton variant="text" width="30%" />
+          </Box>
+        </ListItemButton>
+      ))}
+    </List>
+  );
+
   const companyListContent = (
     <List sx={{ pt: 0 }}>
       {companyList.map((company) => {
@@ -43,7 +59,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
             sx={isActive ? { opacity: 0.7, cursor: "not-allowed" } : {}}
           >
             <ListItemAvatar>
-              <CompanyAvatar  icon={company.companies.icon}/>
+              <CompanyAvatar icon={company.companies.icon} />
             </ListItemAvatar>
             <ListItemText
               primary={
@@ -69,7 +85,8 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
 
   return (
     <BaseDialog
-      content={companyListContent}
+      loading={loading}
+      content={loading ? skeletonList : companyListContent}
       disableBackdropClose={disableBackdropClose}
       noAction={true}
       onClose={onClose}
