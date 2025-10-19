@@ -3,8 +3,12 @@ import React from "react";
 import Box from "@mui/material/Box";
 import { Autocomplete, Button, Grid, Typography } from "@mui/material";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
-import CustomTextField from "@/components/forms/theme-elements/CustomTextField";
+import BaseTextField from "@/common/components/base/BaseTextField";
 import { IconPlus } from "@tabler/icons-react";
+
+interface ProductDetailsProps {
+  formik?: any;
+}
 
 const new_category = [
   { label: "Computer" },
@@ -22,15 +26,17 @@ const new_tags = [
   { label: "Latest" },
 ];
 
-const ProductDetails = () => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
+  const categories = formik?.values?.categories ?? [];
+  const tags = formik?.values?.tags ?? [];
+
   return (
-    (<Box p={3}>
-      <Typography variant="h5">Product Details</Typography>
+    <Box p={3}>
+      <Typography variant="h5">รายละเอียดสินค้า</Typography>
       <Grid container mt={3}>
-        {/* 1 */}
         <Grid display="flex" alignItems="center" size={12}>
           <CustomFormLabel htmlFor="p_cat" sx={{ mt: 0 }}>
-            Categories
+            หมวดหมู่
           </CustomFormLabel>
         </Grid>
         <Grid size={12}>
@@ -39,26 +45,28 @@ const ProductDetails = () => {
             fullWidth
             id="new-category"
             options={new_category}
-            getOptionLabel={(option) => option.label}
+            value={categories}
+            onChange={(_, v) => {
+              if (formik) formik.setFieldValue("categories", v);
+            }}
+            getOptionLabel={(option) => (option as any).label}
             filterSelectedOptions
             renderInput={(params) => (
-              <CustomTextField {...params} placeholder="Categories" />
+              <BaseTextField {...params} placeholder="Categories" name="categories" formik={formik} />
             )}
           />
-
-          {/* <CustomTextField id="p_cat" fullWidth /> */}
           <Typography variant="body2" mb={2}>
-            Add product to a category.
+            เพิ่มสินค้าลงในหมวดหมู่
           </Typography>
         </Grid>
         <Grid size={12}>
           <Button variant="text" startIcon={<IconPlus size={18} />}>
-            Create New Category
+            สร้างหมวดหมู่ใหม่
           </Button>
         </Grid>
-        {/* 1 */}
+
         <Grid display="flex" alignItems="center" size={12}>
-          <CustomFormLabel htmlFor="p_tag">Tags</CustomFormLabel>
+          <CustomFormLabel htmlFor="p_tag">แท็ก</CustomFormLabel>
         </Grid>
         <Grid size={12}>
           <Autocomplete
@@ -66,19 +74,20 @@ const ProductDetails = () => {
             fullWidth
             id="new-tags"
             options={new_tags}
-            getOptionLabel={(option) => option.label}
+            value={tags}
+            onChange={(_, v) => {
+              if (formik) formik.setFieldValue("tags", v);
+            }}
+            getOptionLabel={(option) => (option as any).label}
             filterSelectedOptions
-            renderInput={(params) => (
-              <CustomTextField {...params} placeholder="Tags" />
-            )}
+            renderInput={(params) => <BaseTextField {...params} placeholder="Tags" name="tags" formik={formik} />}
           />
-          {/* <CustomTextField id="p_tag" fullWidth /> */}
           <Typography variant="body2" mb={2}>
-            Add product to a category.
+            เพิ่มแท็กให้สินค้านี้
           </Typography>
         </Grid>
       </Grid>
-    </Box>)
+    </Box>
   );
 };
 
