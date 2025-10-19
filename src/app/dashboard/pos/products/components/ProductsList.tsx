@@ -102,8 +102,8 @@ function ProductsList() {
     setPage(1);
   };
 
-  const onClickAdd = () => {
-    router.push("products/add");
+  const onClickCreate = () => {
+    router.push("products/create");
   };
 
   return (
@@ -126,9 +126,9 @@ function ProductsList() {
         )}
 
         {isMobile ? (
-          <BaseFloatingButton icon={<IconPlus />} onClick={() => onClickAdd()} />
+          <BaseFloatingButton icon={<IconPlus />} onClick={() => onClickCreate()} />
         ) : (
-          <BaseButton variant="contained" onClick={() => onClickAdd()} fullWidth={false} preset="add" label="Add Product" />
+          <BaseButton variant="contained" onClick={() => onClickCreate()} fullWidth={false} preset="add" label="Add Product" />
         )}
       </Stack>
 

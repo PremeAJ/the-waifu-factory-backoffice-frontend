@@ -1,9 +1,8 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import { Button, Grid, Stack } from "@mui/material";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import PageContainer from "@/components/container/PageContainer";
-import GeneralCard from "@/components/apps/ecommerce/productAdd/GeneralCard";
-import MediaCard from "@/components/apps/ecommerce/productAdd/Media";
 import VariationCard from "@/components/apps/ecommerce/productAdd/VariationCard";
 import PricingCard from "@/components/apps/ecommerce/productAdd/Pricing";
 import StatusCard from "@/components/apps/ecommerce/productAdd/Status";
@@ -14,6 +13,9 @@ import { ProductProvider } from "@/context/Ecommercecontext/index";
 import BaseFileInput from "@/common/components/base/BaseFileInput";
 import { FileSize } from "@/common/constants/file/fileSize";
 import { fileTypeGroup } from "@/common/constants/file/fileType";
+import { useParams, useRouter } from "next/navigation";
+import PageLoader from "@/common/components/loaders/PageLoader";
+import GeneralCard from "./components/GeneralCard";
 
 const BCrumb = [
   {
@@ -23,16 +25,43 @@ const BCrumb = [
     to: "/dashboard/pos/products",
     title: "Products",
   },
-  {
-    title: "Add Product",
-  },
 ];
 
-const AddProduct = () => {
+const AddOrEditProduct = () => {
+  const params = useParams() as { action?: string };
+  const router = useRouter();
+  const [ready, setReady] = useState(false);
+  const action = params?.action;
+
+  useEffect(() => {
+    // validate action param: allow only "create" or "edit"
+    if (!action) {
+      router.replace("/dashboard/pos/products");
+      return;
+    }
+
+    if (action !== "create" && action !== "edit") {
+      // invalid action -> redirect to products list
+      router.replace("/dashboard/pos/products");
+      return;
+    }
+
+    // if edit mode you might require additional validation (e.g. product id)
+    // e.g. const search = useSearchParams(); const id = search.get('id');
+    // if (!id) router.replace('/dashboard/pos/products');
+
+    setReady(true);
+  }, [action, router]);
+
+  if (!ready) return <PageLoader />;
+
+  const title = action === "create" ? "Add Product" : "Edit Product";
+  const crumb = [...BCrumb, { title }];
+
   return (
     <ProductProvider>
-      <PageContainer title="Add Product" description="this is Add Product">
-        <Breadcrumb title="Add Product" items={BCrumb} />
+      <PageContainer title={title} description={title}>
+        <Breadcrumb title={title} items={crumb} />
         <form>
           <Grid container spacing={3}>
             <Grid
@@ -115,4 +144,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default AddOrEditProduct;
