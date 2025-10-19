@@ -29,6 +29,7 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import BaseTooltip from "./BaseTooltip";
 import { IconEdit, IconPlus, IconTrash, IconEye } from "@tabler/icons-react";
 import config from "@/common/contexts/setting/config";
+import { defaultPageOptions } from "@/common/interface/paginate";
 
 interface TableHeader {
   key: string;
@@ -150,7 +151,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
   };
 
   const renderLoadingRows = () => {
-    const skeletonCount = pagination?.rowsPerPage || config.defaultPerPage;
+    const skeletonCount = pagination?.rowsPerPage || defaultPageOptions.perPage;
     return Array.from({ length: skeletonCount }, (_, index) => (
       <TableRow key={`skeleton-${index}`}>
         <TableCell size="small" padding="none" sx={{ width: 40 }} />
@@ -284,7 +285,7 @@ const BaseTable = <T extends readonly TableHeader[]>({
     const primaryHeader = headers.find((h: any) => h.primary === true) || headers[0];
 
     if (loading) {
-      const skeletonCount = pagination?.rowsPerPage || config.defaultPerPage;
+      const skeletonCount = pagination?.rowsPerPage || defaultPageOptions.perPage;
       return (
         <Stack spacing={2}>
           {Array.from({ length: skeletonCount }).map((_, si) => (

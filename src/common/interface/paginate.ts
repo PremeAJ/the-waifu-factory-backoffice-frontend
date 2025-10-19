@@ -7,7 +7,7 @@ export interface PageOptions {
 
 export const defaultPageOptions: PageOptions = {
   page: 1,
-  perPage: 5,
+  perPage: 10,
   total: 0,
   totalPages: 0,
 }
