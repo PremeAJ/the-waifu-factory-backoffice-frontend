@@ -9,7 +9,7 @@ import VariationCard from "@/components/apps/ecommerce/productAdd/VariationCard"
 import PricingCard from "@/components/apps/ecommerce/productAdd/Pricing";
 import Thumbnail from "@/components/apps/ecommerce/productAdd/Thumbnail";
 import StatusCard from "@/components/apps/ecommerce/productAdd/Status";
-import ProductDetails from "@/components/apps/ecommerce/productAdd/ProductDetails";
+// import ProductDetails from "@/components/apps/ecommerce/productAdd/ProductDetails";
 import ProductTemplate from "@/components/apps/ecommerce/productAdd/ProductTemplate";
 import BlankCard from "@/components/shared/BlankCard";
 import { ProductProvider } from '@/context/Ecommercecontext/index'
@@ -67,9 +67,9 @@ const EcommerceAddProduct = () => {
                   <StatusCard />
                 </BlankCard>
 
-                <BlankCard>
-                  <ProductDetails />
-                </BlankCard>
+                {/* <BlankCard> */}
+                  {/* <ProductDetails /> */}
+                {/* </BlankCard> */}
 
                 <BlankCard>
                   <ProductTemplate />
