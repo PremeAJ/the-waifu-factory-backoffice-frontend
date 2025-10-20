@@ -68,7 +68,7 @@ const ProductForm: React.FC = () => {
                 placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
                 multiple={false}
                 accept={fileTypeGroup.image}
-                maxSize={FileSize.MB2}
+                // maxSize={FileSize.MB2}
                 autoUpload={true} // อัปโหลดอัตโนมัติ
                 toBucket={StorageBucket.PRODUCT_THUMBNAIL} // เลือก bucket ที่เหมาะสม
                 // finalize={true} // finalize ทันทีหลังอัปโหลด
@@ -85,7 +85,7 @@ const ProductForm: React.FC = () => {
                 placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
                 multiple={true}
                 accept={fileTypeGroup.image}
-                maxSize={FileSize.MB2}
+                // maxSize={FileSize.MB2}
                 maxFiles={3}
                 autoUpload={true} // อัปโหลดอัตโนมัติ
                 toBucket={StorageBucket.PRODUCT_DETAIL} // เลือก bucket ที่เหมาะสม

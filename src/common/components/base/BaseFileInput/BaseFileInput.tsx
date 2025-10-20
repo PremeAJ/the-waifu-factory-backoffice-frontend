@@ -6,7 +6,7 @@ import BaseLabel from "../BaseLabel";
 import { useUpload } from "@/common/contexts/UploadContext";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
 import { UploadedFile, BaseFileInputProps } from './types';
-import { normalizeAccept, isImageFile } from './utils';
+import { normalizeAccept, isImageFile, formatDropzoneErrors } from './utils';
 import DropzoneArea from './DropzoneArea';
 import FileList from './FileList';
 import FileLightbox from './FileLightbox';
@@ -169,7 +169,9 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
       }));
       
       setFiles(prev => (multiple ? [...prev, ...newFiles] : newFiles));
-      setError(errorMsg || (fileRejections.length > 0 ? "ไฟล์ไม่ถูกต้อง" : null));
+
+      const rejectionMsg = formatDropzoneErrors(fileRejections, { maxSize, maxFiles, accept });
+      setError([errorMsg, rejectionMsg].filter(Boolean).join("\n") || null);
       
       if (onChange) {
         const allFiles = multiple 
@@ -339,7 +341,7 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
       />
       
       {error && (
-        <Typography color="error" mt={1} textAlign="center">
+        <Typography color="error" mt={1} textAlign="center" sx={{ whiteSpace: 'pre-line' }}>
           {error}
         </Typography>
       )}
