@@ -215,19 +215,13 @@ const BaseTextField = ({
   return (
     <>
       {label && (
-        <BaseLabel htmlFor={name}>
+        <BaseLabel htmlFor={name} tooltip={tooltip} required={required}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
             {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
             <span>
               {label}
               {langText}
             </span>
-            {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
-            {tooltip && (
-              <Tooltip title={tooltip} placement="top">
-                  <IconInfoCircle width={16} color={theme.palette.info.main} cursor={'pointer'}/>
-              </Tooltip>
-            )}
           </span>
         </BaseLabel>
       )}

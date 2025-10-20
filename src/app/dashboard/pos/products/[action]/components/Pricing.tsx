@@ -53,18 +53,10 @@ const PricingCard: React.FC<PricingCardProps> = ({ formik }) => {
   return (
     <Box p={3}>
       <Typography variant="h5" mb={3}>
-        การตั้งราคา
+        ส่วนราคา และ ภาษี
       </Typography>
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12 }}>
-          <CustomFormLabel htmlFor="p_price" sx={{ mt: 0 }}>
-            ราคาพื้นฐาน{" "}
-            <Typography color="error.main" component="span">
-              *
-            </Typography>
-          </CustomFormLabel>
-          <BaseTextField name="p_price" formik={formik} placeholder="Product Price" fullWidth type="number" />
-        </Grid>
+       
 
           <Grid size={{ xs: 12 }}>
           <CustomFormLabel htmlFor="discountType" sx={{ mt: 0 }}>

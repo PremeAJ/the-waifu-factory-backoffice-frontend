@@ -1,5 +1,4 @@
 "use client";
-import { FileSize } from "@/common/constants/file/fileSize";
 import { fileTypeGroup } from "@/common/constants/file/fileType";
 import { Grid, Stack, Button } from "@mui/material";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
@@ -11,7 +10,6 @@ import PricingCard from "./Pricing";
 import ProductDetails from "./ProductDetails";
 import ProductTemplate from "./ProductTemplate";
 import React from "react";
-import StatusCard from "./Status";
 import VariationCard from "./VariationCard";
 import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
 
@@ -56,21 +54,32 @@ const ProductForm: React.FC = () => {
             <BlankCard>
               <GeneralCard formik={formik} />
             </BlankCard>
-
+            <BlankCard>
+              <VariationCard formik={formik} />
+            </BlankCard>
+            <BlankCard>
+              <PricingCard formik={formik} />
+            </BlankCard>
+          </Stack>
+        </Grid>
+        <Grid
+          size={{
+            lg: 4,
+          }}
+        >
+          <Stack spacing={3}>
             <BlankCard>
               <BaseFileInput
                 label="อัปโหลดภาพสินค้า"
                 placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
                 multiple={false}
                 accept={fileTypeGroup.image}
-                // maxSize={FileSize.MB2}
-                autoUpload={true} // อัปโหลดอัตโนมัติ
-                toBucket={StorageBucket.PRODUCT_THUMBNAIL} // เลือก bucket ที่เหมาะสม
-                // finalize={true} // finalize ทันทีหลังอัปโหลด
+                autoUpload={true}
+                toBucket={StorageBucket.PRODUCT_THUMBNAIL}
                 onUploadComplete={(fileIds) => {
                   formik.setFieldValue("imageIds", fileIds);
                 }}
-                value={formik.values.imageIds} // ส่งค่าที่มีอยู่แล้ว (สำหรับกรณีแก้ไข)
+                value={formik.values.imageIds}
               />
             </BlankCard>
 
@@ -80,36 +89,14 @@ const ProductForm: React.FC = () => {
                 placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
                 multiple={true}
                 accept={fileTypeGroup.image}
-                // maxSize={FileSize.MB2}
                 maxFiles={3}
-                autoUpload={true} // อัปโหลดอัตโนมัติ
-                toBucket={StorageBucket.PRODUCT_DETAIL} // เลือก bucket ที่เหมาะสม
-                // finalize={true} // finalize ทันทีหลังอัปโหลด
+                autoUpload={true}
+                toBucket={StorageBucket.PRODUCT_DETAIL}
                 onUploadComplete={(fileIds) => {
                   formik.setFieldValue("detailImageIds", fileIds);
                 }}
-                value={formik.values.detailImageIds} // ส่งค่าที่มีอยู่แล้ว (สำหรับกรณีแก้ไข)
+                value={formik.values.detailImageIds}
               />
-            </BlankCard>
-
-            <BlankCard>
-              <VariationCard formik={formik} />
-            </BlankCard>
-
-            <BlankCard>
-              <PricingCard formik={formik} />
-            </BlankCard>
-          </Stack>
-        </Grid>
-
-        <Grid
-          size={{
-            lg: 4,
-          }}
-        >
-          <Stack spacing={3}>
-            <BlankCard>
-              <StatusCard formik={formik} />
             </BlankCard>
 
             <BlankCard>
