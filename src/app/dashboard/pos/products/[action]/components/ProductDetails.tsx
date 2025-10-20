@@ -32,7 +32,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
 
   return (
     <Box p={3}>
-      <Typography variant="h5">รายละเอียดสินค้า</Typography>
+      <Typography variant="h5">หมวดหมู่ และ แท็ก</Typography>
       <Grid container mt={3}>
         <Grid display="flex" alignItems="center" size={12}>
           <CustomFormLabel htmlFor="p_cat" sx={{ mt: 0 }}>

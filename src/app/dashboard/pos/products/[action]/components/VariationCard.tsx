@@ -80,7 +80,7 @@ const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {
   return (
     <Box p={3}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Typography variant="h5">ข้อมูลสินค้า</Typography>
+        <Typography variant="h5">รายละเอียดสินค้า</Typography>
         <BaseTabs value={tab} onChange={handleTabChange} tabs={tabs} />
       </Box>
 
