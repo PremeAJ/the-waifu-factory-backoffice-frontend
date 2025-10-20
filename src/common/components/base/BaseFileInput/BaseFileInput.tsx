@@ -273,7 +273,6 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     }
   };
 
-  // Upload pending files
   const handleUploadPendingFiles = async () => {
     const pendingFiles = files.filter(f => !f.id && !f.uploading);
     if (pendingFiles.length === 0) return;
