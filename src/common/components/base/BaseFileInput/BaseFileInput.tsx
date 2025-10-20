@@ -6,7 +6,7 @@ import BaseLabel from "../BaseLabel";
 import { useUpload } from "@/common/contexts/UploadContext";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
 import { UploadedFile, BaseFileInputProps } from './types';
-import { normalizeAccept, isImageFile, formatDropzoneErrors } from './utils';
+import { normalizeAccept, isImageFile, formatDropzoneErrors, compressImageIfNeeded, CLIENT_MAX_BYTES } from './utils';
 import DropzoneArea from './DropzoneArea';
 import FileList from './FileList';
 import FileLightbox from './FileLightbox';
@@ -142,7 +142,21 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
   // Handle file drop
   const onDrop = useCallback(
     async (acceptedFiles: File[], fileRejections: any[]) => {
-      let validFiles = acceptedFiles;
+      const targetBytes = Math.min(
+        CLIENT_MAX_BYTES,
+        typeof maxSize === "number" && maxSize > 0 ? maxSize : CLIENT_MAX_BYTES
+      );
+
+      const processedFiles = await Promise.all(
+        acceptedFiles.map(async (f) => {
+          if ((f.type || "").startsWith("image/") && f.size > targetBytes) {
+            return await compressImageIfNeeded(f, { targetBytes });
+          }
+          return f;
+        })
+      );
+
+      let validFiles = processedFiles;
       let errorMsg = "";
 
       if (maxSize) {
@@ -172,33 +186,26 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
 
       const rejectionMsg = formatDropzoneErrors(fileRejections, { maxSize, maxFiles, accept });
       setError([errorMsg, rejectionMsg].filter(Boolean).join("\n") || null);
-      
+
+      // 5) แจ้ง parent
       if (onChange) {
-        const allFiles = multiple 
-          ? [...files.map(f => f.file), ...validFiles]
-          : validFiles;
+        const allFiles = multiple ? [...files.map(f => f.file), ...validFiles] : validFiles;
         onChange(allFiles);
       }
 
+      // 6) อัปโหลดอัตโนมัติหากตั้งค่าไว้
       if (autoUpload) {
         const uploadedFiles: UploadedFile[] = [];
-        
         for (const file of validFiles) {
           const uploadedFile = await handleUploadFile(file);
           uploadedFiles.push(uploadedFile);
         }
-
         setFiles(prev => {
-          const filtered = prev.filter(p => 
-            !uploadedFiles.some(u => u.file === p.file)
-          );
+          const filtered = prev.filter(p => !uploadedFiles.some(u => u.file === p.file));
           return [...filtered, ...uploadedFiles];
         });
-        
         if (onUploadComplete) {
-          const fileIds = uploadedFiles
-            .filter(f => f.id && !f.error)
-            .map(f => f.id);
+          const fileIds = uploadedFiles.filter(f => f.id && !f.error).map(f => f.id);
           onUploadComplete(fileIds);
         }
       }
@@ -206,13 +213,13 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     [maxSize, maxFiles, files, autoUpload, onChange, onUploadComplete, multiple, handleUploadFile]
   );
 
-  // Setup dropzone
+  // Setup dropzone: ไม่กำหนด maxSize เพื่อให้ไฟล์ใหญ่เข้ามาให้เราบีบอัดเอง
   const normalizedAccept = normalizeAccept(accept);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple,
     accept: normalizedAccept,
-    maxSize,
+    // maxSize: undefined,
   });
 
   // Handle remove file
