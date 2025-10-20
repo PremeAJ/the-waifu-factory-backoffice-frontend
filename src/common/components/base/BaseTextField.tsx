@@ -1,8 +1,8 @@
 "use client";
-import { IconEye, IconEyeOff, IconSearch, IconX } from "@tabler/icons-react";
+import { IconEye, IconEyeOff, IconSearch, IconX, IconInfoCircle } from "@tabler/icons-react";
 import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
 import { ReactNode, useState } from "react";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import { TextField, TextFieldProps, IconButton, InputAdornment, Tooltip, Skeleton } from "@mui/material";
 import BaseLabel from "./BaseLabel";
 
@@ -17,7 +17,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   tooltip?: string;
   loading?: boolean;
   labelIcon?: ReactNode;
-  lang?:IsLanguage
+  lang?: IsLanguage;
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -70,11 +70,12 @@ const BaseTextField = ({
   type,
   required,
   tooltip,
-  loading = false, 
+  loading = false,
   labelIcon,
   ...rest
 }: CustomTextFieldProps) => {
-  const langText = lang ? lang === 'th' ? ' (ภาษาไทย)' : ' (ภาษาอังกฤษ)' : ''
+  const theme = useTheme();
+  const langText = lang ? (lang === "th" ? " (ภาษาไทย)" : " (ภาษาอังกฤษ)") : "";
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -91,16 +92,16 @@ const BaseTextField = ({
 
   if (loading) {
     const skeleton = (
-      <Skeleton 
-        variant="rectangular" 
-        width="100%" 
-        height={44} 
-        sx={{ 
+      <Skeleton
+        variant="rectangular"
+        width="100%"
+        height={44}
+        sx={{
           borderRadius: 1,
-          '&::after': {
-            animationDuration: '2s',
-          }
-        }} 
+          "&::after": {
+            animationDuration: "2s",
+          },
+        }}
       />
     );
 
@@ -110,18 +111,22 @@ const BaseTextField = ({
           <BaseLabel htmlFor={name}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
               {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
-              <span>{label}</span>
+              <span>
+                {label}
+                {langText}
+              </span>
               {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
+              {tooltip && (
+                <Tooltip title={tooltip} placement="bottom-start">
+                  <span style={{ display: "inline-flex", marginLeft: 8, cursor: "pointer" }} aria-label="info">
+                    <IconInfoCircle width={16} />
+                  </span>
+                </Tooltip>
+              )}
             </span>
           </BaseLabel>
         )}
-        {tooltip ? (
-          <Tooltip title={tooltip} placement="bottom-start">
-            <span style={{ display: "block" }}>{skeleton}</span>
-          </Tooltip>
-        ) : (
-          skeleton
-        )}
+        {skeleton}
       </>
     );
   }
@@ -141,7 +146,7 @@ const BaseTextField = ({
 
   const getStartAdornment = () => {
     if (startAdornment) return startAdornment;
-    
+
     if (type === "search") {
       return (
         <InputAdornment position="start">
@@ -149,46 +154,36 @@ const BaseTextField = ({
         </InputAdornment>
       );
     }
-    
+
     return null;
   };
 
   const getEndAdornment = () => {
     if (endAdornment) return endAdornment;
-    
+
     if (type === "password") {
       return (
         <InputAdornment position="end">
-          <IconButton 
-            aria-label="toggle password visibility" 
-            onClick={handleClickShowPassword} 
-            onMouseDown={handleMouseDownPassword} 
-            edge="end"
-          >
+          <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword} edge="end">
             {showPassword ? <IconEyeOff width={20} /> : <IconEye width={20} />}
           </IconButton>
         </InputAdornment>
       );
     }
-    
+
     if (type === "search") {
       const currentValue = formik?.values[name] || rest.value || "";
       if (currentValue) {
         return (
           <InputAdornment position="end">
-            <IconButton 
-              aria-label="clear search" 
-              onClick={handleClearSearch}
-              edge="end"
-              size="small"
-            >
+            <IconButton aria-label="clear search" onClick={handleClearSearch} edge="end" size="small">
               <IconX size={16} />
             </IconButton>
           </InputAdornment>
         );
       }
     }
-    
+
     return null;
   };
 
@@ -202,7 +197,7 @@ const BaseTextField = ({
       value={formik?.values[name]}
       onChange={formik?.handleChange}
       onBlur={formik?.handleBlur}
-      placeholder={`${placeholder}${langText}`}
+      placeholder={placeholder}
       error={formik?.touched[name] && Boolean(formik.errors[name])}
       helperText={helperText}
       autoComplete={type === "password" ? "new-password" : undefined}
@@ -223,18 +218,20 @@ const BaseTextField = ({
         <BaseLabel htmlFor={name}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
             {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
-            <span>{label}{langText}</span>
+            <span>
+              {label}
+              {langText}
+            </span>
             {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
+            {tooltip && (
+              <Tooltip title={tooltip} placement="top">
+                  <IconInfoCircle width={16} color={theme.palette.info.main} cursor={'pointer'}/>
+              </Tooltip>
+            )}
           </span>
         </BaseLabel>
       )}
-      {tooltip ? (
-        <Tooltip title={tooltip} placement="bottom-start">
-          <span style={{ display: "block" }}>{textField}</span>
-        </Tooltip>
-      ) : (
-        textField
-      )}
+      {textField}
     </>
   );
 };

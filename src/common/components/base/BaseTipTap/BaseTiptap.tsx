@@ -118,13 +118,13 @@ const BaseTiptap: React.FC<BaseTiptapProps> = ({
               content={content}
               onChange={handleChange}
               onUpdate={handleChange}
-              placeholder={`${placeholder}${langText}`}
+              placeholder={placeholder}
               {...rest}
             />
           </span>
         </Tooltip>
       ) : (
-        <TiptapEditor key={name} content={content} onChange={handleChange} onUpdate={handleChange} placeholder={`${placeholder}${langText}`} {...rest} />
+        <TiptapEditor key={name} content={content} onChange={handleChange} onUpdate={handleChange} placeholder={placeholder} {...rest} />
       )}
     </Box>
   );
