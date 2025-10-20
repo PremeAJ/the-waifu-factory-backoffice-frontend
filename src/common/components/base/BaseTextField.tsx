@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import { IconEye, IconEyeOff, IconSearch, IconX } from "@tabler/icons-react";
+import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
+import { ReactNode, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { TextField, TextFieldProps, IconButton, InputAdornment, Tooltip, Skeleton } from "@mui/material";
-import { IconEye, IconEyeOff, IconSearch, IconX } from "@tabler/icons-react";
 import BaseLabel from "./BaseLabel";
 
 interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
@@ -10,12 +11,13 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   label?: string;
   placeholder?: string;
   formik?: any;
-  startAdornment?: React.ReactNode;
-  endAdornment?: React.ReactNode;
+  startAdornment?: ReactNode;
+  endAdornment?: ReactNode;
   required?: boolean;
   tooltip?: string;
-  loading?: boolean; // <-- 1. เพิ่ม prop loading
-  labelIcon?: React.ReactNode; // <-- new prop to show icon before label
+  loading?: boolean;
+  labelIcon?: ReactNode;
+  lang?:IsLanguage
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -60,6 +62,7 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
 const BaseTextField = ({
   name,
   label,
+  lang,
   placeholder,
   formik,
   startAdornment,
@@ -71,10 +74,8 @@ const BaseTextField = ({
   labelIcon,
   ...rest
 }: CustomTextFieldProps) => {
-  // ✅ Hooks ต้องอยู่ที่ top level เสมอ
+  const langText = lang ? lang === 'th' ? ' (ภาษาไทย)' : ' (ภาษาอังกฤษ)' : ''
   const [showPassword, setShowPassword] = useState(false);
-
-  // Helper functions
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -88,7 +89,6 @@ const BaseTextField = ({
     }
   };
 
-  // Loading state rendering
   if (loading) {
     const skeleton = (
       <Skeleton 
@@ -109,7 +109,6 @@ const BaseTextField = ({
         {label && (
           <BaseLabel htmlFor={name}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              {/** label icon if provided */}
               {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
               <span>{label}</span>
               {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
@@ -127,7 +126,6 @@ const BaseTextField = ({
     );
   }
 
-  // Error handling
   let helperText = null;
   if (formik?.touched[name] && formik?.errors[name]) {
     if (typeof formik.errors[name] === "string" && formik.errors[name].includes("\n")) {
@@ -142,10 +140,8 @@ const BaseTextField = ({
   }
 
   const getStartAdornment = () => {
-    // ถ้ามี manual startAdornment ให้ใช้ตัวนั้น
     if (startAdornment) return startAdornment;
     
-    // ถ้าเป็น type search ให้ใส่ search icon
     if (type === "search") {
       return (
         <InputAdornment position="start">
@@ -196,7 +192,6 @@ const BaseTextField = ({
     return null;
   };
 
-  // Render normal TextField
   const textField = (
     <StyledTextField
       fullWidth
@@ -207,7 +202,7 @@ const BaseTextField = ({
       value={formik?.values[name]}
       onChange={formik?.handleChange}
       onBlur={formik?.handleBlur}
-      placeholder={placeholder}
+      placeholder={`${placeholder}${langText}`}
       error={formik?.touched[name] && Boolean(formik.errors[name])}
       helperText={helperText}
       autoComplete={type === "password" ? "new-password" : undefined}
@@ -228,7 +223,7 @@ const BaseTextField = ({
         <BaseLabel htmlFor={name}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
             {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
-            <span>{label}</span>
+            <span>{label}{langText}</span>
             {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
           </span>
         </BaseLabel>

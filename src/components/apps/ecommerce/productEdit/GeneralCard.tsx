@@ -8,7 +8,7 @@ import CustomTextField from "@/components/forms/theme-elements/CustomTextField";
 
 import dynamic from 'next/dynamic';
 
-const TiptapEditor = dynamic(() => import('@/components/forms/form-tiptap/TiptapEditor'), {
+const TiptapEditor = dynamic(() => import('@/common/components/base/BaseTipTap/TiptapEditor'), {
   ssr: false,
 });
 

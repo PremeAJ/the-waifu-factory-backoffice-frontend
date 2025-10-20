@@ -158,14 +158,14 @@ const LightThemeColors = [
       primary: {
         main: "#658C5E",      // เขียวกลาง
         light: "#ebffdfff",     // เขียวอ่อน
-        dark: "#6F5840",      // น้ำตาลเข้ม
+        dark: "#4C6B3C",    // เขียวเข้ม
         contrastText: "#ffffff",
       },
       secondary: {
-        main: "#9E7C5F",      // น้ำตาลกลาง
-        light: "#FFF0D6",     // ครีม
-        dark: "#6F5840",      // น้ำตาลเข้ม
-        contrastText: "#3E4C2C",
+        main: "#85b65aff",
+        light: "#c6fc98ff",
+        dark: "#75a14fff",
+        contrastText: "#ffffff",
       },
     },
   },

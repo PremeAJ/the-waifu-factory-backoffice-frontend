@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton, Tooltip, Box } from "@mui/material";
-import BaseLabel from "./BaseLabel";
+import BaseLabel from "../BaseLabel";
+import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
 
 interface TiptapProps {
   content?: string;
@@ -14,10 +15,7 @@ interface TiptapProps {
 
 // Ensure dynamic loader returns a component typed with TiptapProps
 const TiptapEditor = dynamic(
-  () =>
-    import("@/components/forms/form-tiptap/TiptapEditor").then(
-      (mod) => mod.default as React.ComponentType<TiptapProps>
-    ),
+  () => import("@/common/components/base/BaseTipTap/TiptapEditor").then((mod) => mod.default as React.ComponentType<TiptapProps>),
   { ssr: false }
 );
 
@@ -27,6 +25,7 @@ interface BaseTiptapProps {
   value?: string;
   onChange?: (value: string) => void;
   label?: string;
+  lang?: IsLanguage;
   placeholder?: string;
   required?: boolean;
   loading?: boolean;
@@ -43,6 +42,7 @@ const BaseTiptap: React.FC<BaseTiptapProps> = ({
   value,
   onChange,
   label,
+  lang,
   placeholder,
   required = false,
   loading = false,
@@ -53,14 +53,12 @@ const BaseTiptap: React.FC<BaseTiptapProps> = ({
 }) => {
   const initial = formik?.values?.[name] ?? value ?? "";
   const [content, setContent] = useState<string>(initial);
-
-  // keep local state in sync when external value/formik changes
+  const langText = lang ? (lang === "th" ? " (ภาษาไทย)" : " (ภาษาอังกฤษ)") : "";
   useEffect(() => {
     const next = formik?.values?.[name] ?? value;
     if (typeof next === "string" && next !== content) {
       setContent(next);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik?.values?.[name], value]);
 
   const handleChange = (nextContent: string) => {
@@ -104,7 +102,9 @@ const BaseTiptap: React.FC<BaseTiptapProps> = ({
         <BaseLabel htmlFor={name}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
             {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
-            <span>{label}</span>
+            <span>
+              {label}{langText}
+            </span>
             {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
           </span>
         </BaseLabel>
@@ -118,13 +118,13 @@ const BaseTiptap: React.FC<BaseTiptapProps> = ({
               content={content}
               onChange={handleChange}
               onUpdate={handleChange}
-              placeholder={placeholder}
+              placeholder={`${placeholder}${langText}`}
               {...rest}
             />
           </span>
         </Tooltip>
       ) : (
-        <TiptapEditor key={name} content={content} onChange={handleChange} onUpdate={handleChange} placeholder={placeholder} {...rest} />
+        <TiptapEditor key={name} content={content} onChange={handleChange} onUpdate={handleChange} placeholder={`${placeholder}${langText}`} {...rest} />
       )}
     </Box>
   );

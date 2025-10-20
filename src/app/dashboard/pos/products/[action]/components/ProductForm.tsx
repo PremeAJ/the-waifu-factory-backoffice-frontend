@@ -32,20 +32,15 @@ const ProductForm: React.FC = () => {
       p_name_en: "",
       p_description_th: "",
       p_description_en: "",
-      // เปลี่ยนจากเก็บ File objects เป็นเก็บ file IDs
       imageIds: [] as string[],
       detailImageIds: [] as string[],
-      // add other fields as needed
     },
     validationSchema,
     onSubmit: (values) => {
-      // ส่งค่าทั้งหน้า
       console.log("submit product form", values);
-      // values จะมี imageIds และ detailImageIds เป็น string[] ที่พร้อมส่งให้ API
     },
   });
 
-  // สำหรับการ debug
   console.log("Current image IDs:", formik.values.imageIds);
   console.log("Current detail image IDs:", formik.values.detailImageIds);
 

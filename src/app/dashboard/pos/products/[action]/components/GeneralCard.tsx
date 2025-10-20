@@ -3,7 +3,7 @@ import { Grid } from "@mui/material";
 import { Typography, Tabs, Tab } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import BaseTextField from "@/common/components/base/BaseTextField";
-import BaseTiptap from "@/common/components/base/BaseTiptap";
+import BaseTiptap from "@/common/components/base/BaseTipTap/BaseTiptap";
 import Box from "@mui/material/Box";
 import React from "react";
 
@@ -58,24 +58,24 @@ const GeneralCard = ({ formik }: { formik: any }) => {
       <Grid container mt={3}>
         <Grid size={{ xs: 12 }}>
           <TabPanel value={tab} index={0}>
-            <BaseTextField formik={formik} name="p_name_th" label="ชื่อสินค้า" required placeholder="ชื่อสินค้า (TH)" fullWidth />
+            <BaseTextField formik={formik} fullWidth label="ชื่อสินค้า" lang="th" name="p_name_th" placeholder="ชื่อสินค้า" required />
           </TabPanel>
 
           <TabPanel value={tab} index={1}>
-            <BaseTextField formik={formik} name="p_name_en" label="ชื่อสินค้า" placeholder="ชื่อสินค้า (EN)" fullWidth />
+            <BaseTextField formik={formik} fullWidth label="ชื่อสินค้า" lang="en" name="p_name_en" placeholder="ชื่อสินค้า" />
           </TabPanel>
         </Grid>
 
         <Grid size={{ xs: 12 }}>
           <TabPanel value={tab} index={0}>
             <Box key="desc_th">
-              <BaseTiptap formik={formik} name="p_description_th" label="รายละเอียด" placeholder="รายละเอียด (TH)" />
+              <BaseTiptap formik={formik} name="p_description_th" label="รายละเอียด" placeholder="รายละเอียด" lang="th"/>
             </Box>
           </TabPanel>
 
           <TabPanel value={tab} index={1}>
             <Box key="desc_en">
-              <BaseTiptap formik={formik} name="p_description_en" label="รายละเอียด" placeholder="รายละเอียด (EN)" />
+              <BaseTiptap formik={formik} name="p_description_en" label="รายละเอียด" placeholder="รายละเอียด" lang="en"/>
             </Box>
           </TabPanel>
         </Grid>

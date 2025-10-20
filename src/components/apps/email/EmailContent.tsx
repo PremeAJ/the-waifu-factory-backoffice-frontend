@@ -19,7 +19,7 @@ import { EmailContext } from "@/context/EmailContext";
 import dynamic from 'next/dynamic';
 import { AttachType } from "@/common/utils/types/apps/email";
 
-const TiptapEditor = dynamic(() => import('@/components/forms/form-tiptap/TiptapEditor'), {
+const TiptapEditor = dynamic(() => import('@/common/components/base/BaseTipTap/TiptapEditor'), {
   ssr: false,
 });
 

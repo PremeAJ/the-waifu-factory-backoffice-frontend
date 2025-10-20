@@ -6,9 +6,9 @@ import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import React from "react";
-import settingSidebarItem from "@/common/components/base/sidebar/item/settingSidebarItem";
 import useIsMobile from "@/common/utils/state/isMobile";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
+import { settingSidebarItem } from "@/common/components/base/sidebar/item/settingSidebarItem";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",

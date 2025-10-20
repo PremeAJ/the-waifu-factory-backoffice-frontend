@@ -14,7 +14,7 @@ import {
 import { NavGroup } from "@/common/utils/types/layout/sidebar";
 import { PageUrl } from "@/common/constants/pageUrl";
 
-const settingSidebarItem: NavGroup[] = [
+export const settingSidebarItem: NavGroup[] = [
   {
     navlabel: true,
     subheader: "บัญชี",
@@ -91,4 +91,3 @@ const settingSidebarItem: NavGroup[] = [
   },
 ];
 
-export default settingSidebarItem;

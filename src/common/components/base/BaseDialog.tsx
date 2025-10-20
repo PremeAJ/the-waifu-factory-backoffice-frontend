@@ -18,7 +18,6 @@ interface BaseDialogProps {
   content: string | React.ReactNode;
   disableBackdropClose?: boolean;
   fullScreen?: boolean;
-  // new: when fullScreen=true, center content vertically if true; otherwise keep default top-aligned
   fullScreenCenter?: boolean;
   htmlContent?: boolean;
   icon?: string | React.ReactNode; // เปลี่ยน type ให้รองรับ ReactNode

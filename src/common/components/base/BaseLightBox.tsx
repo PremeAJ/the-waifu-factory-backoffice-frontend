@@ -86,8 +86,8 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: "100%",
-          height: "auto",
+          width: "auto",
+          height: "100%",
           backgroundColor: "black",
           borderRadius: 1,
           overflow: "hidden",
@@ -166,8 +166,7 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
       onClose={onClose}
       title=""
       content={content}
-      noAction={false}
-      cancelText="ปิด"
+      noAction
       fullScreen={false}
       scrolling={false}
       disableBackdropClose={false}

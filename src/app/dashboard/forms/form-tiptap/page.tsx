@@ -5,7 +5,7 @@ import PageContainer from '@/components/container/PageContainer';
 
 
 import dynamic from 'next/dynamic';
-const Editor = dynamic(() => import('@/components/forms/form-tiptap/Editor'), {
+const Editor = dynamic(() => import('@/common/components/base/BaseTipTap/Editor'), {
   ssr: false,
 });
 

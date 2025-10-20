@@ -97,7 +97,6 @@ const Profile: FC<ProfileProps> = () => {
           alt={firstName}
           size={35}
           lightbox={false}
-          sx={{ cursor: "pointer" }}
         />
       </IconButton>
 

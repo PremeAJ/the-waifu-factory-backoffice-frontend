@@ -167,9 +167,9 @@ const DarkThemeColors = [
         contrastText: "#ffffff",
       },
       secondary: {
-        main: "#BFA980",    // น้ำตาลกลาง
-        light: "#8C7A4F",   // น้ำตาลเข้ม
-        dark: "#6B5736",    // น้ำตาลเข้มกว่า
+        main: "#93c965",
+        light: "#334424ff",
+        dark: "#6a9149ff",
         contrastText: "#ffffff",
       },
       background: {

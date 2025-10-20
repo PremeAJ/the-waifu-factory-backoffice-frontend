@@ -1,15 +1,14 @@
 "use client";
-import { Avatar, Box, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { Box, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { IconChevronRight, IconChevronDown } from "@tabler/icons-react";
-import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@mui/material/styles";
-import Menuitems from "../../../common/components/base/sidebar/item/settingSidebarItem";
-import React, { useContext, useState } from "react";
+import React, { Fragment, useState } from "react";
+import BaseAvatar from "@/common/components/base/BaseAvatar"; 
+import { settingSidebarItem } from "@/common/components/base/sidebar/item/settingSidebarItem";
 
 const MobileSettingsList = () => {
-  // const { updateAppearance } = useProfile();
   const theme = useTheme();
   const router = useRouter();
   const { data: session } = useSession();
@@ -30,12 +29,12 @@ const MobileSettingsList = () => {
         mb: 1,
       }}
     >
-      <Avatar
+      <BaseAvatar
         src={avatar || ""}
         alt={fullName}
+        size={80}
+        lightbox
         sx={{
-          width: 80,
-          height: 80,
           mb: 2,
         }}
       />
@@ -69,7 +68,7 @@ const MobileSettingsList = () => {
     const isExpanded = openMenus.includes(item.id);
 
     return (
-      <React.Fragment key={item.id}>
+      <Fragment key={item.id}>
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
@@ -112,11 +111,11 @@ const MobileSettingsList = () => {
             </List>
           </Collapse>
         )}
-      </React.Fragment>
+      </Fragment>
     );
   };
 
-  const filteredMenus = Menuitems.filter((item) => !item.navlabel);
+  const filteredMenus = settingSidebarItem.filter((item) => !item.navlabel);
 
   return (
     <Box sx={{ p: 2 }}>
@@ -130,16 +129,14 @@ const MobileSettingsList = () => {
         <Divider />
         <List disablePadding>
           {filteredMenus.map((item, index) => (
-            <React.Fragment key={item.id || index}>
+            <Fragment key={item.id || index}>
               {renderNavItem(item as NavItem, index)}
 
               {index < filteredMenus.length - 1 && <Divider variant="inset" component="li" />}
-            </React.Fragment>
+            </Fragment>
           ))}
         </List>
       </Box>
-
-      {/* Moved General Settings to Profile menu */}
     </Box>
   );
 };
