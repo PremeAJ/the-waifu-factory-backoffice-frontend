@@ -304,7 +304,6 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     }
   };
 
-  // Lightbox handlers
   const handleOpenLightbox = (index: number) => {
     const imageIndex = imageFiles.findIndex(img => 
       files.indexOf(img) === index
