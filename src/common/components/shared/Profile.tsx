@@ -1,6 +1,6 @@
-import { Avatar, Box, Divider, IconButton, Menu, Skeleton, Stack, Typography, useTheme } from "@mui/material";
+import { Avatar, Box, Divider, IconButton, Menu, Skeleton, Stack, Typography, useTheme, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
-import { IconMail, IconUser } from "@tabler/icons-react";
+import { IconMail, IconUser, IconMoon, IconLanguage } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { signOut, useSession } from "next-auth/react";
 import { useAuth } from "@/common/contexts/AuthContext";
@@ -9,8 +9,10 @@ import * as dropdownData from "../../../app/dashboard/layout/header/data";
 import BaseButton from "@/common/components/base/BaseButton";
 import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDialog";
 import Link from "next/link";
-import React, { FC, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import BaseAvatar from "@/common/components/base/BaseAvatar";
+import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
+import SwitchLanguage from "@/components/shared/Language/SwitchLanguage";
 
 interface ProfileProps {
   loading?: boolean;
@@ -18,121 +20,67 @@ interface ProfileProps {
 
 const Profile: FC<ProfileProps> = () => {
   const theme = useTheme();
-  const { activeCompany, appearance } = useProfile();
+  const { activeCompany, appearance, updateAppearance } = useProfile();
   const { isLanguage } = appearance || {};
+  const { activeMode } = appearance || {};
   const { roleNameTh, roleNameEn } = activeCompany || {};
   const { data: session, status } = useSession();
   const { signOut: apiSignOut } = useAuth();
   const loading = status === "loading";
-  const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
   const [openSignOut, setOpenSignOut] = useState(false);
   const [signOutLoading, setSignOutLoading] = useState(false);
 
+  // Anchor & menu state
+  const anchorBtnRef = useRef<HTMLButtonElement | null>(null);
+  const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl2(event.currentTarget);
-  };
-  const handleClose2 = () => {
-    setAnchorEl2(null);
+    setAnchorEl2(event.currentTarget as HTMLElement);
   };
 
-  const handleLogout = () => {
-    setOpenSignOut(true);
+  // User fields
+  const userProfile = (session as any)?.profile || {};
+  const avatar: string = userProfile?.avatar ?? userProfile?.image ?? session?.user?.image ?? "";
+  const firstName: string = userProfile?.firstName ?? (session?.user?.name as string) ?? "";
+  const lastName: string = userProfile?.lastName ?? "";
+  const fullName: string = userProfile?.fullName ?? [firstName, lastName].filter(Boolean).join(" ");
+  const email: string = userProfile?.email ?? (session?.user?.email as string) ?? "";
+
+  // Toggle dark mode (ไม่พยายามคงเมนูไว้)
+  const toggleDarkMode = () => {
+    const next = activeMode === "dark" ? "light" : "dark";
+    updateAppearance({ activeMode: next });
   };
 
-  const handleConfirmSignOut = async () => {
-    setSignOutLoading(true);
-    await apiSignOut();
-    await signOut({ callbackUrl: PageUrl.AUTH_SIGN_IN });
-    setSignOutLoading(false);
-    setOpenSignOut(false);
-  };
-
-  const renderIcon = (icon: any) => {
-    if (typeof icon === "string") {
-      return (
-        <Avatar
-          src={icon}
-          alt="icon"
-          sx={{
-            width: 24,
-            height: 24,
-            borderRadius: 0,
-          }}
-        />
-      );
-    } else {
-      const IconComponent = icon;
-      return <IconComponent size={24} stroke={1.5} color={theme.palette.primary.contrastText} />;
+  // Render icon from dropdown data
+  const renderIcon = (IconCmp: any) => {
+    if (!IconCmp) return null;
+    if (React.isValidElement(IconCmp)) return IconCmp;
+    try {
+      const C = IconCmp as React.ComponentType<any>;
+      return <C size={20} />;
+    } catch {
+      return null;
     }
   };
-  if (loading) {
-    return (
-      <Box>
-        <IconButton color="inherit">
-          <Skeleton variant="circular" width={35} height={35} />
-        </IconButton>
-        <Menu
-          open={Boolean(anchorEl2)}
-          anchorEl={anchorEl2}
-          sx={{
-            "& .MuiMenu-paper": {
-              width: "360px",
-              p: 4,
-            },
-          }}
-          PaperProps={{ style: { pointerEvents: "none" } }}
-        >
-          <Typography variant="h5">
-            <Skeleton width={120} />
-          </Typography>
-          <Stack direction="row" py={3} spacing={2} alignItems="center">
-            <Skeleton variant="circular" width={95} height={95} />
-            <Box>
-              <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-                <Skeleton width={120} />
-              </Typography>
-              <Typography variant="subtitle2" color="textSecondary">
-                <Skeleton width={80} />
-              </Typography>
-              <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
-                <Skeleton width={140} />
-              </Typography>
-            </Box>
-          </Stack>
-          <Divider />
-          {[1, 2, 3].map((i) => (
-            <Box key={i} sx={{ py: 2 }}>
-              <Stack direction="row" spacing={2}>
-                <Skeleton variant="rectangular" width={45} height={45} sx={{ borderRadius: 2 }} />
-                <Box>
-                  <Typography variant="subtitle2" fontWeight={600} color="textPrimary">
-                    <Skeleton width={120} />
-                  </Typography>
-                  <Typography color="textSecondary" variant="subtitle2">
-                    <Skeleton width={100} />
-                  </Typography>
-                </Box>
-              </Stack>
-            </Box>
-          ))}
-          <Box mt={2}>
-            <Skeleton variant="rectangular" width={120} height={40} sx={{ borderRadius: 2 }} />
-          </Box>
-        </Menu>
-      </Box>
-    );
-  }
 
-  // --- Normal UI ---
-  if (!session) {
-    return null;
-  }
-  const { firstName, lastName, fullName, email, avatar } = session.profile || {};
+  // Logout handlers
+  const handleLogout = () => setOpenSignOut(true);
+  const handleConfirmSignOut = async () => {
+    try {
+      setSignOutLoading(true);
+      await apiSignOut();
+      await signOut({ callbackUrl: PageUrl.AUTH_SIGN_IN });
+    } finally {
+      setSignOutLoading(false);
+      setOpenSignOut(false);
+    }
+  };
 
   return (
     <Box>
       {/* header avatar keeps menu behavior */}
       <IconButton
+        ref={anchorBtnRef}
         aria-label="show 11 new notifications"
         color="inherit"
         aria-controls="msgs-menu"
@@ -145,7 +93,7 @@ const Profile: FC<ProfileProps> = () => {
         onClick={handleClick2}
       >
         <BaseAvatar
-          src={avatar ?? "/images/profile/user-1.jpg"}
+          src={avatar || "/images/profile/user-1.jpg"}
           alt={firstName}
           size={35}
           lightbox={false}
@@ -158,7 +106,10 @@ const Profile: FC<ProfileProps> = () => {
         anchorEl={anchorEl2}
         keepMounted
         open={Boolean(anchorEl2)}
-        onClose={handleClose2}
+        onClose={() => setAnchorEl2(null)}
+        disableAutoFocusItem
+        disableEnforceFocus
+        disableRestoreFocus
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         sx={{ "& .MuiMenu-paper": { width: "360px", p: 4 } }}
@@ -166,7 +117,7 @@ const Profile: FC<ProfileProps> = () => {
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
           <BaseAvatar
-            src={avatar ?? "/images/profile/user-1.jpg"}
+            src={avatar || "/images/profile/user-1.jpg"}
             alt={firstName}
             size={95}
             lightbox
@@ -177,7 +128,7 @@ const Profile: FC<ProfileProps> = () => {
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
               {fullName}
             </Typography>
-            {session.profile?.activeCompany && (
+            {session?.profile?.activeCompany && (
               <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
                 <IconUser size={15} stroke={1.5} color={theme.palette.text.secondary} />
                 <Box sx={{ maxWidth: 160, overflow: "hidden" }}>
@@ -288,12 +239,39 @@ const Profile: FC<ProfileProps> = () => {
             </Box>
           </Box>
         ))}
+
+        {/* Preferences */}
+        <Box mt={2}>
+          <Divider sx={{ my: 2 }} />
+          <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>
+            Preferences
+          </Typography>
+          <List dense disablePadding>
+            <ListItem sx={{ py: 1, minHeight: 44, px: 0 }}>
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <IconMoon width={20} style={{ color: activeMode === "dark" ? theme.palette.primary.main : "inherit" }} />
+              </ListItemIcon>
+              <ListItemText primary="Dark Mode" />
+              <CustomSwitch
+                checked={activeMode === "dark"}
+                onChange={toggleDarkMode}
+              />
+            </ListItem>
+
+            <ListItem sx={{ py: 1, minHeight: 44, px: 0 }}>
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <IconLanguage width={20} />
+              </ListItemIcon>
+              <ListItemText primary="Language" />
+              <SwitchLanguage />
+            </ListItem>
+          </List>
+        </Box>
+
         <Box mt={2}>
           <BaseButton label="Logout" onClick={handleLogout} loading={loading} />
         </Box>
       </Menu>
-
-      {/* No standalone BaseLightBox needed. BaseAvatar handles it. */}
 
       <ConfirmSignOutDialog
         open={openSignOut}

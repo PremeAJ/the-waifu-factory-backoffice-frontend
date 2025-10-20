@@ -3,22 +3,14 @@ import React from "react";
 import { Box, Typography, Avatar } from "@mui/material";
 import { styled } from "@mui/system";
 import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
+import { useProfile } from "@/common/contexts/ProfileContext";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
 
-const Languages: {
-  label: string;
-  icon: string;
-  value: IsLanguage;
-}[] = [
-  {
-    label: "TH",
-    icon: "/images/flag/icon-flag-th.svg",
-    value: "th",
-  },
-  {
-    label: "EN",
-    icon: "/images/flag/icon-flag-en.svg",
-    value: "en",
-  },
+const Languages: { label: string; icon: string; value: IsLanguage }[] = [
+  { label: "TH", icon: "/images/flag/icon-flag-th.svg", value: "th" },
+  { label: "EN", icon: "/images/flag/icon-flag-en.svg", value: "en" },
 ];
 
 const SwitchBox = styled(Box)(({ theme }) => ({
@@ -35,14 +27,6 @@ const SwitchBox = styled(Box)(({ theme }) => ({
   cursor: "pointer",
   userSelect: "none",
 }));
-
-const FlagAvatar = styled(Avatar)({
-  width: "100%",
-  height: "100%",
-  borderRadius: 4,
-  background: "transparent",
-  boxShadow: "none",
-});
 
 const Thumb = styled(Box, {
   shouldForwardProp: (prop) => prop !== "checked",
@@ -64,20 +48,32 @@ const Thumb = styled(Box, {
   justifyContent: "center",
 }));
 
-const SwitchLanguage = () => {
-  const [checked, setChecked] = React.useState(false);
+const SwitchLanguage: React.FC = () => {
+  const { appearance, updateAppearance } = useProfile();
+  const { i18n } = useTranslation();
 
-  const handleToggle = () => setChecked((prev) => !prev);
+  const isLanguage = appearance?.isLanguage ?? "en";
+  const checked = isLanguage === "en";
+
+  React.useEffect(() => {
+    i18n.changeLanguage(isLanguage);
+    Cookies.set(CookiesKey.Lang, isLanguage, setCookiesOption1Y);
+  }, [isLanguage, i18n]);
+
+  const handleToggle = () => {
+    const next: IsLanguage = checked ? "th" : "en";
+    updateAppearance({ isLanguage: next });
+  };
 
   return (
     <SwitchBox onClick={handleToggle}>
       <Typography
         variant="caption"
         sx={{
-          color: checked ? "text.secondary" : "text.primary",
+          color: checked ? "text.primary" : "text.secondary",
           fontWeight: 500,
           zIndex: 1,
-          marginLeft: 0.5,
+          ml: 0.5,
           transition: "color 0.2s",
           fontSize: 11,
         }}
@@ -87,10 +83,10 @@ const SwitchLanguage = () => {
       <Typography
         variant="caption"
         sx={{
-          color: checked ? "text.primary" : "text.secondary",
+          color: checked ? "text.secondary" : "text.primary",
           fontWeight: 500,
           zIndex: 1,
-          marginRight: 0.5,
+          mr: 0.5,
           transition: "color 0.2s",
           fontSize: 11,
         }}
@@ -98,7 +94,18 @@ const SwitchLanguage = () => {
         {Languages[0].label}
       </Typography>
       <Thumb checked={checked}>
-        <FlagAvatar variant="square" src={checked ? Languages[1].icon : Languages[0].icon} alt={checked ? Languages[1].label : Languages[0].label} />
+        <Avatar
+          variant="square"
+          src={checked ? Languages[1].icon : Languages[0].icon}
+          alt={checked ? Languages[1].label : Languages[0].label}
+          sx={{
+            width: "100%",
+            height: "100%",
+            borderRadius: 0,
+            background: "transparent",
+            boxShadow: "none",
+          }}
+        />
       </Thumb>
     </SwitchBox>
   );

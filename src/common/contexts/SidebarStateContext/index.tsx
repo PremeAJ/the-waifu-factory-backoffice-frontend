@@ -27,13 +27,23 @@ export const SidebarStateProvider = ({ children }: { children: ReactNode }) => {
   const [appShortcutisOpen, setAppShortcutIsOpen] = useState<boolean>(false);
   const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
   const [openSwitchCompany, setOpenSwitchCompany] = useState<boolean>(false);
+
   const openAppShortcut = () => setAppShortcutIsOpen(true);
   const closeAppShortcut = () => setAppShortcutIsOpen(false);
   const toggleAppShortcut = () => setAppShortcutIsOpen((prev) => !prev);
 
   return (
     <SidebarStateContext.Provider
-      value={{ appShortcutisOpen, openAppShortcut, closeAppShortcut, toggleAppShortcut, isMobileSidebar, setIsMobileSidebar, openSwitchCompany, setOpenSwitchCompany }}
+      value={{
+        appShortcutisOpen,
+        openAppShortcut,
+        closeAppShortcut,
+        toggleAppShortcut,
+        isMobileSidebar,
+        setIsMobileSidebar,
+        openSwitchCompany,
+        setOpenSwitchCompany,
+      }}
     >
       {children}
     </SidebarStateContext.Provider>

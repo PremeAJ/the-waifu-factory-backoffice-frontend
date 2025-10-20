@@ -116,18 +116,30 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const updateAppearance = async (payload: Partial<AppearanceSettings>) => {
-    setLoading(true);
-    if (payload.isLanguage) {
-      setIsLanguage(payload.isLanguage);
-    }
-    await appearanceMutate({ data: { ...appearance, ...payload } }, false);
+    // 1) อัปเดต local ทันที (ไม่ setLoading)
+    if (payload.isLanguage) setIsLanguage(payload.isLanguage);
+    setLocalAppearance((curr) => {
+      const next = { ...curr, ...payload };
+      if (typeof window !== "undefined") {
+        localStorage.setItem(APPEARANCE_KEY, JSON.stringify(next));
+      }
+      return next;
+    });
+
+    // 2) optimistic mutate (ไม่ให้ SWR revalidate/flash)
+    await appearanceMutate((prev: any) => {
+      const prevData = prev?.data ?? {};
+      return { data: { ...prevData, ...payload } };
+    }, false);
+
+    // 3) เขียนเซิร์ฟเวอร์แบบ background (ไม่กระทบ UI)
     if (session) {
-      const response = await putFetcher("/api/profile/appearance", payload);
-      if (response?.error) {
-        showError({ message: response.message });
+      try {
+        await putFetcher("/api/profile/appearance", payload);
+      } catch (e) {
+        // optional: rollback ถ้าต้องการ
       }
     }
-    setLoading(false);
   };
 
   const changeEmail = async (payload: Partial<ChangeEmailPayload>): Promise<any> => {

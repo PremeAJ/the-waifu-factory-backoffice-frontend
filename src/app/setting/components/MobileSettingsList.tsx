@@ -1,17 +1,15 @@
 "use client";
 import { Avatar, Box, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
-import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { IconChevronRight, IconChevronDown, IconMoon } from "@tabler/icons-react";
+import { IconChevronRight, IconChevronDown } from "@tabler/icons-react";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@mui/material/styles";
-import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
 import Menuitems from "../../../common/components/base/sidebar/item/settingSidebarItem";
 import React, { useContext, useState } from "react";
 
 const MobileSettingsList = () => {
-  const { updateAppearance } = useProfile();
+  // const { updateAppearance } = useProfile();
   const theme = useTheme();
   const router = useRouter();
   const { data: session } = useSession();
@@ -49,13 +47,6 @@ const MobileSettingsList = () => {
       </Typography>
     </Box>
   );
-
-  const { appearance } = useProfile();
-  const { activeMode } = appearance || {};
-  const toggleDarkMode = () => {
-    const newMode = activeMode === "dark" ? "light" : "dark";
-    updateAppearance({ activeMode: newMode });
-  };
 
   type NavItem = {
     id: string;
@@ -148,24 +139,7 @@ const MobileSettingsList = () => {
         </List>
       </Box>
 
-      <Typography variant="subtitle2" color="textSecondary" sx={{ px: 3, py: 2, mt: 2 }}>
-        การตั้งค่าทั่วไป
-      </Typography>
-      <ListItem
-        sx={{
-          py: 1.5,
-          minHeight: 50,
-          color: "text.primary",
-          bgcolor: "background.paper",
-          borderRadius: (theme) => theme.shape.borderRadius,
-        }}
-      >
-        <ListItemIcon>
-          <IconMoon width={22} style={{ color: activeMode === "dark" ? theme.palette.primary.main : "inherit" }} />
-        </ListItemIcon>
-        <ListItemText primary="Dark Mode" />
-        <CustomSwitch checked={activeMode === "dark"} onChange={toggleDarkMode} />
-      </ListItem>
+      {/* Moved General Settings to Profile menu */}
     </Box>
   );
 };

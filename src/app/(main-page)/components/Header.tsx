@@ -1,7 +1,7 @@
 "use client";
 import { IconMenu2 } from "@tabler/icons-react";
 import { styled } from "@mui/material/styles";
-import { Theme } from "@mui/material/styles";
+import { useSession } from "next-auth/react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -12,13 +12,13 @@ import Logo from "@/common/components/shared/Logo";
 import MobileSidebar from "./MobileSidebar";
 import Navigations from "./Navigations";
 import Profile from "@/common/components/shared/Profile";
-import React, { useContext } from "react";
+import React from "react";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import useIsMobile from "@/common/utils/state/isMobile";
 
 const Header = () => {
+  const { data: session, status } = useSession();
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     justifyContent: "center",
     [theme.breakpoints.up("lg")]: {
@@ -66,7 +66,7 @@ const Header = () => {
           )}
           <Box ml={2} display="flex" alignItems="center">
             <Profile />
-            <Language />
+            {session ? null : <Language />}
           </Box>
         </ToolbarStyled>
       </Container>

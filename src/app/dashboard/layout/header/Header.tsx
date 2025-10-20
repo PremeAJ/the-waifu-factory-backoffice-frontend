@@ -28,7 +28,7 @@ const Header = () => {
         <ToolbarStyled>
           <Box flexGrow={1} />
           <Stack spacing={1} direction="row" alignItems="center">
-            <Language />
+            {/* <Language /> */}
             <Notifications />
             {!isMobile && <AppShortcut />}
             <Box display="flex" flexDirection="column" alignItems="flex-end" mr={1} sx={{ cursor: "default" }}>
