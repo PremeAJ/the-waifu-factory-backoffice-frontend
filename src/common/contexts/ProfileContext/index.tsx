@@ -67,6 +67,8 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (appearanceData?.data) {
       localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearanceData.data));
       setLocalAppearance(appearanceData.data);
+      setIsLanguage(appearanceData.data.isLanguage);
+
     }
   }, [appearanceData?.data]);
 

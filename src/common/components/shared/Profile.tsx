@@ -11,7 +11,7 @@ import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDial
 import Link from "next/link";
 import React, { FC, useRef, useState } from "react";
 import BaseAvatar from "@/common/components/base/BaseAvatar";
-import CustomSwitch from "@/components/forms/theme-elements/CustomSwitch";
+import BaseSwitch from "@/common/components/base/BaseSwitch";
 import SwitchLanguage from "@/components/shared/Language/SwitchLanguage";
 
 interface ProfileProps {
@@ -252,7 +252,7 @@ const Profile: FC<ProfileProps> = () => {
                 <IconMoon width={20} style={{ color: activeMode === "dark" ? theme.palette.primary.main : "inherit" }} />
               </ListItemIcon>
               <ListItemText primary="Dark Mode" />
-              <CustomSwitch
+              <BaseSwitch
                 checked={activeMode === "dark"}
                 onChange={toggleDarkMode}
               />
