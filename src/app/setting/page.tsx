@@ -17,7 +17,7 @@ export default function SettingPage() {
 
   return (
     <PageContainer title="Setting" description="This is setting">
-      <Grid sx={{ height: isPWA ? "90vh" : "100vh" }}>
+      <Grid>
         <MobileSettingsList />
       </Grid>
     </PageContainer>

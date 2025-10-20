@@ -87,7 +87,7 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
-          height: "70vh",
+          height: "auto",
           backgroundColor: "black",
           borderRadius: 1,
           overflow: "hidden",

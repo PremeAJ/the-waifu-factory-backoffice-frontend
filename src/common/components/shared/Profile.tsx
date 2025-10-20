@@ -10,6 +10,7 @@ import BaseButton from "@/common/components/base/BaseButton";
 import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDialog";
 import Link from "next/link";
 import React, { FC, useState } from "react";
+import BaseAvatar from "@/common/components/base/BaseAvatar";
 
 interface ProfileProps {
   loading?: boolean;
@@ -130,6 +131,7 @@ const Profile: FC<ProfileProps> = () => {
 
   return (
     <Box>
+      {/* header avatar keeps menu behavior */}
       <IconButton
         aria-label="show 11 new notifications"
         color="inherit"
@@ -142,15 +144,15 @@ const Profile: FC<ProfileProps> = () => {
         }}
         onClick={handleClick2}
       >
-        <Avatar
+        <BaseAvatar
           src={avatar ?? "/images/profile/user-1.jpg"}
           alt={firstName}
-          sx={{
-            width: 35,
-            height: 35,
-          }}
+          size={35}
+          lightbox={false}
+          sx={{ cursor: "pointer" }}
         />
       </IconButton>
+
       <Menu
         id="msgs-menu"
         anchorEl={anchorEl2}
@@ -159,16 +161,18 @@ const Profile: FC<ProfileProps> = () => {
         onClose={handleClose2}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
-        sx={{
-          "& .MuiMenu-paper": {
-            width: "360px",
-            p: 4,
-          },
-        }}
+        sx={{ "& .MuiMenu-paper": { width: "360px", p: 4 } }}
       >
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
-          <Avatar src={avatar ?? "/images/profile/user-1.jpg"} alt={firstName} sx={{ width: 95, height: 95 }} />
+          <BaseAvatar
+            src={avatar ?? "/images/profile/user-1.jpg"}
+            alt={firstName}
+            size={95}
+            lightbox
+            caption={fullName || email || ""}
+            stopPropagationOnLightbox
+          />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
               {fullName}
@@ -288,7 +292,15 @@ const Profile: FC<ProfileProps> = () => {
           <BaseButton label="Logout" onClick={handleLogout} loading={loading} />
         </Box>
       </Menu>
-      <ConfirmSignOutDialog open={openSignOut} onClose={() => setOpenSignOut(false)} onConfirm={handleConfirmSignOut} loading={signOutLoading} />
+
+      {/* No standalone BaseLightBox needed. BaseAvatar handles it. */}
+
+      <ConfirmSignOutDialog
+        open={openSignOut}
+        onClose={() => setOpenSignOut(false)}
+        onConfirm={handleConfirmSignOut}
+        loading={signOutLoading}
+      />
     </Box>
   );
 };
