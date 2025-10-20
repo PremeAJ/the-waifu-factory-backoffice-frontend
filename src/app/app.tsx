@@ -12,8 +12,9 @@ import Cookies from "js-cookie";
 import CssBaseline from "@mui/material/CssBaseline";
 import packageJson from "../../package.json";
 import React, { useEffect } from "react";
-import { CookiesKey, setCookiesOption1H, setCookiesOption1Y,  } from "@/common/constants/cookies";
+import { CookiesKey, setCookiesOption1H, setCookiesOption1Y } from "@/common/constants/cookies";
 import { useEncrypt } from "@/common/contexts/EncryptContext";
+import { UploadProvider } from "@/common/contexts/UploadContext";
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
   const { encrypt } = useEncrypt();
@@ -55,12 +56,14 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <ThemeProvider theme={theme}>
         <DialogProvider>
-          <CssBaseline />
-          <UserProvider>
-            <Analytics />
-            <SpeedInsights />
-            {children}
-          </UserProvider>
+          <UploadProvider>
+            <CssBaseline />
+            <UserProvider>
+              <Analytics />
+              <SpeedInsights />
+              {children}
+            </UserProvider>
+          </UploadProvider>
         </DialogProvider>
       </ThemeProvider>
     </AppRouterCacheProvider>

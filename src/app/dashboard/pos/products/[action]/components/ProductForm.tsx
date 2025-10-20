@@ -1,31 +1,28 @@
 "use client";
-import React from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { Grid, Stack, Button } from "@mui/material";
-import BlankCard from "@/components/shared/BlankCard";
-import BaseFileInput from "@/common/components/base/BaseFileInput";
 import { FileSize } from "@/common/constants/file/fileSize";
 import { fileTypeGroup } from "@/common/constants/file/fileType";
+import { Grid, Stack, Button } from "@mui/material";
+import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import BlankCard from "@/components/shared/BlankCard";
 import GeneralCard from "./GeneralCard";
-import VariationCard from "./VariationCard";
 import PricingCard from "./Pricing";
-import ProductTemplate from "./ProductTemplate";
 import ProductDetails from "./ProductDetails";
+import ProductTemplate from "./ProductTemplate";
+import React from "react";
 import StatusCard from "./Status";
-
-/**
- * Parent form that uses formik and passes formik down to step components (GeneralCard, etc.)
- * Add other cards (VariationCard, PricingCard...) as children and pass formik where needed.
- */
+import VariationCard from "./VariationCard";
+import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
 
 const validationSchema = Yup.object({
   p_name_th: Yup.string().required("กรุณากรอกชื่อสินค้า (ไทย)"),
   p_name_en: Yup.string().nullable(),
   p_description_th: Yup.string().nullable(),
   p_description_en: Yup.string().nullable(),
-  images: Yup.array().of(Yup.mixed()).nullable(),
-  detailImages: Yup.array().of(Yup.mixed()).nullable(),
+  // เปลี่ยนจาก File[] เป็น string[] (fileIds)
+  imageIds: Yup.array().of(Yup.string()).nullable(),
+  detailImageIds: Yup.array().of(Yup.string()).nullable(),
 });
 
 const ProductForm: React.FC = () => {
@@ -35,16 +32,22 @@ const ProductForm: React.FC = () => {
       p_name_en: "",
       p_description_th: "",
       p_description_en: "",
-      images: [] as File[],
-      detailImages: [] as File[],
+      // เปลี่ยนจากเก็บ File objects เป็นเก็บ file IDs
+      imageIds: [] as string[],
+      detailImageIds: [] as string[],
       // add other fields as needed
     },
     validationSchema,
     onSubmit: (values) => {
       // ส่งค่าทั้งหน้า
       console.log("submit product form", values);
+      // values จะมี imageIds และ detailImageIds เป็น string[] ที่พร้อมส่งให้ API
     },
   });
+
+  // สำหรับการ debug
+  console.log("Current image IDs:", formik.values.imageIds);
+  console.log("Current detail image IDs:", formik.values.detailImageIds);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -66,9 +69,13 @@ const ProductForm: React.FC = () => {
                 multiple={false}
                 accept={fileTypeGroup.image}
                 maxSize={FileSize.MB2}
-                onChange={(files) => {
-                  formik.setFieldValue("images", files || []);
+                autoUpload={true} // อัปโหลดอัตโนมัติ
+                toBucket={StorageBucket.PRODUCT_THUMBNAIL} // เลือก bucket ที่เหมาะสม
+                // finalize={true} // finalize ทันทีหลังอัปโหลด
+                onUploadComplete={(fileIds) => {
+                  formik.setFieldValue("imageIds", fileIds);
                 }}
+                value={formik.values.imageIds} // ส่งค่าที่มีอยู่แล้ว (สำหรับกรณีแก้ไข)
               />
             </BlankCard>
 
@@ -80,9 +87,13 @@ const ProductForm: React.FC = () => {
                 accept={fileTypeGroup.image}
                 maxSize={FileSize.MB2}
                 maxFiles={3}
-                onChange={(files) => {
-                  formik.setFieldValue("detailImages", files || []);
+                autoUpload={true} // อัปโหลดอัตโนมัติ
+                toBucket={StorageBucket.PRODUCT_DETAIL} // เลือก bucket ที่เหมาะสม
+                // finalize={true} // finalize ทันทีหลังอัปโหลด
+                onUploadComplete={(fileIds) => {
+                  formik.setFieldValue("detailImageIds", fileIds);
                 }}
+                value={formik.values.detailImageIds} // ส่งค่าที่มีอยู่แล้ว (สำหรับกรณีแก้ไข)
               />
             </BlankCard>
 

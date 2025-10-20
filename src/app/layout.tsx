@@ -31,21 +31,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <SidebarStateProvider>
         <NextAuthProvider>
           <ProfileProvider>
-            <AuthProvider>
-              <CustomizerContextProvider>
-                <html lang="en" suppressHydrationWarning>
-                  <Head />
-                  <body>
-                    <MyApp>
-                      {children}
-                      <ThemeAwareTopLoader />
-                      <ActionButton />
-                      <ScrollToTopButton />
-                    </MyApp>
-                  </body>
-                </html>
-              </CustomizerContextProvider>
-            </AuthProvider>
+        
+              <AuthProvider>
+                <CustomizerContextProvider>
+                  <html lang="en" suppressHydrationWarning>
+                    <Head />
+                    <body>
+                      <MyApp>
+                        {children}
+                        <ThemeAwareTopLoader />
+                        <ActionButton />
+                        <ScrollToTopButton />
+                      </MyApp>
+                    </body>
+                  </html>
+                </CustomizerContextProvider>
+              </AuthProvider>
           </ProfileProvider>
         </NextAuthProvider>
       </SidebarStateProvider>

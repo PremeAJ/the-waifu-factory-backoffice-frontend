@@ -43,6 +43,7 @@
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
     "apexcharts": "3.48.0",
+    "axios": "^1.12.2",
     "browser-image-compression": "^2.0.2",
     "chance": "^1.1.11",
     "crypto-js": "^4.2.0",
