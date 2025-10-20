@@ -222,7 +222,6 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     // maxSize: undefined,
   });
 
-  // Handle remove file
   const handleRemoveFile = async (index: number) => {
     const fileToRemove = files[index];
     
