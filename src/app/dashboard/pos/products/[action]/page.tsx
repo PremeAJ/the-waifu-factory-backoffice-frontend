@@ -6,6 +6,7 @@ import PageContainer from "@/components/container/PageContainer";
 import PageLoader from "@/common/components/loaders/PageLoader";
 import ProductForm from "./components/ProductForm";
 import React, { useEffect, useState } from "react";
+import { CategoriesProvider } from "@/common/contexts/CategoriesContext";
 
 const BCrumb = [
   {
@@ -44,10 +45,12 @@ const AddOrEditProduct = () => {
 
   return (
     <ProductProvider>
-      <PageContainer title={title} description={title}>
-        <Breadcrumb title={title} items={crumb} />
-        <ProductForm />
-      </PageContainer>
+      <CategoriesProvider>
+        <PageContainer title={title} description={title}>
+          <Breadcrumb title={title} items={crumb} />
+          <ProductForm />
+        </PageContainer>
+      </CategoriesProvider>
     </ProductProvider>
   );
 };

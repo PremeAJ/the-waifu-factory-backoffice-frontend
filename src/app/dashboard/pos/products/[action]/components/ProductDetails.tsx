@@ -1,23 +1,17 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import Box from "@mui/material/Box";
 import { Autocomplete, Button, Grid, Typography } from "@mui/material";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import { IconPlus } from "@tabler/icons-react";
+import BaseDropdown, { OptionType } from "@/common/components/base/BaseDropdown";
+import { useCategories } from "@/common/contexts/CategoriesContext";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 
 interface ProductDetailsProps {
   formik?: any;
 }
-
-const new_category = [
-  { label: "Computer" },
-  { label: "Watches" },
-  { label: "Headphones" },
-  { label: "Beauty" },
-  { label: "Fashion" },
-  { label: "Footwear" },
-];
 
 const new_tags = [
   { label: "New" },
@@ -27,8 +21,41 @@ const new_tags = [
 ];
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
-  const categories = formik?.values?.categories ?? [];
+  // เก็บเป็น array ของ categoryId
+  const categoryIds: string[] = Array.isArray(formik?.values?.categories) ? formik.values.categories : [];
   const tags = formik?.values?.tags ?? [];
+  const { dropdown: categoryDropdown } = useCategories();
+
+  // แปลง dropdown -> OptionType[] และจัดกลุ่มตามหมวดหลัก
+  const categoryOptions: OptionType[] = useMemo(() => {
+    if (!categoryDropdown) return [];
+    const opts: OptionType[] = [];
+    categoryDropdown.forEach((cat: any) => {
+      console.log("🚀 ~ ProductDetails ~ cat:", cat)
+      const parentText = `${cat.nameTh}${cat.nameEn ? ` (${cat.nameEn})` : ""}`;
+      if (Array.isArray(cat.subCategories) && cat.subCategories.length > 0) {
+        cat.subCategories.forEach((sub: any) => {
+          opts.push({
+            value: sub.id,
+            text: `${sub.nameTh}${sub.nameEn ? ` (${sub.nameEn})` : ""}`,
+            icon: sub.icon || null,
+            // ใช้ groupBy ด้วย key 'group' (ไม่บังคับใน type)
+            // @ts-ignore
+            group: parentText,
+          });
+        });
+      } else {
+        opts.push({
+          value: cat.id,
+          text: parentText,
+          icon: cat.icon || null,
+          // @ts-ignore
+          group: "หมวดหมู่หลัก",
+        });
+      }
+    });
+    return opts;
+  }, [categoryDropdown]);
 
   return (
     <Box p={3}>
@@ -40,20 +67,32 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
           </CustomFormLabel>
         </Grid>
         <Grid size={12}>
-          <Autocomplete
+          <BaseDropdown
+            formik={formik}
+            name="categories"
+            label=""
+            placeholder="เลือกหมวดหมู่"
             multiple
+            // ควบคุมค่าให้เป็น string[] เสมอ (กัน undefined)
+            value={categoryIds}
+            options={categoryOptions}
             fullWidth
-            id="new-category"
-            options={new_category}
-            value={categories}
-            onChange={(_, v) => {
-              if (formik) formik.setFieldValue("categories", v);
-            }}
-            getOptionLabel={(option) => (option as any).label}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <BaseTextField {...params} placeholder="Categories" name="categories" formik={formik} />
+            // แสดงกลุ่มตามหมวดหลัก
+            groupBy={(opt) => (opt as any).group || ""}
+            // แสดงรายการพร้อม icon
+            renderOption={(opt) => (
+              <Box display="flex" alignItems="center" gap={1}>
+                {opt.icon ? renderTablerIcon(opt.icon, { size: 16 }) : null}
+                {opt.text}
+              </Box>
             )}
+            // ให้ Select แสดงชื่อแทน id เมื่อเลือกหลายรายการ
+            renderValue={(selected) => {
+              const ids = (selected as string[]) || [];
+              if (!ids.length) return "เลือกหมวดหมู่";
+              const map = new Map(categoryOptions.map((o) => [o.value, o.text]));
+              return ids.map((id) => map.get(id) || id).join(", ");
+            }}
           />
           <Typography variant="body2" mb={2}>
             เพิ่มสินค้าลงในหมวดหมู่

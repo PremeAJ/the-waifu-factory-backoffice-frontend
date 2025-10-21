@@ -76,6 +76,7 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
   renderOption,
   ...rest
 }) => {
+  const isMultiple = Boolean((rest as any).multiple);
   const sortedOptions = orderBy ? [...options].sort(orderBy) : options;
 
   const groupedOptions = groupBy
@@ -87,14 +88,28 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
       }, {} as Record<string, OptionType[]>)
     : null;
 
-  const currentValue = formik
-    ? (formik.values[name] !== undefined ? formik.values[name] : "")
-    : (controlledValue !== undefined ? controlledValue : "");
+  // ensure correct default by mode
+  const fv = formik ? formik.values?.[name] : undefined;
+  let currentValue =
+    controlledValue !== undefined
+      ? controlledValue
+      : fv !== undefined
+      ? fv
+      : isMultiple
+      ? []
+      : "";
+  if (isMultiple && !Array.isArray(currentValue)) {
+    currentValue = currentValue === "" || currentValue == null ? [] : [currentValue];
+  }
 
   const handleChange = (event: any) => {
     let newValue = event.target.value;
-    if (newValue === "true") newValue = true;
-    if (newValue === "false") newValue = false;
+    if (isMultiple) {
+      if (newValue === "" || newValue == null) newValue = [];
+    } else {
+      if (newValue === "true") newValue = true;
+      if (newValue === "false") newValue = false;
+    }
     if (formik) {
       formik.setFieldValue(name, newValue);
     }
@@ -119,6 +134,20 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
     return renderOption ? renderOption(option) : option.text;
   };
 
+  // default renderValue supports multiple + placeholder
+  const mapText = new Map(sortedOptions.map((o) => [o.value, o.text]));
+  const defaultRenderValue = (selected: any) => {
+    if (isMultiple) {
+      const arr = Array.isArray(selected) ? selected : [];
+      if (!arr.length) return <em>{placeholder ?? emptyOptionText}</em>;
+      return arr.map((v) => mapText.get(v) ?? String(v)).join(", ");
+    }
+    if ((selected === "" || selected == null) && (placeholder || showEmptyOption)) {
+      return <em>{placeholder ?? emptyOptionText}</em>;
+    }
+    return mapText.get(selected) ?? String(selected ?? "");
+  };
+
   return (
     <>
       {label && (
@@ -132,19 +161,21 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
           <span style={{ display: "block" }}>
             <StyledFormControl fullWidth={fullWidth} error={hasError}>
               <Select
+                name={name}
                 value={currentValue}
                 onChange={handleChange}
                 onBlur={formik?.handleBlur}
                 displayEmpty={!!placeholder || showEmptyOption}
                 id={name}
+                renderValue={(rest as any).renderValue ?? defaultRenderValue}
                 {...rest}
               >
-                {showEmptyOption && (
+                {showEmptyOption && !isMultiple && (
                   <MenuItem value="">
                     <em>{emptyOptionText}</em>
                   </MenuItem>
                 )}
-                {placeholder && !showEmptyOption && (
+                {placeholder && !showEmptyOption && !isMultiple && (
                   <MenuItem value="" disabled>
                     <em>{placeholder}</em>
                   </MenuItem>
@@ -189,19 +220,21 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
       ) : (
         <StyledFormControl fullWidth={fullWidth} error={hasError}>
           <Select
+            name={name}
             value={currentValue}
             onChange={handleChange}
             onBlur={formik?.handleBlur}
             displayEmpty={!!placeholder || showEmptyOption}
             id={name}
+            renderValue={(rest as any).renderValue ?? defaultRenderValue}
             {...rest}
           >
-            {showEmptyOption && (
+            {showEmptyOption && !isMultiple && (
               <MenuItem value="">
                 <em>{emptyOptionText}</em>
               </MenuItem>
             )}
-            {placeholder && !showEmptyOption && (
+            {placeholder && !showEmptyOption && !isMultiple && (
               <MenuItem value="" disabled>
                 <em>{placeholder}</em>
               </MenuItem>
