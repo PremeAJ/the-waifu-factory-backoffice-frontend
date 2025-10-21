@@ -2,6 +2,7 @@
 import {  IconTag, IconStack } from "@tabler/icons-react";
 import { Grid,Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import BaseDropdown, { OptionType } from "@/common/components/base/BaseDropdown";
 import BaseTabs from "@/common/components/base/BaseTabs";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Box from "@mui/material/Box";
@@ -13,6 +14,12 @@ import VariantOptionsList from "./Variant/VariantOptionsList";
 interface VariationCardProps {
   formik?: any;
 }
+
+export const unitTypeOptions: OptionType[] = [
+  { text: "ชิ้น", value: "piece" },
+  { text: "น้ำหนัก", value: "weight" },
+  { text: "ลิตร", value: "litter" },
+];
 
 const emptyOption = () => ({
   upc: "",
@@ -84,17 +91,37 @@ const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {
         <BaseTabs value={tab} onChange={handleTabChange} tabs={tabs} />
       </Box>
 
+      <Grid container spacing={2} mt={2}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <BaseDropdown
+            formik={formik}
+            name="unitType"
+            label="ประเภทหน่วยนับ"
+            placeholder="เลือกประเภทหน่วยนับ"
+            options={unitTypeOptions}
+            fullWidth
+            required
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <BaseTextField
+            formik={formik}
+            fullWidth
+            label="หน่วยย่อย"
+            name="unit"
+            placeholder="เช่น แท่ง, เล่ม, ถัง, กิโลกรัม"
+            required
+          />
+        </Grid>
+      </Grid>
+
       {tab === 0 ? (
         <>
-          <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
-            ข้อมูลสินค้า (ไม่มีตัวแปร)
-          </Typography>
           <SingleProductForm formik={formik} productOptions={productOptions} updateOption={updateOption} />
         </>
       ) : (
         <>
-          <CustomFormLabel sx={{ mt: 2 }}>ชนิดตัวแปร (เช่น ขนาด)</CustomFormLabel>
-          <Grid container spacing={2} mt={1}>
+          <Grid container columnSpacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
               <BaseTextField name="variant.nameTh" formik={formik} label="ชื่อ" placeholder="เช่น ขนาด" fullWidth value={variant.nameTh} onChange={(e: any) => setVariantField("nameTh", e.target?.value ?? e)} lang="th" />
             </Grid>

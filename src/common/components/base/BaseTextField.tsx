@@ -1,9 +1,11 @@
 "use client";
+
+import React from "react";
+import { TextField, InputAdornment, TextFieldProps, Skeleton, Tooltip, IconButton } from "@mui/material";
 import { IconEye, IconEyeOff, IconSearch, IconX, IconInfoCircle } from "@tabler/icons-react";
 import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
 import { ReactNode, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import { TextField, TextFieldProps, IconButton, InputAdornment, Tooltip, Skeleton } from "@mui/material";
 import BaseLabel from "./BaseLabel";
 
 interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
@@ -18,6 +20,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   loading?: boolean;
   labelIcon?: ReactNode;
   lang?: IsLanguage;
+  suffix?: React.ReactNode; // ส่วนต่อท้าย เช่น %, ฿ ฯลฯ
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -59,7 +62,7 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const BaseTextField = ({
+const BaseTextField: React.FC<CustomTextFieldProps> = ({
   name,
   label,
   lang,
@@ -72,8 +75,10 @@ const BaseTextField = ({
   tooltip,
   loading = false,
   labelIcon,
+  InputProps,
+  suffix,
   ...rest
-}: CustomTextFieldProps) => {
+}) => {
   const theme = useTheme();
   const langText = lang ? (lang === "th" ? " (ภาษาไทย)" : " (ภาษาอังกฤษ)") : "";
   const [showPassword, setShowPassword] = useState(false);
@@ -187,6 +192,12 @@ const BaseTextField = ({
     return null;
   };
 
+  // รวม InputProps เดิมกับ suffix -> endAdornment
+  const mergedInputProps = React.useMemo(() => {
+    const endAd = suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined;
+    return { ...(InputProps || {}), endAdornment: endAd ?? InputProps?.endAdornment };
+  }, [InputProps, suffix]);
+
   const textField = (
     <StyledTextField
       fullWidth
@@ -201,6 +212,7 @@ const BaseTextField = ({
       error={formik?.touched[name] && Boolean(formik.errors[name])}
       helperText={helperText}
       autoComplete={type === "password" ? "new-password" : undefined}
+      InputProps={mergedInputProps}
       slotProps={{
         input: {
           startAdornment: getStartAdornment(),

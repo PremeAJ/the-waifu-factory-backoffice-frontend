@@ -4,7 +4,7 @@ import { FormControl, Select, MenuItem, SelectProps, Tooltip, Skeleton } from "@
 import { styled } from "@mui/material/styles";
 import BaseLabel from "./BaseLabel";
 
-interface OptionType {
+export interface OptionType {
   value: any;
   text: string;
   disabled?: boolean;

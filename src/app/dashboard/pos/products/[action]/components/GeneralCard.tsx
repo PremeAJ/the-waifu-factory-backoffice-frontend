@@ -6,8 +6,8 @@ import Avatar from "@mui/material/Avatar";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseTiptap from "@/common/components/base/BaseTipTap/BaseTiptap";
 import React from "react";
+import { OptionType } from "@/common/components/base/BaseDropdown";
 
-// Presentational GeneralCard that receives formik from parent
 const GeneralCard = ({ formik }: { formik: any }) => {
   const [tab, setTab] = React.useState<number>(0);
   const handleChange = (_: React.SyntheticEvent, newVal: number) => setTab(newVal);
@@ -48,6 +48,7 @@ const GeneralCard = ({ formik }: { formik: any }) => {
             </Box>
           </BaseTabPanel>
         </Grid>
+
       </Grid>
     </Box>
   );

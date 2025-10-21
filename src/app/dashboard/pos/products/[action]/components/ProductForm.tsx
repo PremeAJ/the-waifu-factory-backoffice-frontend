@@ -10,8 +10,9 @@ import PricingCard from "./Pricing";
 import ProductDetails from "./ProductDetails";
 import ProductTemplate from "./ProductTemplate";
 import React from "react";
-import VariationCard from "./VariationCard";
+import VariationCard, { unitTypeOptions } from "./VariationCard";
 import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
+import { UnitType } from "@/common/contexts/ProductsContext/interfaces/products";
 
 const validationSchema = Yup.object({
   p_name_th: Yup.string().required("กรุณากรอกชื่อสินค้า (ไทย)"),
@@ -21,6 +22,8 @@ const validationSchema = Yup.object({
   // เปลี่ยนจาก File[] เป็น string[] (fileIds)
   imageIds: Yup.array().of(Yup.string()).nullable(),
   detailImageIds: Yup.array().of(Yup.string()).nullable(),
+  unitType: Yup.mixed<UnitType>().oneOf(["piece", "weight", "litter"]).required("กรุณาเลือกประเภทหน่วยนับ"),
+  unit: Yup.string().trim().required("กรุณากรอกหน่วย"),
 });
 
 const ProductForm: React.FC = () => {
@@ -32,6 +35,8 @@ const ProductForm: React.FC = () => {
       p_description_en: "",
       imageIds: [] as string[],
       detailImageIds: [] as string[],
+      unitType: unitTypeOptions[0].value,
+      unit: "ชิ้น",
     },
     validationSchema,
     onSubmit: (values) => {
