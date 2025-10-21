@@ -72,7 +72,7 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, index, count]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, index, count]);
 
   const current = items[index];
 
@@ -158,7 +158,7 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
         )}
       </Box>
     );
-  }, [current, count, index]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [current, count, index]);
 
   return (
     <BaseDialog

@@ -62,25 +62,33 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const BaseTextField: React.FC<CustomTextFieldProps> = ({
-  name,
-  label,
-  lang,
-  placeholder,
-  formik,
-  startAdornment,
-  endAdornment,
-  type,
-  required,
-  tooltip,
-  loading = false,
-  labelIcon,
-  InputProps,
-  suffix,
-  ...rest
-}) => {
+const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
+  const {
+    name,
+    label,
+    lang,
+    placeholder,
+    formik,
+    startAdornment,
+    endAdornment,
+    type,
+    required,
+    tooltip,
+    loading = false,
+    labelIcon,
+    InputProps,
+    suffix,
+    ...rest
+  } = props;
   const theme = useTheme();
-  const langText = lang ? (lang === "th" ? " (ภาษาไทย)" : " (ภาษาอังกฤษ)") : "";
+
+  // move any hooks (useMemo/useCallback/useEffect) to top-level of component
+  // example: memoized label text / lang text (replace with your actual memo)
+  const langText = React.useMemo(() => {
+    if (!label || !lang) return null;
+    return lang === "th" ? <span style={{ marginLeft: 6, color: "gray" }}>(TH)</span> : <span style={{ marginLeft: 6, color: "gray" }}>(EN)</span>;
+  }, [label, lang]);
+
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -94,6 +102,12 @@ const BaseTextField: React.FC<CustomTextFieldProps> = ({
       rest.onChange({ target: { name, value: "" } } as any);
     }
   };
+
+  // move mergedInputProps hook above any early return (loading)
+  const mergedInputProps = React.useMemo(() => {
+    const endAd = suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined;
+    return { ...(InputProps || {}), endAdornment: endAd ?? InputProps?.endAdornment };
+  }, [InputProps, suffix]);
 
   if (loading) {
     const skeleton = (
@@ -113,22 +127,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = ({
     return (
       <>
         {label && (
-          <BaseLabel htmlFor={name}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
-              <span>
-                {label}
-                {langText}
-              </span>
-              {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
-              {tooltip && (
-                <Tooltip title={tooltip} placement="bottom-start">
-                  <span style={{ display: "inline-flex", marginLeft: 8, cursor: "pointer" }} aria-label="info">
-                    <IconInfoCircle width={16} />
-                  </span>
-                </Tooltip>
-              )}
-            </span>
+          <BaseLabel htmlFor={name} tooltip={tooltip} required={required}>
+            {label}
+            {langText}
           </BaseLabel>
         )}
         {skeleton}
@@ -192,12 +193,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = ({
     return null;
   };
 
-  // รวม InputProps เดิมกับ suffix -> endAdornment
-  const mergedInputProps = React.useMemo(() => {
-    const endAd = suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined;
-    return { ...(InputProps || {}), endAdornment: endAd ?? InputProps?.endAdornment };
-  }, [InputProps, suffix]);
-
   const textField = (
     <StyledTextField
       fullWidth
@@ -228,13 +223,8 @@ const BaseTextField: React.FC<CustomTextFieldProps> = ({
     <>
       {label && (
         <BaseLabel htmlFor={name} tooltip={tooltip} required={required}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-            {labelIcon ? <span style={{ display: "inline-flex", alignItems: "center" }}>{labelIcon}</span> : null}
-            <span>
-              {label}
-              {langText}
-            </span>
-          </span>
+          {label}
+          {langText}
         </BaseLabel>
       )}
       {textField}

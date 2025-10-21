@@ -46,6 +46,19 @@ const ProductForm: React.FC = () => {
       detailImageIds: [] as string[],
       unitType: unitTypeOptions[0].value,
       unit: "ชิ้น",
+      // default: no variant -> single product option without variantOption
+      variant: undefined,
+      productOptions: [
+        {
+          upc: "",
+          sku: "",
+          price: 0,
+          inventory: { status: "active", stock: 0 },
+        },
+      ],
+      status: "active",
+      discountType: "no_discount",
+      discountValue: 0,
     },
     validationSchema,
     onSubmit: (values) => {

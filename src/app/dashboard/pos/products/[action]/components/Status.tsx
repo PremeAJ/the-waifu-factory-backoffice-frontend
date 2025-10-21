@@ -18,7 +18,6 @@ const StatusCard: React.FC<StatusCardProps> = ({ formik, name = "status" }) => {
     if (typeof next === "number" && next !== status) {
       setStatus(next);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik?.values?.[name]]);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
