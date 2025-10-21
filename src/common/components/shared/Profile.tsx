@@ -76,6 +76,8 @@ const Profile: FC<ProfileProps> = () => {
     }
   };
 
+  if (!session) return null
+
   return (
     <Box>
       {/* header avatar keeps menu behavior */}
