@@ -1,18 +1,21 @@
 "use client";
 import { fileTypeGroup } from "@/common/constants/file/fileType";
-import { Grid, Stack, Button } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
+import { UnitType } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import BaseButton from "@/common/components/base/BaseButton";
+import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
 import BlankCard from "@/components/shared/BlankCard";
 import GeneralCard from "./GeneralCard";
 import PricingCard from "./Pricing";
 import ProductDetails from "./ProductDetails";
 import ProductTemplate from "./ProductTemplate";
 import React from "react";
+import useIsMobile from "@/common/utils/state/isMobile";
 import VariationCard, { unitTypeOptions } from "./VariationCard";
-import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
-import { UnitType } from "@/common/contexts/ProductsContext/interfaces/products";
+import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object({
   p_name_th: Yup.string().required("กรุณากรอกชื่อสินค้า (ไทย)"),
@@ -27,6 +30,12 @@ const validationSchema = Yup.object({
 });
 
 const ProductForm: React.FC = () => {
+  const isMobile = useIsMobile();
+  const router = useRouter();
+  const onClickCancel = () => {
+    formik.resetForm();
+    router.back();
+  };
   const formik = useFormik({
     initialValues: {
       p_name_th: "",
@@ -113,22 +122,16 @@ const ProductForm: React.FC = () => {
             </BlankCard>
           </Stack>
         </Grid>
-      </Grid>
 
-      <Stack direction="row" spacing={2} mt={3}>
-        <Button type="submit" variant="contained" color="primary">
-          บันทึก
-        </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => {
-            formik.resetForm();
-          }}
-        >
-          ยกเลิก
-        </Button>
-      </Stack>
+        <Grid size={{ xs: 12 }}>
+          <BlankCard>
+            <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>
+              <BaseButton preset="cancel" label="ยกเลิก" variant="outlined" color="error" fullWidth={isMobile} onClick={onClickCancel} />
+              <BaseButton preset="save" label="บันทึก" type="submit" variant="contained" color="primary" fullWidth={isMobile} />
+            </Stack>
+          </BlankCard>
+        </Grid>
+      </Grid>
     </form>
   );
 };
