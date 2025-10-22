@@ -198,6 +198,16 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                     {option.text}
                   </Box>
                 )}
+                renderValue={(selected: any) => {
+                  if (!selected) return <em>เลือก icon...</em>;
+                  const opt = categoryIcons.find((o) => o.value === selected);
+                  return (
+                    <Box display="flex" alignItems="center" gap={1}>
+                      {opt ? renderTablerIcon(opt.value, { size: 16 }) : null}
+                      {opt?.text ?? String(selected)}
+                    </Box>
+                  );
+                }}
               />
             </Grid>
 
@@ -209,7 +219,12 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                 label="สถานะ"
                 options={statusOptions}
                 required
-                renderOption={(option) => <BaseChip preset={option.value} />}
+                renderOption={(option) => <BaseChip preset={option.value as any} />}
+                renderValue={(selected: any) => (
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <BaseChip preset={selected as any} />
+                  </Box>
+                )}
               />
             </Grid>
 

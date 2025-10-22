@@ -7,16 +7,19 @@ import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 import BaseDropdown, { OptionType } from "@/common/components/base/BaseDropdown";
 import Box from "@mui/material/Box";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import type { FormikProps } from "formik";
 import type { ProductFormValues } from "@/common/contexts/ProductsContext/interfaces/products";
 import { tagOptions } from "@/common/contexts/ProductsContext/constants";
+import BaseButton from "@/common/components/base/BaseButton";
+import CategoryDialog from "@/app/dashboard/pos/categories/components/CategoryDialog";
 
 interface ProductDetailsProps {
   formik: FormikProps<ProductFormValues>;
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
+  const [openCreateCategory, setOpenCreateCategory] = useState(false);
   const categoryIds: string[] = Array.isArray(formik?.values?.categories) ? formik.values.categories : [];
   const tags: string[] = Array.isArray(formik?.values?.tags)
     ? (formik.values.tags as any[]).map((t) => (typeof t === "string" ? t : t?.label || "")).filter(Boolean)
@@ -77,22 +80,22 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
               return ids.map((id) => map.get(id) || id).join(", ");
             }}
           />
-          <Typography variant="body2" mb={2}>
-            เพิ่มสินค้าลงในหมวดหมู่
-          </Typography>
         </Grid>
-        <Grid size={12}>
-          <Button variant="text" startIcon={<IconPlus size={18} />}>
-            สร้างหมวดหมู่ใหม่
-          </Button>
+        <Grid size={12} mt={2}>
+          <BaseButton
+            label='สร้างหมวดหมู่ใหม่'
+            startIcon={<IconPlus/>}
+            size='small'
+            fullWidth={false}
+            variant="text"
+            onClick={() => setOpenCreateCategory(true)}
+          />
         </Grid>
 
-        <Grid display="flex" alignItems="center" size={12}>
-          <CustomFormLabel htmlFor="p_tag">แท็ก</CustomFormLabel>
-        </Grid>
         <Grid size={12}>
           <BaseAutoComplete
             name="tags"
+            label='แท็ก'
             formik={formik}
             multiple
             freeSolo
@@ -109,6 +112,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
           />
         </Grid>
       </Grid>
+
+      {/* Dialog สร้างหมวดหมู่ */}
+      <CategoryDialog
+        open={openCreateCategory}
+        onClose={() => setOpenCreateCategory(false)}
+        type="create"
+      />
     </Box>
   );
 };
