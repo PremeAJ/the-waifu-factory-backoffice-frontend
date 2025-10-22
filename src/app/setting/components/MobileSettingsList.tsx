@@ -1,7 +1,7 @@
 "use client";
 import { Box, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { IconChevronRight, IconChevronDown } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@mui/material/styles";
 import React, { Fragment, useState } from "react";
@@ -10,7 +10,6 @@ import { settingSidebarItem } from "@/common/components/base/sidebar/item/settin
 
 const MobileSettingsList = () => {
   const theme = useTheme();
-  const router = useRouter();
   const { data: session } = useSession();
   const { fullName, email, avatar } = session?.profile || {};
   const [openMenus, setOpenMenus] = useState<string[]>([]);
@@ -66,18 +65,15 @@ const MobileSettingsList = () => {
   const renderNavItem = (item: NavItem, index: number, depth: number = 0) => {
     const isParent = item.children && item.children.length > 0;
     const isExpanded = openMenus.includes(item.id);
+    const isLink = !isParent && !!item.href;
 
     return (
       <Fragment key={item.id}>
         <ListItem disablePadding>
           <ListItemButton
-            onClick={() => {
-              if (isParent) {
-                handleMenuToggle(item.id);
-              } else if (item.href) {
-                router.push(item.href);
-              }
-            }}
+            component={isLink ? (Link as any) : "button"}
+            {...(isLink ? { href: item.href as any } : {})}
+            onClick={isParent ? () => handleMenuToggle(item.id) : undefined}
             sx={{
               py: 1.5,
               minHeight: 50,
