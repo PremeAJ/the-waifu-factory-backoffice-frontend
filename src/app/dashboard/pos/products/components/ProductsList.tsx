@@ -102,10 +102,6 @@ function ProductsList() {
     setPage(1);
   };
 
-  const onClickCreate = () => {
-    router.push("/dashboard/pos/products/create");
-  };
-
   return (
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
@@ -126,7 +122,7 @@ function ProductsList() {
         )}
 
         {isMobile ? (
-          <BaseFloatingButton icon={<IconPlus />}  href="/dashboard/pos/products/create"/>
+          <BaseFloatingButton preset="create" href="/dashboard/pos/products/create"/>
         ) : (
           <BaseButton variant="contained" href="/dashboard/pos/products/create" fullWidth={false} preset="add" label="Add Product" />
         )}
