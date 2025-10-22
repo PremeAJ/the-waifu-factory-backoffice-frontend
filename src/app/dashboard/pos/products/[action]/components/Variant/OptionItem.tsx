@@ -136,7 +136,7 @@ const OptionItem: React.FC<Props> = ({ idx, opt, formik, updateOption, removeOpt
         )}
 
         {/* Row 3: ราคาพื้นฐาน | ราคาหลังหักส่วนลดและภาษี | จำนวนสต็อก | สถานะ */}
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 6, md: 3 }}>
           <BaseTextField
             name={`productOptions[${idx}].price`}
             formik={formik}
@@ -149,11 +149,11 @@ const OptionItem: React.FC<Props> = ({ idx, opt, formik, updateOption, removeOpt
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 6, md: 3 }}>
           <BaseTextField
             name={`productOptions[${idx}].price_final`}
             formik={formik}
-            label="ราคาหลังหักส่วนลดและภาษี"
+            label="ราคาหลังคำนวน"
             placeholder="0.00"
             type="number"
             fullWidth
@@ -163,7 +163,7 @@ const OptionItem: React.FC<Props> = ({ idx, opt, formik, updateOption, removeOpt
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 6, md: 3 }}>
           <BaseTextField
             name={`productOptions[${idx}].inventory.stock`}
             formik={formik}
@@ -177,7 +177,7 @@ const OptionItem: React.FC<Props> = ({ idx, opt, formik, updateOption, removeOpt
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 6, md: 3 }}>
           <BaseDropdown
             name={`productOptions[${idx}].inventory.status`}
             value={opt.inventory?.status ?? "active"}

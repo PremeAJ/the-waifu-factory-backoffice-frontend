@@ -102,8 +102,8 @@ const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {
         <BaseTabs value={tab} onChange={handleTabChange} tabs={tabs} />
       </Box>
 
-      <Grid container spacing={2} mt={2}>
-        <Grid size={{ xs: 12, md: 6 }}>
+      <Grid container columnSpacing={2} mt={2}>
+        <Grid size={{ xs: 6, md: 6 }}>
           <BaseDropdown
             formik={formik}
             name="unitType"
@@ -114,7 +114,7 @@ const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {
             required
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 6, md: 6 }}>
           <BaseTextField
             formik={formik}
             fullWidth
@@ -126,7 +126,7 @@ const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {
         </Grid>
 
         {/* tax fields under unit type/unit */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 6, md: 6 }}>
           <BaseDropdown
             formik={formik}
             name="taxClass"
@@ -136,7 +136,7 @@ const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {
             fullWidth
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 6, md: 6 }}>
           <BaseTextField
             name="p_vat"
             label="อัตรา VAT (%)"
