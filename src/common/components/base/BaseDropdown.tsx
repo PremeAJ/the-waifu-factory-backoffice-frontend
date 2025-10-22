@@ -9,6 +9,7 @@ export interface OptionType {
   text: string;
   disabled?: boolean;
   icon?: string | null;
+  group?: string;
 }
 
 interface BaseDropdownProps extends Omit<SelectProps, "onChange" | "value"> {
@@ -27,6 +28,7 @@ interface BaseDropdownProps extends Omit<SelectProps, "onChange" | "value"> {
   emptyOptionText?: string;
   loading?: boolean;
   renderOption?: (option: OptionType) => React.ReactNode;
+  dimOnOpen?: boolean; // เพิ่มตัวเลือกให้ dim พื้นหลังเมื่อเปิดเมนู
 }
 
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
@@ -74,6 +76,7 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
   loading = false,
   size,
   renderOption,
+  dimOnOpen = true,
   ...rest
 }) => {
   const isMultiple = Boolean((rest as any).multiple);
@@ -148,6 +151,36 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
     return mapText.get(selected) ?? String(selected ?? "");
   };
 
+  // รวม MenuProps พร้อม Backdrop ให้ทึบพื้นหลัง
+  const { MenuProps: restMenuProps, ...restSelectProps } = rest as any;
+  const mergedMenuProps = {
+    ...(restMenuProps || {}),
+    // รองรับทั้ง BackdropProps (เวอร์ชั่นเก่า) และ slotProps.backdrop (MUI v5)
+    BackdropProps: dimOnOpen
+      ? {
+          ...(restMenuProps?.BackdropProps || {}),
+          invisible: false,
+          sx: {
+            backgroundColor: "rgba(0,0,0,0.16)",
+            ...(restMenuProps?.BackdropProps?.sx || {}),
+          },
+        }
+      : restMenuProps?.BackdropProps,
+    slotProps: {
+      ...(restMenuProps?.slotProps || {}),
+      backdrop: dimOnOpen
+        ? {
+            ...(restMenuProps?.slotProps?.backdrop || {}),
+            invisible: false,
+            sx: {
+              backgroundColor: "rgba(0,0,0,0.16)",
+              ...(restMenuProps?.slotProps?.backdrop?.sx || {}),
+            },
+          }
+        : restMenuProps?.slotProps?.backdrop,
+    },
+  };
+
   return (
     <>
       {label && (
@@ -168,7 +201,8 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
                 displayEmpty={!!placeholder || showEmptyOption}
                 id={name}
                 renderValue={(rest as any).renderValue ?? defaultRenderValue}
-                {...rest}
+                MenuProps={mergedMenuProps}
+                {...restSelectProps}
               >
                 {showEmptyOption && !isMultiple && (
                   <MenuItem value="">
@@ -227,7 +261,8 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
             displayEmpty={!!placeholder || showEmptyOption}
             id={name}
             renderValue={(rest as any).renderValue ?? defaultRenderValue}
-            {...rest}
+            MenuProps={mergedMenuProps}
+            {...restSelectProps}
           >
             {showEmptyOption && !isMultiple && (
               <MenuItem value="">

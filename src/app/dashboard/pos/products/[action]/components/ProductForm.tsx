@@ -2,9 +2,9 @@
 import { fileTypeGroup } from "@/common/constants/file/fileType";
 import { Grid, Stack } from "@mui/material";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
-import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { ProductFormValues, UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
 import BlankCard from "@/components/shared/BlankCard";
@@ -27,6 +27,8 @@ const validationSchema = Yup.object({
   detailImageIds: Yup.array().of(Yup.string()).nullable(),
   unitType: Yup.mixed<UnitTypeEnum>().oneOf([UnitTypeEnum.PIECE, UnitTypeEnum.WEIGHT, UnitTypeEnum.VOLUME]).required("กรุณาเลือกประเภทหน่วยนับ"),
   unit: Yup.string().trim().required("กรุณากรอกหน่วย"),
+  categories: Yup.array().of(Yup.string()).nullable(),
+  tags: Yup.array().of(Yup.string()).nullable(),
 });
 
 const ProductForm: React.FC = () => {
@@ -36,17 +38,16 @@ const ProductForm: React.FC = () => {
     formik.resetForm();
     router.back();
   };
-  const formik = useFormik({
+  const formik = useFormik<ProductFormValues>({
     initialValues: {
       p_name_th: "",
-      p_name_en: "",
-      p_description_th: "",
-      p_description_en: "",
-      imageIds: [] as string[],
-      detailImageIds: [] as string[],
+      p_name_en: null,
+      p_description_th: null,
+      p_description_en: null,
+      imageIds: [],
+      detailImageIds: [],
       unitType: unitTypeOptions[0].value,
       unit: "ชิ้น",
-      // default: no variant -> single product option without variantOption
       variant: undefined,
       productOptions: [
         {
@@ -59,9 +60,11 @@ const ProductForm: React.FC = () => {
       status: "active",
       discountType: "no_discount",
       discountValue: 0,
+      categories: [],
+      tags: [],
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values: ProductFormValues) => {
       console.log("submit product form", values);
     },
   });

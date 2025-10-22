@@ -2,6 +2,7 @@
 import React from "react";
 import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import { TextField, Skeleton } from "@mui/material";
+import Backdrop from "@mui/material/Backdrop";
 import BaseLabel from "./BaseLabel";
 
 interface OptionType {
@@ -10,20 +11,27 @@ interface OptionType {
   group?: string;
 }
 
-interface BaseAutoCompleteProps<T = OptionType, Multiple extends boolean | undefined = false>
-  extends Omit<AutocompleteProps<T, Multiple, false, false>, "renderInput" | "onChange" | "value"> {
-  formik: any;
-  name: string;
+// รองรับ multiple และ freeSolo ได้จริง และอนุญาตควบคุมค่าเอง
+interface BaseAutoCompleteProps<T = any>
+  extends Omit<AutocompleteProps<T, boolean, false, boolean>, "renderInput" | "onChange" | "value"> {
+  formik?: any;
+  name?: string;
   label?: string;
   placeholder?: string;
   required?: boolean;
-  groupBy?: (option: T) => string;
-  orderBy?: (a: T, b: T) => number; 
+  orderBy?: (a: T, b: T) => number;
   loading?: boolean;
   renderOption?: (props: any, option: T) => React.ReactNode;
+  renderInput?: (params: any) => React.ReactNode; // เพิ่มให้ custom input ได้
+  value?: any;
+  onChange?: (value: any) => void;
+  // ฟังก์ชันแปลงค่าจาก option -> value ที่ต้องการเก็บ
+  toValue?: (option: T) => any;
+  dimOnOpen?: boolean;            // เปิด/ปิดพื้นหลังทึบ
+  backdropSx?: any;               // ปรับสไตล์ Backdrop เพิ่มเติม
 }
 
-function BaseAutoComplete<T extends OptionType>({
+function BaseAutoComplete<T = any>({
   formik,
   name,
   label,
@@ -31,20 +39,57 @@ function BaseAutoComplete<T extends OptionType>({
   options,
   required,
   groupBy,
-  orderBy, 
+  orderBy,
   loading = false,
   disabled,
   renderOption,
+  renderInput: renderInputProp,
+  toValue,
+  value: valueProp,
+  onChange: onValueChange,
+  dimOnOpen = true,
+  backdropSx,
   ...rest
 }: BaseAutoCompleteProps<T>) {
-  // แก้ไข logic การหา value
-  const currentValue = formik.values[name];
-  const value = currentValue ? options.find((opt) => opt.value === currentValue) || null : null;
-  const sortedOptions = orderBy ? [...options].sort(orderBy) : options;
+  const [open, setOpen] = React.useState(false);
+  const isMultiple = Boolean(rest.multiple);
+  const isFreeSolo = Boolean(rest.freeSolo);
+
+  const sortedOptions = orderBy ? [...(options as T[])]?.sort(orderBy as any) : (options as T[]);
+
+  const isStringOption = Array.isArray(sortedOptions) && typeof (sortedOptions?.[0] as any) === "string";
+  const getLabel = (option: any) =>
+    typeof option === "string" ? option : option?.text ?? option?.label ?? String(option ?? "");
+  const getOptionValue = (option: any) =>
+    toValue ? toValue(option as T) : typeof option === "string" ? option : option?.value ?? option;
+
+  // อ่านค่าเริ่มจาก prop > formik > ค่าดีฟอลต์
+  const formikValue = formik && name ? formik.values?.[name] : undefined;
+  const rawValue = valueProp !== undefined ? valueProp : formikValue;
+
+  // map ค่าที่เก็บ -> ค่า value ที่ Autocomplete ต้องการ
+  let acValue: any = isMultiple ? [] : null;
+  if (isMultiple) {
+    if (isFreeSolo || isStringOption) {
+      acValue = Array.isArray(rawValue) ? rawValue : [];
+    } else {
+      // options เป็น object: map id ที่เก็บ -> object ใน options
+      const set = new Set(Array.isArray(rawValue) ? rawValue : []);
+      acValue = (sortedOptions || []).filter((opt: any) => set.has(getOptionValue(opt)));
+    }
+  } else {
+    if (isFreeSolo || isStringOption) {
+      acValue = rawValue ?? null;
+    } else {
+      acValue =
+        (sortedOptions || []).find((opt: any) => getOptionValue(opt) === rawValue) ??
+        (rawValue ? null : null);
+    }
+  }
 
   // Error state
-  const hasError = formik?.touched[name] && Boolean(formik.errors[name]);
-  const helperText = formik?.touched[name] && formik.errors[name];
+  const hasError = name ? formik?.touched?.[name] && Boolean(formik?.errors?.[name]) : false;
+  const helperText = name ? formik?.touched?.[name] && formik?.errors?.[name] : undefined;
 
   // Loading state
   if (loading) {
@@ -69,31 +114,64 @@ function BaseAutoComplete<T extends OptionType>({
           {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
         </BaseLabel>
       )}
-      <Autocomplete
-        options={sortedOptions}
-        value={value}
-        onChange={(_, newValue) => {
-          // แก้ไข logic การ set value
-          formik.setFieldValue(name, newValue ? newValue.value : "");
+      {/* พื้นหลังทึบเมื่อเปิดเมนู */}
+      <Backdrop
+        open={!!open && dimOnOpen}
+        onClick={() => setOpen(false)}
+        sx={{
+          zIndex: (t) => t.zIndex.modal - 1, // ต่ำกว่ากล่องรายการ แต่อยู่เหนือหน้า
+          backgroundColor: "rgba(0,0,0,0.16)",
+          ...backdropSx,
         }}
-        onBlur={() => formik.setFieldTouched(name, true)}
-        isOptionEqualToValue={(option, value) => option.value === value.value}
-        getOptionLabel={(option) => (option.text ? String(option.text) : "")}
-        groupBy={groupBy}
+      />
+      <Autocomplete
+        options={sortedOptions as any}
+        value={acValue as any}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
+        onChange={(_, newValue: any) => {
+          let mapped: any;
+          if (isMultiple) {
+            const arr = Array.isArray(newValue) ? newValue : [];
+            if (isFreeSolo || isStringOption) {
+              mapped = arr.map((v) => (typeof v === "string" ? v : getLabel(v)));
+            } else {
+              mapped = arr.map((v) => getOptionValue(v));
+            }
+          } else {
+            if (isFreeSolo || isStringOption) {
+              mapped = typeof newValue === "string" ? newValue : newValue ? getLabel(newValue) : "";
+            } else {
+              mapped = newValue ? getOptionValue(newValue) : "";
+            }
+          }
+          if (formik && name) formik.setFieldValue(name, mapped);
+          if (typeof onValueChange === "function") onValueChange(mapped);
+        }}
+        onBlur={() => (formik && name ? formik.setFieldTouched(name, true) : undefined)}
+        isOptionEqualToValue={(option: any, value: any) =>
+          isStringOption || isFreeSolo ? option === value : getOptionValue(option) === getOptionValue(value)
+        }
+        getOptionLabel={(option: any) => getLabel(option)}
+        groupBy={groupBy as any}
         disabled={disabled}
         renderOption={renderOption}
-        clearOnEscape // เพิ่ม clearOnEscape
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder={placeholder}
-            error={hasError}
-            helperText={helperText}
-            variant="outlined"
-            fullWidth
-            autoComplete="off"
-          />
-        )}
+        clearOnEscape
+        renderInput={(params) =>
+          renderInputProp ? (
+            renderInputProp(params)
+          ) : (
+            <TextField
+              {...params}
+              placeholder={placeholder}
+              error={hasError}
+              helperText={helperText}
+              variant="outlined"
+              fullWidth
+              autoComplete="off"
+            />
+          )
+        }
         {...rest}
       />
     </>

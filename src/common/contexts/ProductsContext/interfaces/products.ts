@@ -79,9 +79,44 @@ export interface ProductsContextType {
 
 // Prisma enum in schema.prisma:
 // enum UnitType { piece weight volume }
-// export type UnitType = "piece" | "weight" | "volume";
+export type UnitType = "piece" | "weight" | "volume";
 export enum UnitTypeEnum {
   PIECE = "piece",
   WEIGHT = "weight",
   VOLUME = "volume",
+}
+
+// เพิ่ม type ของฟอร์มให้อยู่ใน context
+export type ProductStatus = "active" | "inactive";
+export type DiscountType = "no_discount" | "percent" | "fixed";
+
+export interface ProductFormValues {
+  p_name_th: string;
+  p_name_en: string | null;
+  p_description_th: string | null;
+  p_description_en: string | null;
+
+  imageIds: string[];
+  detailImageIds: string[];
+
+  unitType: UnitTypeEnum;
+  unit: string;
+
+  variant?: VariantType | undefined;
+
+  productOptions: {
+    upc: string;
+    sku: string;
+    price: number;
+    inventory: { status: ProductStatus; stock: number };
+    variantOption?: VariantOptionType | null;
+  }[];
+
+  status: ProductStatus;
+
+  discountType: DiscountType;
+  discountValue: number;
+
+  categories: string[];
+  tags: string[];
 }
