@@ -38,7 +38,11 @@ interface AddressContextProps {
   setProvinceId: (id: number | null) => void;
   setDistrictId: (id: number | null) => void;
   setSubdistrictId: (id: number | null) => void;
-  loading: boolean;
+  loading: boolean; // รวมทุกอัน
+  provincesLoading: boolean;
+  districtsLoading: boolean;
+  subdistrictsLoading: boolean;
+  zipcodeLoading: boolean;
   error: string;
 }
 
@@ -54,6 +58,10 @@ export const AddressContext = createContext<AddressContextProps>({
   setDistrictId: () => {},
   setSubdistrictId: () => {},
   loading: false,
+  provincesLoading: false,
+  districtsLoading: false,
+  subdistrictsLoading: false,
+  zipcodeLoading: false,
   error: "",
 });
 
@@ -103,6 +111,10 @@ export const AddressProvider: React.FC<{ children: ReactNode }> = ({ children })
         },
         setSubdistrictId,
         loading: loadingProvinces || loadingDistricts || loadingSubdistricts || loadingZipcode,
+        provincesLoading: loadingProvinces,
+        districtsLoading: loadingDistricts,
+        subdistrictsLoading: loadingSubdistricts,
+        zipcodeLoading: loadingZipcode,
         error: errorProvinces?.message || errorDistricts?.message || errorSubdistricts?.message || errorZipcode?.message || "",
       }}
     >

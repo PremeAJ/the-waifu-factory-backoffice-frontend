@@ -12,27 +12,38 @@ interface AddressZoneProps {
 
 const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
   const { isLanguage } = useContext(CustomizerContext);
-  const { loading, provinces, districts, subdistricts, zipcode, setProvinceId, setDistrictId, setSubdistrictId } = useAddress();
-
+  const {
+    provinces,
+    districts,
+    subdistricts,
+    zipcode,
+    setProvinceId,
+    setDistrictId,
+    setSubdistrictId,
+    provincesLoading,
+    districtsLoading,
+    subdistrictsLoading,
+    zipcodeLoading,
+  } = useAddress();
   // เมื่อเปลี่ยนจังหวัด ให้ล้างค่าอำเภอ, ตำบล, รหัสไปรษณีย์
   useEffect(() => {
     setProvinceId(formik.values.provinceId ?? null);
     formik.setFieldValue("districtId", undefined, false);
     formik.setFieldValue("subdistrictId", undefined, false);
-    formik.setFieldValue("zipcode", undefined, false);
+    formik.setFieldValue("zipcodeId", undefined, false);
   }, [formik.values.provinceId]);
 
   // เมื่อเปลี่ยนอำเภอ ให้ล้างค่าตำบล, รหัสไปรษณีย์
   useEffect(() => {
     setDistrictId(formik.values.districtId ?? null);
     formik.setFieldValue("subdistrictId", undefined, false);
-    formik.setFieldValue("zipcode", undefined, false);
+    formik.setFieldValue("zipcodeId", undefined, false);
   }, [formik.values.districtId]);
 
   // เมื่อเปลี่ยนตำบล ให้ล้างค่ารหัสไปรษณีย์
   useEffect(() => {
     setSubdistrictId(formik.values.subdistrictId ?? null);
-    formik.setFieldValue("zipcode", undefined, false);
+    formik.setFieldValue("zipcodeId", undefined, false);
   }, [formik.values.subdistrictId]);
 
   return (
@@ -58,46 +69,46 @@ const AddressForm: React.FC<AddressZoneProps> = ({ formik }) => {
           required
           placeholder="เลือกจังหวัด"
           orderBy={(a, b) => a.text.localeCompare(b.text)}
-          loading={loading}
+          loading={provincesLoading}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <BaseAutoComplete
           name="districtId"
-          label="อำเภอ"
+          label="อำเภอ / เขต"
           options={districts.map((item: any) => ({ value: item.id, text: I18nString(isLanguage, item.nameTh, item.nameEn) }))}
           formik={formik}
           disabled={!formik.values.provinceId}
           required
           placeholder="เลือกอำเภอ"
           orderBy={(a, b) => a.text.localeCompare(b.text)}
-          loading={loading}
+          loading={districtsLoading}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <BaseAutoComplete
           name="subdistrictId"
-          label="ตำบล"
+          label="ตำบล / แขวง"
           options={subdistricts.map((item: any) => ({ value: item.id, text: I18nString(isLanguage, item.nameTh, item.nameEn) }))}
           formik={formik}
           disabled={!formik.values.districtId}
           required
           placeholder="เลือกตำบล"
           orderBy={(a, b) => a.text.localeCompare(b.text)}
-          loading={loading}
+          loading={subdistrictsLoading}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <BaseAutoComplete
           name="zipcodeId"
           label="รหัสไปรษณีย์"
-          options={zipcode.map((item: any) => ({ value: item.id, text: item.zipcode }))}
+          options={zipcode.map((item: any) => ({ value: item.id, text: String(item.zipcode) }))}
           formik={formik}
           disabled={!formik.values.subdistrictId}
           required
           placeholder="เลือกรหัสไปรษณีย์"
           orderBy={(a, b) => a.text.localeCompare(b.text)}
-          loading={loading}
+          loading={zipcodeLoading}
         />
       </Grid>
     </React.Fragment>
