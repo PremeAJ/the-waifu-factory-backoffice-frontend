@@ -126,9 +126,9 @@ function ProductsList() {
         )}
 
         {isMobile ? (
-          <BaseFloatingButton icon={<IconPlus />} onClick={() => onClickCreate()} />
+          <BaseFloatingButton icon={<IconPlus />}  href="/dashboard/pos/products/create"/>
         ) : (
-          <BaseButton variant="contained" onClick={() => onClickCreate()} fullWidth={false} preset="add" label="Add Product" />
+          <BaseButton variant="contained" href="/dashboard/pos/products/create" fullWidth={false} preset="add" label="Add Product" />
         )}
       </Stack>
 
