@@ -28,6 +28,9 @@ const emptyOption = () => ({
   price: 0,
   variantOption: { nameTh: "", nameEn: "" },
   inventory: { status: "active", stock: 0 },
+  discountType: "no_discount",
+  discountPercent: 0,
+  discountValue: 0,
 });
 
 const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {

@@ -4,6 +4,8 @@ import { Grid } from "@mui/material";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseChip from "@/common/components/base/BaseChip";
+import BaseRadio from "@/common/components/base/BaseRadio";
+import BaseSlider from "@/common/components/base/BaseSlider";
 
 type Props = {
   formik: any;
@@ -14,6 +16,23 @@ type Props = {
 const SingleProductForm: React.FC<Props> = ({ formik, productOptions, updateOption }) => {
   const opt = productOptions[0] ?? { upc: "", sku: "", price: 0, inventory: { status: "active", stock: 0 } };
   const idx = 0;
+
+  const priceBase = Number(opt?.price ?? formik?.values?.productOptions?.[idx]?.price ?? 0);
+  const discountType = formik?.values?.productOptions?.[idx]?.discountType;
+  const discountPercent = Number(formik?.values?.productOptions?.[idx]?.discountPercent ?? 0);
+  const discountValue = Number(formik?.values?.productOptions?.[idx]?.discountValue ?? 0);
+  const vat = Number(formik?.values?.p_vat ?? 0);
+  const calcAfterDiscount = () => {
+    let v = priceBase;
+    if (discountType === "percentage") v = v * (1 - discountPercent / 100);
+    else if (discountType === "fixed") v = v - discountValue;
+    if (v < 0) v = 0;
+    return v;
+  };
+  const finalPrice = (() => {
+    const afterDisc = calcAfterDiscount();
+    return Number((afterDisc * (1 + vat / 100)).toFixed(2));
+  })();
 
   return (
     <>
@@ -45,12 +64,51 @@ const SingleProductForm: React.FC<Props> = ({ formik, productOptions, updateOpti
         </Grid>
       </Grid>
 
-      <Grid container spacing={2} alignItems="center">
-        <Grid size={{ xs: 12, md: 4 }}>
+      <Grid container columnSpacing={2} alignItems="center">
+        <Grid size={{ xs: 12, md: 12 }}>
+          <BaseRadio
+            formik={formik}
+            name={`productOptions[${idx}].discountType`}
+            label="ประเภทส่วนลด"
+            variant="card"
+            options={[
+              { value: "no_discount", label: "ไม่มีส่วนลด" },
+              { value: "percentage", label: "เปอร์เซ็นต์ %" },
+              { value: "fixed", label: "ราคาคงที่" },
+            ]}
+          />
+        </Grid>
+        {formik?.values?.productOptions?.[idx]?.discountType === "percentage" && (
+          <Grid size={{ xs: 12, md: 12 }}>
+            <BaseSlider
+              formik={formik}
+              name={`productOptions[${idx}].discountPercent`}
+              label="เปอร์เซ็นต์ส่วนลด"
+              mode="percent"
+              min={0}
+              max={100}
+              step={1}
+            />
+          </Grid>
+        )}
+        {formik?.values?.productOptions?.[idx]?.discountType === "fixed" && (
+          <Grid size={{ xs: 12, md: 12 }}>
+            <BaseTextField
+              name={`productOptions[${idx}].discountValue`}
+              label="มูลค่าส่วนลด (คงที่)"
+              formik={formik}
+              fullWidth
+              type="number"
+              inputProps={{ min: 0 }}
+            />
+          </Grid>
+        )}
+
+        <Grid size={{ xs: 12, md: 3 }}>
           <BaseTextField
             name={`productOptions[${idx}].price`}
             formik={formik}
-            label="ราคา"
+            label="ราคาพื้นฐาน"
             placeholder="0.00"
             type="number"
             fullWidth
@@ -59,7 +117,21 @@ const SingleProductForm: React.FC<Props> = ({ formik, productOptions, updateOpti
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <BaseTextField
+            name={`productOptions[${idx}].price_final`}
+            formik={formik}
+            label="ราคาหลังหักส่วนลดและภาษี"
+            placeholder="0.00"
+            type="number"
+            fullWidth
+            value={finalPrice}
+            disabled
+            inputProps={{ step: 0.01 }}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 3 }}>
           <BaseTextField
             name={`productOptions[${idx}].inventory.stock`}
             formik={formik}
@@ -73,7 +145,7 @@ const SingleProductForm: React.FC<Props> = ({ formik, productOptions, updateOpti
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
           <BaseDropdown
             name={`productOptions[${idx}].inventory.status`}
             value={opt.inventory?.status ?? "active"}

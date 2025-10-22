@@ -9,7 +9,6 @@ import BaseButton from "@/common/components/base/BaseButton";
 import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
 import BlankCard from "@/components/shared/BlankCard";
 import GeneralCard from "./GeneralCard";
-import PricingCard from "./Pricing";
 import ProductDetails from "./ProductDetails";
 import ProductTemplate from "./ProductTemplate";
 import React from "react";
@@ -22,7 +21,6 @@ const validationSchema = Yup.object({
   p_name_en: Yup.string().nullable(),
   p_description_th: Yup.string().nullable(),
   p_description_en: Yup.string().nullable(),
-  // เปลี่ยนจาก File[] เป็น string[] (fileIds)
   imageIds: Yup.array().of(Yup.string()).nullable(),
   detailImageIds: Yup.array().of(Yup.string()).nullable(),
   unitType: Yup.mixed<UnitTypeEnum>().oneOf([UnitTypeEnum.PIECE, UnitTypeEnum.WEIGHT, UnitTypeEnum.VOLUME]).required("กรุณาเลือกประเภทหน่วยนับ"),
@@ -55,13 +53,13 @@ const ProductForm: React.FC = () => {
           sku: "",
           price: 0,
           inventory: { status: "active", stock: 0 },
+          // per-option discount defaults
+          discountType: "no_discount",
+          discountPercent: 0,
+          discountValue: 0,
         },
       ],
       status: "active",
-      discountType: "no_discount",
-      discountValue: 0,
-      discountPercent: 0,
-      p_fixed: 0,
       p_vat: 0,
       categories: [],
       tags: [],
@@ -89,9 +87,6 @@ const ProductForm: React.FC = () => {
             </BlankCard>
             <BlankCard>
               <VariationCard formik={formik} />
-            </BlankCard>
-            <BlankCard>
-              <PricingCard formik={formik} />
             </BlankCard>
           </Stack>
         </Grid>

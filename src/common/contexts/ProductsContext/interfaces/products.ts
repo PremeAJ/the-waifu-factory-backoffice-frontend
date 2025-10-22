@@ -23,6 +23,11 @@ export interface ProductOptionType {
   price?: number;
   variantOption?: VariantOptionType | null;
   inventory?: InventoryType | null;
+
+  // per-option discount types
+  discountType?: DiscountType;
+  discountPercent?: number;
+  discountValue?: number; // for fixed price discount (p_fixed per option)
 }
 
 export interface ProductType {
@@ -88,7 +93,7 @@ export enum UnitTypeEnum {
 
 // เพิ่ม type ของฟอร์มให้อยู่ใน context
 export type ProductStatus = "active" | "inactive";
-export type DiscountType = "no_discount" | "percent" | "fixed";
+export type DiscountType = "no_discount" | "percentage" | "fixed";
 
 export interface ProductFormValues {
   p_name_th: string;
@@ -110,16 +115,15 @@ export interface ProductFormValues {
     price: number;
     inventory: { status: ProductStatus; stock: number };
     variantOption?: VariantOptionType | null;
+    // per-option discount fields (optional)
+    discountType?: DiscountType;
+    discountPercent?: number;
+    discountValue?: number;
   }[];
 
   status: ProductStatus;
 
-  discountType: DiscountType;
-  discountValue: number;
-
-  // pricing/tax numeric fields
-  discountPercent?: number;
-  p_fixed?: number;
+  // tax numeric fields (global)
   p_vat?: number;
 
   categories: string[];

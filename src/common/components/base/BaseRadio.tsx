@@ -22,12 +22,25 @@ type Props = {
   variant?: "default" | "card";
   mdPerRow?: 3 | number;
   sx?: any;
+  defaultValue?: string | number;
 };
 
-const BaseRadio: React.FC<Props> = ({ name, label, required, tooltip, formik, options, row = true, variant = "default", mdPerRow = 3, sx }) => {
+// helper to read nested path like "productOptions[0].discountType"
+const getIn = (obj: any, path: string) => {
+  if (!obj || !path) return undefined;
+  const parts = path
+    .replace(/\[(\d+)\]/g, ".$1")
+    .split(".")
+    .filter(Boolean);
+  return parts.reduce((acc: any, key: string) => (acc != null ? acc[key] : undefined), obj);
+};
+
+const BaseRadio: React.FC<Props> = ({ name, label, required, tooltip, formik, options, row = true, variant = "default", mdPerRow = 3, sx, defaultValue }) => {
   const theme = useTheme();
-  const rawValue = formik?.values?.[name];
-  const value = rawValue !== undefined && rawValue !== null ? rawValue : "";
+
+  // read value from formik using nested path
+  const rawValue = formik ? getIn(formik.values, name) : undefined;
+  const value = rawValue ?? defaultValue ?? "";
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement> | string | number) => {
     let next: string | number;
@@ -38,11 +51,12 @@ const BaseRadio: React.FC<Props> = ({ name, label, required, tooltip, formik, op
       const match = options.find((o) => String(o.value) === String(raw));
       next = match ? match.value : raw;
     }
+    // set nested value via formik.setFieldValue with the same path
     formik?.setFieldValue?.(name, next);
   };
 
-  const hasError = Boolean(formik?.touched?.[name] && formik?.errors?.[name]);
-  const helper = hasError ? formik?.errors?.[name] : undefined;
+  const hasError = Boolean(formik?.touched && getIn(formik.touched, name) && formik?.errors && getIn(formik.errors, name));
+  const helper = hasError ? getIn(formik.errors, name) : undefined;
 
   const cardSx = (active: boolean) => ({
     px: 2,
