@@ -3,6 +3,7 @@ import React from "react";
 import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import { TextField, Skeleton } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
+import Portal from "@mui/material/Portal";
 import BaseLabel from "./BaseLabel";
 
 interface OptionType {
@@ -29,6 +30,8 @@ interface BaseAutoCompleteProps<T = any>
   toValue?: (option: T) => any;
   dimOnOpen?: boolean;            // เปิด/ปิดพื้นหลังทึบ
   backdropSx?: any;               // ปรับสไตล์ Backdrop เพิ่มเติม
+  highlightOnOpen?: boolean;     // ไฮไลต์ช่อง input เมื่อเปิด
+  highlightSx?: any;             // ปรับสไตล์ไฮไลต์เพิ่มเติม
 }
 
 function BaseAutoComplete<T = any>({
@@ -49,6 +52,8 @@ function BaseAutoComplete<T = any>({
   onChange: onValueChange,
   dimOnOpen = true,
   backdropSx,
+  highlightOnOpen = true,
+  highlightSx,
   ...rest
 }: BaseAutoCompleteProps<T>) {
   const [open, setOpen] = React.useState(false);
@@ -114,21 +119,32 @@ function BaseAutoComplete<T = any>({
           {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
         </BaseLabel>
       )}
-      {/* พื้นหลังทึบเมื่อเปิดเมนู */}
-      <Backdrop
-        open={!!open && dimOnOpen}
-        onClick={() => setOpen(false)}
-        sx={{
-          zIndex: (t) => t.zIndex.modal - 1, // ต่ำกว่ากล่องรายการ แต่อยู่เหนือหน้า
-          backgroundColor: "rgba(0,0,0,0.16)",
-          ...backdropSx,
-        }}
-      />
+      {/* พื้นหลังทึบเมื่อเปิดเมนู (ใช้ Portal ให้คลุมทั้งหน้า/Sidebar) */}
+      <Portal>
+        <Backdrop
+          open={!!open && dimOnOpen}
+          onClick={() => setOpen(false)}
+          sx={{
+            position: "fixed",
+            inset: 0,
+            // ให้อยู่ชั้น modal
+            zIndex: (t) => t.zIndex.modal,
+            backgroundColor: "rgba(0,0,0,0.16)",
+            ...backdropSx,
+          }}
+        />
+      </Portal>
       <Autocomplete
         options={sortedOptions as any}
         value={acValue as any}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
+        sx={{ zIndex: (t) => t.zIndex.modal + 2 }} // ให้อยู่เหนือ Backdrop
+        slotProps={{
+          // กล่องรายการเหนือ Backdrop
+          popper: { sx: { zIndex: (t) => t.zIndex.modal + 1 } },
+          paper: { sx: { zIndex: (t) => t.zIndex.modal + 1 } },
+        }}
         onChange={(_, newValue: any) => {
           let mapped: any;
           if (isMultiple) {
@@ -169,6 +185,20 @@ function BaseAutoComplete<T = any>({
               variant="outlined"
               fullWidth
               autoComplete="off"
+              sx={{
+                ...(open && highlightOnOpen
+                  ? {
+                      position: "relative",
+                      zIndex: (t) => t.zIndex.modal + 2, 
+                      "& .MuiOutlinedInput-root": {
+                        bgcolor: "background.paper",
+                        boxShadow:
+                          "0 0 0 3px rgba(99,175,255,.28), 0 8px 24px rgba(0,0,0,.18)",
+                      },
+                      ...highlightSx,
+                    }
+                  : {}),
+              }}
             />
           )
         }

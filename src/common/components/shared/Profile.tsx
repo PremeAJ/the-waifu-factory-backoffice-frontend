@@ -1,6 +1,6 @@
 import { Avatar, Box, Divider, IconButton, Menu, Skeleton, Stack, Typography, useTheme, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
-import { IconMail, IconUser, IconMoon, IconLanguage } from "@tabler/icons-react";
+import { IconMail, IconUser, IconMoon, IconLanguage, IconLogout } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { signOut, useSession } from "next-auth/react";
 import { useAuth } from "@/common/contexts/AuthContext";
@@ -270,7 +270,12 @@ const Profile: FC<ProfileProps> = () => {
         </Box>
 
         <Box mt={2}>
-          <BaseButton label="Logout" onClick={handleLogout} loading={loading} />
+          <BaseButton
+            label="Logout"
+            onClick={handleLogout}
+            loading={loading}
+            endIcon={<IconLogout size={18} />}
+          />
         </Box>
       </Menu>
 
