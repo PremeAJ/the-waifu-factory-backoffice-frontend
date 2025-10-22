@@ -2,7 +2,7 @@
 import { fileTypeGroup } from "@/common/constants/file/fileType";
 import { Grid, Stack } from "@mui/material";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
-import { UnitType } from "@/common/contexts/ProductsContext/interfaces/products";
+import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import BaseButton from "@/common/components/base/BaseButton";
@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
   // เปลี่ยนจาก File[] เป็น string[] (fileIds)
   imageIds: Yup.array().of(Yup.string()).nullable(),
   detailImageIds: Yup.array().of(Yup.string()).nullable(),
-  unitType: Yup.mixed<UnitType>().oneOf(["piece", "weight", "litter"]).required("กรุณาเลือกประเภทหน่วยนับ"),
+  unitType: Yup.mixed<UnitTypeEnum>().oneOf([UnitTypeEnum.PIECE, UnitTypeEnum.WEIGHT, UnitTypeEnum.VOLUME]).required("กรุณาเลือกประเภทหน่วยนับ"),
   unit: Yup.string().trim().required("กรุณากรอกหน่วย"),
 });
 

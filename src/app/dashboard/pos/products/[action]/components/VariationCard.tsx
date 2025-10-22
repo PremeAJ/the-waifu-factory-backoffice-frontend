@@ -10,15 +10,16 @@ import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import React from "react";
 import SingleProductForm from "./Variant/SingleProductForm";
 import VariantOptionsList from "./Variant/VariantOptionsList";
+import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
 
 interface VariationCardProps {
   formik?: any;
 }
 
 export const unitTypeOptions: OptionType[] = [
-  { text: "ชิ้น", value: "piece" },
-  { text: "น้ำหนัก", value: "weight" },
-  { text: "ลิตร", value: "litter" },
+  { text: "ชิ้น", value: UnitTypeEnum.PIECE },
+  { text: "น้ำหนัก", value: UnitTypeEnum.WEIGHT },
+  { text: "ปริมาตร", value: UnitTypeEnum.VOLUME },
 ];
 
 const emptyOption = () => ({

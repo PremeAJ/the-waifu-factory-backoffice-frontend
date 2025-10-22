@@ -31,7 +31,7 @@ export interface ProductType {
   nameEn?: string | null;
   descriptionTh?: string | null;
   descriptionEn?: string | null;
-  unitType?: UnitType | null;
+  unitType?: UnitTypeEnum | null;
   unit?: string | null;
   variant?: VariantType | null;
   productOptions?: ProductOptionType[];
@@ -44,7 +44,7 @@ export interface CreateProductDto {
   nameEn?: string;
   descriptionTh?: string;
   descriptionEn?: string;
-  unitType?: UnitType;
+  unitType?: UnitTypeEnum;
   unit?: string;
   variant?: VariantType;
   productOptions?: ProductOptionType[];
@@ -55,7 +55,7 @@ export interface UpdateProductDto {
   nameEn?: string;
   descriptionTh?: string;
   descriptionEn?: string;
-  unitType?: UnitType;
+  unitType?: UnitTypeEnum;
   unit?: string;
   variant?: VariantType;
   productOptions?: ProductOptionType[];
@@ -78,5 +78,10 @@ export interface ProductsContextType {
 }
 
 // Prisma enum in schema.prisma:
-// enum UnitType { piece weight litter }
-export type UnitType = "piece" | "weight" | "litter";
+// enum UnitType { piece weight volume }
+// export type UnitType = "piece" | "weight" | "volume";
+export enum UnitTypeEnum {
+  PIECE = "piece",
+  WEIGHT = "weight",
+  VOLUME = "volume",
+}

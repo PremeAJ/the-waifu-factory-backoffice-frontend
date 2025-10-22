@@ -30,30 +30,33 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
   const categoryOptions: OptionType[] = useMemo(() => {
     if (!categoryDropdown) return [];
     const opts: OptionType[] = [];
+
     categoryDropdown.forEach((cat: any) => {
-      console.log("🚀 ~ ProductDetails ~ cat:", cat)
       const parentText = `${cat.nameTh}${cat.nameEn ? ` (${cat.nameEn})` : ""}`;
+
+      // เพิ่ม "หมวดหมู่หลัก" ทุกตัว ไม่ว่า cat จะมี subCategories หรือไม่
+      opts.push({
+        value: cat.id,
+        text: parentText,
+        icon: cat.icon || null,
+        // @ts-ignore
+        group: "หมวดหมู่หลัก",
+      });
+
+      // ถ้ามีหมวดหมู่ย่อย ให้แสดงภายใต้กลุ่มของหมวดนั้น
       if (Array.isArray(cat.subCategories) && cat.subCategories.length > 0) {
         cat.subCategories.forEach((sub: any) => {
           opts.push({
             value: sub.id,
             text: `${sub.nameTh}${sub.nameEn ? ` (${sub.nameEn})` : ""}`,
             icon: sub.icon || null,
-            // ใช้ groupBy ด้วย key 'group' (ไม่บังคับใน type)
             // @ts-ignore
             group: parentText,
           });
         });
-      } else {
-        opts.push({
-          value: cat.id,
-          text: parentText,
-          icon: cat.icon || null,
-          // @ts-ignore
-          group: "หมวดหมู่หลัก",
-        });
       }
     });
+
     return opts;
   }, [categoryDropdown]);
 
