@@ -40,7 +40,7 @@ const OptionItem: React.FC<Props> = ({ idx, opt, formik, updateOption, removeOpt
 
   return (
     <Box sx={{ position: "relative", border: "1px dashed", borderColor: "primary.main", borderRadius: 1, p: 2 }}>
-      <Grid container spacing={2} alignItems="center">
+      <Grid container columnSpacing={2} alignItems="center">
         {/* Row 1: ชื่อตัวเลือก (ไทย) | ชื่อตัวเลือก (อังกฤษ) */}
         <Grid size={{ xs: 12, md: 6 }}>
           <BaseTextField
