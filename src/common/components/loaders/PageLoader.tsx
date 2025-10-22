@@ -10,7 +10,7 @@ export default function PageLoader() {
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
-        height: "100vh",
+        height: "100%",
       }}
     >
       <CircularProgress />
