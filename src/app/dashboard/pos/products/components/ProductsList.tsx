@@ -103,7 +103,7 @@ function ProductsList() {
   };
 
   const onClickCreate = () => {
-    router.push("products/create");
+    router.push("/dashboard/pos/products/create");
   };
 
   return (
