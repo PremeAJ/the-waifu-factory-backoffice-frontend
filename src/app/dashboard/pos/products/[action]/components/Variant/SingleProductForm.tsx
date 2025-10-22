@@ -84,6 +84,7 @@ const SingleProductForm: React.FC<Props> = ({ formik, productOptions, updateOpti
               { value: "inactive", text: "ไม่ใช้งาน" },
             ]}
             renderOption={(option: any) => <BaseChip preset={option.value} />}
+            renderValue={(selected: any) => <BaseChip preset={selected?.value ?? selected} />}
             fullWidth
           />
         </Grid>

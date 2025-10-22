@@ -1,6 +1,6 @@
 "use client";
-import {  IconTag, IconStack } from "@tabler/icons-react";
-import { Grid,Typography } from "@mui/material";
+import { IconTag, IconStack, IconPackage, IconScale, IconDroplet } from "@tabler/icons-react";
+import { Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import BaseDropdown, { OptionType } from "@/common/components/base/BaseDropdown";
 import BaseTabs from "@/common/components/base/BaseTabs";
@@ -17,9 +17,9 @@ interface VariationCardProps {
 }
 
 export const unitTypeOptions: OptionType[] = [
-  { text: "ชิ้น", value: UnitTypeEnum.PIECE },
-  { text: "น้ำหนัก", value: UnitTypeEnum.WEIGHT },
-  { text: "ปริมาตร", value: UnitTypeEnum.VOLUME },
+  { text: "ชิ้น", value: UnitTypeEnum.PIECE, icon: 'IconPackage' },
+  { text: "น้ำหนัก", value: UnitTypeEnum.WEIGHT, icon: 'IconScale' },
+  { text: "ปริมาตร", value: UnitTypeEnum.VOLUME, icon: 'IconDroplet' },
 ];
 
 const emptyOption = () => ({
@@ -32,6 +32,13 @@ const emptyOption = () => ({
 
 const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {
   const theme = useTheme();
+
+  const taxClassOptions: OptionType[] = [
+    { text: "Tax Free", value: "tax_free" },
+    { text: "Taxable Goods", value: "taxable" },
+    { text: "Downloadable Products", value: "downloadable" },
+  ];
+
   const tabs = [
     { label: "ไม่มีตัวแปร", icon: <IconTag width={18} color={theme.palette.text.secondary} /> },
     { label: "มีตัวแปร", icon: <IconStack width={18} color={theme.palette.primary.main} /> },
@@ -112,6 +119,27 @@ const VariationCard: React.FC<VariationCardProps> = ({ formik }) => {
             name="unit"
             placeholder="เช่น แท่ง, เล่ม, ถัง, กิโลกรัม"
             required
+          />
+        </Grid>
+
+        {/* tax fields under unit type/unit */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <BaseDropdown
+            formik={formik}
+            name="taxClass"
+            label="ประเภทภาษี"
+            placeholder="เลือกประเภทภาษี"
+            options={taxClassOptions}
+            fullWidth
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <BaseTextField
+            name="p_vat"
+            label="อัตรา VAT (%)"
+            formik={formik}
+            fullWidth
+            type="number"
           />
         </Grid>
       </Grid>

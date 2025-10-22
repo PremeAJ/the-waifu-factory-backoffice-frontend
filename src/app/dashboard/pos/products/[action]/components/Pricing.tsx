@@ -70,21 +70,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ formik }) => {
           )}
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
-          <BaseDropdown
-            formik={formik}
-            name="taxClass"
-            label="ประเภทภาษี"
-            required
-            placeholder="เลือกประเภทภาษี"
-            options={taxClassOptions}
-            fullWidth
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <BaseTextField name="p_vat" label="อัตรา VAT (%)" required formik={formik} fullWidth type="number" />
-        </Grid>
+        {/* tax fields moved to VariationCard */}
       </Grid>
     </Box>
   );

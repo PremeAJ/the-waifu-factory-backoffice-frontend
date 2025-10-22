@@ -117,6 +117,11 @@ export interface ProductFormValues {
   discountType: DiscountType;
   discountValue: number;
 
+  // pricing/tax numeric fields
+  discountPercent?: number;
+  p_fixed?: number;
+  p_vat?: number;
+
   categories: string[];
   tags: string[];
 }

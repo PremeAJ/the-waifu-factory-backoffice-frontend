@@ -1,18 +1,17 @@
 "use client";
-import { Button, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import { tagOptions } from "@/common/contexts/ProductsContext/constants";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
+import BaseButton from "@/common/components/base/BaseButton";
 import BaseDropdown, { OptionType } from "@/common/components/base/BaseDropdown";
 import Box from "@mui/material/Box";
-import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
+import CategoryDialog from "@/app/dashboard/pos/categories/components/CategoryDialog";
 import React, { useMemo, useState } from "react";
 import type { FormikProps } from "formik";
 import type { ProductFormValues } from "@/common/contexts/ProductsContext/interfaces/products";
-import { tagOptions } from "@/common/contexts/ProductsContext/constants";
-import BaseButton from "@/common/components/base/BaseButton";
-import CategoryDialog from "@/app/dashboard/pos/categories/components/CategoryDialog";
 
 interface ProductDetailsProps {
   formik: FormikProps<ProductFormValues>;
@@ -20,11 +19,20 @@ interface ProductDetailsProps {
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
   const [openCreateCategory, setOpenCreateCategory] = useState(false);
-  const categoryIds: string[] = Array.isArray(formik?.values?.categories) ? formik.values.categories : [];
+
+  // derive single category value (support old array shape too)
+  const categoryValue: string = (() => {
+    const v = formik?.values?.categories;
+    if (Array.isArray(v)) return String(v[0] ?? "");
+    return v != null ? String(v) : "";
+  })();
+
   const tags: string[] = Array.isArray(formik?.values?.tags)
     ? (formik.values.tags as any[]).map((t) => (typeof t === "string" ? t : t?.label || "")).filter(Boolean)
     : [];
+
   const { dropdown: categoryDropdown } = useCategories();
+
   const categoryOptions: OptionType[] = useMemo(() => {
     if (!categoryDropdown) return [];
     const opts: OptionType[] = [];
@@ -32,7 +40,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
     categoryDropdown.forEach((cat: any) => {
       const parentText = `${cat.nameTh}${cat.nameEn ? ` (${cat.nameEn})` : ""}`;
       opts.push({
-        value: cat.id,
+        // normalize to string for single-select matching
+        value: String(cat.id),
         text: parentText,
         icon: cat.icon || null,
         group: "หมวดหมู่หลัก",
@@ -41,7 +50,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
       if (Array.isArray(cat.subCategories) && cat.subCategories.length > 0) {
         cat.subCategories.forEach((sub: any) => {
           opts.push({
-            value: sub.id,
+            value: String(sub.id),
             text: `${sub.nameTh}${sub.nameEn ? ` (${sub.nameEn})` : ""}`,
             icon: sub.icon || null,
             group: parentText,
@@ -63,29 +72,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
             name="categories"
             label="หมวดหมู่"
             placeholder="เลือกหมวดหมู่"
-            value={categoryIds}
+            value={categoryValue}
             options={categoryOptions}
             fullWidth
             groupBy={(opt) => (opt as any).group || ""}
-            renderOption={(opt) => (
-              <Box display="flex" alignItems="center" gap={1}>
-                {opt.icon ? renderTablerIcon(opt.icon, { size: 16 }) : null}
-                {opt.text}
-              </Box>
-            )}
-            renderValue={(selected) => {
-              const ids = (selected as string[]) || [];
-              if (!ids.length) return "เลือกหมวดหมู่";
-              const map = new Map(categoryOptions.map((o) => [o.value, o.text]));
-              return ids.map((id) => map.get(id) || id).join(", ");
+            onChange={(val: any) => {
+              formik.setFieldValue("categories", val);
             }}
           />
         </Grid>
+
         <Grid size={12} mt={2}>
           <BaseButton
-            label='สร้างหมวดหมู่ใหม่'
-            startIcon={<IconPlus/>}
-            size='small'
+            label="สร้างหมวดหมู่ใหม่"
+            startIcon={<IconPlus />}
+            size="small"
             fullWidth={false}
             variant="text"
             onClick={() => setOpenCreateCategory(true)}
@@ -95,7 +96,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
         <Grid size={12}>
           <BaseAutoComplete
             name="tags"
-            label='แท็ก'
+            label="แท็ก"
             formik={formik}
             multiple
             freeSolo
@@ -113,12 +114,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
         </Grid>
       </Grid>
 
-      {/* Dialog สร้างหมวดหมู่ */}
-      <CategoryDialog
-        open={openCreateCategory}
-        onClose={() => setOpenCreateCategory(false)}
-        type="create"
-      />
+      <CategoryDialog open={openCreateCategory} onClose={() => setOpenCreateCategory(false)} type="create" />
     </Box>
   );
 };

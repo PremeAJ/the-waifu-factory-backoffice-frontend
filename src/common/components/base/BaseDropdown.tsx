@@ -1,8 +1,10 @@
 "use client";
 import React from "react";
 import { FormControl, Select, MenuItem, SelectProps, Tooltip, Skeleton } from "@mui/material";
+import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import BaseLabel from "./BaseLabel";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 
 export interface OptionType {
   value: any;
@@ -59,24 +61,24 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
 }));
 
 const BaseDropdown: React.FC<BaseDropdownProps> = ({
+  dimOnOpen = true,
+  emptyOptionText = "-- กรุณาเลือก --",
   formik,
-  name,
+  fullWidth = true,
+  groupBy,
   label,
-  placeholder,
+  loading = false,
+  name,
+  onChange: controlledOnChange,
   options,
+  orderBy,
+  placeholder,
+  renderOption,
   required,
+  showEmptyOption = false,
+  size,
   tooltip,
   value: controlledValue,
-  onChange: controlledOnChange,
-  groupBy,
-  orderBy,
-  showEmptyOption = false,
-  emptyOptionText = "-- กรุณาเลือก --",
-  fullWidth = true,
-  loading = false,
-  size,
-  renderOption,
-  dimOnOpen = true,
   ...rest
 }) => {
   const isMultiple = Boolean((rest as any).multiple);
@@ -134,7 +136,16 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
   }
 
   const renderOptionContent = (option: OptionType) => {
-    return renderOption ? renderOption(option) : option.text;
+    if (renderOption) return renderOption(option);
+    if (option.icon) {
+      return (
+        <Box display="flex" alignItems="center" gap={1}>
+          {renderTablerIcon(option.icon, { size: 16 })}
+          {option.text}
+        </Box>
+      );
+    }
+    return option.text;
   };
 
   // default renderValue supports multiple + placeholder
@@ -147,6 +158,16 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
     }
     if ((selected === "" || selected == null) && (placeholder || showEmptyOption)) {
       return <em>{placeholder ?? emptyOptionText}</em>;
+    }
+    // try to render icon + text for single selection if available
+    const opt = sortedOptions.find((o) => String(o.value) === String(selected));
+    if (opt?.icon) {
+      return (
+        <Box display="flex" alignItems="center" gap={1}>
+          {renderTablerIcon(opt.icon, { size: 16 })}
+          {opt.text}
+        </Box>
+      );
     }
     return mapText.get(selected) ?? String(selected ?? "");
   };
