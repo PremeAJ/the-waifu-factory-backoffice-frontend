@@ -42,7 +42,6 @@ const ScrollToTopButton = () => {
         <BaseFab
           fadeDirection="up"
           color="primary"
-          size="medium"
           onClick={scrollToTop}
           sx={{ position: "fixed", bottom: 16, right: 16 }}
           open={isVisible}

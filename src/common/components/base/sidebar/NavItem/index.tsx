@@ -46,12 +46,34 @@ export default function NavItem({
         ? `${theme.palette.primary.main}!important`
         : theme.palette.text.secondary,
     paddingLeft: hideMenu ? "10px" : (level ?? 2) > 2 ? `${(level ?? 1) * 15}px` : "10px",
+
+    // smooth text enlargement on hover
+    // target the ListItemText root and caption to increase title size slightly
+    "& .MuiListItemText-root": {
+      transition: "font-size 140ms ease, transform 140ms ease, color 140ms ease",
+      fontSize: "0.95rem",
+      lineHeight: 1.1,
+    },
+    "& .MuiTypography-caption": {
+      transition: "opacity 120ms ease, transform 120ms ease",
+      fontSize: "0.72rem",
+    },
+
     "&:hover": {
       backgroundColor: theme.palette.primary.main,
       color:
         (level ?? 1) === 1
           ? theme.palette.primary.contrastText
           : theme.palette.primary.main,
+      // enlarge text on hover (subtle)
+      "& .MuiListItemText-root": {
+        fontSize: "1.02rem",
+        transform: "translateY(-1px)",
+      },
+      "& .MuiTypography-caption": {
+        transform: "translateY(-1px)",
+        opacity: 0.95,
+      },
     },
     "&.Mui-selected": {
       color: (level ?? 1) === 1 ? theme.palette.primary.contrastText : "white",
@@ -59,6 +81,13 @@ export default function NavItem({
       "&:hover": {
         backgroundColor: theme.palette.primary.main,
         color: (level ?? 1) === 1 ? theme.palette.primary.contrastText : "white",
+      },
+    },
+    // respect reduced motion preference
+    "@media (prefers-reduced-motion: reduce)": {
+      "& .MuiListItemText-root, & .MuiTypography-caption": {
+        transition: "none",
+        transform: "none",
       },
     },
   }));

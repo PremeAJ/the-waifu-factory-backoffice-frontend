@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import Fab, { FabProps } from "@mui/material/Fab";
 import { keyframes } from "@emotion/react";
+import Fab, { FabProps } from "@mui/material/Fab";
+import React, { useEffect, useState } from "react";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 type FadeDirection = "up" | "down" | "left" | "right";
 
@@ -54,6 +55,7 @@ export interface BaseFabProps extends FabProps {
 const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeDirection = "up", open = true, onExited, ...rest }) => {
   const [visible, setVisible] = useState(open);
   const [exiting, setExiting] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (open) {
@@ -65,8 +67,8 @@ const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeD
         setVisible(false);
         setExiting(false);
         onExited?.();
-      }, 500); 
-      
+      }, 500);
+
       return () => clearTimeout(timer);
     }
   }, [open, visible, onExited]);
@@ -75,7 +77,8 @@ const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeD
 
   return (
     <Fab
-      size="medium"
+      // size={isMobile ? "large" : "medium"}
+      size='large'
       color="primary"
       {...rest}
       sx={{
@@ -86,8 +89,14 @@ const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeD
         border: "1px solid rgba(255,255,255,0.3)",
         boxShadow: "0 4px 30px rgba(0,0,0,0.1)",
         color: "#fff",
+        // scale animation like BaseButton
+        transition: "all 0.18s",
         "&:hover": {
           backgroundColor: (theme) => theme.palette.primary.main,
+          transform: "scale(1.07)",
+        },
+        "&:active": {
+          transform: "scale(0.96)",
         },
         animation: animation ? `${exiting ? fadeOutMap[fadeDirection] : fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)` : undefined,
         ...sx,
