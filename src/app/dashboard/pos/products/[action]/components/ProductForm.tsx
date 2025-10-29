@@ -15,6 +15,9 @@ import React from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import VariationCard, { unitTypeOptions } from "./VariationCard";
 import { useRouter } from "next/navigation";
+import { useProducts } from "@/common/contexts/ProductsContext";
+import { useSession } from "next-auth/react";
+import type { CreateProductPayload, ApiDiscountType } from "@/common/contexts/ProductsContext/interfaces/products";
 
 const validationSchema = Yup.object({
   p_name_th: Yup.string().required("กรุณากรอกชื่อสินค้า (ไทย)"),
@@ -32,6 +35,8 @@ const validationSchema = Yup.object({
 const ProductForm: React.FC = () => {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const { data: session } = useSession();
+  const { createProduct } = useProducts();
   const onClickCancel = () => {
     formik.resetForm();
     router.back();
@@ -65,8 +70,66 @@ const ProductForm: React.FC = () => {
       tags: [],
     },
     validationSchema,
-    onSubmit: (values: ProductFormValues) => {
-      console.log("submit product form", values);
+    onSubmit: async (values: ProductFormValues) => {
+      // map categories -> categoryId (ตัวแรก)
+      const categoryId = Array.isArray(values.categories) ? values.categories[0] : (values as any).categories;
+      // branchId จาก session (ปรับตามโครงสร้างจริง)
+      const branchId = (session?.user as any)?.branchId || undefined;
+      // รวมภาษีหรือไม่: รองรับทั้ง taxMode และ isTaxInclusive (ถ้ามี)
+      const isTaxInclusive =
+        ((values as any).taxMode === "inclusive") || Boolean((values as any).isTaxInclusive);
+      const taxClassId = (values as any).taxClass ?? "none";
+
+      const payload: CreateProductPayload = {
+        nameTh: values.p_name_th,
+        nameEn: values.p_name_en || undefined,
+        descriptionTh: values.p_description_th || undefined,
+        descriptionEn: values.p_description_en || undefined,
+        unitType: values.unitType,
+        unit: values.unit,
+        categoryId: String(categoryId || ""),
+        branchId,
+        thumbnailImageId: values.imageIds?.[0],
+        detailImageIds: values.detailImageIds ?? [],
+        isTaxInclusive,
+        taxClassId,
+        variant: values.variant
+          ? { nameTh: values.variant.nameTh || "", nameEn: values.variant.nameEn || "" }
+          : undefined,
+        productOptions: (values.productOptions || []).map((opt) => {
+          const price = Number(opt.price ?? 0);
+          let discountType: ApiDiscountType = "none";
+          let discountRate = 0;
+          if (opt.discountType === "percentage") {
+            discountType = "percentage";
+            discountRate = Number(opt.discountPercent ?? 0);
+          } else if (opt.discountType === "fixed") {
+            // API รองรับเฉพาะ percentage: แปลง fixed -> เปอร์เซ็นต์เทียบจากราคา
+            discountType = "percentage";
+            const fixed = Number(opt.discountValue ?? 0);
+            discountRate = price > 0 ? Math.min(100, (fixed / price) * 100) : 0;
+          }
+          return {
+            upc: opt.upc || "",
+            sku: opt.sku || "",
+            price,
+            discountType,
+            discountRate,
+            variantOption: values.variant
+              ? {
+                  nameTh: opt?.variantOption?.nameTh || "",
+                  nameEn: opt?.variantOption?.nameEn || "",
+                }
+              : undefined,
+            inventory: {
+              status: (opt?.inventory?.status as "active" | "inactive") || "active",
+              stock: Number(opt?.inventory?.stock ?? 0),
+            },
+          };
+        }),
+      };
+
+      await createProduct(payload);
     },
   });
 

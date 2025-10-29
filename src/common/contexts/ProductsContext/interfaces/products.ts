@@ -27,7 +27,7 @@ export interface ProductOptionType {
   // per-option discount types
   discountType?: DiscountType;
   discountPercent?: number;
-  discountValue?: number; // for fixed price discount (p_fixed per option)
+  discountRate?: number; // for fixed price discount (p_fixed per option)
 }
 
 export interface ProductType {
@@ -66,11 +66,40 @@ export interface UpdateProductDto {
   productOptions?: ProductOptionType[];
 }
 
+// ---------- API payload types ----------
+export type ApiDiscountType = "none" | "percentage";
+export interface CreateProductOptionPayload {
+  upc: string;
+  sku: string;
+  price: number;
+  discountType: ApiDiscountType;
+  discountRate: number; // percent
+  variantOption?: VariantOptionType;
+  inventory: { status: "active" | "inactive"; stock: number };
+}
+export interface CreateProductPayload {
+  nameTh: string;
+  nameEn?: string;
+  descriptionTh?: string;
+  descriptionEn?: string;
+  unitType: UnitTypeEnum;
+  unit: string;
+  categoryId: string;
+  branchId?: string; // ดึงจาก session / store
+  thumbnailImageId?: string;
+  detailImageIds: string[];
+  isTaxInclusive: boolean;
+  taxClassId: string; // e.g. "none" หรือ id จริง
+  variant?: VariantType;
+  productOptions: CreateProductOptionPayload[];
+}
+// ---------- end API payload types ----------
+
 export interface ProductsContextType {
   products: ProductType[];
   productsMutate: () => void;
   findAllProducts: () => Promise<ProductType[]>;
-  createProduct: (payload: CreateProductDto) => Promise<void>;
+  createProduct: (payload: CreateProductPayload) => Promise<void>;
   updateProduct: (id: string, payload: UpdateProductDto) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   getProductById: (id: string) => Promise<ProductType>;
