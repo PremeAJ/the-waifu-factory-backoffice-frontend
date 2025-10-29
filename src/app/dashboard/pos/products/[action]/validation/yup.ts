@@ -1,0 +1,58 @@
+import { ApiDiscountType, ApiInventoryStatus, UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
+import * as Yup from "yup";
+
+export const validationSchema = Yup.object({
+  nameTh: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").required("กรุณากรอกชื่อสินค้า (ไทย)"),
+  nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
+
+  descriptionTh: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").required("กรุณากรอกรายละเอียด (ไทย)"),
+  descriptionEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
+
+  unitType: Yup.mixed<UnitTypeEnum>()
+    .oneOf([UnitTypeEnum.PIECE, UnitTypeEnum.WEIGHT, UnitTypeEnum.VOLUME])
+    .required("กรุณาเลือกประเภทหน่วยนับ"),
+  unit: Yup.string().trim().min(1, "กรุณากรอกหน่วย").required("กรุณากรอกหน่วย"),
+
+  categoryId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
+  branchId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
+  thumbnailImageId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
+  detailImageIds: Yup.array().of(Yup.string().uuid("รูปภาพต้องเป็น UUID")).nullable().notRequired(),
+
+  isTaxInclusive: Yup.boolean().required("กรุณาระบุโหมดภาษี"),
+  taxClassId: Yup.string().trim().required("กรุณาเลือกประเภทภาษี"),
+
+  variant: Yup.object({
+    nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
+    nameEn: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
+  })
+    .nullable()
+    .notRequired(),
+
+  productOptions: Yup.array()
+    .of(
+      Yup.object({
+        upc: Yup.string().trim().notRequired(),
+        sku: Yup.string().trim().notRequired(),
+        price: Yup.number().typeError("กรุณากรอกราคาเป็นตัวเลข").required("กรุณากรอกราคา"),
+
+        discountType: Yup.mixed<ApiDiscountType>()
+          .oneOf(["none", "percentage", "fixed"])
+          .required("กรุณาเลือกประเภทส่วนลด"),
+        discountRate: Yup.number().typeError("กรุณากรอกส่วนลดเป็นตัวเลข").required("กรุณากรอกส่วนลด"),
+
+        variantOption: Yup.object({
+          nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
+          nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
+        })
+          .nullable()
+          .notRequired(),
+
+        inventory: Yup.object({
+          status: Yup.mixed<ApiInventoryStatus>().oneOf(["active", "inactive", "deleted"]).required("กรุณาเลือกสถานะสต็อก"),
+          stock: Yup.number().typeError("กรุณากรอกจำนวนคงคลังเป็นตัวเลข").required("กรุณากรอกจำนวนคงคลัง"),
+        }).required("กรุณากรอกข้อมูลสต็อก"),
+      })
+    )
+    .min(1, "ต้องมีตัวเลือกสินค้าอย่างน้อย 1 รายการ")
+    .required("กรุณาระบุตัวเลือกสินค้า"),
+});
