@@ -5,7 +5,7 @@ import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/gl
 import { swrOption } from "@/app/api/swrOption";
 import { defaultPageOptions } from "@/common/interface/paginate";
 import { useDialog } from "../DialogContext";
-import { ProductsContextType, ProductType, UpdateProductDto, CreateProductPayload } from "./interfaces/products";
+import { ProductsContextType, ProductType, CreateProductPayload, UpdateProductPayload } from "./interfaces/products";
 
 export const ProductsContext = createContext<ProductsContextType>({} as ProductsContextType);
 
@@ -71,7 +71,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const updateProduct = async (id: string, payload: UpdateProductDto) => {
+  const updateProduct = async (id: string, payload: UpdateProductPayload) => {
     try {
       setIsLoading(true);
       await putFetcher(`${endpoint}/${id}`, payload);

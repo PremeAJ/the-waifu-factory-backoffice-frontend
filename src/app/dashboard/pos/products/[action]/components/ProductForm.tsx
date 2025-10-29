@@ -1,35 +1,78 @@
 "use client";
-import { fileTypeGroup } from "@/common/constants/file/fileType";
-import { Grid, Stack } from "@mui/material";
-import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import { ProductFormValues, UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
-import BaseButton from "@/common/components/base/BaseButton";
-import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
-import BlankCard from "@/components/shared/BlankCard";
-import GeneralCard from "./GeneralCard";
-import ProductDetails from "./ProductDetails";
-import ProductTemplate from "./ProductTemplate";
-import React from "react";
-import useIsMobile from "@/common/utils/state/isMobile";
-import VariationCard, { unitTypeOptions } from "./VariationCard";
+import { Grid, Stack } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useProducts } from "@/common/contexts/ProductsContext";
 import { useSession } from "next-auth/react";
-import type { CreateProductPayload, ApiDiscountType } from "@/common/contexts/ProductsContext/interfaces/products";
+import { useProducts } from "@/common/contexts/ProductsContext";
+import { fileTypeGroup } from "@/common/constants/file/fileType";
+import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
+import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
+import React from "react";
+import GeneralCard from "./GeneralCard";
+import CategoryAndTags from "./CategoryAndTags";
+import ProductTemplate from "./ProductTemplate";
+import BlankCard from "@/components/shared/BlankCard";
+import useIsMobile from "@/common/utils/state/isMobile";
+import BaseButton from "@/common/components/base/BaseButton";
+import ProductDetails, { unitTypeOptions } from "./ProductDetails";
+import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput";
+import type { CreateProductPayload, ApiDiscountType, ApiInventoryStatus } from "@/common/contexts/ProductsContext/interfaces/products";
+import * as Yup from "yup";
 
 const validationSchema = Yup.object({
-  p_name_th: Yup.string().required("กรุณากรอกชื่อสินค้า (ไทย)"),
-  p_name_en: Yup.string().nullable(),
-  p_description_th: Yup.string().nullable(),
-  p_description_en: Yup.string().nullable(),
-  imageIds: Yup.array().of(Yup.string()).nullable(),
-  detailImageIds: Yup.array().of(Yup.string()).nullable(),
-  unitType: Yup.mixed<UnitTypeEnum>().oneOf([UnitTypeEnum.PIECE, UnitTypeEnum.WEIGHT, UnitTypeEnum.VOLUME]).required("กรุณาเลือกประเภทหน่วยนับ"),
-  unit: Yup.string().trim().required("กรุณากรอกหน่วย"),
-  categories: Yup.array().of(Yup.string()).nullable(),
-  tags: Yup.array().of(Yup.string()).nullable(),
+  nameTh: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").required("กรุณากรอกชื่อสินค้า (ไทย)"),
+  nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
+
+  descriptionTh: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").required("กรุณากรอกรายละเอียด (ไทย)"),
+  descriptionEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
+
+  unitType: Yup.mixed<UnitTypeEnum>()
+    .oneOf([UnitTypeEnum.PIECE, UnitTypeEnum.WEIGHT, UnitTypeEnum.VOLUME])
+    .required("กรุณาเลือกประเภทหน่วยนับ"),
+  unit: Yup.string().trim().min(1, "กรุณากรอกหน่วย").required("กรุณากรอกหน่วย"),
+
+  categoryId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
+  branchId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
+  thumbnailImageId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
+  detailImageIds: Yup.array().of(Yup.string().uuid("รูปภาพต้องเป็น UUID")).nullable().notRequired(),
+
+  isTaxInclusive: Yup.boolean().required("กรุณาระบุโหมดภาษี"),
+  taxClassId: Yup.string().trim().required("กรุณาเลือกประเภทภาษี"),
+
+  variant: Yup.object({
+    nameTh: Yup.string().trim().min(1, "กรุณากรอกชื่อคุณลักษณะ (ไทย)").required("กรุณากรอกชื่อคุณลักษณะ (ไทย)"),
+    nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
+  })
+    .nullable()
+    .notRequired(),
+
+  productOptions: Yup.array()
+    .of(
+      Yup.object({
+        upc: Yup.string().trim().notRequired(),
+        sku: Yup.string().trim().notRequired(),
+        price: Yup.number().typeError("กรุณากรอกราคาเป็นตัวเลข").required("กรุณากรอกราคา"),
+
+        discountType: Yup.mixed<ApiDiscountType>()
+          .oneOf(["none", "percentage", "fixed"])
+          .required("กรุณาเลือกประเภทส่วนลด"),
+        discountRate: Yup.number().typeError("กรุณากรอกส่วนลดเป็นตัวเลข").required("กรุณากรอกส่วนลด"),
+
+        variantOption: Yup.object({
+          nameTh: Yup.string().trim().min(1, "กรุณากรอกชื่อคุณลักษณะ (ไทย)").required("กรุณากรอกชื่อคุณลักษณะ (ไทย)"),
+          nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
+        })
+          .nullable()
+          .notRequired(),
+
+        inventory: Yup.object({
+          status: Yup.mixed<ApiInventoryStatus>().oneOf(["active", "inactive", "deleted"]).required("กรุณาเลือกสถานะสต็อก"),
+          stock: Yup.number().typeError("กรุณากรอกจำนวนคงคลังเป็นตัวเลข").required("กรุณากรอกจำนวนคงคลัง"),
+        }).required("กรุณากรอกข้อมูลสต็อก"),
+      })
+    )
+    .min(1, "ต้องมีตัวเลือกสินค้าอย่างน้อย 1 รายการ")
+    .required("กรุณาระบุตัวเลือกสินค้า"),
 });
 
 const ProductForm: React.FC = () => {
@@ -41,100 +84,79 @@ const ProductForm: React.FC = () => {
     formik.resetForm();
     router.back();
   };
-  const formik = useFormik<ProductFormValues>({
+  const formik = useFormik<CreateProductPayload>({
     initialValues: {
-      p_name_th: "",
-      p_name_en: null,
-      p_description_th: null,
-      p_description_en: null,
-      imageIds: [],
-      detailImageIds: [],
+      nameTh: "",
+      nameEn: undefined,
+      descriptionTh: '',
+      descriptionEn: undefined,
+
       unitType: unitTypeOptions[0].value,
       unit: "ชิ้น",
+
+      categoryId: undefined,
+      branchId: undefined,
+      thumbnailImageId: undefined,
+      detailImageIds: [],
+
+      isTaxInclusive: true,
+      taxClassId: "none",
+
       variant: undefined,
       productOptions: [
         {
           upc: "",
           sku: "",
           price: 0,
+          discountType: "none",
+          discountRate: 0,
+          variantOption: undefined,
           inventory: { status: "active", stock: 0 },
-          // per-option discount defaults
-          discountType: "no_discount",
-          discountPercent: 0,
-          discountValue: 0,
         },
       ],
-      status: "active",
-      p_vat: 0,
-      categories: [],
-      tags: [],
     },
     validationSchema,
-    onSubmit: async (values: ProductFormValues) => {
-      // map categories -> categoryId (ตัวแรก)
-      const categoryId = Array.isArray(values.categories) ? values.categories[0] : (values as any).categories;
-      // branchId จาก session (ปรับตามโครงสร้างจริง)
-      const branchId = (session?.user as any)?.branchId || undefined;
-      // รวมภาษีหรือไม่: รองรับทั้ง taxMode และ isTaxInclusive (ถ้ามี)
-      const isTaxInclusive =
-        ((values as any).taxMode === "inclusive") || Boolean((values as any).isTaxInclusive);
-      const taxClassId = (values as any).taxClass ?? "none";
+    onSubmit: async (values: CreateProductPayload) => {
+      const branchIdFromSession = (session?.user as any)?.branchId || undefined;
 
       const payload: CreateProductPayload = {
-        nameTh: values.p_name_th,
-        nameEn: values.p_name_en || undefined,
-        descriptionTh: values.p_description_th || undefined,
-        descriptionEn: values.p_description_en || undefined,
+        nameTh: values.nameTh,
+        nameEn: values.nameEn || undefined,
+        descriptionTh: values.descriptionTh || undefined,
+        descriptionEn: values.descriptionEn || undefined,
         unitType: values.unitType,
         unit: values.unit,
-        categoryId: String(categoryId || ""),
-        branchId,
-        thumbnailImageId: values.imageIds?.[0],
-        detailImageIds: values.detailImageIds ?? [],
-        isTaxInclusive,
-        taxClassId,
-        variant: values.variant
-          ? { nameTh: values.variant.nameTh || "", nameEn: values.variant.nameEn || "" }
-          : undefined,
-        productOptions: (values.productOptions || []).map((opt) => {
-          const price = Number(opt.price ?? 0);
-          let discountType: ApiDiscountType = "none";
-          let discountRate = 0;
-          if (opt.discountType === "percentage") {
-            discountType = "percentage";
-            discountRate = Number(opt.discountPercent ?? 0);
-          } else if (opt.discountType === "fixed") {
-            // API รองรับเฉพาะ percentage: แปลง fixed -> เปอร์เซ็นต์เทียบจากราคา
-            discountType = "percentage";
-            const fixed = Number(opt.discountValue ?? 0);
-            discountRate = price > 0 ? Math.min(100, (fixed / price) * 100) : 0;
-          }
-          return {
-            upc: opt.upc || "",
-            sku: opt.sku || "",
-            price,
-            discountType,
-            discountRate,
-            variantOption: values.variant
-              ? {
-                  nameTh: opt?.variantOption?.nameTh || "",
-                  nameEn: opt?.variantOption?.nameEn || "",
-                }
-              : undefined,
-            inventory: {
-              status: (opt?.inventory?.status as "active" | "inactive") || "active",
-              stock: Number(opt?.inventory?.stock ?? 0),
-            },
-          };
-        }),
+
+        categoryId: values.categoryId || undefined,
+        branchId: values.branchId || branchIdFromSession,
+        thumbnailImageId: values.thumbnailImageId || undefined,
+        detailImageIds: values.detailImageIds?.length ? values.detailImageIds : undefined,
+
+        isTaxInclusive: values.isTaxInclusive,
+        taxClassId: values.taxClassId,
+
+        variant: values.variant,
+        productOptions: (values.productOptions || []).map((opt) => ({
+          upc: opt.upc || undefined,
+          sku: opt.sku || undefined,
+          price: Number(opt.price ?? 0),
+          discountType: opt.discountType,
+          discountRate: Number(opt.discountRate ?? 0),
+          variantOption: opt.variantOption,
+          inventory: {
+            status: opt.inventory.status,
+            stock: Number(opt.inventory.stock ?? 0),
+          },
+        })),
       };
 
       await createProduct(payload);
     },
   });
+  console.log("🚀 ~ ProductForm ~ formik:", formik.values)
 
-  console.log("Current image IDs:", formik.values.imageIds);
-  console.log("Current detail image IDs:", formik.values.detailImageIds);
+  console.log("Thumbnail image ID:", formik.values.thumbnailImageId);
+  console.log("Detail image IDs:", formik.values.detailImageIds);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -149,7 +171,7 @@ const ProductForm: React.FC = () => {
               <GeneralCard formik={formik} />
             </BlankCard>
             <BlankCard>
-              <VariationCard formik={formik} />
+              <ProductDetails formik={formik} />
             </BlankCard>
           </Stack>
         </Grid>
@@ -168,12 +190,11 @@ const ProductForm: React.FC = () => {
                 autoUpload={true}
                 toBucket={StorageBucket.PRODUCT_THUMBNAIL}
                 onUploadComplete={(fileIds) => {
-                  formik.setFieldValue("imageIds", fileIds);
+                  formik.setFieldValue("thumbnailImageId", fileIds?.[0] ?? undefined);
                 }}
-                value={formik.values.imageIds}
+                value={formik.values.thumbnailImageId ? [formik.values.thumbnailImageId] : []}
               />
             </BlankCard>
-
             <BlankCard>
               <BaseFileInput
                 label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์)"
@@ -189,17 +210,14 @@ const ProductForm: React.FC = () => {
                 value={formik.values.detailImageIds}
               />
             </BlankCard>
-
             <BlankCard>
-              <ProductDetails formik={formik} />
+              <CategoryAndTags formik={formik} />
             </BlankCard>
-
             <BlankCard>
               <ProductTemplate formik={formik} />
             </BlankCard>
           </Stack>
         </Grid>
-
         <Grid size={{ xs: 12 }}>
           <BlankCard>
             <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>

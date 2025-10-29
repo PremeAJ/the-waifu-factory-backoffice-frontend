@@ -1,5 +1,13 @@
 import { PageOptions } from "@/common/interface/paginate";
 
+export type ApiDiscountType = "none" | "percentage" | "fixed";
+export type ApiInventoryStatus = "active" | "inactive" | "deleted";
+export type UnitType = "piece" | "weight" | "volume";
+export enum UnitTypeEnum {
+  PIECE = "piece",
+  WEIGHT = "weight",
+  VOLUME = "volume",
+}
 export interface VariantType {
   nameTh: string;
   nameEn?: string | null;
@@ -24,10 +32,9 @@ export interface ProductOptionType {
   variantOption?: VariantOptionType | null;
   inventory?: InventoryType | null;
 
-  // per-option discount types
-  discountType?: DiscountType;
+  discountType?: ApiInventoryStatus;
   discountPercent?: number;
-  discountRate?: number; // for fixed price discount (p_fixed per option)
+  discountRate?: number; 
 }
 
 export interface ProductType {
@@ -40,43 +47,18 @@ export interface ProductType {
   unit?: string | null;
   variant?: VariantType | null;
   productOptions?: ProductOptionType[];
-  // totalStock จาก API (optional)
   totalStock?: number;
 }
-
-export interface CreateProductDto {
-  nameTh: string;
-  nameEn?: string;
-  descriptionTh?: string;
-  descriptionEn?: string;
-  unitType?: UnitTypeEnum;
-  unit?: string;
-  variant?: VariantType;
-  productOptions?: ProductOptionType[];
-}
-
-export interface UpdateProductDto {
-  nameTh?: string;
-  nameEn?: string;
-  descriptionTh?: string;
-  descriptionEn?: string;
-  unitType?: UnitTypeEnum;
-  unit?: string;
-  variant?: VariantType;
-  productOptions?: ProductOptionType[];
-}
-
-// ---------- API payload types ----------
-export type ApiDiscountType = "none" | "percentage";
 export interface CreateProductOptionPayload {
-  upc: string;
-  sku: string;
+  upc?: string;
+  sku?: string;
   price: number;
   discountType: ApiDiscountType;
-  discountRate: number; // percent
+  discountRate: number; 
   variantOption?: VariantOptionType;
-  inventory: { status: "active" | "inactive"; stock: number };
+  inventory: { status: ApiInventoryStatus; stock: number };
 }
+
 export interface CreateProductPayload {
   nameTh: string;
   nameEn?: string;
@@ -84,23 +66,29 @@ export interface CreateProductPayload {
   descriptionEn?: string;
   unitType: UnitTypeEnum;
   unit: string;
-  categoryId: string;
-  branchId?: string; // ดึงจาก session / store
+
+  categoryId?: string;
+  branchId?: string;
   thumbnailImageId?: string;
-  detailImageIds: string[];
+  detailImageIds?: string[];
+
   isTaxInclusive: boolean;
-  taxClassId: string; // e.g. "none" หรือ id จริง
+  taxClassId: string;
+
   variant?: VariantType;
   productOptions: CreateProductOptionPayload[];
 }
-// ---------- end API payload types ----------
+
+export interface UpdateProductPayload extends Partial<CreateProductPayload> {
+  
+}
 
 export interface ProductsContextType {
   products: ProductType[];
   productsMutate: () => void;
   findAllProducts: () => Promise<ProductType[]>;
   createProduct: (payload: CreateProductPayload) => Promise<void>;
-  updateProduct: (id: string, payload: UpdateProductDto) => Promise<void>;
+  updateProduct: (id: string, payload: UpdateProductPayload) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   getProductById: (id: string) => Promise<ProductType>;
   loading: boolean;
@@ -109,52 +97,4 @@ export interface ProductsContextType {
   setSearch: (s: string) => void;
   setPage: (p: number) => void;
   setPerPage: (n: number) => void;
-}
-
-// Prisma enum in schema.prisma:
-// enum UnitType { piece weight volume }
-export type UnitType = "piece" | "weight" | "volume";
-export enum UnitTypeEnum {
-  PIECE = "piece",
-  WEIGHT = "weight",
-  VOLUME = "volume",
-}
-
-// เพิ่ม type ของฟอร์มให้อยู่ใน context
-export type ProductStatus = "active" | "inactive";
-export type DiscountType = "no_discount" | "percentage" | "fixed";
-
-export interface ProductFormValues {
-  p_name_th: string;
-  p_name_en: string | null;
-  p_description_th: string | null;
-  p_description_en: string | null;
-
-  imageIds: string[];
-  detailImageIds: string[];
-
-  unitType: UnitTypeEnum;
-  unit: string;
-
-  variant?: VariantType | undefined;
-
-  productOptions: {
-    upc: string;
-    sku: string;
-    price: number;
-    inventory: { status: ProductStatus; stock: number };
-    variantOption?: VariantOptionType | null;
-    // per-option discount fields (optional)
-    discountType?: DiscountType;
-    discountPercent?: number;
-    discountValue?: number;
-  }[];
-
-  status: ProductStatus;
-
-  // tax numeric fields (global)
-  p_vat?: number;
-
-  categories: string[];
-  tags: string[];
 }

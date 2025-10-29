@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { Skeleton, Tooltip, Box } from "@mui/material";
+import { Skeleton, Tooltip, Box, FormHelperText } from "@mui/material";
 import BaseLabel from "../BaseLabel";
 import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
 
@@ -61,6 +61,11 @@ const BaseTiptap: React.FC<BaseTiptapProps> = ({
     }
   }, [formik?.values?.[name], value]);
 
+  // derive error state from formik
+  const touched = formik?.touched?.[name];
+  const errorText = touched && formik?.errors?.[name] ? (formik.errors[name] as string) : "";
+  const hasError = Boolean(errorText);
+
   const handleChange = (nextContent: string) => {
     setContent(nextContent);
     if (formik) {
@@ -68,6 +73,12 @@ const BaseTiptap: React.FC<BaseTiptapProps> = ({
     }
     if (onChange) {
       onChange(nextContent);
+    }
+  };
+
+  const handleBlurCapture = () => {
+    if (formik?.setFieldTouched) {
+      formik.setFieldTouched(name, true, true);
     }
   };
 
@@ -113,18 +124,49 @@ const BaseTiptap: React.FC<BaseTiptapProps> = ({
       {tooltip ? (
         <Tooltip title={tooltip} placement="bottom-start">
           <span style={{ display: "block" }}>
+            <Box
+              onBlurCapture={handleBlurCapture}
+              sx={{
+                border: hasError ? 1 : 'none',
+                borderColor: hasError ? "error.main" : "divider",
+                "& .ProseMirror": { minHeight: 120, outline: "none" },
+              }}
+            >
+              <TiptapEditor
+                key={name}
+                content={content}
+                onChange={handleChange}
+                onUpdate={handleChange}
+                placeholder={placeholder}
+                aria-invalid={hasError || undefined}
+                {...rest}
+              />
+            </Box>
+            {hasError ? <FormHelperText error>{errorText}</FormHelperText> : null}
+          </span>
+        </Tooltip>
+      ) : (
+        <>
+          <Box
+            onBlurCapture={handleBlurCapture}
+            sx={{
+              border: hasError ? 1 : 'none',
+              borderColor: hasError ? "error.main" : "divider",
+              "& .ProseMirror": { minHeight: 120, outline: "none" },
+            }}
+          >
             <TiptapEditor
               key={name}
               content={content}
               onChange={handleChange}
               onUpdate={handleChange}
               placeholder={placeholder}
+              aria-invalid={hasError || undefined}
               {...rest}
             />
-          </span>
-        </Tooltip>
-      ) : (
-        <TiptapEditor key={name} content={content} onChange={handleChange} onUpdate={handleChange} placeholder={placeholder} {...rest} />
+          </Box>
+          {hasError ? <FormHelperText error>{errorText}</FormHelperText> : null}
+        </>
       )}
     </Box>
   );
