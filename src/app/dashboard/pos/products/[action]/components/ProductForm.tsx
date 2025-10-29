@@ -161,6 +161,7 @@ const ProductForm: React.FC = () => {
         </Grid>
         <Grid size={{ xs: 12 }}>
           <BlankCard>
+              {JSON.stringify(formik.values, null, 2)}
             <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>
               <BaseButton preset="cancel" label="ยกเลิก" variant="outlined" color="error" fullWidth={isMobile} onClick={onClickCancel} />
               <BaseButton
