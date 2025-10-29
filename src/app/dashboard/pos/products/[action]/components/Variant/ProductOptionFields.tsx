@@ -57,12 +57,20 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
       </Grid>
       {discountType === "percentage" && (
         <Grid size={{ xs: 12 }}>
-          <BaseSlider formik={formik} name={`${optionPath}.discountRate`} label="เปอร์เซ็นต์ส่วนลด" mode="percent" min={0} max={100} step={1} />
+          <BaseSlider formik={formik} name={`${optionPath}.discountRate`} label="เปอร์เซ็นต์ส่วนลด" min={0} max={100} step={1} suffix="%" />
         </Grid>
       )}
       {discountType === "fixed" && (
         <Grid size={{ xs: 12 }}>
-          <BaseTextField formik={formik} name={`${optionPath}.discountRate`} label="มูลค่าส่วนลด (คงที่)" type="number" inputProps={{ min: 0 }} fullWidth />
+          <BaseTextField
+            formik={formik}
+            name={`${optionPath}.discountRate`}
+            label="มูลค่าส่วนลด (คงที่)"
+            type="number"
+            inputProps={{ min: 0 }}
+            fullWidth
+            suffix="฿"
+          />
         </Grid>
       )}
 
@@ -76,7 +84,14 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
 
       {/* Inventory */}
       <Grid size={{ xs: 6, md: 3 }}>
-        <BaseTextField formik={formik} name={`${optionPath}.inventory.stock`} label="จำนวนสต็อก" type="number" tooltip="จำนวนสินค้าที่มีอยู่ในคลัง"  fullWidth />
+        <BaseTextField
+          formik={formik}
+          name={`${optionPath}.inventory.stock`}
+          label="จำนวนสต็อก"
+          type="number"
+          tooltip="จำนวนสินค้าที่มีอยู่ในคลัง"
+          fullWidth
+        />
       </Grid>
       <Grid size={{ xs: 6, md: 3 }}>
         <BaseDropdown

@@ -21,6 +21,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   labelIcon?: ReactNode;
   lang?: IsLanguage;
   suffix?: React.ReactNode; // ส่วนต่อท้าย เช่น %, ฿ ฯลฯ
+  readOnly?: boolean;
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -78,6 +79,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     labelIcon,
     InputProps,
     suffix,
+    readOnly,
     ...rest
   } = props;
   const theme = useTheme();
@@ -103,8 +105,15 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
 
   const mergedInputProps = React.useMemo(() => {
     const endAd = suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined;
-    return { ...(InputProps || {}), endAdornment: endAd ?? InputProps?.endAdornment };
-  }, [InputProps, suffix]);
+    const base = { ...(InputProps || {}) };
+    const inputProps = { ...(base.inputProps || {}), readOnly: readOnly ?? base.inputProps?.readOnly };
+    return {
+      ...base,
+      endAdornment: endAd ?? base.endAdornment,
+      readOnly: readOnly ?? base.readOnly,
+      inputProps,
+    };
+  }, [InputProps, suffix, readOnly]);
 
   if (loading) {
     const skeleton = (
@@ -137,13 +146,19 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   // --- helper: nested get/set for paths like "productOptions[0].price"
   const getIn = (obj: any, path: string) => {
     if (!obj || !path) return undefined;
-    const parts = path.replace(/\[(\d+)\]/g, ".$1").split(".").filter(Boolean);
+    const parts = path
+      .replace(/\[(\d+)\]/g, ".$1")
+      .split(".")
+      .filter(Boolean);
     return parts.reduce((acc: any, key: string) => (acc != null ? acc[key] : undefined), obj);
   };
 
   const setIn = (obj: any, path: string, value: any) => {
     if (!obj || !path) return;
-    const parts = path.replace(/\[(\d+)\]/g, ".$1").split(".").filter(Boolean);
+    const parts = path
+      .replace(/\[(\d+)\]/g, ".$1")
+      .split(".")
+      .filter(Boolean);
     let cur = obj;
     for (let i = 0; i < parts.length - 1; i++) {
       const k = parts[i];
@@ -167,7 +182,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
 
   const handleBlurWithClamp = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     // get current raw from formik or from event
-    const rawVal = formik ? getIn(formik.values, name) : (e.target?.value ?? "");
+    const rawVal = formik ? getIn(formik.values, name) : e.target?.value ?? "";
     const clamped = clampNumberValue(rawVal);
     if (formik && clamped !== rawVal) {
       formik.setFieldValue(name, clamped);
@@ -240,7 +255,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   };
 
   const getEndAdornment = () => {
-    if (suffix) return (<InputAdornment position="end">{suffix}</InputAdornment>);
+    if (suffix) return <InputAdornment position="end">{suffix}</InputAdornment>;
     if (endAdornment) return endAdornment;
 
     if (type === "password") {
@@ -254,7 +269,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     }
 
     if (type === "search") {
-      const currentValue = formik ? (getIn(formik.values, name) ?? "") : (rest.value ?? "");
+      const currentValue = formik ? getIn(formik.values, name) ?? "" : rest.value ?? "";
       if (currentValue) {
         return (
           <InputAdornment position="end">
@@ -271,7 +286,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
 
   // decide controlled/uncontrolled using nested get
   const shouldControl = Boolean(formik) || rest.value !== undefined;
-  const controlledValue = formik ? (getIn(formik.values, name) ?? "") : (rest.value as any);
+  const controlledValue = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
 
   const textField = (
     <StyledTextField
@@ -282,14 +297,13 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       type={type === "password" ? (showPassword ? "text" : "password") : type}
       {...(shouldControl ? { value: controlledValue } : {})}
       onChange={(e: any) => {
-        // prefer formik.setFieldValue for nested paths
+        if (readOnly) return;
         if (formik && typeof formik.setFieldValue === "function") {
           const val = type === "number" ? (e.target.value === "" ? "" : Number(e.target.value)) : e.target.value;
           formik.setFieldValue(name, val);
         } else if (rest.onChange) {
           rest.onChange(e);
         } else {
-          // fallback - no-op
         }
       }}
       onBlur={handleBlurWithClamp}

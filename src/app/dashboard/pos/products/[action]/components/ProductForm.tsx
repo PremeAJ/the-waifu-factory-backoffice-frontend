@@ -17,6 +17,7 @@ import ProductTemplate from "./ProductTemplate";
 import React from "react";
 import type { CreateProductPayload } from "@/common/contexts/ProductsContext/interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
+import BaseDebug from "@/common/components/debug/BaseDebug";
 
 const ProductForm: React.FC = () => {
   const isMobile = useIsMobile();
@@ -31,7 +32,7 @@ const ProductForm: React.FC = () => {
     initialValues: {
       nameTh: "",
       nameEn: undefined,
-      descriptionTh: '',
+      descriptionTh: "",
       descriptionEn: undefined,
       unitType: unitTypeOptions[0].value,
       unit: "ชิ้น",
@@ -91,7 +92,7 @@ const ProductForm: React.FC = () => {
           },
         })),
       };
-      console.log("🚀 ~ ProductForm ~ payload:", payload)
+      console.log("🚀 ~ ProductForm ~ payload:", payload);
 
       await createProduct(payload);
     },
@@ -100,7 +101,7 @@ const ProductForm: React.FC = () => {
   return (
     <form noValidate onSubmit={formik.handleSubmit}>
       {/* debug */}
-      {JSON.stringify(formik.errors)}
+      <BaseDebug data={{ values: formik.values, errors: formik.errors }} />
       <Grid container spacing={3}>
         <Grid
           size={{
@@ -161,7 +162,6 @@ const ProductForm: React.FC = () => {
         </Grid>
         <Grid size={{ xs: 12 }}>
           <BlankCard>
-              {JSON.stringify(formik.values, null, 2)}
             <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>
               <BaseButton preset="cancel" label="ยกเลิก" variant="outlined" color="error" fullWidth={isMobile} onClick={onClickCancel} />
               <BaseButton

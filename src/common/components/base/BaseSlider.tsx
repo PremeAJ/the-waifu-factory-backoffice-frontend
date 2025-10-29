@@ -18,9 +18,8 @@ export interface BaseSliderProps {
   max?: number;
   step?: number;
 
-  // โหมดการแสดงผลค่า
-  mode?: "percent" | "value"; // percent จะเติม % ให้
-  unit?: string; // ใช้กับ mode="value" เช่น "฿", "kg", "pcs"
+  // ใช้แสดงข้างช่องกรอกตัวเลข / label (เช่น "%" "฿" "kg")
+  suffix?: string;
   valueLabelDisplay?: ValueLabelDisplay;
 
   showInput?: boolean; // แสดงช่องกรอกตัวเลขข้างสไลเดอร์
@@ -39,20 +38,28 @@ const BaseSlider: React.FC<BaseSliderProps> = ({
   min = 0,
   max = 100,
   step = 1,
-  mode = "percent",
-  unit,
   valueLabelDisplay = "auto",
   showInput = true,
   disabled,
   sx,
+  suffix,
   onChange,
 }) => {
-  const value: number = Number(formik?.values?.[name] ?? 0);
+
+  // helper getIn for nested path support (bracket / dot)
+  const getIn = (obj: any, path: string) => {
+    if (!obj || !path) return undefined;
+    const parts = path.replace(/\[(\d+)\]/g, ".$1").split(".").filter(Boolean);
+    return parts.reduce((acc: any, key: string) => (acc != null ? acc[key] : undefined), obj);
+  };
+
+  // read numeric value from formik (support nested name)
+  const rawVal = formik ? getIn(formik.values, name) : undefined;
+  const value: number = rawVal === "" || rawVal == null ? 0 : Number(rawVal);
 
   const formatValue = (v: number) => {
-    if (mode === "percent") return `${v}%`;
-    if (unit) return `${v}${unit}`;
-    return String(v);
+    // Used for Slider label display only. Underlying value remains numeric.
+    return suffix ? `${v}${suffix}` : String(v);
   };
 
   const handleChange = (_: Event, newValue: number | number[]) => {
@@ -69,12 +76,15 @@ const BaseSlider: React.FC<BaseSliderProps> = ({
       formik?.setFieldValue?.(name, bounded);
       onChange?.(bounded);
     } else {
-      formik?.setFieldValue?.(name, raw);
+      const fallback = Math.max(min, 0);
+      formik?.setFieldValue?.(name, fallback);
+      onChange?.(fallback);
     }
   };
 
-  const hasError = Boolean(formik?.touched?.[name] && formik?.errors?.[name]);
-  const helper = hasError ? formik?.errors?.[name] : undefined;
+  // read error/touched using nested getIn
+  const hasError = Boolean(getIn(formik?.touched, name) && getIn(formik?.errors, name));
+  const helper = hasError ? getIn(formik?.errors, name) : undefined;
 
   return (
     <FormControl fullWidth error={hasError} sx={sx} disabled={disabled}>
@@ -83,7 +93,7 @@ const BaseSlider: React.FC<BaseSliderProps> = ({
       <Stack direction="row" spacing={2} alignItems="center">
         <Box sx={{ flexGrow: 1, px: 1 }}>
           <Slider
-            value={value}
+            value={Number.isFinite(value) ? value : 0}
             min={min}
             max={max}
             step={step}
@@ -95,7 +105,7 @@ const BaseSlider: React.FC<BaseSliderProps> = ({
         </Box>
 
         {showInput && (
-          <Box minWidth={110} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box minWidth={50} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <BaseTextField
               name={name}
               formik={formik}
@@ -106,12 +116,9 @@ const BaseSlider: React.FC<BaseSliderProps> = ({
               inputProps={{ min, max, step }}
               label=""
               placeholder=""
+              suffix={suffix}
+              disabled
             />
-            {(mode === "percent" || unit) && (
-              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
-                {mode === "percent" ? "%" : unit}
-              </Typography>
-            )}
           </Box>
         )}
       </Stack>
