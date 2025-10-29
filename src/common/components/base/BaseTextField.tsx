@@ -82,8 +82,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   } = props;
   const theme = useTheme();
 
-  // move any hooks (useMemo/useCallback/useEffect) to top-level of component
-  // example: memoized label text / lang text (replace with your actual memo)
   const langText = React.useMemo(() => {
     if (!label || !lang) return null;
     return lang === "th" ? <span style={{ marginLeft: 6, color: "gray" }}>(TH)</span> : <span style={{ marginLeft: 6, color: "gray" }}>(EN)</span>;
@@ -103,7 +101,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     }
   };
 
-  // move mergedInputProps hook above any early return (loading)
   const mergedInputProps = React.useMemo(() => {
     const endAd = suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined;
     return { ...(InputProps || {}), endAdornment: endAd ?? InputProps?.endAdornment };
@@ -137,16 +134,94 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     );
   }
 
-  let helperText = null;
-  if (formik?.touched[name] && formik?.errors[name]) {
-    if (typeof formik.errors[name] === "string" && formik.errors[name].includes("\n")) {
-      helperText = formik.errors[name].split("\n").map((msg: string, idx: number) => (
+  // --- helper: nested get/set for paths like "productOptions[0].price"
+  const getIn = (obj: any, path: string) => {
+    if (!obj || !path) return undefined;
+    const parts = path.replace(/\[(\d+)\]/g, ".$1").split(".").filter(Boolean);
+    return parts.reduce((acc: any, key: string) => (acc != null ? acc[key] : undefined), obj);
+  };
+
+  const setIn = (obj: any, path: string, value: any) => {
+    if (!obj || !path) return;
+    const parts = path.replace(/\[(\d+)\]/g, ".$1").split(".").filter(Boolean);
+    let cur = obj;
+    for (let i = 0; i < parts.length - 1; i++) {
+      const k = parts[i];
+      if (cur[k] == null) cur[k] = {};
+      cur = cur[k];
+    }
+    cur[parts[parts.length - 1]] = value;
+  };
+
+  // --- numeric clamp helpers and input guards
+  const clampNumberValue = (raw: any) => {
+    if (type !== "number") return raw;
+    const min = (rest.inputProps && (rest.inputProps as any).min) ?? (InputProps && (InputProps as any).min);
+    const max = (rest.inputProps && (rest.inputProps as any).max) ?? (InputProps && (InputProps as any).max);
+    const num = raw === "" || raw === null ? "" : Number(raw);
+    if (num === "" || Number.isNaN(num)) return raw;
+    if (min !== undefined && num < Number(min)) return Number(min);
+    if (max !== undefined && num > Number(max)) return Number(max);
+    return num;
+  };
+
+  const handleBlurWithClamp = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    // get current raw from formik or from event
+    const rawVal = formik ? getIn(formik.values, name) : (e.target?.value ?? "");
+    const clamped = clampNumberValue(rawVal);
+    if (formik && clamped !== rawVal) {
+      formik.setFieldValue(name, clamped);
+    }
+    if (typeof rest.onBlur === "function") rest.onBlur(e);
+    if (typeof formik?.handleBlur === "function") formik.handleBlur(e);
+  };
+
+  // prevent invalid chars for numbers and sanitize paste
+  const userSlotInput = (rest.slotProps && (rest.slotProps as any).input) || {};
+
+  const handleNumberKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (type !== "number") return;
+    if (["e", "E", "+", "-"].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handlePasteNumber = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    if (type !== "number") return;
+    const text = e.clipboardData.getData("text");
+    if (!text) {
+      e.preventDefault();
+      return;
+    }
+    const num = Number(text);
+    if (Number.isNaN(num)) {
+      e.preventDefault();
+      return;
+    }
+    // clamp pasted value
+    const min = (rest.inputProps && (rest.inputProps as any).min) ?? (InputProps && (InputProps as any).min);
+    const max = (rest.inputProps && (rest.inputProps as any).max) ?? (InputProps && (InputProps as any).max);
+    let clamped = num;
+    if (min !== undefined && clamped < Number(min)) clamped = Number(min);
+    if (max !== undefined && clamped > Number(max)) clamped = Number(max);
+    e.preventDefault();
+    if (formik) formik.setFieldValue(name, clamped);
+    else if (rest.onChange) rest.onChange({ target: { name, value: clamped } } as any);
+  };
+
+  // --- helper text / error using nested path
+  let helperText: any = null;
+  const fieldError = formik ? getIn(formik.errors, name) : undefined;
+  const fieldTouched = formik ? getIn(formik.touched, name) : undefined;
+  if (fieldTouched && fieldError) {
+    if (typeof fieldError === "string" && fieldError.includes("\n")) {
+      helperText = fieldError.split("\n").map((msg: string, idx: number) => (
         <span key={idx} style={{ display: "block" }}>
           {msg}
         </span>
       ));
     } else {
-      helperText = formik.errors[name];
+      helperText = fieldError;
     }
   }
 
@@ -165,6 +240,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   };
 
   const getEndAdornment = () => {
+    if (suffix) return (<InputAdornment position="end">{suffix}</InputAdornment>);
     if (endAdornment) return endAdornment;
 
     if (type === "password") {
@@ -178,8 +254,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     }
 
     if (type === "search") {
-      const currentValue =
-        formik ? (formik.values?.[name] ?? "") : (rest.value ?? "");
+      const currentValue = formik ? (getIn(formik.values, name) ?? "") : (rest.value ?? "");
       if (currentValue) {
         return (
           <InputAdornment position="end">
@@ -194,9 +269,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     return null;
   };
 
-  // decide controlled/uncontrolled
+  // decide controlled/uncontrolled using nested get
   const shouldControl = Boolean(formik) || rest.value !== undefined;
-  const controlledValue = formik ? (formik?.values?.[name] ?? "") : (rest.value as any);
+  const controlledValue = formik ? (getIn(formik.values, name) ?? "") : (rest.value as any);
 
   const textField = (
     <StyledTextField
@@ -206,18 +281,36 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       name={name}
       type={type === "password" ? (showPassword ? "text" : "password") : type}
       {...(shouldControl ? { value: controlledValue } : {})}
-      onChange={formik?.handleChange}
-      onBlur={formik?.handleBlur}
+      onChange={(e: any) => {
+        // prefer formik.setFieldValue for nested paths
+        if (formik && typeof formik.setFieldValue === "function") {
+          const val = type === "number" ? (e.target.value === "" ? "" : Number(e.target.value)) : e.target.value;
+          formik.setFieldValue(name, val);
+        } else if (rest.onChange) {
+          rest.onChange(e);
+        } else {
+          // fallback - no-op
+        }
+      }}
+      onBlur={handleBlurWithClamp}
       placeholder={placeholder}
-      error={formik?.touched[name] && Boolean(formik.errors[name])}
-      helperText={helperText}
+      error={Boolean(fieldTouched && fieldError)}
+      helperText={fieldTouched && fieldError ? fieldError : helperText}
       autoComplete={type === "password" ? "new-password" : undefined}
       InputProps={mergedInputProps}
       slotProps={{
         input: {
           startAdornment: getStartAdornment(),
           endAdornment: getEndAdornment(),
-          ...(rest.slotProps?.input || {}),
+          ...(userSlotInput || {}),
+          onKeyDown: (e: any) => {
+            handleNumberKeyDown(e);
+            if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
+          },
+          onPaste: (e: any) => {
+            handlePasteNumber(e);
+            if (userSlotInput.onPaste) userSlotInput.onPaste(e);
+          },
         },
       }}
       {...rest}

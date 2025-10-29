@@ -68,10 +68,10 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
 
       {/* Pricing */}
       <Grid size={{ xs: 6, md: 3 }}>
-        <BaseTextField formik={formik} name={`${optionPath}.price`} label="ราคาพื้นฐาน" placeholder="0.00" type="number" fullWidth />
+        <BaseTextField formik={formik} name={`${optionPath}.price`} label="ราคาพื้นฐาน" placeholder="0.00" type="number" fullWidth suffix="฿" />
       </Grid>
       <Grid size={{ xs: 6, md: 3 }}>
-        <BaseTextField name={`${optionPath}.price_final`} label="ราคาหลังคำนวน" value={finalPrice} type="number" disabled fullWidth />
+        <BaseTextField name={`${optionPath}.price_final`} label="ราคาหลังคำนวน" value={finalPrice} type="number" disabled fullWidth suffix="฿" />
       </Grid>
 
       {/* Inventory */}

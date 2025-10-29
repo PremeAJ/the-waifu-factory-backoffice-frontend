@@ -32,9 +32,10 @@ export interface ProductOptionType {
   variantOption?: VariantOptionType | null;
   inventory?: InventoryType | null;
 
-  discountType?: ApiInventoryStatus;
-  discountPercent?: number;
-  discountRate?: number; 
+  // discount fields
+  discountType?: ApiDiscountType;
+  // numeric discount value (percentage or fixed amount depending on discountType)
+  discountRate?: number;
 }
 
 export interface ProductType {

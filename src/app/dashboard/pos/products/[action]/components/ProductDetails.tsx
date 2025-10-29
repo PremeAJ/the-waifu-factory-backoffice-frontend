@@ -16,6 +16,9 @@ import VariantOptionsList from "./Variant/VariantOptionsList";
 
 // Enums & Interfaces
 import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
+import { useTax } from "@/common/contexts/Master/TaxContext";
+import { I18nString } from "@/common/utils/i18n/I18nString";
+import { useProfile } from "@/common/contexts/ProfileContext";
 
 // --- Component Constants ---
 
@@ -23,13 +26,6 @@ export const unitTypeOptions: OptionType[] = [
   { text: "ชิ้น", value: UnitTypeEnum.PIECE, icon: "IconPackage" },
   { text: "น้ำหนัก", value: UnitTypeEnum.WEIGHT, icon: "IconScale" },
   { text: "ปริมาตร", value: UnitTypeEnum.VOLUME, icon: "IconDroplet" },
-];
-
-const taxClassOptions: OptionType[] = [
-  { text: "No Tax", value: "none" },
-  { text: "Tax Free", value: "tax_free" },
-  { text: "Taxable Goods", value: "taxable" },
-  { text: "Downloadable Products", value: "downloadable" },
 ];
 
 const emptyOption = (withVariant: boolean = true) => {
@@ -56,7 +52,9 @@ interface ProductDetailsProps {
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
+  const { isLanguage } = useProfile().appearance;
   const theme = useTheme();
+  const { taxes, loading: taxLoading } = useTax();
 
   const [tab, setTab] = React.useState<number>(() => {
     const hasVariant = Boolean(formik?.values?.variant) || (formik?.values?.productOptions || []).some((o: any) => o?.variantOption);
@@ -115,6 +113,29 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
     formik.setFieldValue("productOptions", nextOptions);
   };
 
+  const taxClassOptions: OptionType[] = React.useMemo(() => {
+    const sorted = [...(taxes || [])].sort((a, b) => {
+      if (a.isDefault === b.isDefault) return 0;
+      return a.isDefault ? -1 : 1; // default first
+    });
+
+    return sorted.map((t) => ({
+      text: I18nString(isLanguage, t.nameTh ?? "", t.nameEn ?? ""),
+      value: t.id,
+    }));
+  }, [taxes, isLanguage]);
+
+  // sync selected tax rate -> p_vat
+  React.useEffect(() => {
+    if (!formik) return;
+    const selectedId = formik.values?.taxClassId;
+    const selected = (taxes || []).find((t) => t.id === selectedId);
+    const rate = selected ? Number(selected.rate ?? 0) : 0;
+    if (formik.values?.p_vat !== rate) {
+      formik.setFieldValue("p_vat", rate);
+    }
+  }, [formik, taxes, formik?.values?.taxClassId]);
+
   return (
     <Box p={3}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -130,10 +151,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
           <BaseTextField formik={formik} fullWidth label="หน่วยย่อย" name="unit" placeholder="เช่น แท่ง, เล่ม, กิโลกรัม" required />
         </Grid>
         <Grid size={{ xs: 6, md: 6 }}>
-          <BaseDropdown formik={formik} name="taxClassId" label="ประเภทภาษี" options={taxClassOptions} fullWidth />
+          <BaseDropdown formik={formik} name="taxClassId" label="ประเภทภาษี" options={taxClassOptions} fullWidth loading={taxLoading} />
         </Grid>
         <Grid size={{ xs: 6, md: 6 }}>
-          <BaseTextField name="p_vat" label="อัตรา VAT (%)" formik={formik} fullWidth type="number" />
+          <BaseTextField
+            name="p_vat"
+            label="อัตรา VAT (%)"
+            formik={formik}
+            fullWidth
+            type="number"
+            disabled
+            suffix="%"
+          />
         </Grid>
       </Grid>
 
