@@ -117,6 +117,7 @@ const ProductForm: React.FC = () => {
     },
     validationSchema,
     onSubmit: async (values: CreateProductPayload) => {
+      console.log('11111')
       const branchIdFromSession = (session?.user as any)?.branchId || undefined;
 
       const payload: CreateProductPayload = {
@@ -149,14 +150,11 @@ const ProductForm: React.FC = () => {
           },
         })),
       };
+      console.log("🚀 ~ ProductForm ~ payload:", payload)
 
       await createProduct(payload);
     },
   });
-  console.log("🚀 ~ ProductForm ~ formik:", formik.values)
-
-  console.log("Thumbnail image ID:", formik.values.thumbnailImageId);
-  console.log("Detail image IDs:", formik.values.detailImageIds);
 
   return (
     <form onSubmit={formik.handleSubmit}>

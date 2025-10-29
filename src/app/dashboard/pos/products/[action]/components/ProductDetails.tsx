@@ -37,6 +37,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
   const theme = useTheme();
 
   const taxClassOptions: OptionType[] = [
+    {text: "No Tax", value: "none" },
     { text: "Tax Free", value: "tax_free" },
     { text: "Taxable Goods", value: "taxable" },
     { text: "Downloadable Products", value: "downloadable" },

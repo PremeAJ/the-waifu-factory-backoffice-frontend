@@ -72,7 +72,7 @@ const SingleProductForm: React.FC<Props> = ({ formik, productOptions, updateOpti
             label="ประเภทส่วนลด"
             variant="card"
             options={[
-              { value: "no_discount", label: "ไม่มีส่วนลด" },
+              { value: "none", label: "ไม่มีส่วนลด" },
               { value: "percentage", label: "เปอร์เซ็นต์ %" },
               { value: "fixed", label: "ราคาคงที่" },
             ]}

@@ -34,11 +34,9 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (debouncedSearch && debouncedSearch.trim()) q.set("search", debouncedSearch.trim());
     return `${endpoint}?${q.toString()}`;
   }, [page, perPage, debouncedSearch]);
-  console.log("🚀 ~ ProductsProvider ~ productsUrl:", productsUrl)
 
   const { data: productsData, error: productsError, isLoading: productsLoading, mutate: productsMutate } = useSWR(productsUrl, getFetcher, swrOption);
 
-  // dropdown/all icons or auxiliary endpoints can be added similarly
   const findAllProducts = async (): Promise<ProductType[]> => {
     try {
       const res = await getFetcher(`${endpoint}/findall`);
@@ -60,6 +58,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const createProduct = async (payload: CreateProductPayload) => {
+    console.log("🚀 ~ createProduct ~ payload:", payload)
     try {
       setIsLoading(true);
       await postFetcher(endpoint, payload);

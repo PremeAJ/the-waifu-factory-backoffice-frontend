@@ -178,7 +178,8 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     }
 
     if (type === "search") {
-      const currentValue = formik?.values[name] || rest.value || "";
+      const currentValue =
+        formik ? (formik.values?.[name] ?? "") : (rest.value ?? "");
       if (currentValue) {
         return (
           <InputAdornment position="end">
@@ -193,6 +194,10 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     return null;
   };
 
+  // decide controlled/uncontrolled
+  const shouldControl = Boolean(formik) || rest.value !== undefined;
+  const controlledValue = formik ? (formik?.values?.[name] ?? "") : (rest.value as any);
+
   const textField = (
     <StyledTextField
       fullWidth
@@ -200,7 +205,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       id={name}
       name={name}
       type={type === "password" ? (showPassword ? "text" : "password") : type}
-      value={formik?.values[name]}
+      {...(shouldControl ? { value: controlledValue } : {})}
       onChange={formik?.handleChange}
       onBlur={formik?.handleBlur}
       placeholder={placeholder}
