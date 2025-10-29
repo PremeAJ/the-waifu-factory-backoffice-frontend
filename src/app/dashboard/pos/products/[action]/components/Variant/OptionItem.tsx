@@ -1,220 +1,135 @@
 "use client";
 import React from "react";
+import { getIn } from "formik";
+
+// MUI Components
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { IconX } from "@tabler/icons-react";
-import BaseTextField from "@/common/components/base/BaseTextField";
-import BaseDropdown from "@/common/components/base/BaseDropdown";
+
+// Base Components
 import BaseChip from "@/common/components/base/BaseChip";
-import BaseSlider from "@/common/components/base/BaseSlider";
+import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseRadio from "@/common/components/base/BaseRadio";
+import BaseSlider from "@/common/components/base/BaseSlider";
+import BaseTextField from "@/common/components/base/BaseTextField";
 
 type Props = {
   idx: number;
-  opt: any;
   formik: any;
-  updateOption: (index: number, path: string, value: any) => void;
   removeOption: (index: number) => void;
 };
 
-const OptionItem: React.FC<Props> = ({ idx, opt, formik, updateOption, removeOption }) => {
-  // compute final price after discount and VAT
-  const priceBase = Number(opt?.price ?? formik?.values?.productOptions?.[idx]?.price ?? 0);
-  const discountType = formik?.values?.productOptions?.[idx]?.discountType;
-  const discountPercent = Number(formik?.values?.productOptions?.[idx]?.discountPercent ?? 0);
-  const discountValue = Number(formik?.values?.productOptions?.[idx]?.discountValue ?? 0);
-  const vat = Number(formik?.values?.p_vat ?? 0);
-  const calcAfterDiscount = () => {
-    let v = priceBase;
-    if (discountType === "percentage") v = v * (1 - discountPercent / 100);
-    else if (discountType === "fixed") v = v - discountValue;
-    if (v < 0) v = 0;
-    return v;
-  };
-  const finalPrice = (() => {
-    const afterDisc = calcAfterDiscount();
-    return Number((afterDisc * (1 + vat / 100)).toFixed(2));
-  })();
+const OptionItem: React.FC<Props> = ({ idx, formik, removeOption }) => {
+  const optionPath = `productOptions[${idx}]`;
+  const productOptionsCount = formik.values.productOptions?.length ?? 0;
+
+  // Derived values from Formik state
+  const priceBase = Number(getIn(formik.values, `${optionPath}.price`) ?? 0);
+  const discountType = getIn(formik.values, `${optionPath}.discountType`);
+  const discountRate = Number(getIn(formik.values, `${optionPath}.discountRate`) ?? 0);
+  const status = getIn(formik.values, `${optionPath}.inventory.status`);
+
+  // Memoized calculation for the final price after discount
+  const finalPrice = React.useMemo(() => {
+    let final = priceBase;
+    if (discountType === "percentage") {
+      final = priceBase * (1 - discountRate / 100);
+    } else if (discountType === "fixed") {
+      final = priceBase - discountRate;
+    }
+    return final < 0 ? 0 : Number(final.toFixed(2));
+  }, [priceBase, discountType, discountRate]);
 
   return (
     <Box sx={{ position: "relative", border: "1px dashed", borderColor: "primary.main", borderRadius: 1, p: 2 }}>
-      <Grid container columnSpacing={2} alignItems="center">
-        {/* Row 1: ชื่อตัวเลือก (ไทย) | ชื่อตัวเลือก (อังกฤษ) */}
+      {productOptionsCount > 1 && (
+        <Tooltip title="ลบตัวเลือก">
+          <IconButton
+            color="error"
+            size="medium"
+            onClick={() => removeOption(idx)}
+            aria-label="remove-option"
+            sx={{ position: "absolute", top: 8, right: 8, zIndex: 1 }}
+          >
+            <IconX />
+          </IconButton>
+        </Tooltip>
+      )}
+
+      <Grid container spacing={2} alignItems="center">
+        {/* Variant Option Name */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <BaseTextField
-            name={`productOptions[${idx}].variantOption.nameTh`}
-            formik={formik}
-            label="ชื่อตัวเลือก"
-            placeholder="เช่น S"
-            fullWidth
-            value={opt.variantOption?.nameTh ?? ""}
-            onChange={(e: any) => updateOption(idx, "variantOption.nameTh", e.target?.value ?? e)}
-            lang="th"
-          />
+          <BaseTextField formik={formik} name={`${optionPath}.variantOption.nameTh`} label="ชื่อตัวเลือก" placeholder="เช่น S" lang="th" fullWidth />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <BaseTextField formik={formik} name={`${optionPath}.variantOption.nameEn`} label="ชื่อตัวเลือก" placeholder="e.g. S" lang="en" fullWidth />
         </Grid>
 
+        {/* Identifiers */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <BaseTextField
-            name={`productOptions[${idx}].variantOption.nameEn`}
-            formik={formik}
-            label="ชื่อตัวเลือก"
-            placeholder="e.g. S"
-            fullWidth
-            value={opt.variantOption?.nameEn ?? ""}
-            onChange={(e: any) => updateOption(idx, "variantOption.nameEn", e.target?.value ?? e)}
-            lang="en"
-          />
+          <BaseTextField formik={formik} name={`${optionPath}.upc`} label="UPC" placeholder="UPC" tooltip="รหัสบาร์โค้ด (UPC/EAN)" fullWidth />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <BaseTextField formik={formik} name={`${optionPath}.sku`} label="SKU" placeholder="SKU" tooltip="รหัสสินค้าที่ใช้ภายในระบบ (SKU)" fullWidth />
         </Grid>
 
-        {/* Row 2: UPC | SKU */}
-        <Grid size={{ xs: 12, md: 6 }}>
-          <BaseTextField
-            name={`productOptions[${idx}].upc`}
-            formik={formik}
-            label="UPC"
-            placeholder="UPC"
-            fullWidth
-            value={opt.upc ?? ""}
-            onChange={(e: any) => updateOption(idx, "upc", e.target?.value ?? e)}
-            required
-            tooltip="รหัสบาร์โค้ด (UPC/EAN)"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <BaseTextField
-            name={`productOptions[${idx}].sku`}
-            formik={formik}
-            label="SKU"
-            placeholder="SKU"
-            fullWidth
-            value={opt.sku ?? ""}
-            onChange={(e: any) => updateOption(idx, "sku", e.target?.value ?? e)}
-            tooltip="รหัสสินค้าที่ใช้ภายในระบบ (SKU)"
-          />
-        </Grid>
-
-                <Grid size={{ xs: 12, md: 12 }}>
+        {/* Discount Section */}
+        <Grid size={{ xs: 12 }}>
           <BaseRadio
             formik={formik}
-            name={`productOptions[${idx}].discountType`}
+            name={`${optionPath}.discountType`}
             label="ประเภทส่วนลด"
             variant="card"
+            defaultValue="none"
             options={[
-              { value: "no_discount", label: "ไม่มีส่วนลด" },
+              { value: "none", label: "ไม่มีส่วนลด" },
               { value: "percentage", label: "เปอร์เซ็นต์ %" },
               { value: "fixed", label: "ราคาคงที่" },
             ]}
           />
         </Grid>
-        {formik?.values?.productOptions?.[idx]?.discountType === "percentage" && (
-          <Grid size={{ xs: 12, md: 12 }}>
-            <BaseSlider
-              formik={formik}
-              name={`productOptions[${idx}].discountPercent`}
-              label="เปอร์เซ็นต์ส่วนลด"
-              mode="percent"
-              min={0}
-              max={100}
-              step={1}
-            />
+        {discountType === "percentage" && (
+          <Grid size={{ xs: 12 }}>
+            <BaseSlider formik={formik} name={`${optionPath}.discountRate`} label="เปอร์เซ็นต์ส่วนลด" mode="percent" min={0} max={100} step={1} />
           </Grid>
         )}
-        {formik?.values?.productOptions?.[idx]?.discountType === "fixed" && (
-          <Grid size={{ xs: 12, md: 12 }}>
-            <BaseTextField
-              name={`productOptions[${idx}].discountValue`}
-              label="มูลค่าส่วนลด (คงที่)"
-              formik={formik}
-              fullWidth
-              type="number"
-              inputProps={{ min: 0 }}
-            />
+        {discountType === "fixed" && (
+          <Grid size={{ xs: 12 }}>
+            <BaseTextField formik={formik} name={`${optionPath}.discountRate`} label="มูลค่าส่วนลด (คงที่)" type="number" inputProps={{ min: 0 }} fullWidth />
           </Grid>
         )}
 
-        {/* Row 3: ราคาพื้นฐาน | ราคาหลังหักส่วนลดและภาษี | จำนวนสต็อก | สถานะ */}
+        {/* Pricing */}
         <Grid size={{ xs: 6, md: 3 }}>
-          <BaseTextField
-            name={`productOptions[${idx}].price`}
-            formik={formik}
-            label="ราคาพื้นฐาน"
-            placeholder="0.00"
-            type="number"
-            fullWidth
-            value={opt.price ?? 0}
-            onChange={(e: any) => updateOption(idx, "price", Number(e.target?.value ?? 0))}
-          />
+          <BaseTextField formik={formik} name={`${optionPath}.price`} label="ราคาพื้นฐาน" placeholder="0.00" type="number" fullWidth />
+        </Grid>
+        <Grid size={{ xs: 6, md: 3 }}>
+          <BaseTextField name={`${optionPath}.price_final`} label="ราคาหลังคำนวน" value={finalPrice} type="number" disabled fullWidth />
         </Grid>
 
+        {/* Inventory */}
         <Grid size={{ xs: 6, md: 3 }}>
-          <BaseTextField
-            name={`productOptions[${idx}].price_final`}
-            formik={formik}
-            label="ราคาหลังคำนวน"
-            placeholder="0.00"
-            type="number"
-            fullWidth
-            value={finalPrice}
-            disabled
-            inputProps={{ step: 0.01 }}
-          />
+          <BaseTextField formik={formik} name={`${optionPath}.inventory.stock`} label="จำนวนสต็อก" type="number" tooltip="จำนวนสินค้าที่มีอยู่ในคลังสำหรับตัวเลือกนี้" fullWidth />
         </Grid>
-
-        <Grid size={{ xs: 6, md: 3 }}>
-          <BaseTextField
-            name={`productOptions[${idx}].inventory.stock`}
-            formik={formik}
-            label="จำนวนสต็อก"
-            placeholder="0"
-            type="number"
-            fullWidth
-            value={opt.inventory?.stock ?? 0}
-            onChange={(e: any) => updateOption(idx, "inventory.stock", Number(e.target?.value ?? 0))}
-            tooltip="จำนวนสินค้าที่มีอยู่ในคลังสำหรับตัวเลือกนี้"
-          />
-        </Grid>
-
         <Grid size={{ xs: 6, md: 3 }}>
           <BaseDropdown
-            name={`productOptions[${idx}].inventory.status`}
-            value={opt.inventory?.status ?? "active"}
+            formik={formik}
+            name={`${optionPath}.inventory.status`}
             label="สถานะ"
-            onChange={(selected: any) => updateOption(idx, "inventory.status", selected?.value ?? selected)}
+            value={status}
             options={[
               { value: "active", text: "ใช้งาน" },
               { value: "inactive", text: "ไม่ใช้งาน" },
             ]}
-            renderOption={(option: any) => <BaseChip preset={option.value} />}
+            renderOption={(option:any) => <BaseChip preset={option.value} />}
+            renderValue={(selected:any) => <BaseChip preset={selected} />}
             fullWidth
           />
         </Grid>
       </Grid>
-
-      {/* keep delete button outside Grid DOM flow (absolute, no layout shift) */}
-      <Tooltip title="ลบตัวเลือก">
-        <IconButton
-          color="error"
-          onClick={() => removeOption(idx)}
-          size="medium"
-          aria-label="remove-option"
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            zIndex: 10,
-            width: 36,
-            height: 36,
-            boxShadow: 1,
-            bgcolor: "background.paper",
-            "&:hover": { bgcolor: "error.light" },
-          }}
-        >
-          <IconX />
-        </IconButton>
-      </Tooltip>
     </Box>
   );
 };

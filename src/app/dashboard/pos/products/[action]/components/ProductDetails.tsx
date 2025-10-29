@@ -30,7 +30,6 @@ const emptyOption = () => ({
   inventory: { status: "active", stock: 0 },
   discountType: "none",
   discountRate: 0,
-  discountRate: 0,
 });
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
@@ -59,12 +58,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
     const productOptions = formik.values.productOptions || [];
     if (v === 0) {
       const base = productOptions[0] || emptyOption();
-      const single = { upc: base.upc ?? "", sku: base.sku ?? "", price: base.price ?? 0, inventory: base.inventory ?? { status: "active", stock: 0 } };
+      const single = {
+        upc: base.upc ?? "",
+        sku: base.sku ?? "",
+        price: base.price ?? 0,
+        inventory: base.inventory ?? { status: "active", stock: 0 },
+        discountType: "none", 
+        discountRate: 0, 
+      };
       formik.setFieldValue("variant", undefined);
       formik.setFieldValue("productOptions", [single]);
     } else {
       const variant = formik.values.variant ?? { nameTh: "", nameEn: "" };
-      const opts = (productOptions.length ? productOptions : [emptyOption()]).map((o: any) => ({ ...o, variantOption: o.variantOption ?? { nameTh: "", nameEn: "" } }));
+      const opts = (productOptions.length ? productOptions : [emptyOption()]).map((o: any) => ({
+        ...o,
+        variantOption: o.variantOption ?? { nameTh: "", nameEn: "" },
+        inventory: o.inventory ?? { status: "active", stock: 0 },
+      }));
       formik.setFieldValue("variant", variant);
       formik.setFieldValue("productOptions", opts);
     }
@@ -164,7 +174,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
           </Grid>
 
           <CustomFormLabel sx={{ mt: 3 }}>ตัวเลือกของตัวแปร (เช่น S, M, L)</CustomFormLabel>
-          <VariantOptionsList formik={formik} productOptions={productOptions} updateOption={updateOption} addOption={addOption} removeOption={removeOption} />
+          <VariantOptionsList formik={formik} productOptions={productOptions} addOption={addOption} removeOption={removeOption} />
         </>
       )}
     </Box>
