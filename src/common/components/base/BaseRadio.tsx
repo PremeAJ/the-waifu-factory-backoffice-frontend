@@ -63,7 +63,10 @@ const BaseRadio: React.FC<Props> = ({ name, label, required, tooltip, formik, op
     py: 1,
     flexGrow: 1,
     textAlign: "center" as const,
-    border: `1px dashed ${active ? theme.palette.primary.main : theme.palette.divider}`,
+    border: `1px dashed ${active ? theme.palette.primary.main : theme.palette.grey[200]}`,
+    "&:hover": {
+      borderColor: theme.palette.primary.main,
+    },
     bgcolor: active ? theme.palette.action.selected : "transparent",
     borderRadius: 1,
     height: "100%",

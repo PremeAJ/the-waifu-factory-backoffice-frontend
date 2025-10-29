@@ -40,8 +40,8 @@ const validationSchema = Yup.object({
   taxClassId: Yup.string().trim().required("กรุณาเลือกประเภทภาษี"),
 
   variant: Yup.object({
-    nameTh: Yup.string().trim().min(1, "กรุณากรอกชื่อคุณลักษณะ (ไทย)").required("กรุณากรอกชื่อคุณลักษณะ (ไทย)"),
-    nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
+    nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
+    nameEn: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
   })
     .nullable()
     .notRequired(),
@@ -59,7 +59,7 @@ const validationSchema = Yup.object({
         discountRate: Yup.number().typeError("กรุณากรอกส่วนลดเป็นตัวเลข").required("กรุณากรอกส่วนลด"),
 
         variantOption: Yup.object({
-          nameTh: Yup.string().trim().min(1, "กรุณากรอกชื่อคุณลักษณะ (ไทย)").required("กรุณากรอกชื่อคุณลักษณะ (ไทย)"),
+          nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
           nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
         })
           .nullable()
@@ -116,8 +116,9 @@ const ProductForm: React.FC = () => {
       ],
     },
     validationSchema,
+    validateOnMount: true,
     onSubmit: async (values: CreateProductPayload) => {
-      console.log('11111')
+      console.log('11111');
       const branchIdFromSession = (session?.user as any)?.branchId || undefined;
 
       const payload: CreateProductPayload = {
@@ -157,7 +158,9 @@ const ProductForm: React.FC = () => {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form noValidate onSubmit={formik.handleSubmit}>
+      {/* debug */}
+      {JSON.stringify(formik.errors)}
       <Grid container spacing={3}>
         <Grid
           size={{
@@ -220,7 +223,15 @@ const ProductForm: React.FC = () => {
           <BlankCard>
             <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>
               <BaseButton preset="cancel" label="ยกเลิก" variant="outlined" color="error" fullWidth={isMobile} onClick={onClickCancel} />
-              <BaseButton preset="save" label="บันทึก" type="submit" variant="contained" color="primary" fullWidth={isMobile} />
+              <BaseButton
+                preset="save"
+                label="บันทึก"
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth={isMobile}
+                disabled={!formik.isValid || formik.isSubmitting}
+              />
             </Stack>
           </BlankCard>
         </Grid>

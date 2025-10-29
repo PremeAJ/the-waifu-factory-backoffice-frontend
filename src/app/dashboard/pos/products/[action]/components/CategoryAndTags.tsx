@@ -87,7 +87,7 @@ const CategoryAndTags: React.FC<CategoryAndTagsProps> = ({ formik }) => {
             startIcon={<IconPlus />}
             size="small"
             fullWidth={false}
-            variant="text"
+            variant="outlined"
             onClick={() => setOpenCreateCategory(true)}
           />
         </Grid>

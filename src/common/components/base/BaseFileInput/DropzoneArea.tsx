@@ -25,7 +25,7 @@ export const DropzoneArea: React.FC<DropzoneAreaProps> = ({
       fontSize="12px"
       sx={{
         backgroundColor: theme.palette.primary.light,
-        color: theme.palette.primary.main,
+        color: theme.palette.primary.dark,
         padding: "30px",
         textAlign: "center",
         border: `1px dashed ${theme.palette.primary.main}`,
