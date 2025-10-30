@@ -30,6 +30,21 @@ function isExpired(token: string): boolean {
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
+let refreshPromise: Promise<any> | null = null;
+
+async function refreshToken(token: any) {
+  if (!refreshPromise) {
+    refreshPromise = postFetcher(
+      `${baseUrl}/api/v1/session/refresh`,
+      { token: token.refreshToken },
+      { ...(await header(token.accessToken)) }
+    ).finally(() => {
+      refreshPromise = null;
+    });
+  }
+  return refreshPromise;
+}
+
 const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -88,18 +103,15 @@ const authOptions: AuthOptions = {
         if (session.profile) token.profile = session.profile;
       }
       if (token.accessToken && isExpired(token.accessToken)) {
-        console.log("🚀 ~ token.refreshToken:", token.refreshToken)
-        const refreshed = await postFetcher(
-          `${baseUrl}/api/v1/session/refresh`,
-          { token: token.refreshToken },
-          { ...(await header(token.accessToken)) }
-        );
-        if (refreshed?.error) {
-          throw new Error(refreshed.message);
-        }
-        if (refreshed.data.accessToken && refreshed.data.refreshToken) {
-          token.refreshToken = refreshed.data.refreshToken;
-          token.accessToken = refreshed.data.accessToken;
+        try {
+          const refreshed = await refreshToken(token);
+          if (refreshed?.error) throw new Error(refreshed.message);
+          if (refreshed.data.accessToken && refreshed.data.refreshToken) {
+            token.refreshToken = refreshed.data.refreshToken;
+            token.accessToken = refreshed.data.accessToken;
+          }
+        } catch (err) {
+          // handle error
         }
       }
       return token;
