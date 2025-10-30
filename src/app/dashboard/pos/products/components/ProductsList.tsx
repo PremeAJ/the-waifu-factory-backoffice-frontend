@@ -1,33 +1,16 @@
 "use client";
+import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
 import { Box, Stack } from "@mui/material";
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
-import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import { getProductHeaders } from "../constants/productHeaders";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useRouter } from "next/navigation";
-import BaseButton from "@/common/components/base/BaseButton";
-import BaseChip from "@/common/components/base/BaseChip";
-import BaseDialog from "@/common/components/base/BaseDialog";
-import BaseFloatingButton from "@/common/components/base/BaseFloatingButton";
-import BaseSearchField from "@/common/components/base/BaseSearchField";
-import BaseTable from "@/common/components/base/BaseTable";
-import BaseTextField from "@/common/components/base/BaseTextField";
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
-import { getProductHeaders } from "../constants/productHeaders";
-import ProductDialog from "./ProductDialog";
-
-type DialogState = {
-  open: boolean;
-  type: "create" | "edit";
-  categoryId?: string | null;
-};
 
 function ProductsList() {
-  const [dialogState, setDialogState] = useState<DialogState>({ open: false, type: "create", categoryId: null });
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct } = useProducts();
+  const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
   const isMobilePortrait = isMobile && isPortrait;
@@ -35,18 +18,16 @@ function ProductsList() {
 
   const tableData: any = useMemo(() => {
     return (products || []).map((prod) => {
-      // If it's a simple product (no variants, one option), merge the option data into the main row.
-      if (!prod.variant && prod.productOptions && prod.productOptions.length === 1) {
+      if (!prod.variant && prod.productOptions?.length === 1) {
         const singleOption = prod.productOptions[0];
         return {
           ...prod,
-          ...singleOption, // Merge price, sku, upc, etc. into the parent
-          id: prod.id, // Ensure parent ID is not overwritten by option ID if it exists
-          subItems: [], // No sub-items for simple products
+          ...singleOption,
+          id: prod.id,
+          subItems: [],
         };
       }
 
-      // If it's a product with variants, create sub-items for each option.
       return {
         ...prod,
         subItems: (prod.productOptions || []).map((opt) => ({
@@ -60,46 +41,29 @@ function ProductsList() {
 
   const headers = useMemo(() => getProductHeaders(), []);
 
+  const handleConfirmDelete = async () => {
+    if (deleteDialogState.item) {
+      await deleteProduct(deleteDialogState.item.id);
+      setDeleteDialogState({ open: false, item: null });
+    }
+  };
+
   const actionTemplates = useMemo(
     () => [
       {
         type: "edit",
         tooltip: "แก้ไข",
-        onClick: (item: any) =>
-          setDialogState({
-            open: true,
-            type: "edit",
-            categoryId: item.id,
-          }),
+        onClick: (item: any) => router.push(`/dashboard/pos/products/edit?id=${item.id}`),
       },
       {
         type: "delete",
-        tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีหมวดหมู่ย่อย" : "ลบ"),
+        tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีตัวเลือกย่อย" : "ลบ"),
         disabled: (item: any) => !!(item?.subItems?.length > 0),
-        onClick: (item: any) => {
-          setSelectedItems([item.id]);
-          setOpenDeleteDialog(true);
-        },
+        onClick: (item: any) => setDeleteDialogState({ open: true, item: item }),
       },
     ],
-    [isMobilePortrait]
+    [isMobilePortrait, router]
   );
-
-  const handleConfirmDelete = async () => {
-    for (const id of selectedItems) {
-      await deleteProduct(id);
-    }
-    setSelectedItems([]);
-    setOpenDeleteDialog(false);
-  };
-
-  const handleCloseDialog = () => {
-    setDialogState({
-      open: false,
-      type: "create",
-      categoryId: null,
-    });
-  };
 
   const handlePageChange = (event: unknown, newPage: number) => {
     setPage(newPage + 1);
@@ -116,21 +80,19 @@ function ProductsList() {
         {isMobile ? (
           <BaseSearchField value={search} onSearchChange={setSearch} />
         ) : (
-          <Stack direction="row" spacing={2} alignItems="center">
-            <BaseTextField
-              fullWidth={false}
-              name="search"
-              placeholder="Search products"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              sx={{ width: 300 }}
-              type="search"
-            />
-          </Stack>
+          <BaseTextField
+            fullWidth={false}
+            name="search"
+            placeholder="Search products"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{ width: 300 }}
+            type="search"
+          />
         )}
 
         {isMobile ? (
-          <BaseFloatingButton preset="create" href="/dashboard/pos/products/create"/>
+          <BaseFloatingButton preset="create" href="/dashboard/pos/products/create" />
         ) : (
           <BaseButton variant="contained" href="/dashboard/pos/products/create" fullWidth={false} preset="add" label="Add Product" />
         )}
@@ -151,16 +113,15 @@ function ProductsList() {
         }}
       />
 
-      <ProductDialog open={dialogState.open} onClose={handleCloseDialog} type={dialogState.type} categoryId={dialogState.categoryId} />
       <BaseDialog
         loading={loading}
         cancelText="Cancel"
         confirmColor="error"
         confirmText="Delete"
-        content="Are you sure you want to delete the selected products?"
-        onClose={() => setOpenDeleteDialog(false)}
+        content={`Are you sure you want to delete "${deleteDialogState.item?.nameTh}"?`}
+        onClose={() => setDeleteDialogState({ open: false, item: null })}
         onConfirm={handleConfirmDelete}
-        open={openDeleteDialog}
+        open={deleteDialogState.open}
         title="Confirm Delete"
       />
     </Box>

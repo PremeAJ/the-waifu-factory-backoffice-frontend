@@ -3,14 +3,10 @@ import React from "react";
 
 // MUI & Tabler Icons
 import { useTheme } from "@mui/material/styles";
-import { Grid, Typography, Box, Stack } from "@mui/material";
+import { Grid, Typography, Box } from "@mui/material";
 import { IconTag, IconStack } from "@tabler/icons-react";
 
 // Project Components
-import BaseDropdown, { OptionType } from "@/common/components/base/BaseDropdown";
-import BaseTabs from "@/common/components/base/BaseTabs";
-import BaseTextField from "@/common/components/base/BaseTextField";
-import BaseSwitch from "@/common/components/base/BaseSwitch";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import SingleProductForm from "./Variant/SingleProductForm";
 import VariantOptionsList from "./Variant/VariantOptionsList";
@@ -19,11 +15,10 @@ import VariantOptionsList from "./Variant/VariantOptionsList";
 import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useTax } from "@/common/contexts/Master/TaxContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
-import { useProfile } from "@/common/contexts/ProfileContext";
 import { unitTypeOptions, volumeUnitOptions, weightUnitOptions } from "@/common/contexts/ProductsContext/constants/constants";
-import BaseLabel from "@/common/components/base/BaseLabel";
-
-// --- Component Constants ---
+import { BaseDropdown, BaseSwitch, BaseTabs, BaseTextField } from "@/common/components/base";
+import { OptionType } from "@/common/components/base/BaseDropdown";
+import { useProfile } from "@/common/contexts";
 
 const emptyOption = (withVariant: boolean = true) => {
   const option: any = {
