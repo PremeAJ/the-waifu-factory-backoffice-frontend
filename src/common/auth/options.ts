@@ -88,6 +88,7 @@ const authOptions: AuthOptions = {
         if (session.profile) token.profile = session.profile;
       }
       if (token.accessToken && isExpired(token.accessToken)) {
+        console.log("🚀 ~ token.refreshToken:", token.refreshToken)
         const refreshed = await postFetcher(
           `${baseUrl}/api/v1/session/refresh`,
           { token: token.refreshToken },

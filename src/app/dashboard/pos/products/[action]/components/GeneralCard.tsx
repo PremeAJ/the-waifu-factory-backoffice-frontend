@@ -30,7 +30,7 @@ const GeneralCard = ({ formik }: { formik: any }) => {
         <Grid size={{ xs: 12 }}>
           <BaseTabPanel value={tab} index={0}>
             <Box key="desc_th">
-              <BaseTiptap formik={formik} name="descriptionTh" label="รายละเอียด" placeholder="รายละเอียด" lang="th" required/>
+              <BaseTiptap formik={formik} name="descriptionTh" label="รายละเอียด" placeholder="รายละเอียด" lang="th"/>
             </Box>
           </BaseTabPanel>
 

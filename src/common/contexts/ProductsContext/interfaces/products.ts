@@ -46,6 +46,7 @@ export interface ProductType {
   descriptionEn?: string | null;
   unitType?: UnitTypeEnum | null;
   unit?: string | null;
+  tags?: string[];
   variant?: VariantType | null;
   productOptions?: ProductOptionType[];
   totalStock?: number;
@@ -74,6 +75,7 @@ export interface CreateProductPayload {
   branchId?: string;
   thumbnailImageId?: string;
   detailImageIds?: string[];
+  tags?: string[];
 
   isTaxInclusive: boolean;
   taxClassId: string;
@@ -88,7 +90,6 @@ export interface UpdateProductPayload extends Partial<CreateProductPayload> {}
 export interface ProductsContextType {
   products: ProductType[];
   productsMutate: () => void;
-  findAllProducts: () => Promise<ProductType[]>;
   createProduct: (payload: CreateProductPayload) => Promise<void>;
   updateProduct: (id: string, payload: UpdateProductPayload) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;

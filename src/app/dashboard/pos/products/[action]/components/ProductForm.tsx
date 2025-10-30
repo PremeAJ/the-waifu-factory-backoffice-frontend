@@ -40,6 +40,7 @@ const ProductForm: React.FC = () => {
       branchId: undefined,
       thumbnailImageId: undefined,
       detailImageIds: [],
+      tags: [],
 
       isTaxInclusive: true,
       taxClassId: "none",
@@ -77,6 +78,7 @@ const ProductForm: React.FC = () => {
         branchId: values.branchId || branchIdFromSession,
         thumbnailImageId: values.thumbnailImageId || undefined,
         detailImageIds: values.detailImageIds?.length ? values.detailImageIds : undefined,
+        tags: values.tags?.length ? values.tags : undefined,
 
         isTaxInclusive: values.isTaxInclusive,
         taxClassId: values.taxClassId,
@@ -177,7 +179,7 @@ const ProductForm: React.FC = () => {
                 variant="contained"
                 color="primary"
                 fullWidth={isMobile}
-                disabled={!formik.isValid || formik.isSubmitting}
+                loading={formik.isSubmitting}
               />
             </Stack>
           </BlankCard>

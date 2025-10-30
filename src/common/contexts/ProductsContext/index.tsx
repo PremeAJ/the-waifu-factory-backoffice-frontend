@@ -37,20 +37,14 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const { data: productsData, error: productsError, isLoading: productsLoading, mutate: productsMutate } = useSWR(productsUrl, getFetcher, swrOption);
 
-  const findAllProducts = async (): Promise<ProductType[]> => {
-    try {
-      const res = await getFetcher(`${endpoint}/findall`);
-      return res?.data || [];
-    } catch (err: any) {
-      showError({ title: "Failed", message: err?.message || "Failed to fetch products" });
-      return [];
-    }
-  };
 
   const getProductById = async (id: string): Promise<ProductType> => {
     try {
-      const res = await getFetcher(`${endpoint}/${id}`);
-      return res.data;
+      const response = await getFetcher(`${endpoint}/${id}`);
+      if (response.error) {
+        showError({ message: response?.message });
+      }
+      return response.data;
     } catch (err: any) {
       showError({ title: "Failed", message: err?.message || "Failed to fetch product" });
       throw err;
@@ -58,10 +52,12 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const createProduct = async (payload: CreateProductPayload) => {
-    console.log("🚀 ~ createProduct ~ payload:", payload)
     try {
       setIsLoading(true);
-      await postFetcher(endpoint, payload);
+      const response = await postFetcher(endpoint, payload);
+      if (response.error) {
+        showError({ message: response?.message });
+      }
       await productsMutate();
     } catch (err: any) {
       showError({ title: "Failed", message: err?.message || "Failed to create product" });
@@ -73,7 +69,10 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const updateProduct = async (id: string, payload: UpdateProductPayload) => {
     try {
       setIsLoading(true);
-      await putFetcher(`${endpoint}/${id}`, payload);
+      const response = await putFetcher(`${endpoint}/${id}`, payload);
+      if (response.error) {
+        showError({ message: response?.message });
+      }
       await productsMutate();
     } catch (err: any) {
       showError({ title: "Failed", message: err?.message || "Failed to update product" });
@@ -85,7 +84,10 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const deleteProduct = async (id: string) => {
     try {
       setIsLoading(true);
-      await deleteFetcher(`${endpoint}/${id}`, {});
+      const response = await deleteFetcher(`${endpoint}/${id}`, {});
+      if (response.error) {
+        showError({ message: response?.message });
+      }
       await productsMutate();
     } catch (err: any) {
       showError({ title: "Failed", message: err?.message || "Failed to delete product" });
@@ -97,7 +99,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const value: ProductsContextType = {
     products: productsData?.data?.data || productsData?.data || [],
     productsMutate,
-    findAllProducts,
     createProduct,
     updateProduct,
     deleteProduct,

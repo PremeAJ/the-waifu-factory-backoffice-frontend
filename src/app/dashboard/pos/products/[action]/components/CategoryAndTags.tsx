@@ -8,14 +8,14 @@ import { tagOptions } from "@/common/contexts/ProductsContext/constants/constant
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import Box from "@mui/material/Box";
 import CategoryDialog from "@/app/dashboard/pos/categories/components/CategoryDialog";
-import React, { useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import type { FormikProps } from "formik";
 
 interface CategoryAndTagsProps {
   formik: FormikProps<CreateProductPayload>;
 }
 
-const CategoryAndTags: React.FC<CategoryAndTagsProps> = ({ formik }) => {
+const CategoryAndTags: FC<CategoryAndTagsProps> = ({ formik }) => {
   const [openCreateCategory, setOpenCreateCategory] = useState(false);
 
   const categoryValue: string = (() => {
@@ -62,7 +62,7 @@ const CategoryAndTags: React.FC<CategoryAndTagsProps> = ({ formik }) => {
         <Grid size={12}>
           <BaseDropdown
             formik={formik}
-            name="categories"
+            name="categoryId"
             label="หมวดหมู่"
             placeholder="เลือกหมวดหมู่"
             value={categoryValue}
@@ -70,7 +70,7 @@ const CategoryAndTags: React.FC<CategoryAndTagsProps> = ({ formik }) => {
             fullWidth
             groupBy={(opt) => (opt as any).group || ""}
             onChange={(val: any) => {
-              formik.setFieldValue("categories", val);
+              formik.setFieldValue("categoryId", val);
             }}
           />
         </Grid>

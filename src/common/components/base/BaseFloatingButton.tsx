@@ -30,9 +30,9 @@ const getPositionStyles = (position: FloatingButtonPosition) => {
     case FloatingButtonPosition.BOTTOM_RIGHT:
       return { bottom: 16, right: 16 };
     case FloatingButtonPosition.CENTER_RIGHT:
-      return { top: "50%", right: 16, transform: "translateY(-50%)" };
+      return { top: "50%", right: 16};
     case FloatingButtonPosition.CENTER_LEFT:
-      return { top: "50%", left: 16, transform: "translateY(-50%)" };
+      return { top: "50%", left: 16};
     default:
       return { top: 16, right: 16 };
   }
