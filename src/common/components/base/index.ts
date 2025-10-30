@@ -21,6 +21,7 @@ export { default as BaseSearchField } from './BaseSearchField';
 export { default as BaseSlider } from './BaseSlider';
 export { default as BaseSwitch } from './BaseSwitch';
 export { default as BaseTable } from './BaseTable';
-export { default as BaseTabs } from './BaseTabs';
+export { default as BaseTabs, BaseTabPanel } from './BaseTabs';
 export { default as BaseTextField } from './BaseTextField';
+export { default as BaseTiptap } from './BaseTipTap/BaseTiptap';
 export { default as BaseTooltip } from './BaseTooltip';

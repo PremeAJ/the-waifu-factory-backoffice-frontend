@@ -1,24 +1,18 @@
 "use client";
-import React from "react";
 
-// MUI & Tabler Icons
+import { FC, SyntheticEvent, useEffect, useMemo, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Grid, Typography, Box } from "@mui/material";
 import { IconTag, IconStack } from "@tabler/icons-react";
-
-// Project Components
+import { BaseDropdown, BaseSwitch, BaseTabs, BaseTextField } from "@/common/components/base";
+import { OptionType } from "@/common/components/base/BaseDropdown";
+import { useProfile, useTax } from "@/common/contexts";
+import { unitTypeOptions, volumeUnitOptions, weightUnitOptions } from "@/common/contexts/ProductsContext/constants/constants";
+import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import SingleProductForm from "./Variant/SingleProductForm";
 import VariantOptionsList from "./Variant/VariantOptionsList";
-
-// Enums & Interfaces
-import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
-import { useTax } from "@/common/contexts/Master/TaxContext";
-import { I18nString } from "@/common/utils/i18n/I18nString";
-import { unitTypeOptions, volumeUnitOptions, weightUnitOptions } from "@/common/contexts/ProductsContext/constants/constants";
-import { BaseDropdown, BaseSwitch, BaseTabs, BaseTextField } from "@/common/components/base";
-import { OptionType } from "@/common/components/base/BaseDropdown";
-import { useProfile } from "@/common/contexts";
 
 const emptyOption = (withVariant: boolean = true) => {
   const option: any = {
@@ -39,23 +33,21 @@ const emptyOption = (withVariant: boolean = true) => {
   return option;
 };
 
-// --- Main Component ---
-
 interface ProductDetailsProps {
   formik?: any;
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
+const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
   const { isLanguage } = useProfile().appearance;
   const theme = useTheme();
-  const { taxes, loading: taxLoading } = useTax();
+  const { taxes } = useTax();
 
-  const [tab, setTab] = React.useState<number>(() => {
+  const [tab, setTab] = useState<number>(() => {
     const hasVariant = Boolean(formik?.values?.variant) || (formik?.values?.productOptions || []).some((o: any) => o?.variantOption);
     return hasVariant ? 1 : 0;
   });
 
-  const tabs = React.useMemo(
+  const tabs = useMemo(
     () => [
       { label: "ไม่มีตัวแปร", icon: <IconTag width={18} color={theme.palette.text.secondary} /> },
       { label: "มีตัวแปร", icon: <IconStack width={18} color={theme.palette.primary.main} /> },
@@ -63,14 +55,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
     [theme]
   );
 
-  const handleTabChange = (_: React.SyntheticEvent, newTab: number) => {
+  const handleTabChange = (_: SyntheticEvent, newTab: number) => {
     setTab(newTab);
     if (!formik) return;
 
     const currentOptions = formik.values.productOptions || [];
 
     if (newTab === 0) {
-      // Switching to Single Product
       const baseOption = currentOptions[0] || {};
       const singleOption = {
         ...emptyOption(false),
@@ -84,7 +75,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
       formik.setFieldValue("variant", undefined);
       formik.setFieldValue("productOptions", [singleOption]);
     } else {
-      // Switching to Variant Product
       const variant = formik.values.variant ?? { nameTh: "", nameEn: "" };
       const hasAnyOption = currentOptions.length > 0;
       const newOptions = (hasAnyOption ? currentOptions : [emptyOption()]).map((opt: any) => ({
@@ -109,19 +99,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
     formik.setFieldValue("productOptions", nextOptions);
   };
 
-  const taxClassOptions: OptionType[] = React.useMemo(() => {
-    const sorted = [...(taxes || [])].sort((a, b) => {
-      if (a.isDefault === b.isDefault) return 0;
-      return a.isDefault ? -1 : 1; // default first
-    });
-
+  const taxClassOptions: OptionType[] = useMemo(() => {
+    const sorted = [...(taxes || [])].sort((a, b) => (a.isDefault === b.isDefault ? 0 : a.isDefault ? -1 : 1));
     return sorted.map((t) => ({
       text: I18nString(isLanguage, t.nameTh ?? "", t.nameEn ?? ""),
       value: t.id,
     }));
   }, [taxes, isLanguage]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!formik) return;
     const selectedId = formik.values?.taxClassId;
     const selected = (taxes || []).find((t) => t.id === selectedId);
@@ -131,8 +117,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
     }
   }, [formik, taxes, formik?.values?.taxClassId]);
 
-  // Set default unit when unitType changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (!formik) return;
     const unitType = formik.values.unitType;
     let defaultUnit: string | undefined;
@@ -152,7 +137,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
     if (defaultUnit && formik.values.unit !== defaultUnit) {
       formik.setFieldValue("unit", defaultUnit);
     }
-  }, [formik?.values?.unitType]);
+  }, [formik, formik?.values?.unitType]);
 
   const renderUnitField = () => {
     const unitType = formik?.values?.unitType;
@@ -162,7 +147,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
         return <BaseDropdown formik={formik} name="unit" label="หน่วยย่อย" options={weightUnitOptions} fullWidth required />;
       case UnitTypeEnum.VOLUME:
         return <BaseDropdown formik={formik} name="unit" label="หน่วยย่อย" options={volumeUnitOptions} fullWidth required />;
-      case UnitTypeEnum.PIECE:
       default:
         return <BaseTextField formik={formik} fullWidth label="หน่วยย่อย" name="unit" placeholder="เช่น ชิ้น, แท่ง, เล่ม" required />;
     }
@@ -179,9 +163,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
         <Grid size={{ xs: 6, md: 6 }}>
           <BaseDropdown formik={formik} name="unitType" label="ประเภทหน่วยนับ" options={unitTypeOptions} fullWidth required />
         </Grid>
-        <Grid size={{ xs: 6, md: 6 }}>
-          {renderUnitField()}
-        </Grid>
+        <Grid size={{ xs: 6, md: 6 }}>{renderUnitField()}</Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <BaseDropdown formik={formik} name="taxClassId" label="ประเภทภาษี" options={taxClassOptions} fullWidth />
         </Grid>

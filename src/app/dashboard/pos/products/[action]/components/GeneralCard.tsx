@@ -1,26 +1,19 @@
 "use client";
+import { BaseTabPanel, BaseTabs, BaseTextField, BaseTiptap } from "@/common/components/base";
 import { Grid } from "@mui/material";
 import { Typography, Box } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import BaseTabs, { BaseTabPanel } from "@/common/components/base/BaseTabs";
-import BaseTextField from "@/common/components/base/BaseTextField";
-import BaseTiptap from "@/common/components/base/BaseTipTap/BaseTiptap";
-import React from "react";
+import { useState } from "react";
+import { languageTabs } from "@/common/contexts";
 
 const GeneralCard = ({ formik }: { formik: any }) => {
-  const [tab, setTab] = React.useState<number>(0);
+  const [tab, setTab] = useState<number>(0);
   const handleChange = (_: React.SyntheticEvent, newVal: number) => setTab(newVal);
-
-  const tabs = [
-    { label: "ไทย", icon: <Avatar src="/images/flag/icon-flag-th.svg" alt="TH" sx={{ width: 22, height: 22 }} /> },
-    { label: "อังกฤษ", icon: <Avatar src="/images/flag/icon-flag-en.svg" alt="EN" sx={{ width: 22, height: 22 }} /> },
-  ];
 
   return (
     <Box p={3}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h5">ทั่วไป</Typography>
-        <BaseTabs value={tab} onChange={handleChange} tabs={tabs} />
+        <BaseTabs value={tab} onChange={handleChange} tabs={languageTabs} />
       </Box>
 
       <Grid container mt={3}>

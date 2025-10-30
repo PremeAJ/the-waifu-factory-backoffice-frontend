@@ -1,43 +1,32 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { getIn } from "formik";
-import { Grid, Box, Typography } from "@mui/material";
 
-import BaseChip from "@/common/components/base/BaseChip";
-import BaseDropdown from "@/common/components/base/BaseDropdown";
-import BaseRadio from "@/common/components/base/BaseRadio";
-import BaseSlider from "@/common/components/base/BaseSlider";
-import BaseTextField from "@/common/components/base/BaseTextField";
-import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
-import BaseLabel from "@/common/components/base/BaseLabel";
+import { FC, useEffect, useState } from "react";
+import { getIn } from "formik";
+import { Box, Grid, Typography } from "@mui/material";
+import { BaseChip, BaseDropdown, BaseLabel, BaseRadio, BaseSlider, BaseTextField } from "@/common/components/base";
 import { discountTypeOptions, inventoryStatusOptions } from "@/common/contexts/ProductsContext/constants/constants";
+import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
 
 type Props = {
   formik: any;
   optionPath: string;
 };
 
-const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
-  // State to track which field was last edited by the user
+const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
   const [lastEdited, setLastEdited] = useState<"base" | "final">("base");
 
-  // Get values from Formik
   const priceBase = Number(getIn(formik.values, `${optionPath}.basePrice`) ?? 0);
   const priceFinal = Number(getIn(formik.values, `${optionPath}.finalPrice`) ?? 0);
   const discountType = getIn(formik.values, `${optionPath}.discountType`);
   const discountRate = Number(getIn(formik.values, `${optionPath}.discountRate`) ?? 0);
   const status = getIn(formik.values, `${optionPath}.inventory.status`);
 
-  // Get tax values from the root of the form
   const taxRate = Number(formik.values?.taxRate ?? 0);
   const isTaxInclusive = formik.values?.isTaxInclusive ?? true;
-
   const unitType = formik.values?.unitType;
   const unit = formik.values?.unit || "";
-
   const isSoldByPiece = unitType === UnitTypeEnum.PIECE;
 
-  // Forward calculation: from base price to final price
   useEffect(() => {
     if (lastEdited !== "base") return;
 
@@ -49,12 +38,7 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
     }
 
     let finalPriceWithTax = priceAfterDiscount;
-    if (isTaxInclusive) {
-      // If price is tax-inclusive, the base price already contains the tax component.
-      // The final price is just the base price after discount.
-      finalPriceWithTax = priceAfterDiscount;
-    } else {
-      // If price is tax-exclusive, add tax on top of the discounted price.
+    if (!isTaxInclusive) {
       finalPriceWithTax = priceAfterDiscount * (1 + taxRate / 100);
     }
 
@@ -63,15 +47,13 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
     if (newFinalPrice !== priceFinal) {
       formik.setFieldValue(`${optionPath}.finalPrice`, newFinalPrice);
     }
-  }, [priceBase, discountType, discountRate, taxRate, isTaxInclusive, lastEdited]);
+  }, [priceBase, discountType, discountRate, taxRate, isTaxInclusive, lastEdited, formik, optionPath, priceFinal]);
 
-  // Reverse calculation: from final price to base price
   useEffect(() => {
     if (lastEdited !== "final") return;
 
     let priceBeforeTax = priceFinal;
     if (!isTaxInclusive) {
-      // If the final price was calculated with tax on top, we need to remove it first.
       priceBeforeTax = priceFinal / (1 + taxRate / 100);
     }
 
@@ -89,7 +71,7 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
     if (newBasePrice !== priceBase) {
       formik.setFieldValue(`${optionPath}.basePrice`, newBasePrice);
     }
-  }, [priceFinal, discountType, discountRate, taxRate, isTaxInclusive, lastEdited]);
+  }, [priceFinal, discountType, discountRate, taxRate, isTaxInclusive, lastEdited, formik, optionPath, priceBase]);
 
   const renderPricingFields = () => {
     if (isSoldByPiece) {
@@ -121,7 +103,6 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
       );
     }
 
-    // UI for Weight/Volume
     return (
       <>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -146,7 +127,6 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
 
   return (
     <Grid container spacing={2} alignItems="flex-end">
-      {/* Identifiers */}
       <Grid size={{ xs: 12, md: 6 }}>
         <BaseTextField formik={formik} name={`${optionPath}.upc`} label="UPC" placeholder="UPC" tooltip="รหัสบาร์โค้ด (UPC/EAN)" fullWidth />
       </Grid>
@@ -154,7 +134,6 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
         <BaseTextField formik={formik} name={`${optionPath}.sku`} label="SKU" placeholder="SKU" tooltip="รหัสสินค้าที่ใช้ภายในระบบ (SKU)" fullWidth />
       </Grid>
 
-      {/* Discount Section */}
       <Grid size={{ xs: 12 }}>
         <BaseRadio
           formik={formik}
@@ -163,7 +142,7 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
           variant="card"
           defaultValue="none"
           options={discountTypeOptions}
-          onClick={() => setLastEdited("base")} // Recalculate when discount type changes
+          onClick={() => setLastEdited("base")}
         />
       </Grid>
       {discountType === "percentage" && (
@@ -176,7 +155,7 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
             max={100}
             step={1}
             suffix="%"
-            onMouseUp={() => setLastEdited("base")} // Recalculate after slider is released
+            onMouseUp={() => setLastEdited("base")}
           />
         </Grid>
       )}
@@ -195,10 +174,8 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
         </Grid>
       )}
 
-      {/* Pricing */}
       {renderPricingFields()}
 
-      {/* Inventory */}
       <Grid size={{ xs: 6, md: 3 }} alignSelf={"flex-end"}>
         <BaseTextField
           formik={formik}

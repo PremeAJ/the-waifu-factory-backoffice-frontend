@@ -1,16 +1,15 @@
 "use client";
+import { BaseAutoComplete, BaseButton, BaseDropdown } from "@/common/components/base";
 import { CreateProductPayload } from "@/common/contexts/ProductsContext/interfaces/products";
 import { Grid, Typography } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
+import { OptionType } from "@/common/components/base/BaseDropdown";
+import { tagOptions } from "@/common/contexts/ProductsContext/constants/constants";
 import { useCategories } from "@/common/contexts/CategoriesContext";
-import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
-import BaseButton from "@/common/components/base/BaseButton";
-import BaseDropdown, { OptionType } from "@/common/components/base/BaseDropdown";
 import Box from "@mui/material/Box";
 import CategoryDialog from "@/app/dashboard/pos/categories/components/CategoryDialog";
 import React, { useMemo, useState } from "react";
 import type { FormikProps } from "formik";
-import { tagOptions } from "@/common/contexts/ProductsContext/constants/constants";
 
 interface CategoryAndTagsProps {
   formik: FormikProps<CreateProductPayload>;

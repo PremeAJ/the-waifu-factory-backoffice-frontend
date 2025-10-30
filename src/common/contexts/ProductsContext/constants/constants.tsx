@@ -1,5 +1,6 @@
 import { OptionType } from "@/common/components/base/BaseDropdown";
 import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
+import Avatar from "@mui/material/Avatar";
 
 export const unitTypeOptions: OptionType[] = [
   { text: "ชิ้น", value: UnitTypeEnum.PIECE, icon: "IconPackage" },
@@ -29,3 +30,8 @@ export const discountTypeOptions = [
 ];
 
 export const tagOptions = ["ใหม่ ✨", "ยอดนิยม 🔥", "ลดราคา 💸", "แนะนำ 👍"];
+
+export const languageTabs = [
+  { label: "ไทย", icon: <Avatar src="/images/flag/icon-flag-th.svg" alt="TH" sx={{ width: 22, height: 22 }} /> },
+  { label: "อังกฤษ", icon: <Avatar src="/images/flag/icon-flag-en.svg" alt="EN" sx={{ width: 22, height: 22 }} /> },
+];

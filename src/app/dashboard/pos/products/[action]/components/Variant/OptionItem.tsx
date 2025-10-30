@@ -1,15 +1,9 @@
 "use client";
-import React from "react";
 
-// MUI Components
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
+import { FC } from "react";
+import { Box, Grid, IconButton, Tooltip } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
-
-// Base Components
-import BaseTextField from "@/common/components/base/BaseTextField";
+import { BaseTextField } from "@/common/components/base";
 import ProductOptionFields from "./ProductOptionFields";
 
 type Props = {
@@ -18,7 +12,7 @@ type Props = {
   removeOption: (index: number) => void;
 };
 
-const OptionItem: React.FC<Props> = ({ idx, formik, removeOption }) => {
+const OptionItem: FC<Props> = ({ idx, formik, removeOption }) => {
   const optionPath = `productOptions[${idx}]`;
   const productOptionsCount = formik.values.productOptions?.length ?? 0;
 
