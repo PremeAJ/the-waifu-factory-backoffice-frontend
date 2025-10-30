@@ -1,5 +1,5 @@
-import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import BaseChip from "@/common/components/base/BaseChip";
+import { CreateProductOptionPayload } from "@/common/contexts/ProductsContext/interfaces/products";
 
 export const getProductHeaders = ():any => [
   {
@@ -8,25 +8,25 @@ export const getProductHeaders = ():any => [
     align: "left",
     width: "20%",
     primary: true,
-    render: (_val: any, item: any) => item.sku ?? item.upc ?? "-",
+    render: (_val: any, item: CreateProductOptionPayload) => item.sku ?? item.upc ?? "-",
   },
   {
     key: "nameTh",
-    label: "Name (TH)",
+    label: "ชื่อ (TH)",
     align: "center",
     width: "20%",
     render: (_val: any, item: any) => (item.parentNameTh ? item.variantOption?.nameTh || item.parentNameTh : item.nameTh),
   },
   {
-    key: "price",
-    label: "Price",
+    key: "basePrice",
+    label: "ราคา",
     align: "center",
     width: "15%",
-    render: (_val: any, item: any) => (typeof item.price === "number" ? item.price : "-"),
+    render: (_val: any, item: CreateProductOptionPayload) => (typeof item.basePrice === "number" ? item.basePrice : "-"),
   },
   {
     key: "stock",
-    label: "Stock",
+    label: "จำนวนสต็อก",
     align: "center",
     width: "10%",
     render: (_val: any, item: any) => {
@@ -37,7 +37,7 @@ export const getProductHeaders = ():any => [
   },
   {
     key: "status",
-    label: "Status",
+    label: "สถานะ",
     align: "center",
     width: "20%",
     render: (_val: any, item: any) => {

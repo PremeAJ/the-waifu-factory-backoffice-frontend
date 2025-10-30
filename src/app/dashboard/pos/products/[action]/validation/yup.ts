@@ -5,7 +5,7 @@ export const validationSchema = Yup.object({
   nameTh: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").required("กรุณากรอกชื่อสินค้า (ไทย)"),
   nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
 
-  descriptionTh: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").required("กรุณากรอกรายละเอียด (ไทย)"),
+  descriptionTh: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable(),
   descriptionEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
 
   unitType: Yup.mixed<UnitTypeEnum>()
@@ -17,9 +17,11 @@ export const validationSchema = Yup.object({
   branchId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
   thumbnailImageId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
   detailImageIds: Yup.array().of(Yup.string().uuid("รูปภาพต้องเป็น UUID")).nullable().notRequired(),
+  tags: Yup.array().of(Yup.string()).nullable().notRequired(),
 
   isTaxInclusive: Yup.boolean().required("กรุณาระบุโหมดภาษี"),
   taxClassId: Yup.string().trim().required("กรุณาเลือกประเภทภาษี"),
+  taxRate: Yup.number().min(0, "อัตราภาษีต้องไม่ติดลบ").typeError("กรุณากรอกอัตราภาษีเป็นตัวเลข"),
 
   variant: Yup.object({
     nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
@@ -33,23 +35,24 @@ export const validationSchema = Yup.object({
       Yup.object({
         upc: Yup.string().trim().notRequired(),
         sku: Yup.string().trim().notRequired(),
-        price: Yup.number().typeError("กรุณากรอกราคาเป็นตัวเลข").required("กรุณากรอกราคา"),
+        basePrice: Yup.number().min(0, "ราคาต้องไม่ติดลบ").typeError("กรุณากรอกราคาเป็นตัวเลข").required("กรุณากรอกราคา"),
+        finalPrice: Yup.number().min(0, "ราคาต้องไม่ติดลบ").typeError("ราคาต้องเป็นตัวเลข"),
+        pricePerUnit: Yup.number().min(0.01, "ต้องมากกว่า 0").typeError("กรุณากรอกหน่วยต่อราคาเป็นตัวเลข").required("กรุณากรอกหน่วยต่อราคา"),
 
         discountType: Yup.mixed<ApiDiscountType>()
           .oneOf(["none", "percentage", "fixed"])
           .required("กรุณาเลือกประเภทส่วนลด"),
-        discountRate: Yup.number().typeError("กรุณากรอกส่วนลดเป็นตัวเลข").required("กรุณากรอกส่วนลด"),
+        discountRate: Yup.number().min(0, "ส่วนลดต้องไม่ติดลบ").typeError("กรุณากรอกส่วนลดเป็นตัวเลข").required("กรุณากรอกส่วนลด"),
 
-        variantOption: Yup.object({
-          nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
-          nameEn: Yup.string().trim().min(2, "กรอกอย่างน้อย 2 อักขระ").nullable().notRequired(),
-        })
-          .nullable()
-          .notRequired(),
+        variantOption: Yup.mixed().when("$variant", {
+          is: (variant: any) => variant && variant.nameTh,
+          then: (schema) => schema.required("กรุณาเลือกตัวเลือกย่อย"),
+          otherwise: (schema) => schema.notRequired(),
+        }),
 
         inventory: Yup.object({
           status: Yup.mixed<ApiInventoryStatus>().oneOf(["active", "inactive", "deleted"]).required("กรุณาเลือกสถานะสต็อก"),
-          stock: Yup.number().typeError("กรุณากรอกจำนวนคงคลังเป็นตัวเลข").required("กรุณากรอกจำนวนคงคลัง"),
+          stock: Yup.number().min(0, "สต็อกต้องไม่ติดลบ").typeError("กรุณากรอกจำนวนคงคลังเป็นตัวเลข").required("กรุณากรอกจำนวนคงคลัง"),
         }).required("กรุณากรอกข้อมูลสต็อก"),
       })
     )

@@ -34,14 +34,28 @@ function ProductsList() {
   const router = useRouter();
 
   const tableData: any = useMemo(() => {
-    return (products || []).map((prod) => ({
-      ...prod,
-      subItems: (prod.productOptions || []).map((opt) => ({
-        ...opt,
-        parentNameTh: prod.nameTh,
-        unit: prod.unit,
-      })),
-    }));
+    return (products || []).map((prod) => {
+      // If it's a simple product (no variants, one option), merge the option data into the main row.
+      if (!prod.variant && prod.productOptions && prod.productOptions.length === 1) {
+        const singleOption = prod.productOptions[0];
+        return {
+          ...prod,
+          ...singleOption, // Merge price, sku, upc, etc. into the parent
+          id: prod.id, // Ensure parent ID is not overwritten by option ID if it exists
+          subItems: [], // No sub-items for simple products
+        };
+      }
+
+      // If it's a product with variants, create sub-items for each option.
+      return {
+        ...prod,
+        subItems: (prod.productOptions || []).map((opt) => ({
+          ...opt,
+          parentNameTh: prod.nameTh,
+          unit: prod.unit,
+        })),
+      };
+    });
   }, [products]);
 
   const headers = useMemo(() => getProductHeaders(), []);
@@ -49,11 +63,8 @@ function ProductsList() {
   const actionTemplates = useMemo(
     () => [
       {
-        key: "edit",
         type: "edit",
-        icon: <IconEdit width={18} />,
         tooltip: "แก้ไข",
-        color: isMobilePortrait ? "inherit" : "primary",
         onClick: (item: any) =>
           setDialogState({
             open: true,
@@ -62,11 +73,8 @@ function ProductsList() {
           }),
       },
       {
-        key: "delete",
         type: "delete",
-        icon: <IconTrash width={18} />,
         tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีหมวดหมู่ย่อย" : "ลบ"),
-        color: "error",
         disabled: (item: any) => !!(item?.subItems?.length > 0),
         onClick: (item: any) => {
           setSelectedItems([item.id]);
