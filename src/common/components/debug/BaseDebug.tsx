@@ -3,6 +3,8 @@
 import React from "react";
 import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Stack } from "@mui/material";
 import { IconCopy, IconX, IconBug } from "@tabler/icons-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import BaseFloatingButton, { FloatingButtonPosition } from "@/common/components/base/BaseFloatingButton";
 
 interface BaseDebugProps {
@@ -23,13 +25,18 @@ const BaseDebug: React.FC<BaseDebugProps> = ({ data, title = "Debug JSON", openI
     }
   };
 
+  // if (process.env.NODE_ENV === "production") {
+  //   return null;
+  // }
+
   return (
     <>
       <BaseFloatingButton
-        position={FloatingButtonPosition.BOTTOM_LEFT}
+        position={FloatingButtonPosition.CENTER_RIGHT}
         icon={<IconBug size={20} />}
         onClick={() => setOpen(true)}
         sx={{ zIndex: 1999 }}
+        size="small"
       />
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="md" aria-label="debug-dialog">
@@ -48,19 +55,17 @@ const BaseDebug: React.FC<BaseDebugProps> = ({ data, title = "Debug JSON", openI
               </Button>
             </Stack>
 
-            <Box
-              component="pre"
-              sx={{
-                bgcolor: "background.paper",
-                borderRadius: 1,
-                p: 2,
-                overflow: "auto",
+            <SyntaxHighlighter
+              language="json"
+              style={vscDarkPlus}
+              customStyle={{
+                borderRadius: "4px",
+                margin: 0,
                 maxHeight: "60vh",
-                fontSize: "0.85rem",
               }}
             >
               {json}
-            </Box>
+            </SyntaxHighlighter>
           </Box>
         </DialogContent>
       </Dialog>

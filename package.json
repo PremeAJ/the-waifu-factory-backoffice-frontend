@@ -80,7 +80,7 @@
     "react-intersection-observer": "^9.16.0",
     "react-slick": "^0.29.0",
     "react-spring": "^9.7.3",
-    "react-syntax-highlighter": "^15.5.0",
+    "react-syntax-highlighter": "^15.6.6",
     "react-turnstile": "^1.1.4",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",

@@ -23,6 +23,7 @@ type Props = {
   mdPerRow?: 3 | number;
   sx?: any;
   defaultValue?: string | number;
+  onClick?: () => void;
 };
 
 // helper to read nested path like "productOptions[0].discountType"
@@ -35,7 +36,7 @@ const getIn = (obj: any, path: string) => {
   return parts.reduce((acc: any, key: string) => (acc != null ? acc[key] : undefined), obj);
 };
 
-const BaseRadio: React.FC<Props> = ({ name, label, required, tooltip, formik, options, row = true, variant = "default", mdPerRow = 3, sx, defaultValue }) => {
+const BaseRadio: React.FC<Props> = ({ name, label, required, tooltip, formik, options, row = true, variant = "default", mdPerRow = 3, sx, defaultValue, onClick }) => {
   const theme = useTheme();
 
   // read value from formik using nested path
@@ -85,7 +86,13 @@ const BaseRadio: React.FC<Props> = ({ name, label, required, tooltip, formik, op
           <Grid container spacing={2} sx={{ width: "100%" }}>
             {options.map((opt) => (
               <Grid key={String(opt.value)} size={{ xs: 12, md: md }} sx={{ display: "flex" }}>
-                <ButtonBase onClick={() => handleChange(opt.value)} sx={{ width: "100%", height: "100%" }}>
+                <ButtonBase
+                  onClick={() => {
+                    handleChange(opt.value);
+                    onClick?.();
+                  }}
+                  sx={{ width: "100%", height: "100%" }}
+                >
                   <Box sx={cardSx(String(value) === String(opt.value))}>
                     <FormControlLabel
                       value={opt.value}

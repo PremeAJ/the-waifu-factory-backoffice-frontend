@@ -12,12 +12,13 @@ import BaseFileInput from "@/common/components/base/BaseFileInput/BaseFileInput"
 import BlankCard from "@/components/shared/BlankCard";
 import CategoryAndTags from "./CategoryAndTags";
 import GeneralCard from "./GeneralCard";
-import ProductDetails, { unitTypeOptions } from "./ProductDetails";
+import ProductDetails from "./ProductDetails";
 import ProductTemplate from "./ProductTemplate";
 import React from "react";
-import type { CreateProductPayload } from "@/common/contexts/ProductsContext/interfaces/products";
+import type { CreateProductPayload, CreateProductOptionPayload } from "@/common/contexts/ProductsContext/interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
 import BaseDebug from "@/common/components/debug/BaseDebug";
+import { unitTypeOptions } from "@/common/contexts/ProductsContext/constants/constants";
 
 const ProductForm: React.FC = () => {
   const isMobile = useIsMobile();
@@ -43,13 +44,16 @@ const ProductForm: React.FC = () => {
 
       isTaxInclusive: true,
       taxClassId: "none",
+      taxRate: 0,
 
       variant: undefined,
       productOptions: [
         {
           upc: "",
           sku: "",
-          price: 0,
+          basePrice: 0,
+          finalPrice: 0,
+          pricePerUnit: 1, 
           discountType: "none",
           discountRate: 0,
           variantOption: undefined,
@@ -77,12 +81,15 @@ const ProductForm: React.FC = () => {
 
         isTaxInclusive: values.isTaxInclusive,
         taxClassId: values.taxClassId,
+        taxRate: Number(values.taxRate ?? 0),
 
         variant: values.variant,
-        productOptions: (values.productOptions || []).map((opt) => ({
+        productOptions: ((values.productOptions || []).map((opt) => ({
           upc: opt.upc || undefined,
           sku: opt.sku || undefined,
-          price: Number(opt.price ?? 0),
+          basePrice: Number(opt.basePrice ?? 0),
+          finalPrice: 0 as 0,
+          pricePerUnit: Number(opt.pricePerUnit ?? 1),
           discountType: opt.discountType,
           discountRate: Number(opt.discountRate ?? 0),
           variantOption: opt.variantOption,
@@ -90,7 +97,7 @@ const ProductForm: React.FC = () => {
             status: opt.inventory.status,
             stock: Number(opt.inventory.stock ?? 0),
           },
-        })),
+        })) as CreateProductOptionPayload[]),
       };
       console.log("🚀 ~ ProductForm ~ payload:", payload);
 

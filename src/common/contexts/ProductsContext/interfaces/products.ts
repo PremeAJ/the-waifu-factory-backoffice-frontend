@@ -28,7 +28,7 @@ export interface VariantOptionType {
 export interface ProductOptionType {
   upc?: string;
   sku?: string;
-  price?: number;
+  basePrice?: number;
   variantOption?: VariantOptionType | null;
   inventory?: InventoryType | null;
 
@@ -53,9 +53,11 @@ export interface ProductType {
 export interface CreateProductOptionPayload {
   upc?: string;
   sku?: string;
-  price: number;
+  basePrice: number;
+  finalPrice: 0;
+  pricePerUnit: 1;
   discountType: ApiDiscountType;
-  discountRate: number; 
+  discountRate: number;
   variantOption?: VariantOptionType;
   inventory: { status: ApiInventoryStatus; stock: number };
 }
@@ -75,14 +77,13 @@ export interface CreateProductPayload {
 
   isTaxInclusive: boolean;
   taxClassId: string;
+  taxRate: number;
 
   variant?: VariantType;
   productOptions: CreateProductOptionPayload[];
 }
 
-export interface UpdateProductPayload extends Partial<CreateProductPayload> {
-  
-}
+export interface UpdateProductPayload extends Partial<CreateProductPayload> {}
 
 export interface ProductsContextType {
   products: ProductType[];

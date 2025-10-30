@@ -2,7 +2,6 @@
 import { CreateProductPayload } from "@/common/contexts/ProductsContext/interfaces/products";
 import { Grid, Typography } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
-import { tagOptions } from "@/common/contexts/ProductsContext/constants";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
 import BaseButton from "@/common/components/base/BaseButton";
@@ -11,6 +10,7 @@ import Box from "@mui/material/Box";
 import CategoryDialog from "@/app/dashboard/pos/categories/components/CategoryDialog";
 import React, { useMemo, useState } from "react";
 import type { FormikProps } from "formik";
+import { tagOptions } from "@/common/contexts/ProductsContext/constants/constants";
 
 interface CategoryAndTagsProps {
   formik: FormikProps<CreateProductPayload>;
@@ -19,16 +19,11 @@ interface CategoryAndTagsProps {
 const CategoryAndTags: React.FC<CategoryAndTagsProps> = ({ formik }) => {
   const [openCreateCategory, setOpenCreateCategory] = useState(false);
 
-  // // derive single category value (support old array shape too)
   const categoryValue: string = (() => {
     const v = formik?.values?.categoryId;
     if (Array.isArray(v)) return String(v[0] ?? "");
     return v != null ? String(v) : "";
   })();
-
-  // const tags: string[] = Array.isArray(formik?.values?.tags)
-  //   ? (formik.values.tags as any[]).map((t) => (typeof t === "string" ? t : t?.label || "")).filter(Boolean)
-  //   : [];
 
   const { dropdown: categoryDropdown } = useCategories();
 

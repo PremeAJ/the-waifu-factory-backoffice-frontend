@@ -25,6 +25,7 @@ export interface BaseSliderProps {
   showInput?: boolean; // แสดงช่องกรอกตัวเลขข้างสไลเดอร์
   disabled?: boolean;
   sx?: any;
+  onMouseUp?: () => void;
 
   onChange?: (value: number) => void; // ถ้าต้องการ hook ภายนอก
 }
@@ -43,6 +44,7 @@ const BaseSlider: React.FC<BaseSliderProps> = ({
   disabled,
   sx,
   suffix,
+  onMouseUp,
   onChange,
 }) => {
 
@@ -98,6 +100,7 @@ const BaseSlider: React.FC<BaseSliderProps> = ({
             max={max}
             step={step}
             onChange={handleChange}
+            onMouseUp={onMouseUp}
             valueLabelDisplay={valueLabelDisplay}
             valueLabelFormat={formatValue}
             aria-label={label || name}

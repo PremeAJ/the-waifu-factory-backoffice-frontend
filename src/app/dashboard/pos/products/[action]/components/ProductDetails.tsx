@@ -19,20 +19,17 @@ import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/produ
 import { useTax } from "@/common/contexts/Master/TaxContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import { unitTypeOptions, volumeUnitOptions, weightUnitOptions } from "@/common/contexts/ProductsContext/constants/constants";
 
 // --- Component Constants ---
-
-export const unitTypeOptions: OptionType[] = [
-  { text: "ชิ้น", value: UnitTypeEnum.PIECE, icon: "IconPackage" },
-  { text: "น้ำหนัก", value: UnitTypeEnum.WEIGHT, icon: "IconScale" },
-  { text: "ปริมาตร", value: UnitTypeEnum.VOLUME, icon: "IconDroplet" },
-];
 
 const emptyOption = (withVariant: boolean = true) => {
   const option: any = {
     upc: "",
     sku: "",
-    price: 0,
+    basePrice: 0,
+    finalPrice: 0,
+    pricePerUnit: 1, // <-- เพิ่ม field นี้
     inventory: { status: "active", stock: 0 },
     discountType: "none",
     discountRate: 0,
@@ -82,7 +79,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
         ...emptyOption(false),
         upc: baseOption.upc ?? "",
         sku: baseOption.sku ?? "",
-        price: baseOption.price ?? 0,
+        basePrice: baseOption.basePrice ?? 0,
+        finalPrice: baseOption.finalPrice ?? 0,
+        pricePerUnit: baseOption.pricePerUnit ?? 1, // <-- เพิ่ม field นี้
         inventory: baseOption.inventory ?? { status: "active", stock: 0 },
       };
       formik.setFieldValue("variant", undefined);
@@ -125,16 +124,52 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
     }));
   }, [taxes, isLanguage]);
 
-  // sync selected tax rate -> p_vat
   React.useEffect(() => {
     if (!formik) return;
     const selectedId = formik.values?.taxClassId;
     const selected = (taxes || []).find((t) => t.id === selectedId);
     const rate = selected ? Number(selected.rate ?? 0) : 0;
-    if (formik.values?.p_vat !== rate) {
-      formik.setFieldValue("p_vat", rate);
+    if (formik.values?.taxRate !== rate) {
+      formik.setFieldValue("taxRate", rate);
     }
   }, [formik, taxes, formik?.values?.taxClassId]);
+
+  // Set default unit when unitType changes
+  React.useEffect(() => {
+    if (!formik) return;
+    const unitType = formik.values.unitType;
+    let defaultUnit: string | undefined;
+
+    switch (unitType) {
+      case UnitTypeEnum.PIECE:
+        defaultUnit = "ชิ้น";
+        break;
+      case UnitTypeEnum.WEIGHT:
+        defaultUnit = "g";
+        break;
+      case UnitTypeEnum.VOLUME:
+        defaultUnit = "ml";
+        break;
+    }
+
+    if (defaultUnit && formik.values.unit !== defaultUnit) {
+      formik.setFieldValue("unit", defaultUnit);
+    }
+  }, [formik?.values?.unitType]);
+
+  const renderUnitField = () => {
+    const unitType = formik?.values?.unitType;
+
+    switch (unitType) {
+      case UnitTypeEnum.WEIGHT:
+        return <BaseDropdown formik={formik} name="unit" label="หน่วยย่อย" options={weightUnitOptions} fullWidth required />;
+      case UnitTypeEnum.VOLUME:
+        return <BaseDropdown formik={formik} name="unit" label="หน่วยย่อย" options={volumeUnitOptions} fullWidth required />;
+      case UnitTypeEnum.PIECE:
+      default:
+        return <BaseTextField formik={formik} fullWidth label="หน่วยย่อย" name="unit" placeholder="เช่น ชิ้น, แท่ง, เล่ม" required />;
+    }
+  };
 
   return (
     <Box p={3}>
@@ -148,21 +183,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
           <BaseDropdown formik={formik} name="unitType" label="ประเภทหน่วยนับ" options={unitTypeOptions} fullWidth required />
         </Grid>
         <Grid size={{ xs: 6, md: 6 }}>
-          <BaseTextField formik={formik} fullWidth label="หน่วยย่อย" name="unit" placeholder="เช่น แท่ง, เล่ม, กิโลกรัม" required />
+          {renderUnitField()}
         </Grid>
         <Grid size={{ xs: 6, md: 6 }}>
-          <BaseDropdown formik={formik} name="taxClassId" label="ประเภทภาษี" options={taxClassOptions} fullWidth loading={taxLoading} />
+          <BaseDropdown formik={formik} name="taxClassId" label="ประเภทภาษี" options={taxClassOptions} fullWidth />
         </Grid>
         <Grid size={{ xs: 6, md: 6 }}>
-          <BaseTextField
-            name="p_vat"
-            label="อัตรา VAT (%)"
-            formik={formik}
-            fullWidth
-            type="number"
-            disabled
-            suffix="%"
-          />
+          <BaseTextField name="taxRate" label="อัตรา VAT (%)" formik={formik} fullWidth type="number" suffix='%' />
         </Grid>
       </Grid>
 
