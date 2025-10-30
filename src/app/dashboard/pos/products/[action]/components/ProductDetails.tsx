@@ -3,13 +3,14 @@ import React from "react";
 
 // MUI & Tabler Icons
 import { useTheme } from "@mui/material/styles";
-import { Grid, Typography, Box } from "@mui/material";
+import { Grid, Typography, Box, Stack } from "@mui/material";
 import { IconTag, IconStack } from "@tabler/icons-react";
 
 // Project Components
 import BaseDropdown, { OptionType } from "@/common/components/base/BaseDropdown";
 import BaseTabs from "@/common/components/base/BaseTabs";
 import BaseTextField from "@/common/components/base/BaseTextField";
+import BaseSwitch from "@/common/components/base/BaseSwitch";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import SingleProductForm from "./Variant/SingleProductForm";
 import VariantOptionsList from "./Variant/VariantOptionsList";
@@ -20,6 +21,7 @@ import { useTax } from "@/common/contexts/Master/TaxContext";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { unitTypeOptions, volumeUnitOptions, weightUnitOptions } from "@/common/contexts/ProductsContext/constants/constants";
+import BaseLabel from "@/common/components/base/BaseLabel";
 
 // --- Component Constants ---
 
@@ -29,7 +31,7 @@ const emptyOption = (withVariant: boolean = true) => {
     sku: "",
     basePrice: 0,
     finalPrice: 0,
-    pricePerUnit: 1, // <-- เพิ่ม field นี้
+    pricePerUnit: 1,
     inventory: { status: "active", stock: 0 },
     discountType: "none",
     discountRate: 0,
@@ -81,7 +83,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
         sku: baseOption.sku ?? "",
         basePrice: baseOption.basePrice ?? 0,
         finalPrice: baseOption.finalPrice ?? 0,
-        pricePerUnit: baseOption.pricePerUnit ?? 1, // <-- เพิ่ม field นี้
+        pricePerUnit: baseOption.pricePerUnit ?? 1,
         inventory: baseOption.inventory ?? { status: "active", stock: 0 },
       };
       formik.setFieldValue("variant", undefined);
@@ -178,18 +180,28 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ formik }) => {
         <BaseTabs value={tab} onChange={handleTabChange} tabs={tabs} />
       </Box>
 
-      <Grid container columnSpacing={2} mt={2}>
+      <Grid container columnSpacing={2} mt={2} alignItems="flex-end">
         <Grid size={{ xs: 6, md: 6 }}>
           <BaseDropdown formik={formik} name="unitType" label="ประเภทหน่วยนับ" options={unitTypeOptions} fullWidth required />
         </Grid>
         <Grid size={{ xs: 6, md: 6 }}>
           {renderUnitField()}
         </Grid>
-        <Grid size={{ xs: 6, md: 6 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <BaseDropdown formik={formik} name="taxClassId" label="ประเภทภาษี" options={taxClassOptions} fullWidth />
         </Grid>
-        <Grid size={{ xs: 6, md: 6 }}>
-          <BaseTextField name="taxRate" label="อัตรา VAT (%)" formik={formik} fullWidth type="number" suffix='%' />
+        <Grid size={{ xs: 12, md: 4 }}>
+          <BaseTextField name="taxRate" label="อัตรา VAT (%)" formik={formik} fullWidth type="number" />
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <BaseSwitch
+            border
+            formik={formik}
+            name="isTaxInclusive"
+            label="ราคารวมภาษี"
+            labelPosition="inside"
+            tooltip="หากไม่ได้เปิดไว้ ภาษีจะถูกนำไปคิดในบิล"
+          />
         </Grid>
       </Grid>
 

@@ -23,16 +23,21 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
 
   // Get values from Formik
   const priceBase = Number(getIn(formik.values, `${optionPath}.basePrice`) ?? 0);
-  const finalPrice = Number(getIn(formik.values, `${optionPath}.finalPrice`) ?? 0);
+  const priceFinal = Number(getIn(formik.values, `${optionPath}.finalPrice`) ?? 0);
   const discountType = getIn(formik.values, `${optionPath}.discountType`);
   const discountRate = Number(getIn(formik.values, `${optionPath}.discountRate`) ?? 0);
   const status = getIn(formik.values, `${optionPath}.inventory.status`);
+
+  // Get tax values from the root of the form
+  const taxRate = Number(formik.values?.taxRate ?? 0);
+  const isTaxInclusive = formik.values?.isTaxInclusive ?? true;
+
   const unitType = formik.values?.unitType;
   const unit = formik.values?.unit || "";
 
   const isSoldByPiece = unitType === UnitTypeEnum.PIECE;
 
-  // Forward calculation: from base basePrice to final basePrice
+  // Forward calculation: from base price to final price
   useEffect(() => {
     if (lastEdited !== "base") return;
 
@@ -43,35 +48,48 @@ const ProductOptionFields: React.FC<Props> = ({ formik, optionPath }) => {
       priceAfterDiscount = priceBase - discountRate;
     }
 
-    const newFinalPrice = priceAfterDiscount < 0 ? 0 : Number(priceAfterDiscount.toFixed(2));
+    let finalPriceWithTax = priceAfterDiscount;
+    if (isTaxInclusive) {
+      // If price is tax-inclusive, the base price already contains the tax component.
+      // The final price is just the base price after discount.
+      finalPriceWithTax = priceAfterDiscount;
+    } else {
+      // If price is tax-exclusive, add tax on top of the discounted price.
+      finalPriceWithTax = priceAfterDiscount * (1 + taxRate / 100);
+    }
 
-    // Update formik only if the value has changed
-    if (newFinalPrice !== finalPrice) {
+    const newFinalPrice = finalPriceWithTax < 0 ? 0 : Number(finalPriceWithTax.toFixed(2));
+
+    if (newFinalPrice !== priceFinal) {
       formik.setFieldValue(`${optionPath}.finalPrice`, newFinalPrice);
     }
-  }, [priceBase, discountType, discountRate, lastEdited]);
+  }, [priceBase, discountType, discountRate, taxRate, isTaxInclusive, lastEdited]);
 
-  // Reverse calculation: from final basePrice to base basePrice
+  // Reverse calculation: from final price to base price
   useEffect(() => {
     if (lastEdited !== "final") return;
 
-    let newBasePrice = finalPrice;
+    let priceBeforeTax = priceFinal;
+    if (!isTaxInclusive) {
+      // If the final price was calculated with tax on top, we need to remove it first.
+      priceBeforeTax = priceFinal / (1 + taxRate / 100);
+    }
+
+    let newBasePrice = priceBeforeTax;
     if (discountType === "percentage") {
-      // Ensure we don't divide by zero
       if (discountRate < 100) {
-        newBasePrice = finalPrice / (1 - discountRate / 100);
+        newBasePrice = priceBeforeTax / (1 - discountRate / 100);
       }
     } else if (discountType === "fixed") {
-      newBasePrice = finalPrice + discountRate;
+      newBasePrice = priceBeforeTax + discountRate;
     }
 
     newBasePrice = newBasePrice < 0 ? 0 : Number(newBasePrice.toFixed(2));
 
-    // Update formik only if the value has changed
     if (newBasePrice !== priceBase) {
       formik.setFieldValue(`${optionPath}.basePrice`, newBasePrice);
     }
-  }, [finalPrice, discountType, discountRate, lastEdited]);
+  }, [priceFinal, discountType, discountRate, taxRate, isTaxInclusive, lastEdited]);
 
   const renderPricingFields = () => {
     if (isSoldByPiece) {

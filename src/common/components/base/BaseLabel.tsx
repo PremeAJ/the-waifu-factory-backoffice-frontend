@@ -2,7 +2,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { Tooltip, Typography, useTheme, useMediaQuery, ClickAwayListener } from "@mui/material";
-import { IconInfoCircle } from "@tabler/icons-react";
+import { IconHelpCircle, IconInfoCircle } from "@tabler/icons-react";
 import useIsMobile from "@/common/utils/state/isMobile";
 
 interface BaseLabelProps {
@@ -38,11 +38,11 @@ const BaseLabel = styled(
       >
         <span style={{ display: "inline-block", minWidth: 0 }}>{children}</span>
         {tooltip && (
-          <IconInfoCircle
-            width={20}
+          <IconHelpCircle
+            size={16}
             color={theme.palette.info.main}
             cursor={"pointer"}
-            style={{ padding: 4, marginLeft: 2 }}
+            style={{  }}
           />
         )}
         {required && <span style={{ color: "#d32f2f" }}>*</span>}
@@ -62,7 +62,7 @@ const BaseLabel = styled(
             <ClickAwayListener onClickAway={handleClose}>
               <Tooltip
                 title={tooltip}
-                placement="top"
+                placement="top" arrow
                 open={open}
                 onClose={handleClose}
                 disableHoverListener
@@ -74,7 +74,7 @@ const BaseLabel = styled(
               </Tooltip>
             </ClickAwayListener>
           ) : (
-            <Tooltip title={tooltip} placement="top">
+            <Tooltip title={tooltip}  placement="top" arrow>
               {content}
             </Tooltip>
           )
