@@ -1,8 +1,9 @@
 import React from "react";
-import { Switch, SwitchProps, Stack, Typography, Box, Tooltip } from "@mui/material";
+import { Switch, SwitchProps, Stack, Typography, Box, Tooltip, ClickAwayListener } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import BaseLabel from "./BaseLabel";
 import { IconHelpCircle } from "@tabler/icons-react";
+import useIsMobile from "@/common/utils/state/isMobile"; // ใช้ตรวจมือถือ
 
 // StyledSwitch remains for the visual appearance of the switch itself
 const StyledSwitch = styled((props: SwitchProps) => <Switch {...props} />)(({ theme }) => ({
@@ -57,20 +58,66 @@ const getIn = (obj: any, path: string) => {
   return parts.reduce((acc: any, key: string) => (acc != null ? acc[key] : undefined), obj);
 };
 
-// --- Helper for Label with Tooltip ---
+// --- Helper for Label with Tooltip (now uses ClickAwayListener for mobile toggle) ---
 const LabelWithTooltip: React.FC<{ text: string; tooltip?: string }> = ({ text, tooltip }) => {
   const theme = useTheme();
-  return (
-    <Stack direction="row" alignItems="center" spacing={0.5}>
+  const isMobile = useIsMobile();
+  const [open, setOpen] = React.useState(false);
+
+  const handleToggleTooltip = (e: React.MouseEvent) => {
+    if (!tooltip || !isMobile) return;
+    // Prevent focusing input / propagating clicks when toggling on mobile
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen((o) => !o);
+  };
+
+  const handleClose = () => setOpen(false);
+
+  const content = (
+    <span
+      style={{ display: "inline-flex", alignItems: "center", gap: 6, cursor: tooltip && isMobile ? "pointer" : undefined }}
+      onClick={handleToggleTooltip}
+      role={tooltip && isMobile ? "button" : undefined}
+      tabIndex={tooltip && isMobile ? 0 : undefined}
+    >
       <Typography variant="subtitle1" color="textSecondary">
         {text}
       </Typography>
       {tooltip && (
-        <Tooltip title={tooltip} placement="top" arrow>
-          <IconHelpCircle size={16} style={{ color: theme.palette.info.main, cursor: "pointer" }} />
-        </Tooltip>
+        <IconHelpCircle size={16} style={{ color: theme.palette.info.main }} />
       )}
-    </Stack>
+    </span>
+  );
+
+  if (!tooltip) return content;
+
+  // Mobile: controlled tooltip with ClickAwayListener (tap to open, tap outside to close)
+  if (isMobile) {
+    return (
+      <ClickAwayListener onClickAway={handleClose}>
+        <Tooltip
+          title={tooltip}
+          placement="top"
+          arrow
+          open={open}
+          onClose={handleClose}
+          disableHoverListener
+          disableFocusListener
+          disableTouchListener
+          enterTouchDelay={0}
+        >
+          {content}
+        </Tooltip>
+      </ClickAwayListener>
+    );
+  }
+
+  // Desktop: regular hover tooltip
+  return (
+    <Tooltip title={tooltip} placement="top" arrow>
+      {content}
+    </Tooltip>
   );
 };
 
@@ -96,7 +143,8 @@ const BaseSwitch: React.FC<BaseSwitchProps> = ({
     }
     // Always call the onChange from props if it exists (for non-formik usage)
     if (rest.onChange) {
-      rest.onChange(event, newCheckedState);
+      // keep signature compatible with MUI: (event, checked)
+      (rest.onChange as any)(event, newCheckedState);
     }
   };
 
@@ -108,7 +156,7 @@ const BaseSwitch: React.FC<BaseSwitchProps> = ({
   if (border) {
     const effectiveLabelPosition = labelPosition === "side" ? "top" : labelPosition; // 'side' is not valid for bordered, default to 'top'
     return (
-      <Box>
+      <Box mt={5}>
         {label && effectiveLabelPosition === "top" && <BaseLabel tooltip={tooltip}>{label}</BaseLabel>}
         <Stack
           direction="row"
@@ -134,7 +182,7 @@ const BaseSwitch: React.FC<BaseSwitchProps> = ({
 
   // Case 2: No Border (standard switch with label)
   return (
-    <Stack direction="row" alignItems="center">
+    <Stack direction="row" alignItems="center" >
       {switchElement}
       {label && labelPosition === "side" && <LabelWithTooltip text={label} tooltip={tooltip} />}
     </Stack>
