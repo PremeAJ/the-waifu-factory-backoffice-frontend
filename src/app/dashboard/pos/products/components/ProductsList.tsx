@@ -7,17 +7,20 @@ import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import { ProductType } from "@/common/contexts";
+import ProductPreviewDialog from "./ProductPreviewDialog";
 
 function ProductsList() {
   const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct } = useProducts();
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
+  const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
   const isMobilePortrait = isMobile && isPortrait;
   const router = useRouter();
 
   const tableData: any = useMemo(() => {
-    return (products || []).map((prod) => {
+    return (products || []).map((prod:ProductType) => {
       if (!prod.variant && prod.productOptions?.length === 1) {
         const singleOption = prod.productOptions[0];
         return {
@@ -28,13 +31,47 @@ function ProductsList() {
         };
       }
 
+      // build subItems and derive main product status from variants
+      // cast product options to any so we can safely access optional 'status' or nested inventory.status
+      const subItems: any[] = (prod.productOptions || []).map((opt: any) => ({
+        ...opt,
+        nameTh: prod.nameTh,
+        unit: prod.unit,
+      }));
+
+      // determine derived status: if any variant is active -> active, else inactive
+      const derivedStatus = subItems.some((opt: any) => {
+        return (opt?.status ?? opt?.inventory?.status) === "active";
+      })
+        ? "active"
+        : "inactive";
+
+      // compute price range for main product from variants (display only)
+      const prices = subItems
+        .map((s: any) => Number(s?.basePrice ?? s?.finalPrice ?? NaN))
+        .filter((n: number) => !Number.isNaN(n));
+      const fallbackProdPrice = Number((prod as any)?.basePrice ?? (prod as any)?.finalPrice ?? NaN);
+      const priceMin = prices.length ? Math.min(...prices) : fallbackProdPrice;
+      const priceMax = prices.length ? Math.max(...prices) : fallbackProdPrice;
+      const priceDisplay =
+        !Number.isNaN(priceMin) && !Number.isNaN(priceMax)
+          ? priceMin === priceMax
+            ? String(priceMin)
+            : `${priceMin} ~ ${priceMax}`
+          : "-";
+
       return {
         ...prod,
-        subItems: (prod.productOptions || []).map((opt) => ({
-          ...opt,
-          parentNameTh: prod.nameTh,
-          unit: prod.unit,
-        })),
+        id: prod.id,
+        // override main product status when product has variants
+        status: derivedStatus,
+        // numeric fallback / canonical price (used by components expecting number)
+        basePrice: Number.isFinite(priceMin) ? priceMin : undefined,
+        // explicit string for UI (range or single)
+        displayPrice: priceDisplay,
+        // keep legacy 'price' field as string for older code that expects it
+        price: priceDisplay,
+        subItems,
       };
     });
   }, [products]);
@@ -50,6 +87,11 @@ function ProductsList() {
 
   const actionTemplates = useMemo(
     () => [
+      {
+        type: "view",
+        tooltip: "ดู",
+        onClick: (item: any) => setPreviewState({ open: true, item }),
+      },
       {
         type: "edit",
         tooltip: "แก้ไข",
@@ -73,6 +115,9 @@ function ProductsList() {
     setPerPage(parseInt(event.target.value, 10));
     setPage(1);
   };
+
+  // preview dialog
+  const handleClosePreview = () => setPreviewState({ open: false, item: null });
 
   return (
     <Box>
@@ -124,6 +169,7 @@ function ProductsList() {
         open={deleteDialogState.open}
         title="Confirm Delete"
       />
+      <ProductPreviewDialog open={previewState.open} onClose={handleClosePreview} item={previewState.item} />
     </Box>
   );
 }

@@ -8,34 +8,54 @@ export enum UnitTypeEnum {
   WEIGHT = "weight",
   VOLUME = "volume",
 }
+
 export interface VariantType {
   nameTh: string;
   nameEn?: string | null;
 }
 
-export interface InventoryType {
-  id: string;
-  branchId: string;
-  stock: number;
-  status: string;
-}
-
 export interface VariantOptionType {
+  id?: string;
   nameTh: string;
   nameEn?: string | null;
 }
 
+export interface InventoryType {
+  // response contains stock, status, branchId
+  stock: number;
+  status: ApiInventoryStatus;
+  branchId: string;
+}
+
 export interface ProductOptionType {
-  upc?: string;
-  sku?: string;
-  basePrice?: number;
+  id: string;
+  upc?: string | null;
+  sku?: string | null;
+  basePrice: number;
+  finalPrice?: number;
+  pricePerUnit?: number;
+  discountType?: ApiDiscountType;
+  discountRate?: number;
   variantOption?: VariantOptionType | null;
   inventory?: InventoryType | null;
+}
 
-  // discount fields
-  discountType?: ApiDiscountType;
-  // numeric discount value (percentage or fixed amount depending on discountType)
-  discountRate?: number;
+export interface UploadedFile {
+  id: string;
+  bucket?: string;
+  storagePath?: string;
+  originName?: string;
+  url?: string;
+}
+
+export interface ProductFile {
+  uploadedFile: UploadedFile;
+}
+
+export interface TaxClassType {
+  nameTh: string;
+  nameEn?: string;
+  rate: number;
 }
 
 export interface ProductType {
@@ -48,19 +68,33 @@ export interface ProductType {
   unit?: string | null;
   tags?: string[];
   variant?: VariantType | null;
+  productFiles?: ProductFile[];
   productOptions?: ProductOptionType[];
   totalStock?: number;
+
+  // tax
+  isTaxInclusive?: boolean;
+  taxClassId?: string | null;
+  taxClass?: TaxClassType | null;
+
+  // optional fields computed on frontend
+  status?: ApiInventoryStatus | "active" | "inactive" | "deleted";
+  // display helpers (string shown in table)
+  price?: string;
+  displayPrice?: string;
+  basePrice?: number;
 }
+
 export interface CreateProductOptionPayload {
   upc?: string;
   sku?: string;
   basePrice: number;
-  finalPrice: 0;
-  pricePerUnit: 1;
+  finalPrice: number;
+  pricePerUnit: number;
   discountType: ApiDiscountType;
   discountRate: number;
   variantOption?: VariantOptionType;
-  inventory: { status: ApiInventoryStatus; stock: number };
+  inventory: { status: ApiInventoryStatus; stock: number; branchId?: string };
 }
 
 export interface CreateProductPayload {
@@ -100,4 +134,10 @@ export interface ProductsContextType {
   setSearch: (s: string) => void;
   setPage: (p: number) => void;
   setPerPage: (n: number) => void;
+}
+
+// helper generic for API response (optional, use where needed)
+export interface ApiListResponse<T> {
+  pageOptions?: PageOptions;
+  data: T[];
 }
