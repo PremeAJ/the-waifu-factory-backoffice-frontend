@@ -4,13 +4,11 @@ import { headers as nextHeaders } from "next/headers";
 import { HeadersKey } from "../constants/header";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-
 async function header(accessToken?: string) {
   const reqHeaders = await nextHeaders();
   const ua = reqHeaders.get("user-agent") || "";
   const origin = reqHeaders.get("origin") || process.env.NEXTAUTH_URL || "";
   const coolies = reqHeaders.get("cookie") || "";
-
   return {
     [HeadersKey.UserAgent]: ua,
     [HeadersKey.Origin]: origin,
@@ -18,7 +16,6 @@ async function header(accessToken?: string) {
     [HeadersKey.Cookies]: coolies,
   };
 }
-
 function isExpired(token: string): boolean {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
@@ -27,24 +24,7 @@ function isExpired(token: string): boolean {
     return true;
   }
 }
-
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
-
-let refreshPromise: Promise<any> | null = null;
-
-async function refreshToken(token: any) {
-  if (!refreshPromise) {
-    refreshPromise = postFetcher(
-      `${baseUrl}/api/v1/session/refresh`,
-      { token: token.refreshToken },
-      { ...(await header(token.accessToken)) }
-    ).finally(() => {
-      refreshPromise = null;
-    });
-  }
-  return refreshPromise;
-}
-
 const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -63,7 +43,6 @@ const authOptions: AuthOptions = {
           { ...(await header()) }
         );
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-
         const { accessToken } = login.data;
         const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
         console.log("🚀 ~ authorize ~ profile:", profile)
@@ -103,15 +82,18 @@ const authOptions: AuthOptions = {
         if (session.profile) token.profile = session.profile;
       }
       if (token.accessToken && isExpired(token.accessToken)) {
-        try {
-          const refreshed = await refreshToken(token);
-          if (refreshed?.error) throw new Error(refreshed.message);
-          if (refreshed.data.accessToken && refreshed.data.refreshToken) {
-            token.refreshToken = refreshed.data.refreshToken;
-            token.accessToken = refreshed.data.accessToken;
-          }
-        } catch (err) {
-          // handle error
+        console.log("🚀 ~ token.refreshToken:", token.refreshToken)
+        const refreshed = await postFetcher(
+          `${baseUrl}/api/v1/session/refresh`,
+          { token: token.refreshToken },
+          { ...(await header(token.accessToken)) }
+        );
+        if (refreshed?.error) {
+          throw new Error(refreshed.message);
+        }
+        if (refreshed.data.accessToken && refreshed.data.refreshToken) {
+          token.refreshToken = refreshed.data.refreshToken;
+          token.accessToken = refreshed.data.accessToken;
         }
       }
       return token;
@@ -127,5 +109,4 @@ const authOptions: AuthOptions = {
     },
   },
 };
-
 export default authOptions;
