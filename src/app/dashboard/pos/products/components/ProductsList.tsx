@@ -87,7 +87,7 @@ function ProductsList() {
       {
         type: "edit",
         tooltip: "แก้ไข",
-        onClick: (item: any) => router.push(`/dashboard/pos/products/edit?id=${item.id}`),
+        href: (item: any) => `/dashboard/pos/products/edit?id=${item.id}`, // ใช้ href แทน router.push
       },
       {
         type: "delete",
@@ -96,7 +96,7 @@ function ProductsList() {
         onClick: (item: any) => setDeleteDialogState({ open: true, item: item }),
       },
     ],
-    [isMobilePortrait, router]
+    [isMobilePortrait] // ตัด router ออก
   );
 
   const handlePageChange = (event: unknown, newPage: number) => {

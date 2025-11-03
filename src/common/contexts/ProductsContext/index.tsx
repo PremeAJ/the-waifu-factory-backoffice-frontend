@@ -165,7 +165,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     isReachingEnd,
     loading,
     error,
-    actionLoading, // ใช้สำหรับ create/update/delete รวม
+    actionLoading, 
     getProductById,
     createProduct,
     updateProduct,

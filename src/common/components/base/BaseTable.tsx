@@ -30,6 +30,7 @@ import BaseTooltip from "./BaseTooltip";
 import { IconEdit, IconPlus, IconTrash, IconEye } from "@tabler/icons-react";
 import config from "@/common/contexts/setting/config";
 import { defaultPageOptions } from "@/common/interface/paginate";
+import Link from "next/link"; // เพิ่ม
 
 interface TableHeader {
   key: string;
@@ -52,6 +53,7 @@ type ActionTemplate = {
   hide?: boolean | ((item: DataItem) => boolean);
   color?: "inherit" | "primary" | "error" | "default" | "secondary" | "info" | "success" | "warning" | string;
   disabled?: (item: DataItem) => boolean;
+  href?: string | ((item: DataItem) => string); // เพิ่ม
   onClick?: (item: DataItem) => void;
 };
 
@@ -227,11 +229,18 @@ const BaseTable = <T extends readonly TableHeader[]>({
             if (isHidden) return null;
             const disabled = resolved.disabled ? resolved.disabled(item) : false;
             const tooltipText = typeof resolved.tooltip === "function" ? resolved.tooltip(item) : resolved.tooltip || "";
+            const href = typeof resolved.href === "function" ? resolved.href(item) : resolved.href; // ใหม่
             return (
               <Box key={resolved.key ?? `${resolved.type ?? "action"}-${idx}`} sx={{ display: "inline-flex", mx: 0.5 }}>
                 <BaseTooltip title={tooltipText}>
                   <span>
-                    <IconButton size="small" disabled={disabled} onClick={() => resolved.onClick?.(item)} color={resolved.color as any}>
+                    <IconButton
+                      size="small"
+                      disabled={disabled}
+                      {...(!disabled && href ? { component: Link, href } : {})} // ถ้ามี href ใช้ Link
+                      onClick={!href ? () => resolved.onClick?.(item) : undefined}
+                      color={resolved.color as any}
+                    >
                       {resolved.icon ?? <span style={{ fontSize: 12 }}>{resolved.type}</span>}
                     </IconButton>
                   </span>

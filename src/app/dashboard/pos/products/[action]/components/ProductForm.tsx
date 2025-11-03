@@ -6,7 +6,7 @@ import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload
 import { unitTypeOptions } from "@/common/contexts/ProductsContext/constants/constants";
 import { useFormik } from "formik";
 import { useProducts } from "@/common/contexts";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { validationSchema } from "../validation/yup";
 import BaseDebug from "@/common/components/debug/BaseDebug";
@@ -15,13 +15,10 @@ import CategoryAndTags from "./CategoryAndTags";
 import GeneralCard from "./GeneralCard";
 import ProductDetails from "./ProductDetails";
 import ProductTemplate from "./ProductTemplate";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import type { CreateProductPayload, CreateProductOptionPayload, ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
-
-interface ProductFormProps {
-  initialData?: ProductType | null;
-}
+import PageLoader from "@/common/components/loaders/PageLoader";
 
 const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload => {
   if (!p) {
@@ -106,18 +103,32 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
   };
 };
 
-const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
+const ProductForm: React.FC = () => {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams?.get("id") ?? undefined; // มี id = โหมดแก้ไข
   const { data: session } = useSession();
-  const { createProduct, updateProduct } = useProducts();
+  const { createProduct, updateProduct, getProductById } = useProducts();
 
-  const initialValues = useMemo(() => mapProductToFormValues(initialData), [initialData]);
+  const [product, setProduct] = useState<ProductType | null>(null);
+  const [loading, setLoading] = useState<boolean>(Boolean(id));
 
-  const onClickCancel = () => {
-    formik.resetForm();
-    router.back();
-  };
+  useEffect(() => {
+    (async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+      const product = await getProductById(id);
+      if (product) {
+        setProduct(product || null);
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const initialValues = useMemo(() => mapProductToFormValues(product), [product]);
 
   const formik = useFormik<CreateProductPayload>({
     initialValues,
@@ -126,8 +137,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
     validateOnMount: true,
     onSubmit: async (values: CreateProductPayload) => {
       const branchIdFromSession = (session?.user as any)?.branchId || undefined;
-      const isEdit = Boolean(initialData?.id);
-      const productId = initialData?.id as string | undefined;
+      const isEdit = Boolean(id);
+      const productId = id;
 
       const payload: CreateProductPayload = {
         nameTh: values.nameTh,
@@ -146,7 +157,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
         taxRate: Number(values.taxRate ?? 0),
         variant: values.variant,
         productOptions: (values.productOptions || []).map((opt, idx) => ({
-          id: initialData?.productOptions?.[idx]?.id,
+          id: product?.productOptions?.[idx]?.id, // อ้างจากสินค้าปัจจุบันถ้ามี
           upc: opt.upc || undefined,
           sku: opt.sku || undefined,
           basePrice: Number(opt.basePrice ?? 0),
@@ -170,6 +181,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
       router.replace("/dashboard/pos/products");
     },
   });
+
+  if (loading) return <PageLoader />;
 
   return (
     <form noValidate onSubmit={formik.handleSubmit}>
@@ -233,12 +246,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
                 variant="outlined"
                 color="error"
                 fullWidth={isMobile}
-                onClick={onClickCancel}
-                loading={formik.isSubmitting}
+                href="/dashboard/pos/products"
               />
               <BaseButton
                 preset="save"
-                label={initialData?.id ? "อัปเดต" : "บันทึก"}
+                label={id ? "อัปเดต" : "บันทึก"}
                 type="submit"
                 variant="contained"
                 color="primary"
