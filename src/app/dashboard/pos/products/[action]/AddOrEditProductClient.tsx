@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import { CategoriesProvider } from "@/common/contexts/CategoriesContext";
 import { ProductsProvider, useProducts } from "@/common/contexts/ProductsContext";
 import { TaxProvider } from "@/common/contexts/Master/TaxContext";
@@ -44,7 +42,7 @@ function ClientLoader() {
 
     setLoading(true);
     getProductById(id)
-      .then((p) => {
+      .then((p:ProductType) => {
         if (!mounted) return;
         setProduct(p ?? null);
       })

@@ -25,8 +25,16 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
 
   if (!item) return null;
 
-  const images: string[] =
-    (item.productFiles ?? []).map((f: any) => f?.uploadedFile?.url).filter((u: any) => typeof u === "string" && u.length > 0) || [];
+  // เลือกภาพบนเป็น product_thumbnail และภาพด้านล่างเป็น product_detail เท่านั้น
+  const uploadedFiles = (item.productFiles ?? [])
+    .map((f: any) => f?.uploadedFile)
+    .filter((u: any) => u && typeof u.url === "string");
+
+  const thumbnailUrl: string | undefined = uploadedFiles.find((u: any) => u.bucket === "product_thumbnail")?.url;
+  const detailUrls: string[] = uploadedFiles
+    .filter((u: any) => u.bucket === "product_detail")
+    .map((u: any) => u.url)
+    .filter(Boolean);
 
   const openLightbox = (index = 0) => {
     setLightboxIndex(index);
@@ -64,12 +72,12 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
     <Box sx={{ p: 2 }}>
       <Stack spacing={1}>
         <Box>
-          {images.length > 0 ? (
+          {thumbnailUrl || detailUrls.length > 0 ? (
             <>
               <Box
                 component="img"
-                src={images[0]}
-                alt={`${item.nameTh ?? "product"}-0`}
+                src={thumbnailUrl || detailUrls[0]}
+                alt={`${item.nameTh ?? "product"}-cover`}
                 onClick={() => openLightbox(0)}
                 sx={{
                   width: "100%",
@@ -80,13 +88,13 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
                 }}
               />
               <Grid container spacing={1} sx={{ mt: 1 }}>
-                {images.map((src, i) => (
+                {detailUrls.map((src, i) => (
                   <Grid key={src + i}>
                     <Box
                       component="img"
                       src={src}
-                      alt={`${item.nameTh ?? "product"}-${i}`}
-                      onClick={() => openLightbox(i)}
+                      alt={`${item.nameTh ?? "product"}-detail-${i}`}
+                      onClick={() => openLightbox(thumbnailUrl ? i + 1 : i)}
                       sx={{
                         width: 64,
                         height: 64,
@@ -168,7 +176,7 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
     </Box>
   );
 
-  const lightboxItems: LightboxItem[] = images.map((src, i) => ({
+  const lightboxItems: LightboxItem[] = ([...(thumbnailUrl ? [thumbnailUrl] : []), ...detailUrls]).map((src, i) => ({
     src,
     alt: `${item.nameTh ?? "product"}-${i}`,
     caption: item.nameTh ?? "-",
@@ -183,8 +191,6 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
         content={dialogContent}
         disableBackdropClose={false}
       />
-
-      {/* Use BaseLightBox for image viewing */}
       <BaseLightBox
         open={lightboxOpen}
         onClose={closeLightbox}

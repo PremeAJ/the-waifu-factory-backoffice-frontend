@@ -200,13 +200,17 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
           const uploadedFile = await handleUploadFile(file);
           uploadedFiles.push(uploadedFile);
         }
+
+        let finalIds: string[] = [];
         setFiles(prev => {
           const filtered = prev.filter(p => !uploadedFiles.some(u => u.file === p.file));
-          return [...filtered, ...uploadedFiles];
+          const merged = [...filtered, ...uploadedFiles];
+          finalIds = merged.filter(f => f.id && !f.error).map(f => f.id as string);
+          return merged;
         });
+
         if (onUploadComplete) {
-          const fileIds = uploadedFiles.filter(f => f.id && !f.error).map(f => f.id);
-          onUploadComplete(fileIds);
+          onUploadComplete(finalIds); // ส่ง id ของไฟล์ทั้งหมดหลังรวม
         }
       }
     },
@@ -287,18 +291,16 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
       uploadedFiles.push(uploadedFile);
     }
 
+    let finalIds: string[] = [];
     setFiles(prev => {
-      const filtered = prev.filter(p => 
-        !uploadedFiles.some(u => u.file === p.file)
-      );
-      return [...filtered, ...uploadedFiles];
+      const filtered = prev.filter(p => !uploadedFiles.some(u => u.file === p.file));
+      const merged = [...filtered, ...uploadedFiles];
+      finalIds = merged.filter(f => f.id && !f.error).map(f => f.id as string);
+      return merged;
     });
     
     if (onUploadComplete) {
-      const fileIds = uploadedFiles
-        .filter(f => f.id && !f.error)
-        .map(f => f.id);
-      onUploadComplete(fileIds);
+      onUploadComplete(finalIds); // ส่ง id ของไฟล์ทั้งหมดหลังรวม
     }
   };
 

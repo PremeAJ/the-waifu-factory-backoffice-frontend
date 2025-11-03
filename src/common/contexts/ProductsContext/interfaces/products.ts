@@ -138,6 +138,7 @@ export interface ProductsContextType {
   deleteProduct: (id: string) => Promise<void>;
   getProductById: (id: string) => Promise<ProductType>;
   loading: boolean;
+  actionLoading: boolean;
   pageOptions: PageOptions;
   search: string;
   setSearch: (s: string) => void;

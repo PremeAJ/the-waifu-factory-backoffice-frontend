@@ -4,6 +4,7 @@ import { getSession, signOut } from "next-auth/react";
 
 let isRefreshing = false;
 let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void }[] = [];
+let refreshPromise: Promise<void> | null = null;
 
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach((prom) => {
@@ -15,6 +16,21 @@ const processQueue = (error: any, token: string | null = null) => {
   });
   failedQueue = [];
 };
+
+async function ensureRefreshed() {
+  if (!refreshPromise) {
+    refreshPromise = fetch("/api/v1/session/refresh", { method: "POST", credentials: "include" })
+      .then(async (r) => {
+        // อ่าน body เพื่อให้ connection ปิดถูกต้อง
+        try { await r.json(); } catch {}
+        if (!r.ok) throw new Error("Refresh failed");
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+}
 
 async function handleResponse(
   res: Response,
@@ -142,19 +158,46 @@ const baseFetcher = async (
   );
 };
 
-const getFetcher = (url: string | [string, Record<string, any>], headers?: Record<string, string>) =>
-  baseFetcher(Method.GET, url, undefined, headers);
+async function baseFetch(input: RequestInfo | URL, init?: RequestInit) {
+  const res = await fetch(input, { credentials: "include", ...(init || {}) });
 
-const postFetcher = (url: string, body: any, headers?: Record<string, string>) =>
-  baseFetcher(Method.POST, url, body, headers);
+  // ถ้า 401 และไม่ใช่เส้น refresh ให้รอ refresh แล้ว retry 1 ครั้ง
+  if (res.status === 401 && !input.toString().includes("/session/refresh")) {
+    await ensureRefreshed();
+    const retry = await fetch(input, { credentials: "include", ...(init || {}) });
+    return retry;
+  }
+  return res;
+}
 
-const putFetcher = (url: string, body: any, headers?: Record<string, string>) =>
-  baseFetcher(Method.PUT, url, body, headers);
+export async function getFetcher(url: string) {
+  const res = await baseFetch(url, { method: "GET" });
+  return res.json();
+}
 
-const patchFetcher = (url: string, body: any, headers?: Record<string, string>) =>
-  baseFetcher(Method.PATCH, url, body, headers);
+export async function postFetcher(url: string, body?: any) {
+  const res = await baseFetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+  return res.json();
+}
 
-const deleteFetcher = (url: string, body: any, headers?: Record<string, string>) =>
-  baseFetcher(Method.DELETE, url, body, headers);
+export async function putFetcher(url: string, body?: any) {
+  const res = await baseFetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+  return res.json();
+}
 
-export { getFetcher, postFetcher, putFetcher, deleteFetcher, patchFetcher };
+export async function deleteFetcher(url: string, body?: any) {
+  const res = await baseFetch(url, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+  return res.json();
+}

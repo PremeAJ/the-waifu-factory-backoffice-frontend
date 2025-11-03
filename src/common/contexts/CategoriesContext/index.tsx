@@ -1,20 +1,20 @@
 "use client";
 import {
-  CategoriesContextType,
-  CategoryDetailType,
+  CategoryFilters,
   CreateCategoryDto,
   UpdateCategoryDto,
-  CategoryFilters,
+  CategoryDetailType,
+  CategoriesContextType,
 } from "./interfaces/categories";
+import useSWR from "swr";
+import config from "../setting/config";
+import useSWRInfinite from "swr/infinite";
+import { useDialog } from "../DialogContext";
+import { swrOption } from "@/app/api/swrOption";
+import useIsMobile from "@/common/utils/state/isMobile";
+import React, { createContext, useContext, useState, useMemo } from "react";
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { getFetcher, postFetcher, deleteFetcher, putFetcher } from "@/app/api/globalFetcher";
-import { defaultSWROption, swrOption } from "@/app/api/swrOption";
-import { useDialog } from "../DialogContext";
-import config from "../setting/config";
-import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
-import useIsMobile from "@/common/utils/state/isMobile";
-import useSWR from "swr";
-import useSWRInfinite from "swr/infinite";
 
 export const CategoriesContext = createContext<CategoriesContextType>({} as CategoriesContextType);
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -45,7 +45,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return `${endpoint}?${queryParams.toString()}`;
   }, [isMobile, page, perPage, filters]);
 
-  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher);
+  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher, swrOption);
 
   const getMobileKey = (pageIndex: number, previousPageData: any) => {
     if (!isMobile || (previousPageData && !previousPageData.data.data.length)) return null; // ไม่ทำงานถ้าเป็น Desktop หรือถึงหน้าสุดท้าย
@@ -98,14 +98,14 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     error: dropdownError,
     mutate: dropdownMutate,
     isLoading: dropdownLoading,
-  } = useSWR(`${endpoint}/dropdown`, getFetcher, defaultSWROption);
+  } = useSWR(`${endpoint}/dropdown`, getFetcher, swrOption);
 
   const {
     data: categoryIconsData,
     error: categoryIconsError,
     mutate: categoryIconsMutate,
     isLoading: categoryIconsLoading,
-  } = useSWR(masterIconEndpoint, getFetcher, defaultSWROption);
+  } = useSWR(masterIconEndpoint, getFetcher, swrOption);
 
   const getCategoryById = async (id: string): Promise<CategoryDetailType> => {
     try {
@@ -157,9 +157,9 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const value: CategoriesContextType = {
-    filters,
-    setFilters,
     setPage,
+    loadMore,
+    setFilters,
     setPerPage,
     createCategory,
     deleteCategory,
@@ -168,16 +168,16 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     getCategoryById,
     categoriesMutate,
     categoryIconsMutate,
-    categoryIconsLoading,
-    dropdown: dropdownData?.data || [],
-    loading: loading || isLoading,
-    categories: categories,
-    categoryIcons: categoryIconsData?.data || [],
-    pageOptions: pageOptions,
-    error: error || dropdownError || categoryIconsError || null,
-    loadMore,
+    filters,
     isLoadingMore,
     isReachingEnd,
+    categoryIconsLoading,
+    categories: categories,
+    pageOptions: pageOptions,
+    loading: loading || isLoading,
+    dropdown: dropdownData?.data || [],
+    categoryIcons: categoryIconsData?.data || [],
+    error: error || dropdownError || categoryIconsError || null,
   };
 
   return <CategoriesContext.Provider value={value}>{children}</CategoriesContext.Provider>;

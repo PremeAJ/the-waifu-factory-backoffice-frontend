@@ -88,19 +88,21 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     taxClassId: p.taxClassId ?? "none",
     taxRate: Number(p.taxClass?.rate ?? 0),
     variant: p.variant ?? undefined,
-    productOptions: productOptions.length ? productOptions : [
-      {
-        upc: "",
-        sku: "",
-        basePrice: 0,
-        finalPrice: 0,
-        pricePerUnit: 1,
-        discountType: "none",
-        discountRate: 0,
-        variantOption: undefined,
-        inventory: { status: "active", stock: 0 },
-      },
-    ],
+    productOptions: productOptions.length
+      ? productOptions
+      : [
+          {
+            upc: "",
+            sku: "",
+            basePrice: 0,
+            finalPrice: 0,
+            pricePerUnit: 1,
+            discountType: "none",
+            discountRate: 0,
+            variantOption: undefined,
+            inventory: { status: "active", stock: 0 },
+          },
+        ],
   };
 };
 
@@ -108,7 +110,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
   const isMobile = useIsMobile();
   const router = useRouter();
   const { data: session } = useSession();
-  const { createProduct } = useProducts();
+  const { createProduct, updateProduct } = useProducts();
 
   const initialValues = useMemo(() => mapProductToFormValues(initialData), [initialData]);
 
@@ -124,6 +126,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
     validateOnMount: true,
     onSubmit: async (values: CreateProductPayload) => {
       const branchIdFromSession = (session?.user as any)?.branchId || undefined;
+      const isEdit = Boolean(initialData?.id);
+      const productId = initialData?.id as string | undefined;
 
       const payload: CreateProductPayload = {
         nameTh: values.nameTh,
@@ -141,7 +145,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
         taxClassId: values.taxClassId,
         taxRate: Number(values.taxRate ?? 0),
         variant: values.variant,
-        productOptions: ((values.productOptions || []).map((opt) => ({
+        productOptions: (values.productOptions || []).map((opt, idx) => ({
+          id: initialData?.productOptions?.[idx]?.id,
           upc: opt.upc || undefined,
           sku: opt.sku || undefined,
           basePrice: Number(opt.basePrice ?? 0),
@@ -154,11 +159,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
             status: opt.inventory.status,
             stock: Number(opt.inventory.stock ?? 0),
           },
-        })) as CreateProductOptionPayload[]),
+        })) as CreateProductOptionPayload[],
       };
-      console.log("🚀 ~ ProductForm ~ payload:", payload);
 
-      await createProduct(payload);
+      if (isEdit && productId) {
+        await updateProduct(productId, payload);
+      } else {
+        await createProduct(payload);
+      }
+      router.replace("/dashboard/pos/products");
     },
   });
 
@@ -218,10 +227,18 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
         <Grid size={{ xs: 12 }}>
           <BlankCard>
             <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>
-              <BaseButton preset="cancel" label="ยกเลิก" variant="outlined" color="error" fullWidth={isMobile} onClick={onClickCancel} />
+              <BaseButton
+                preset="cancel"
+                label="ยกเลิก"
+                variant="outlined"
+                color="error"
+                fullWidth={isMobile}
+                onClick={onClickCancel}
+                loading={formik.isSubmitting}
+              />
               <BaseButton
                 preset="save"
-                label="บันทึก"
+                label={initialData?.id ? "อัปเดต" : "บันทึก"}
                 type="submit"
                 variant="contained"
                 color="primary"

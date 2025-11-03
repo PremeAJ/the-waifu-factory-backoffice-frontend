@@ -1,5 +1,6 @@
 import { AuthOptions } from "next-auth";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
+import { serverGetFetcher, serverPostFetcher } from "@/app/api/serverFetcher";
 import { headers as nextHeaders } from "next/headers";
 import { HeadersKey } from "../constants/header";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -16,6 +17,7 @@ async function header(accessToken?: string) {
     [HeadersKey.Cookies]: coolies,
   };
 }
+
 function isExpired(token: string): boolean {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
@@ -24,6 +26,20 @@ function isExpired(token: string): boolean {
     return true;
   }
 }
+
+// single-flight refresh สำหรับ jwt callback
+let refreshPromise: Promise<any> | null = null;
+async function refreshToken(token: any) {
+  if (!refreshPromise) {
+    refreshPromise = serverPostFetcher(
+      `${baseUrl}/api/v1/session/refresh`,
+      { token: token.refreshToken },
+      { ...(await header(token.accessToken)) }
+    ).finally(() => { refreshPromise = null; });
+  }
+  return refreshPromise;
+}
+
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
 const authOptions: AuthOptions = {
   providers: [
@@ -37,15 +53,14 @@ const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         const { email, password, rememberMe } = credentials || {};
-        const login = await postFetcher(
+        const login = await serverPostFetcher(
           `${baseUrl}/api/v1/auth/login`,
           { email, password, rememberMe: rememberMe === "true" },
           { ...(await header()) }
         );
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         const { accessToken } = login.data;
-        const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
-        console.log("🚀 ~ authorize ~ profile:", profile)
+        const profile = await serverGetFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
         if (profile.statusCode !== 200) throw new Error(profile.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         return { ...login.data, profile: profile.data };
       },
@@ -66,10 +81,10 @@ const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user, session, account }) {
       if (account?.provider === "google" && user) {
-        const login = await postFetcher(`${baseUrl}/api/v1/auth/login-google`, { id_token: account.id_token }, { ...(await header()) });
+        const login = await serverPostFetcher(`${baseUrl}/api/v1/auth/login-google`, { id_token: account.id_token }, { ...(await header()) });
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         const { accessToken } = login.data;
-        const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
+        const profile = await serverGetFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
         if (profile.statusCode !== 200) throw new Error(profile.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         return { ...login.data, profile: profile.data };
       }
@@ -82,19 +97,14 @@ const authOptions: AuthOptions = {
         if (session.profile) token.profile = session.profile;
       }
       if (token.accessToken && isExpired(token.accessToken)) {
-        console.log("🚀 ~ token.refreshToken:", token.refreshToken)
-        const refreshed = await postFetcher(
-          `${baseUrl}/api/v1/session/refresh`,
-          { token: token.refreshToken },
-          { ...(await header(token.accessToken)) }
-        );
-        if (refreshed?.error) {
-          throw new Error(refreshed.message);
-        }
-        if (refreshed.data.accessToken && refreshed.data.refreshToken) {
-          token.refreshToken = refreshed.data.refreshToken;
-          token.accessToken = refreshed.data.accessToken;
-        }
+        try {
+          const refreshed = await refreshToken(token);
+          if (refreshed?.error) throw new Error(refreshed.message);
+          if (refreshed.data.accessToken && refreshed.data.refreshToken) {
+            token.refreshToken = refreshed.data.refreshToken;
+            token.accessToken = refreshed.data.accessToken;
+          }
+        } catch { /* swallow, next-auth จะ signOut ในที่อื่นได้ */ }
       }
       return token;
     },
@@ -109,4 +119,5 @@ const authOptions: AuthOptions = {
     },
   },
 };
+
 export default authOptions;

@@ -1,19 +1,23 @@
 "use client";
+import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
+import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
+import { useDialog } from "../DialogContext";
 import React, { createContext, useContext, useMemo, useState } from "react";
+import type { CreateProductPayload, ProductFilters, ProductType, UpdateProductPayload } from "./interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
-import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
-import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
-import type { ProductFilters } from "./interfaces/products";
+import { swrOption } from "@/app/api/swrOption";
 
 export const ProductsContext = createContext<any>({} as any);
 
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isMobile = useIsMobile();
+  const { showError } = useDialog();
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(20);
   const [filters, setFilters] = useState<ProductFilters>({ search: "", status: "all" });
+  const [actionLoading, setActionLoading] = useState<boolean>(false);
 
   const endpoint = "/api/product";
 
@@ -32,7 +36,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return `${endpoint}?${qp.toString()}`;
   }, [isMobile, page, perPage, filters]);
 
-  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher);
+  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher,swrOption);
 
   const getMobileKey = (pageIndex: number, previousPageData: any) => {
     if (!isMobile) return null;
@@ -88,43 +92,62 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const getProductById = async (id: string) => {
+  const getProductById = async (id: string):Promise<ProductType | null> => {
     try {
-      const res = await getFetcher(`${endpoint}/${id}`);
-      return res?.data ?? null;
+      const response = await getFetcher(`${endpoint}/${id}`);
+      if (response.error) {
+        showError({ message: response?.message });
+      }
+      return response?.data ?? null;
     } catch (err) {
-      console.error("getProductById error", err);
       return null;
     }
   };
 
-  const createProduct = async (payload: any) => {
+  const createProduct = async (payload: CreateProductPayload) => {
     try {
-      const res = await postFetcher(endpoint, payload);
+      setActionLoading(true);
+      const response = await postFetcher(endpoint, payload);
+      if (response.error) {
+        showError({ message: response?.message });
+      }
       await productsMutate();
-      return res;
-    } catch (err) {
-      throw err;
+      return response;
+    } catch (error:any) {
+        showError({ message: error?.message });
+       throw error;
+    } finally {
+       setActionLoading(false);
     }
   };
 
-  const updateProduct = async (id: string, payload: any) => {
+  const updateProduct = async (id: string, payload: UpdateProductPayload) => {
     try {
-      const res = await putFetcher(`${endpoint}/${id}`, payload);
-      await productsMutate();
-      return res;
-    } catch (err) {
-      throw err;
+      setActionLoading(true);
+      const response = await putFetcher(`${endpoint}/${id}`, payload); 
+        if (response.error) {
+        showError({ message: response?.message });
+      }
+      await productsMutate(); 
+      return response;
+    } catch (error:any) {
+        showError({ message: error?.message });
+       throw error;
+    } finally {
+       setActionLoading(false);
     }
   };
 
   const deleteProduct = async (id: string) => {
     try {
+      setActionLoading(true);
       const res = await deleteFetcher(`${endpoint}/${id}`, {});
       await productsMutate();
       return res;
     } catch (err) {
       throw err;
+    } finally {
+     setActionLoading(false);
     }
   };
 
@@ -142,6 +165,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     isReachingEnd,
     loading,
     error,
+    actionLoading, // ใช้สำหรับ create/update/delete รวม
     getProductById,
     createProduct,
     updateProduct,
