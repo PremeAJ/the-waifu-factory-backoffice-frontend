@@ -63,7 +63,6 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
   const dialogContent = (
     <Box sx={{ p: 2 }}>
       <Stack spacing={1}>
-        {/* Image gallery */}
         <Box>
           {images.length > 0 ? (
             <>
@@ -172,7 +171,7 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
   const lightboxItems: LightboxItem[] = images.map((src, i) => ({
     src,
     alt: `${item.nameTh ?? "product"}-${i}`,
-    caption: `${item.nameTh ?? "-"}` + (images.length > 1 ? ` (${i + 1}/${images.length})` : ""),
+    caption: item.nameTh ?? "-",
   }));
 
   return (

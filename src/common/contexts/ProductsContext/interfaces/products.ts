@@ -24,7 +24,7 @@ export interface InventoryType {
   // response contains stock, status, branchId
   stock: number;
   status: ApiInventoryStatus;
-  branchId: string;
+  branchId?: string;
 }
 
 export interface ProductOptionType {
@@ -58,6 +58,12 @@ export interface TaxClassType {
   rate: number;
 }
 
+export interface CategoryType {
+  id: string;
+  nameTh: string;
+  nameEn?: string | null;
+}
+
 export interface ProductType {
   id: string;
   nameTh: string;
@@ -76,6 +82,9 @@ export interface ProductType {
   isTaxInclusive?: boolean;
   taxClassId?: string | null;
   taxClass?: TaxClassType | null;
+
+  // category (API returns a categories object on findOne)
+  categories?: CategoryType | null;
 
   // optional fields computed on frontend
   status?: ApiInventoryStatus | "active" | "inactive" | "deleted";
@@ -140,4 +149,11 @@ export interface ProductsContextType {
 export interface ApiListResponse<T> {
   pageOptions?: PageOptions;
   data: T[];
+}
+
+export type ProductStatus = "active" | "inactive" | "deleted";
+
+export interface ProductFilters {
+  search: string;
+  status: ProductStatus | "all";
 }

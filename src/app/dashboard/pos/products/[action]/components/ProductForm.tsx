@@ -15,21 +15,17 @@ import CategoryAndTags from "./CategoryAndTags";
 import GeneralCard from "./GeneralCard";
 import ProductDetails from "./ProductDetails";
 import ProductTemplate from "./ProductTemplate";
-import React from "react";
-import type { CreateProductPayload, CreateProductOptionPayload } from "@/common/contexts/ProductsContext/interfaces/products";
+import React, { useMemo } from "react";
+import type { CreateProductPayload, CreateProductOptionPayload, ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
 
-const ProductForm: React.FC = () => {
-  const isMobile = useIsMobile();
-  const router = useRouter();
-  const { data: session } = useSession();
-  const { createProduct } = useProducts();
-  const onClickCancel = () => {
-    formik.resetForm();
-    router.back();
-  };
-  const formik = useFormik<CreateProductPayload>({
-    initialValues: {
+interface ProductFormProps {
+  initialData?: ProductType | null;
+}
+
+const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload => {
+  if (!p) {
+    return {
       nameTh: "",
       nameEn: undefined,
       descriptionTh: "",
@@ -41,11 +37,9 @@ const ProductForm: React.FC = () => {
       thumbnailImageId: undefined,
       detailImageIds: [],
       tags: [],
-
       isTaxInclusive: true,
       taxClassId: "none",
       taxRate: 0,
-
       variant: undefined,
       productOptions: [
         {
@@ -60,7 +54,72 @@ const ProductForm: React.FC = () => {
           inventory: { status: "active", stock: 0 },
         },
       ],
-    },
+    };
+  }
+
+  const thumbnail = p.productFiles?.find((f) => f.uploadedFile?.bucket?.includes("thumbnail"));
+  const details = (p.productFiles || []).filter((f) => f.uploadedFile?.bucket?.includes("detail"));
+
+  const productOptions = (p.productOptions || []).map((opt) => ({
+    upc: opt.upc ?? "",
+    sku: opt.sku ?? "",
+    basePrice: Number(opt.basePrice ?? 0),
+    finalPrice: Number(opt.finalPrice ?? 0),
+    pricePerUnit: Number(opt.pricePerUnit ?? 1),
+    discountType: opt.discountType ?? "none",
+    discountRate: Number(opt.discountRate ?? 0),
+    variantOption: opt.variantOption ?? undefined,
+    inventory: opt.inventory ?? { status: "active", stock: 0 },
+  })) as CreateProductOptionPayload[];
+
+  return {
+    nameTh: p.nameTh ?? "",
+    nameEn: p.nameEn ?? undefined,
+    descriptionTh: p.descriptionTh ?? "",
+    descriptionEn: p.descriptionEn ?? undefined,
+    unitType: (p.unitType as any) ?? unitTypeOptions[0].value,
+    unit: p.unit ?? "ชิ้น",
+    categoryId: p.categories?.id ?? undefined,
+    branchId: undefined,
+    thumbnailImageId: thumbnail?.uploadedFile?.id ?? undefined,
+    detailImageIds: details.map((d) => d.uploadedFile?.id).filter(Boolean) as string[],
+    tags: p.tags ?? [],
+    isTaxInclusive: p.isTaxInclusive ?? true,
+    taxClassId: p.taxClassId ?? "none",
+    taxRate: Number(p.taxClass?.rate ?? 0),
+    variant: p.variant ?? undefined,
+    productOptions: productOptions.length ? productOptions : [
+      {
+        upc: "",
+        sku: "",
+        basePrice: 0,
+        finalPrice: 0,
+        pricePerUnit: 1,
+        discountType: "none",
+        discountRate: 0,
+        variantOption: undefined,
+        inventory: { status: "active", stock: 0 },
+      },
+    ],
+  };
+};
+
+const ProductForm: React.FC<ProductFormProps> = ({ initialData = null }) => {
+  const isMobile = useIsMobile();
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { createProduct } = useProducts();
+
+  const initialValues = useMemo(() => mapProductToFormValues(initialData), [initialData]);
+
+  const onClickCancel = () => {
+    formik.resetForm();
+    router.back();
+  };
+
+  const formik = useFormik<CreateProductPayload>({
+    initialValues,
+    enableReinitialize: true,
     validationSchema,
     validateOnMount: true,
     onSubmit: async (values: CreateProductPayload) => {
@@ -73,17 +132,14 @@ const ProductForm: React.FC = () => {
         descriptionEn: values.descriptionEn || undefined,
         unitType: values.unitType,
         unit: values.unit,
-
         categoryId: values.categoryId || undefined,
         branchId: values.branchId || branchIdFromSession,
         thumbnailImageId: values.thumbnailImageId || undefined,
         detailImageIds: values.detailImageIds?.length ? values.detailImageIds : undefined,
         tags: values.tags?.length ? values.tags : undefined,
-
         isTaxInclusive: values.isTaxInclusive,
         taxClassId: values.taxClassId,
         taxRate: Number(values.taxRate ?? 0),
-
         variant: values.variant,
         productOptions: ((values.productOptions || []).map((opt) => ({
           upc: opt.upc || undefined,
@@ -108,14 +164,9 @@ const ProductForm: React.FC = () => {
 
   return (
     <form noValidate onSubmit={formik.handleSubmit}>
-      {/* debug */}
       <BaseDebug data={{ values: formik.values, errors: formik.errors }} />
       <Grid container spacing={3}>
-        <Grid
-          size={{
-            lg: 8,
-          }}
-        >
+        <Grid size={{ lg: 8 }}>
           <Stack spacing={3}>
             <BlankCard>
               <GeneralCard formik={formik} />
@@ -125,11 +176,7 @@ const ProductForm: React.FC = () => {
             </BlankCard>
           </Stack>
         </Grid>
-        <Grid
-          size={{
-            lg: 4,
-          }}
-        >
+        <Grid size={{ lg: 4 }}>
           <Stack spacing={3}>
             <BlankCard>
               <BaseFileInput

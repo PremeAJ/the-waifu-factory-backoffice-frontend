@@ -78,18 +78,21 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
 
   const content = useMemo(() => {
     if (!current) return null;
+
+    const captionRaw = current.caption ?? "";
+    const captionWithoutCounter = captionRaw.replace(/\s*\(\d+\/\d+\)\s*$/, "");
+    const shouldShowCounter = showCounter && count > 1 && !/\(\d+\/\d+\)\s*$/.test(captionRaw);
+
     return (
       <Box
         sx={{
           position: "relative",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: "auto",
+          width: "100%",
           height: "100%",
           backgroundColor: "black",
-          borderRadius: 1,
           overflow: "hidden",
         }}
       >
@@ -98,14 +101,15 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
             onClick={goPrev}
             sx={{
               position: "absolute",
-              left: 16,
+              left: 8,
               top: "50%",
               transform: "translateY(-50%)",
               color: "white",
-              backgroundColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.35)",
               "&:hover": { backgroundColor: "rgba(0,0,0,0.5)" },
               zIndex: 2,
             }}
+            aria-label="previous"
           >
             <IconArrowLeft />
           </IconButton>
@@ -115,7 +119,15 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
           component="img"
           src={current.src}
           alt={current.alt || "image"}
-          sx={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", zIndex: 1 }}
+          sx={{
+            maxWidth: "100%",
+            maxHeight: "calc(100vh - 128px)",
+            width: "auto",
+            height: "auto",
+            objectFit: "contain",
+            display: "block",
+            zIndex: 1,
+          }}
         />
 
         {canNavigate && (
@@ -123,20 +135,21 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
             onClick={goNext}
             sx={{
               position: "absolute",
-              right: 16,
+              right: 8,
               top: "50%",
               transform: "translateY(-50%)",
               color: "white",
-              backgroundColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.35)",
               "&:hover": { backgroundColor: "rgba(0,0,0,0.5)" },
               zIndex: 2,
             }}
+            aria-label="next"
           >
             <IconArrowRight />
           </IconButton>
         )}
 
-        {(current.caption || (showCounter && count > 1)) && (
+        {(captionWithoutCounter || shouldShowCounter) && (
           <Box
             sx={{
               position: "absolute",
@@ -151,14 +164,14 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
             }}
           >
             <Typography variant="body2" sx={{ color: "white" }}>
-              {current.caption}
-              {showCounter && count > 1 && ` (${index + 1}/${count})`}
+              {captionWithoutCounter}
+              {shouldShowCounter && ` (${index + 1}/${count})`}
             </Typography>
           </Box>
         )}
       </Box>
     );
-  }, [current, count, index]);
+  }, [current, count, index, showCounter, canNavigate, goNext, goPrev]);
 
   return (
     <BaseDialog
@@ -174,23 +187,26 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
         "& .MuiPaper-root": {
           backgroundColor: "black",
           maxWidth: "calc(100vw - 64px)",
-          maxHeight: "calc(100vh - 64px)",
+          maxHeight: "100vh",
           m: 2,
+          overflow: "hidden",
         },
         "& .MuiDialogTitle-root": { display: "none" },
         "& .MuiDialogContent-root": {
           p: 0,
           backgroundColor: "black",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          maxHeight: "calc(100vh - 64px)",
+          overflow: "hidden",
         },
         "& .MuiDialogActions-root": {
           backgroundColor: "black",
           borderTop: "1px solid rgba(255,255,255,0.1)",
         },
         "& .MuiButton-root": { color: "white" },
+        "& img": { userSelect: "none", pointerEvents: "auto" },
         ...(sx || {}),
       }}
     />

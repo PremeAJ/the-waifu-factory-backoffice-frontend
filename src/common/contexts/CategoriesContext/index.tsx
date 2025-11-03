@@ -8,7 +8,7 @@ import {
 } from "./interfaces/categories";
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { getFetcher, postFetcher, deleteFetcher, putFetcher } from "@/app/api/globalFetcher";
-import { swrOption } from "@/app/api/swrOption";
+import { defaultSWROption, swrOption } from "@/app/api/swrOption";
 import { useDialog } from "../DialogContext";
 import config from "../setting/config";
 import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
@@ -93,20 +93,19 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   };
 
-  // ... (ส่วนของ dropdown, create, update, delete ยังคงเหมือนเดิม) ...
   const {
     data: dropdownData,
     error: dropdownError,
     mutate: dropdownMutate,
     isLoading: dropdownLoading,
-  } = useSWR(`${endpoint}/dropdown`, getFetcher, swrOption);
+  } = useSWR(`${endpoint}/dropdown`, getFetcher, defaultSWROption);
 
   const {
     data: categoryIconsData,
     error: categoryIconsError,
     mutate: categoryIconsMutate,
     isLoading: categoryIconsLoading,
-  } = useSWR(masterIconEndpoint, getFetcher, swrOption);
+  } = useSWR(masterIconEndpoint, getFetcher, defaultSWROption);
 
   const getCategoryById = async (id: string): Promise<CategoryDetailType> => {
     try {

@@ -3,3 +3,7 @@ export const swrOption = {
   revalidateOnReconnect: false,
   dedupingInterval: 600000,
 };
+
+export const defaultSWROption = {
+  
+}

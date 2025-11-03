@@ -1,15 +1,17 @@
 "use client";
 import { BaseAutoComplete, BaseButton, BaseDropdown } from "@/common/components/base";
 import { CreateProductPayload } from "@/common/contexts/ProductsContext/interfaces/products";
+import { FC, useMemo, useState, useEffect } from "react";
 import { Grid, Typography } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
 import { OptionType } from "@/common/components/base/BaseDropdown";
-import { tagOptions } from "@/common/contexts/ProductsContext/constants/constants";
+import { tagOptions as defaultTagOptions } from "@/common/contexts/ProductsContext/constants/constants";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import Box from "@mui/material/Box";
 import CategoryDialog from "@/app/dashboard/pos/categories/components/CategoryDialog";
-import { FC, useMemo, useState } from "react";
 import type { FormikProps } from "formik";
+
+const STORAGE_KEY = "meowsom:customTags";
 
 interface CategoryAndTagsProps {
   formik: FormikProps<CreateProductPayload>;
@@ -17,6 +19,30 @@ interface CategoryAndTagsProps {
 
 const CategoryAndTags: FC<CategoryAndTagsProps> = ({ formik }) => {
   const [openCreateCategory, setOpenCreateCategory] = useState(false);
+  const [savedTags, setSavedTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) setSavedTags(JSON.parse(raw));
+    } catch {
+      setSavedTags([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    const currentTags: string[] = formik?.values?.tags ?? [];
+    if (!currentTags.length) return;
+    const unknown = currentTags.filter((t) => !defaultTagOptions.includes(t) && !savedTags.includes(t));
+    if (unknown.length) {
+      const next = Array.from(new Set([...savedTags, ...unknown]));
+      setSavedTags(next);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+    }
+  }, [formik?.values?.tags]); 
 
   const categoryValue: string = (() => {
     const v = formik?.values?.categoryId;
@@ -29,17 +55,14 @@ const CategoryAndTags: FC<CategoryAndTagsProps> = ({ formik }) => {
   const categoryOptions: OptionType[] = useMemo(() => {
     if (!categoryDropdown) return [];
     const opts: OptionType[] = [];
-
     categoryDropdown.forEach((cat: any) => {
       const parentText = `${cat.nameTh}${cat.nameEn ? ` (${cat.nameEn})` : ""}`;
       opts.push({
-        // normalize to string for single-select matching
         value: String(cat.id),
         text: parentText,
         icon: cat.icon || null,
         group: "หมวดหมู่หลัก",
       });
-
       if (Array.isArray(cat.subCategories) && cat.subCategories.length > 0) {
         cat.subCategories.forEach((sub: any) => {
           opts.push({
@@ -51,9 +74,24 @@ const CategoryAndTags: FC<CategoryAndTagsProps> = ({ formik }) => {
         });
       }
     });
-
     return opts;
   }, [categoryDropdown]);
+
+  const autocompleteOptions = useMemo(() => {
+    return Array.from(new Set([...defaultTagOptions, ...savedTags]));
+  }, [savedTags]);
+
+  const handleTagsChange = (v: string[]) => {
+    formik?.setFieldValue("tags", v);
+    const newCustom = v.filter((t) => !defaultTagOptions.includes(t) && !savedTags.includes(t));
+    if (newCustom.length) {
+      const next = Array.from(new Set([...savedTags, ...newCustom]));
+      setSavedTags(next);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+    }
+  };
 
   return (
     <Box p={3}>
@@ -93,7 +131,7 @@ const CategoryAndTags: FC<CategoryAndTagsProps> = ({ formik }) => {
             formik={formik}
             multiple
             freeSolo
-            options={tagOptions}
+            options={autocompleteOptions}
             placeholder="Tags"
             fullWidth
             openOnFocus
@@ -101,8 +139,7 @@ const CategoryAndTags: FC<CategoryAndTagsProps> = ({ formik }) => {
             selectOnFocus
             clearOnBlur
             handleHomeEndKeys
-            // value={tags}
-            onChange={(v: string[]) => formik?.setFieldValue("tags", v)}
+            onChange={(v: string[]) => handleTagsChange(v)}
           />
         </Grid>
       </Grid>

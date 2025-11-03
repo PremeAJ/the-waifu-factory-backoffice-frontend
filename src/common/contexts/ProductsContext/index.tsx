@@ -1,114 +1,152 @@
 "use client";
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
+import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
-import { swrOption } from "@/app/api/swrOption";
-import { defaultPageOptions } from "@/common/interface/paginate";
-import { useDialog } from "../DialogContext";
-import { ProductsContextType, ProductType, CreateProductPayload, UpdateProductPayload } from "./interfaces/products";
+import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
+import type { ProductFilters } from "./interfaces/products";
 
-export const ProductsContext = createContext<ProductsContextType>({} as ProductsContextType);
+export const ProductsContext = createContext<any>({} as any);
 
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const isMobile = useIsMobile();
+  const [page, setPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(20);
+  const [filters, setFilters] = useState<ProductFilters>({ search: "", status: "all" });
+
   const endpoint = "/api/product";
-  const { showError } = useDialog();
 
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [isLoading, setIsLoading] = useState(false);
+  const setFiltersState = (newFilters: Partial<ProductFilters>) => {
+    setPage(1);
+    setFilters((prev) => ({ ...prev, ...newFilters }));
+  };
 
-  useEffect(() => {
-    const t = setTimeout(() => {
-      setDebouncedSearch(search);
-      if (search !== debouncedSearch) setPage(1);
-    }, 500);
-    return () => clearTimeout(t);
-  }, [search]);
+  const desktopKey = useMemo(() => {
+    if (isMobile) return null;
+    const qp = new URLSearchParams();
+    qp.set("page", String(page));
+    qp.set("perPage", String(perPage));
+    if (filters.search) qp.set("search", filters.search);
+    if (filters.status && filters.status !== "all") qp.set("status", filters.status);
+    return `${endpoint}?${qp.toString()}`;
+  }, [isMobile, page, perPage, filters]);
 
-  const productsUrl = useMemo(() => {
-    const q = new URLSearchParams();
-    q.set("page", String(page));
-    q.set("perPage", String(perPage));
-    if (debouncedSearch && debouncedSearch.trim()) q.set("search", debouncedSearch.trim());
-    return `${endpoint}?${q.toString()}`;
-  }, [page, perPage, debouncedSearch]);
+  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher);
 
-  const { data: productsData, error: productsError, isLoading: productsLoading, mutate: productsMutate } = useSWR(productsUrl, getFetcher, swrOption);
+  const getMobileKey = (pageIndex: number, previousPageData: any) => {
+    if (!isMobile) return null;
+    // stop if previous page returned empty data
+    if (previousPageData && previousPageData.data && previousPageData.data.length === 0) return null;
+    const qp = new URLSearchParams();
+    qp.set("page", String(pageIndex + 1));
+    qp.set("perPage", String(perPage));
+    if (filters.search) qp.set("search", filters.search);
+    if (filters.status && filters.status !== "all") qp.set("status", filters.status);
+    return `${endpoint}?${qp.toString()}`;
+  };
 
+  const {
+    data: mobilePages,
+    error: mobileError,
+    isLoading: mobileLoading,
+    mutate: mobileMutate,
+    size,
+    setSize,
+    isValidating,
+  } = useSWRInfinite(getMobileKey, getFetcher);
 
-  const getProductById = async (id: string): Promise<ProductType> => {
+  const products = useMemo(() => {
+    if (isMobile) return mobilePages?.flatMap((p: any) => p.data?.data ?? []) ?? [];
+    return desktopData?.data?.data ?? [];
+  }, [isMobile, mobilePages, desktopData]);
+
+  const pageOptions: PageOptions = useMemo(() => {
+    if (isMobile) {
+      const last = mobilePages?.[mobilePages.length - 1]?.data;
+      return last?.pageOptions ?? defaultPageOptions;
+    }
+    return desktopData?.data?.pageOptions ?? defaultPageOptions;
+  }, [isMobile, mobilePages, desktopData]);
+
+  const loading = isMobile ? mobileLoading : desktopLoading;
+  const error = isMobile ? mobileError : desktopError;
+  const productsMutate = isMobile ? mobileMutate : desktopMutate;
+
+  const isLoadingMore = isMobile ? mobileLoading || (isValidating && (mobilePages?.length ?? 0) > 0) : false;
+  const isReachingEnd = isMobile
+    ? !mobilePages ||
+      (mobilePages[mobilePages.length - 1]?.data?.data?.length ?? 0) < perPage ||
+      !!(pageOptions.total && products.length >= pageOptions.total)
+    : true;
+
+  const loadMore = () => {
+    if (isMobile && !isLoadingMore && !isReachingEnd) {
+      setSize(size + 1);
+    } else if (!isMobile) {
+      setPage((p) => p + 1);
+    }
+  };
+
+  const getProductById = async (id: string) => {
     try {
-      const response = await getFetcher(`${endpoint}/${id}`);
-      if (response.error) {
-        showError({ message: response?.message });
-      }
-      return response.data;
-    } catch (err: any) {
-      showError({ title: "Failed", message: err?.message || "Failed to fetch product" });
+      const res = await getFetcher(`${endpoint}/${id}`);
+      return res?.data ?? null;
+    } catch (err) {
+      console.error("getProductById error", err);
+      return null;
+    }
+  };
+
+  const createProduct = async (payload: any) => {
+    try {
+      const res = await postFetcher(endpoint, payload);
+      await productsMutate();
+      return res;
+    } catch (err) {
       throw err;
     }
   };
 
-  const createProduct = async (payload: CreateProductPayload) => {
+  const updateProduct = async (id: string, payload: any) => {
     try {
-      setIsLoading(true);
-      const response = await postFetcher(endpoint, payload);
-      if (response.error) {
-        showError({ message: response?.message });
-      }
+      const res = await putFetcher(`${endpoint}/${id}`, payload);
       await productsMutate();
-    } catch (err: any) {
-      showError({ title: "Failed", message: err?.message || "Failed to create product" });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const updateProduct = async (id: string, payload: UpdateProductPayload) => {
-    try {
-      setIsLoading(true);
-      const response = await putFetcher(`${endpoint}/${id}`, payload);
-      if (response.error) {
-        showError({ message: response?.message });
-      }
-      await productsMutate();
-    } catch (err: any) {
-      showError({ title: "Failed", message: err?.message || "Failed to update product" });
-    } finally {
-      setIsLoading(false);
+      return res;
+    } catch (err) {
+      throw err;
     }
   };
 
   const deleteProduct = async (id: string) => {
     try {
-      setIsLoading(true);
-      const response = await deleteFetcher(`${endpoint}/${id}`, {});
-      if (response.error) {
-        showError({ message: response?.message });
-      }
+      const res = await deleteFetcher(`${endpoint}/${id}`, {});
       await productsMutate();
-    } catch (err: any) {
-      showError({ title: "Failed", message: err?.message || "Failed to delete product" });
-    } finally {
-      setIsLoading(false);
+      return res;
+    } catch (err) {
+      throw err;
     }
   };
 
-  const value: ProductsContextType = {
-    products: productsData?.data?.data || productsData?.data || [],
-    productsMutate,
+  const value = {
+    products,
+    pageOptions,
+    page,
+    perPage,
+    setPage,
+    setPerPage,
+    filters,
+    setFilters: setFiltersState,
+    loadMore,
+    isLoadingMore,
+    isReachingEnd,
+    loading,
+    error,
+    getProductById,
     createProduct,
     updateProduct,
     deleteProduct,
-    getProductById,
-    loading: productsLoading || isLoading,
-    pageOptions: productsData?.data?.pageOptions || defaultPageOptions,
-    search,
-    setSearch,
-    setPage,
-    setPerPage,
+    mutate: productsMutate,
   };
 
   return <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>;
