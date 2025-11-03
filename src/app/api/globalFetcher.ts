@@ -1,11 +1,8 @@
 import { Method } from "@/common/constants/method";
 import { getHeaders } from "@/common/utils/getHeaders";
 import { getSession, signOut } from "next-auth/react";
-
 let isRefreshing = false;
 let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void }[] = [];
-let refreshPromise: Promise<void> | null = null;
-
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -16,22 +13,6 @@ const processQueue = (error: any, token: string | null = null) => {
   });
   failedQueue = [];
 };
-
-async function ensureRefreshed() {
-  if (!refreshPromise) {
-    refreshPromise = fetch("/api/v1/session/refresh", { method: "POST", credentials: "include" })
-      .then(async (r) => {
-        // อ่าน body เพื่อให้ connection ปิดถูกต้อง
-        try { await r.json(); } catch {}
-        if (!r.ok) throw new Error("Refresh failed");
-      })
-      .finally(() => {
-        refreshPromise = null;
-      });
-  }
-  return refreshPromise;
-}
-
 async function handleResponse(
   res: Response,
   method: string,
@@ -42,7 +23,6 @@ async function handleResponse(
   if (res.status === 204) {
     return { statusCode: 204, data: null };
   }
-
   const tryJson = async () => {
     try {
       return await res.json();
@@ -50,20 +30,16 @@ async function handleResponse(
       return { statusCode: res.status, message: res.statusText };
     }
   };
-
   if (res.status !== 401 && res.status !== 403) {
     return tryJson();
   }
-
   if (typeof window === "undefined") {
     return tryJson();
   }
-
   if (res.status === 403) {
     await signOut();
     return Promise.reject(new Error("Forbidden"));
   }
-
   if (isRefreshing) {
     return new Promise((resolve, reject) => {
       failedQueue.push({ resolve, reject });
@@ -75,9 +51,7 @@ async function handleResponse(
         return Promise.reject(err);
       });
   }
-
   isRefreshing = true;
-
   try {
     const session = await getSession();
     if (!session) {
@@ -93,7 +67,6 @@ async function handleResponse(
     isRefreshing = false;
   }
 }
-
 const baseFetcher = async (
   method: string,
   url: string | [string, Record<string, any>],
@@ -102,19 +75,16 @@ const baseFetcher = async (
 ): Promise<any> => {
   let fullUrl = "";
   let params: Record<string, any> | undefined;
-
   if (Array.isArray(url)) {
     fullUrl = url[0];
     params = url[1];
   } else {
     fullUrl = url;
   }
-
   if (method === Method.GET && params && Object.keys(params).length > 0) {
     const search = new URLSearchParams(params).toString();
     fullUrl += (fullUrl.includes("?") ? "&" : "?") + search;
   }
-
   if (typeof fullUrl === "string" && fullUrl.startsWith("/")) {
     if (typeof window !== "undefined") {
       fullUrl = window.location.origin + fullUrl;
@@ -124,9 +94,8 @@ const baseFetcher = async (
         fullUrl;
     }
   }
-
   const computedHeaders = await getHeaders(headers);
-  const isFormBody =
+ const isFormBody =
     (typeof FormData !== "undefined" && body instanceof FormData) ||
     (typeof Blob !== "undefined" && body instanceof Blob) ||
     body instanceof ArrayBuffer ||
@@ -139,10 +108,8 @@ const baseFetcher = async (
     });
     finalHeaders = filtered;
   }
-
   const fetchHeaders: Record<string, string> =
     method === Method.GET ? { browserrefreshed: "false", ...(finalHeaders || {}) } : { ...(finalHeaders || {}) };
-
   const fetchOptions: RequestInit = {
     method,
     cache: "no-store",
@@ -151,53 +118,19 @@ const baseFetcher = async (
       ? { body: isFormBody ? (body as any) : JSON.stringify(body) }
       : {}),
   };
-
   const originalRequestUrl = Array.isArray(url) ? url : fullUrl;
   return fetch(fullUrl, fetchOptions).then((res) =>
     handleResponse(res, method, originalRequestUrl, body, headers)
   );
 };
-
-async function baseFetch(input: RequestInfo | URL, init?: RequestInit) {
-  const res = await fetch(input, { credentials: "include", ...(init || {}) });
-
-  // ถ้า 401 และไม่ใช่เส้น refresh ให้รอ refresh แล้ว retry 1 ครั้ง
-  if (res.status === 401 && !input.toString().includes("/session/refresh")) {
-    await ensureRefreshed();
-    const retry = await fetch(input, { credentials: "include", ...(init || {}) });
-    return retry;
-  }
-  return res;
-}
-
-export async function getFetcher(url: string) {
-  const res = await baseFetch(url, { method: "GET" });
-  return res.json();
-}
-
-export async function postFetcher(url: string, body?: any) {
-  const res = await baseFetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
-  return res.json();
-}
-
-export async function putFetcher(url: string, body?: any) {
-  const res = await baseFetch(url, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
-  return res.json();
-}
-
-export async function deleteFetcher(url: string, body?: any) {
-  const res = await baseFetch(url, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
-  return res.json();
-}
+const getFetcher = (url: string | [string, Record<string, any>], headers?: Record<string, string>) =>
+  baseFetcher(Method.GET, url, undefined, headers);
+const postFetcher = (url: string, body: any, headers?: Record<string, string>) =>
+  baseFetcher(Method.POST, url, body, headers);
+const putFetcher = (url: string, body: any, headers?: Record<string, string>) =>
+  baseFetcher(Method.PUT, url, body, headers);
+const patchFetcher = (url: string, body: any, headers?: Record<string, string>) =>
+  baseFetcher(Method.PATCH, url, body, headers);
+const deleteFetcher = (url: string, body: any, headers?: Record<string, string>) =>
+  baseFetcher(Method.DELETE, url, body, headers);
+export { getFetcher, postFetcher, putFetcher, deleteFetcher, patchFetcher };
