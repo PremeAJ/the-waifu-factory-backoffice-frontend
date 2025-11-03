@@ -13,7 +13,6 @@ export * from './Master/TaxContext/index';
 export * from './OtpContext/index';
 export * from './ProductsContext/constants/constants';
 export * from './ProductsContext/index';
-export * from './ProductsContext/interfaces/products';
 export * from './ProfileContext/constants/defaultAppearance';
 export * from './ProfileContext/index';
 export * from './ProfileContext/interfaces/interface';

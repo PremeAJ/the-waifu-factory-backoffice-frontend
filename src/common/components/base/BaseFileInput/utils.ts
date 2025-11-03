@@ -147,3 +147,26 @@ export const compressImageIfNeeded = async (
 
   return await compressViaCanvas(file, target);
 };
+
+/**
+ * Truncate filename but keep extension. Example: "verylongname...jpg"
+ */
+export function truncateFileName(name: string, max = 12): string {
+  if (!name || name.length <= max) return name;
+
+  const lastDot = name.lastIndexOf(".");
+  const hasExt = lastDot > 0 && lastDot < name.length - 1;
+  const ext = hasExt ? name.slice(lastDot + 1) : "";
+  const base = hasExt ? name.slice(0, lastDot) : name;
+
+  // Reserve space for "..." and extension (if any)
+  const reserve = (ext ? ext.length + 1 : 0) + 3;
+  if (max <= reserve) return name.slice(0, max - 1) + "…";
+
+  const remain = max - reserve;
+  const head = Math.ceil(remain / 2);
+  const tail = Math.floor(remain / 2);
+
+  const shortened = `${base.slice(0, head)}...${tail > 0 ? base.slice(-tail) : ""}`;
+  return ext ? `${shortened}.${ext}` : shortened;
+}

@@ -8,6 +8,7 @@ import { IconX } from "@tabler/icons-react";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
 import { UploadedFile } from './types';
+import { truncateFileName } from "./utils";
 
 interface FileItemProps {
   file: UploadedFile;
@@ -23,6 +24,9 @@ export const FileItem: React.FC<FileItemProps> = ({
   onOpenLightbox
 }) => {
   const theme = useTheme();
+
+  const fullName = file.originName || file.file?.name || "";
+  const shownName = truncateFileName(fullName, 16); // ปรับความยาวได้
 
   return (
     <Box
@@ -59,9 +63,19 @@ export const FileItem: React.FC<FileItemProps> = ({
       )}
       
       <Box sx={{ flex: 1 }}>
-        <Tooltip title={file.originName || file.file.name}>
-          <Typography variant="body1" fontWeight="500" noWrap>
-            {file.originName || file.file.name}
+        <Tooltip title={fullName} placement="top" arrow>
+          <Typography
+            variant="body2"
+            // ห้ามมี title ที่นี่ เพราะใช้ Tooltip แล้ว
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              minWidth: 0,
+              flex: 1,
+            }}
+          >
+            {shownName}
           </Typography>
         </Tooltip>
         {file.error && (

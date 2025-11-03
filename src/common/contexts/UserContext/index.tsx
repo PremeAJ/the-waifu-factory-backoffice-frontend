@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from "react";
 import useSWR from "swr";
-import { getFetcher, patchFetcher, postFetcher } from "@/app/api/globalFetcher";
+import { getFetcher, putFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { supabaseUpdateEmail, supabaseUploadFile, UploadFileType, supabaseUpdatePhone, supabaseVerifyOtp } from "@/common/utils/supabase/server";
 import reduceImageFileSize from "@/common/utils/function/file/reduceImageFileSize";
 import { VerifyOtpParams } from "@supabase/supabase-js";
@@ -142,7 +142,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         contentType: "image/png",
       };
       const newAvatarUrl = await supabaseUploadFile(payload);
-      await patchFetcher("/api/users/avatar", { avatarUrl: newAvatarUrl });
+      await putFetcher("/api/users/avatar", { avatarUrl: newAvatarUrl });
       await userMutate();
       return null;
     } catch (error) {}
@@ -150,7 +150,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function updateUser(payload: SettingProfile) {
     try {
-      await userMutate(patchFetcher("/api/users/me", payload));
+      await userMutate(putFetcher("/api/users/me", payload));
     } catch (error: any) {
       return error.message;
     }
@@ -159,7 +159,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setActiveCompany = async (companyId: string) => {
     try {
       setLoading(true);
-      await patchFetcher("/api/users/me/active-company", { companyId });
+      await putFetcher("/api/users/me/active-company", { companyId });
       await userMutate();
       await companyListMutate();
       setLoading(false);

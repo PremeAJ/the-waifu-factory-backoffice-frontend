@@ -9,7 +9,7 @@ import {
 import EditTaskModal from "./TaskModal/EditTaskModal";
 import { KanbanDataContext } from "@/context/kanbancontext/index";
 import { Draggable } from "@hello-pangea/dnd";
-import { patchFetcher, putFetcher } from "@/app/api/globalFetcher";
+import { putFetcher } from "@/app/api/globalFetcher";
 import { mutate } from "swr";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -58,7 +58,7 @@ const TaskData: React.FC<TaskDataProps> = ({ task, onDeleteTask, index, category
 
   const handleSaveEditedTask = async (editedTaskData: { id: any }) => {
     try {
-      const response = await mutate('/api/kanban', patchFetcher("/api/kanban/edit-task", {
+      const response = await mutate('/api/kanban', putFetcher("/api/kanban/edit-task", {
         taskId: editedTaskData.id,
         newData: editedTaskData,
       }), false);

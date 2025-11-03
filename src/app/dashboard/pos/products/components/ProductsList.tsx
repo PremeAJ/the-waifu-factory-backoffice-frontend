@@ -2,13 +2,13 @@
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
 import { Box, Stack } from "@mui/material";
 import { getProductHeaders } from "../constants/productHeaders";
-import { ProductType } from "@/common/contexts";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useRouter } from "next/navigation";
 import ProductPreviewDialog from "./ProductPreviewDialog";
 import React, { useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 
 function ProductsList() {
   const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct } = useProducts();

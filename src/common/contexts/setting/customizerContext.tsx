@@ -3,7 +3,7 @@ import { createContext, useState, ReactNode, useEffect, useContext } from "react
 import config from "./config";
 import React from "react";
 import useSWR from "swr";
-import { getFetcher, patchFetcher } from "@/app/api/globalFetcher";
+import { getFetcher, putFetcher } from "@/app/api/globalFetcher";
 
 //// Define the shape of the context state
 interface CustomizerContextState {
@@ -134,7 +134,7 @@ export const CustomizerContextProvider: React.FC<CustomizerContextProps> = ({ ch
         ////isMobileSidebar,
         ...customPayload,
       };
-      await appearanceMutate(patchFetcher("/api/user/setting/appearnce", payload));
+      await appearanceMutate(putFetcher("/api/user/setting/appearnce", payload));
     } catch (error) {
       console.error("Error updating appearance:", error);
     }
