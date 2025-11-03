@@ -1,13 +1,9 @@
-import BaseChip from "@/common/components/base/BaseChip";
-import { CreateProductOptionPayload } from "@/common/contexts/ProductsContext/interfaces/products";
-import formatNumber from "@/common/utils/formatNumber";
 import { Box, Tooltip } from "@mui/material";
+import { CreateProductOptionPayload } from "@/common/contexts/ProductsContext/interfaces/products";
 import { IconList } from "@tabler/icons-react";
-
-const formatCurrency = (val: number | string) => {
-  const formatted = formatNumber(val, 0);
-  return `${formatted} ฿`;
-};
+import BaseChip from "@/common/components/base/BaseChip";
+import formatNumber from "@/common/utils/formatNumber";
+import formatCurrency from "@/common/utils/formatCurrency";
 
 export const getProductHeaders = (): any => [
   {
@@ -17,9 +13,7 @@ export const getProductHeaders = (): any => [
     width: "20%",
     primary: true,
     render: (_val: any, item: CreateProductOptionPayload & any) => {
-      // prefer direct sku/upc for single items
       const direct = item.sku ?? item.upc;
-      // collect variant skus/upcs when present
       const variants = (item.subItems ?? item.productOptions ?? []) as any[];
       if (Array.isArray(variants) && variants.length > 0) {
         const values = variants
@@ -29,7 +23,6 @@ export const getProductHeaders = (): any => [
         const uniq = Array.from(new Set(values));
         if (uniq.length === 0) return direct ?? "-";
         if (uniq.length === 1) return uniq[0];
-        // multiple different SKUs -> show first + icon with tooltip listing all
         const first = uniq[0];
         const title = uniq.join(", ");
         return (
@@ -75,24 +68,20 @@ export const getProductHeaders = (): any => [
     align: "center",
     width: "15%",
     render: (_val: any, item: any) => {
-      // prefer explicit displayPrice (string range) set for main products with variants
       if (item?.displayPrice && item.displayPrice !== "-") {
         const m = String(item.displayPrice).trim();
         const rangeMatch = m.match(/^([\d,.\s]+)\s*~\s*([\d,.\s]+)$/);
         if (rangeMatch) {
           return `${formatCurrency(rangeMatch[1])} ~ ${formatCurrency(rangeMatch[2])}`;
         }
-        // try numeric parse
         const num = Number(m.replace(/[^0-9.-]+/g, ""));
         if (!Number.isNaN(num)) return formatCurrency(num);
         return m;
       }
-      // fallback to legacy price string
       if (item?.price && item.price !== "-") {
         const num = Number(String(item.price).replace(/[^0-9.-]+/g, ""));
         return !Number.isNaN(num) ? formatCurrency(num) : item.price;
       }
-      // numeric fallbacks (option or product)
       const num = item?.basePrice ?? item?.finalPrice ?? item?.price;
       if (typeof num === "number") return formatCurrency(num);
       return "-";

@@ -2,13 +2,13 @@
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
 import { Box, Stack } from "@mui/material";
 import { getProductHeaders } from "../constants/productHeaders";
+import { ProductType } from "@/common/contexts";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useRouter } from "next/navigation";
+import ProductPreviewDialog from "./ProductPreviewDialog";
 import React, { useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
-import { ProductType } from "@/common/contexts";
-import ProductPreviewDialog from "./ProductPreviewDialog";
 
 function ProductsList() {
   const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct } = useProducts();
@@ -31,22 +31,18 @@ function ProductsList() {
         };
       }
 
-      // build subItems and derive main product status from variants
-      // cast product options to any so we can safely access optional 'status' or nested inventory.status
       const subItems: any[] = (prod.productOptions || []).map((opt: any) => ({
         ...opt,
         nameTh: prod.nameTh,
         unit: prod.unit,
       }));
 
-      // determine derived status: if any variant is active -> active, else inactive
       const derivedStatus = subItems.some((opt: any) => {
         return (opt?.status ?? opt?.inventory?.status) === "active";
       })
         ? "active"
         : "inactive";
 
-      // compute price range for main product from variants (display only)
       const prices = subItems
         .map((s: any) => Number(s?.basePrice ?? s?.finalPrice ?? NaN))
         .filter((n: number) => !Number.isNaN(n));
@@ -63,13 +59,9 @@ function ProductsList() {
       return {
         ...prod,
         id: prod.id,
-        // override main product status when product has variants
         status: derivedStatus,
-        // numeric fallback / canonical price (used by components expecting number)
         basePrice: Number.isFinite(priceMin) ? priceMin : undefined,
-        // explicit string for UI (range or single)
         displayPrice: priceDisplay,
-        // keep legacy 'price' field as string for older code that expects it
         price: priceDisplay,
         subItems,
       };
@@ -116,7 +108,6 @@ function ProductsList() {
     setPage(1);
   };
 
-  // preview dialog
   const handleClosePreview = () => setPreviewState({ open: false, item: null });
 
   return (
