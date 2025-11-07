@@ -31,7 +31,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <SidebarStateProvider>
         <NextAuthProvider>
           <ProfileProvider>
-        
               <AuthProvider>
                 <CustomizerContextProvider>
                   <html lang="en" suppressHydrationWarning>
