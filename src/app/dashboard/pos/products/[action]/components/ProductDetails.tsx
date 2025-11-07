@@ -168,7 +168,7 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
           <BaseDropdown formik={formik} name="taxClassId" label="ประเภทภาษี" options={taxClassOptions} fullWidth/>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <BaseTextField name="taxRate" label="อัตรา VAT (%)" formik={formik} fullWidth type="number" suffix='%' disabled/>
+          <BaseTextField name="taxRate" label="อัตรา VAT (%)" formik={formik} fullWidth type="decimal" suffix='%' disabled/>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <BaseSwitch
