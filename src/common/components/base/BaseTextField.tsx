@@ -308,12 +308,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       }}
       inputProps={{
         ...(rest.inputProps || {}),
-        // ใช้ "numeric" สำหรับเลขล้วนๆ (เช่น OTP, เบอร์โทร)
-        // ใช้ "decimal" สำหรับตัวเลขที่มีจุดทศนิยม (ราคา, จำนวน)
-        ...(type === "number" 
-          ? { inputMode: name.toLowerCase().includes("phone") || name.toLowerCase().includes("otp") ? "numeric" : "decimal" }
-          : {}
-        ),
+        ...(type === "number" ? { inputMode: "decimal" } : {}),
       }}
       {...rest}
     />
