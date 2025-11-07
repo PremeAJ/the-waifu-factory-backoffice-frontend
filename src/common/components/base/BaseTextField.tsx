@@ -21,7 +21,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   loading?: boolean;
   labelIcon?: ReactNode;
   lang?: IsLanguage;
-  suffix?: React.ReactNode; // ส่วนต่อท้าย เช่น %, ฿ ฯลฯ
+  suffix?: React.ReactNode;
   readOnly?: boolean;
 }
 
@@ -44,23 +44,13 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
     borderColor: theme.palette.grey[200],
   },
   "& input[type=password]": {
-    "&::-ms-reveal": {
-      display: "none",
-    },
-    "&::-ms-clear": {
-      display: "none",
-    },
+    "&::-ms-reveal": { display: "none" },
+    "&::-ms-clear": { display: "none" },
   },
   "& input[type=search]": {
-    "&::-webkit-search-cancel-button": {
-      display: "none",
-    },
-    "&::-webkit-search-decoration": {
-      display: "none",
-    },
-    "&::-ms-clear": {
-      display: "none",
-    },
+    "&::-webkit-search-cancel-button": { display: "none" },
+    "&::-webkit-search-decoration": { display: "none" },
+    "&::-ms-clear": { display: "none" },
   },
 }));
 
@@ -83,26 +73,18 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     readOnly,
     ...rest
   } = props;
+
   const theme = useTheme();
+
+  // *** ย้าย ALL HOOKS ขึ้นมาไว้ที่นี่ก่อน early return ***
+  const [showPassword, setShowPassword] = useState(false);
+  const [displayValue, setDisplayValue] = useState<string>("");
+  const [isFocused, setIsFocused] = useState(false);
 
   const langText = React.useMemo(() => {
     if (!label || !lang) return null;
     return lang === "th" ? <span style={{ marginLeft: 6, color: "gray" }}>(TH)</span> : <span style={{ marginLeft: 6, color: "gray" }}>(EN)</span>;
   }, [label, lang]);
-
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-
-  const handleClearSearch = () => {
-    if (formik) {
-      formik.setFieldValue(name, "");
-    } else if (rest.onChange) {
-      rest.onChange({ target: { name, value: "" } } as any);
-    }
-  };
 
   const mergedInputProps = React.useMemo(() => {
     const endAd = suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined;
@@ -116,21 +98,30 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     };
   }, [InputProps, suffix, readOnly]);
 
-  if (loading) {
-    const skeleton = (
-      <Skeleton
-        variant="rectangular"
-        width="100%"
-        height={44}
-        sx={{
-          borderRadius: 1,
-          "&::after": {
-            animationDuration: "2s",
-          },
-        }}
-      />
-    );
+  // sync display value when not focused
+  React.useEffect(() => {
+    if (type === "number" && !isFocused) {
+      const getIn = (obj: any, path: string) => {
+        if (!obj || !path) return undefined;
+        const parts = path.replace(/\[(\d+)\]/g, ".$1").split(".").filter(Boolean);
+        return parts.reduce((acc: any, key: string) => (acc != null ? acc[key] : undefined), obj);
+      };
+      const rawVal = formik ? getIn(formik.values, name) : rest.value;
+      if (rawVal === "" || rawVal === null || rawVal === undefined) {
+        setDisplayValue("");
+      } else {
+        const num = Number(rawVal);
+        if (!Number.isNaN(num)) {
+          setDisplayValue(formatNumber(num, 2));
+        } else {
+          setDisplayValue(String(rawVal));
+        }
+      }
+    }
+  }, [type, isFocused, formik, name, rest.value]);
 
+  // *** ตอนนี้ใส่ early return ได้แล้ว ***
+  if (loading) {
     return (
       <>
         {label && (
@@ -139,37 +130,18 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
             {langText}
           </BaseLabel>
         )}
-        {skeleton}
+        <Skeleton variant="rectangular" width="100%" height={44} sx={{ borderRadius: 1, "&::after": { animationDuration: "2s" } }} />
       </>
     );
   }
 
-  // --- helper: nested get/set for paths like "productOptions[0].price"
+  // --- helper functions ---
   const getIn = (obj: any, path: string) => {
     if (!obj || !path) return undefined;
-    const parts = path
-      .replace(/\[(\d+)\]/g, ".$1")
-      .split(".")
-      .filter(Boolean);
+    const parts = path.replace(/\[(\d+)\]/g, ".$1").split(".").filter(Boolean);
     return parts.reduce((acc: any, key: string) => (acc != null ? acc[key] : undefined), obj);
   };
 
-  const setIn = (obj: any, path: string, value: any) => {
-    if (!obj || !path) return;
-    const parts = path
-      .replace(/\[(\d+)\]/g, ".$1")
-      .split(".")
-      .filter(Boolean);
-    let cur = obj;
-    for (let i = 0; i < parts.length - 1; i++) {
-      const k = parts[i];
-      if (cur[k] == null) cur[k] = {};
-      cur = cur[k];
-    }
-    cur[parts[parts.length - 1]] = value;
-  };
-
-  // --- numeric clamp helpers and input guards
   const clampNumberValue = (raw: any) => {
     if (type !== "number") return raw;
     const min = (rest.inputProps && (rest.inputProps as any).min) ?? (InputProps && (InputProps as any).min);
@@ -181,25 +153,16 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     return num;
   };
 
-  const [displayValue, setDisplayValue] = useState<string>("");
-  const [isFocused, setIsFocused] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault();
 
-  // sync display value when not focused
-  React.useEffect(() => {
-    if (type === "number" && !isFocused) {
-      const rawVal = formik ? getIn(formik.values, name) : rest.value;
-      if (rawVal === "" || rawVal === null || rawVal === undefined) {
-        setDisplayValue("");
-      } else {
-        const num = Number(rawVal);
-        if (!Number.isNaN(num)) {
-          setDisplayValue(formatNumber(num, 2)); // format with 2 decimals
-        } else {
-          setDisplayValue(String(rawVal));
-        }
-      }
+  const handleClearSearch = () => {
+    if (formik) {
+      formik.setFieldValue(name, "");
+    } else if (rest.onChange) {
+      rest.onChange({ target: { name, value: "" } } as any);
     }
-  }, [type, isFocused, formik, name, rest.value]);
+  };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(true);
@@ -208,7 +171,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
 
   const handleBlurWithClamp = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(false);
-    // get current raw from formik or from event
     const rawVal = formik ? getIn(formik.values, name) : e.target?.value ?? "";
     const clamped = clampNumberValue(rawVal);
     if (formik && clamped !== rawVal) {
@@ -218,14 +180,11 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     if (typeof formik?.handleBlur === "function") formik.handleBlur(e);
   };
 
-  // prevent invalid chars for numbers and sanitize paste
   const userSlotInput = (rest.slotProps && (rest.slotProps as any).input) || {};
 
   const handleNumberKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (type !== "number") return;
-    if (["e", "E", "+", "-"].includes(e.key)) {
-      e.preventDefault();
-    }
+    if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
   };
 
   const handlePasteNumber = (e: React.ClipboardEvent<HTMLInputElement>) => {
@@ -240,7 +199,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       e.preventDefault();
       return;
     }
-    // clamp pasted value
     const min = (rest.inputProps && (rest.inputProps as any).min) ?? (InputProps && (InputProps as any).min);
     const max = (rest.inputProps && (rest.inputProps as any).max) ?? (InputProps && (InputProps as any).max);
     let clamped = num;
@@ -251,10 +209,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     else if (rest.onChange) rest.onChange({ target: { name, value: clamped } } as any);
   };
 
-  // --- helper text / error using nested path
-  let helperText: any = null;
   const fieldError = formik ? getIn(formik.errors, name) : undefined;
   const fieldTouched = formik ? getIn(formik.touched, name) : undefined;
+  let helperText: any = rest.helperText || null;
   if (fieldTouched && fieldError) {
     if (typeof fieldError === "string" && fieldError.includes("\n")) {
       helperText = fieldError.split("\n").map((msg: string, idx: number) => (
@@ -269,7 +226,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
 
   const getStartAdornment = () => {
     if (startAdornment) return startAdornment;
-
     if (type === "search") {
       return (
         <InputAdornment position="start">
@@ -277,14 +233,12 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
         </InputAdornment>
       );
     }
-
     return null;
   };
 
   const getEndAdornment = () => {
     if (suffix) return <InputAdornment position="end">{suffix}</InputAdornment>;
     if (endAdornment) return endAdornment;
-
     if (type === "password") {
       return (
         <InputAdornment position="end">
@@ -294,7 +248,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
         </InputAdornment>
       );
     }
-
     if (type === "search") {
       const currentValue = formik ? getIn(formik.values, name) ?? "" : rest.value ?? "";
       if (currentValue) {
@@ -307,11 +260,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
         );
       }
     }
-
     return null;
   };
 
-  // decide controlled value: use raw when focused, formatted when blurred
   const shouldControl = Boolean(formik) || rest.value !== undefined;
   const rawValue = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
   const controlledValue = type === "number" && !isFocused ? displayValue : rawValue;
@@ -337,7 +288,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       onBlur={handleBlurWithClamp}
       placeholder={placeholder}
       error={Boolean(fieldTouched && fieldError)}
-      helperText={fieldTouched && fieldError ? fieldError : helperText}
+      helperText={helperText}
       autoComplete={type === "password" ? "new-password" : undefined}
       InputProps={mergedInputProps}
       slotProps={{
@@ -357,7 +308,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       }}
       inputProps={{
         ...(rest.inputProps || {}),
-        ...(type === "number" ? { inputMode: "decimal" } : {}), // เพิ่มบรรทัดนี้
+        ...(type === "number" ? { inputMode: "decimal" } : {}),
       }}
       {...rest}
     />
