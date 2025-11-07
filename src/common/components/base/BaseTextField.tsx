@@ -7,6 +7,7 @@ import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interfac
 import { ReactNode, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import BaseLabel from "./BaseLabel";
+import formatNumber from "@/common/utils/formatNumber";
 
 interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   name: string;
@@ -180,7 +181,33 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     return num;
   };
 
+  const [displayValue, setDisplayValue] = useState<string>("");
+  const [isFocused, setIsFocused] = useState(false);
+
+  // sync display value when not focused
+  React.useEffect(() => {
+    if (type === "number" && !isFocused) {
+      const rawVal = formik ? getIn(formik.values, name) : rest.value;
+      if (rawVal === "" || rawVal === null || rawVal === undefined) {
+        setDisplayValue("");
+      } else {
+        const num = Number(rawVal);
+        if (!Number.isNaN(num)) {
+          setDisplayValue(formatNumber(num, 2)); // format with 2 decimals
+        } else {
+          setDisplayValue(String(rawVal));
+        }
+      }
+    }
+  }, [type, isFocused, formik, name, rest.value]);
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setIsFocused(true);
+    if (typeof rest.onFocus === "function") rest.onFocus(e);
+  };
+
   const handleBlurWithClamp = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setIsFocused(false);
     // get current raw from formik or from event
     const rawVal = formik ? getIn(formik.values, name) : e.target?.value ?? "";
     const clamped = clampNumberValue(rawVal);
@@ -284,9 +311,10 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     return null;
   };
 
-  // decide controlled/uncontrolled using nested get
+  // decide controlled value: use raw when focused, formatted when blurred
   const shouldControl = Boolean(formik) || rest.value !== undefined;
-  const controlledValue = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
+  const rawValue = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
+  const controlledValue = type === "number" && !isFocused ? displayValue : rawValue;
 
   const textField = (
     <StyledTextField
@@ -294,7 +322,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       variant="outlined"
       id={name}
       name={name}
-      type={type === "password" ? (showPassword ? "text" : "password") : type}
+      type={type === "password" ? (showPassword ? "text" : "password") : type === "number" && !isFocused ? "text" : type}
       {...(shouldControl ? { value: controlledValue } : {})}
       onChange={(e: any) => {
         if (readOnly) return;
@@ -303,9 +331,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
           formik.setFieldValue(name, val);
         } else if (rest.onChange) {
           rest.onChange(e);
-        } else {
         }
       }}
+      onFocus={handleFocus}
       onBlur={handleBlurWithClamp}
       placeholder={placeholder}
       error={Boolean(fieldTouched && fieldError)}
@@ -326,6 +354,10 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
             if (userSlotInput.onPaste) userSlotInput.onPaste(e);
           },
         },
+      }}
+      inputProps={{
+        ...(rest.inputProps || {}),
+        ...(type === "number" ? { inputMode: "decimal" } : {}), // เพิ่มบรรทัดนี้
       }}
       {...rest}
     />
