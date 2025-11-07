@@ -23,6 +23,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   lang?: IsLanguage;
   suffix?: React.ReactNode;
   readOnly?: boolean;
+  inputMode?: "numeric" | "decimal" | "tel" | "email" | "url" | "search" | "text" | "none"; // เพิ่มบรรทัดนี้
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -71,6 +72,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     InputProps,
     suffix,
     readOnly,
+    inputMode, // เพิ่มบรรทัดนี้
     ...rest
   } = props;
 
@@ -308,7 +310,11 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       }}
       inputProps={{
         ...(rest.inputProps || {}),
-        ...(type === "number" ? { inputMode: "decimal" } : {}),
+        // ถ้าส่ง inputMode มาให้ใช้ตามนั้น, ไม่งั้นใช้ logic เดิม
+        ...(type === "number" 
+          ? { inputMode: inputMode || "decimal" } // default decimal สำหรับ type number
+          : {}
+        ),
       }}
       {...rest}
     />

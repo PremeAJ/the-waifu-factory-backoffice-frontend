@@ -108,7 +108,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
         <Grid size={{ xs: 12, md: 6 }}>
           <BaseLabel>ราคาพื้นฐาน</BaseLabel>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <BaseTextField formik={formik} name={`${optionPath}.basePrice`} type="number" onFocus={() => setLastEdited("base")} suffix="฿" />
+            <BaseTextField inputMode='decimal' formik={formik} name={`${optionPath}.basePrice`} type="number" onFocus={() => setLastEdited("base")} suffix="฿" />
             <Typography variant="body1"> ต่อ </Typography>
             <BaseTextField formik={formik} name={`${optionPath}.pricePerUnit`} type="number" suffix={unit} />
           </Box>
@@ -182,6 +182,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           name={`${optionPath}.inventory.stock`}
           label="จำนวนสต็อก"
           type="number"
+          inputMode="numeric"
           tooltip="จำนวนสินค้าที่มีอยู่ในคลัง"
           fullWidth
           suffix={unit}
