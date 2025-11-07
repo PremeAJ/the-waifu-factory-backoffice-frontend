@@ -2,13 +2,12 @@
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
 import { Box, Stack } from "@mui/material";
 import { getProductHeaders } from "../constants/productHeaders";
+import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useProducts } from "@/common/contexts/ProductsContext";
-import { useRouter } from "next/navigation";
 import ProductPreviewDialog from "./ProductPreviewDialog";
 import React, { useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
-import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 
 function ProductsList() {
   const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct } = useProducts();
@@ -17,7 +16,6 @@ function ProductsList() {
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
   const isMobilePortrait = isMobile && isPortrait;
-  const router = useRouter();
 
   const tableData: any = useMemo(() => {
     return (products || []).map((prod:ProductType) => {
@@ -81,17 +79,15 @@ function ProductsList() {
     () => [
       {
         type: "view",
-        tooltip: "ดู",
         onClick: (item: any) => setPreviewState({ open: true, item }),
       },
       {
         type: "edit",
-        tooltip: "แก้ไข",
-        href: (item: any) => `/dashboard/pos/products/edit?id=${item.id}`, // ใช้ href แทน router.push
+        href: (item: any) => `/dashboard/pos/products/edit?id=${item.id}`, 
       },
       {
         type: "delete",
-        tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีตัวเลือกย่อย" : "ลบ"),
+        tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีตัวเลือกย่อย" :  ''),
         disabled: (item: any) => !!(item?.subItems?.length > 0),
         onClick: (item: any) => setDeleteDialogState({ open: true, item: item }),
       },

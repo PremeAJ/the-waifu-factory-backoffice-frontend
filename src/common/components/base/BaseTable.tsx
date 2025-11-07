@@ -195,25 +195,25 @@ const BaseTable = <T extends readonly TableHeader[]>({
     create: {
       type: "create",
       icon: <IconPlus />,
-      tooltip: "Add",
+      // tooltip: "Add",
       color: "success",
     },
     edit: {
       type: "edit",
       icon: <IconEdit />,
-      tooltip: "Edit",
+      // tooltip: "Edit",
       color: "warning",
     },
     delete: {
       type: "delete",
       icon: <IconTrash />,
-      tooltip: "Delete",
+      // tooltip: "Delete",
       color: "error",
     },
     view: {
       type: "view",
       icon: <IconEye />,
-      tooltip: "View",
+      // tooltip: "View",
       color: "info",
     },
   };
@@ -402,13 +402,18 @@ const BaseTable = <T extends readonly TableHeader[]>({
                 {headers.map((header) => {
                   const cellValue = header.render ? header.render(item[header.key], item) : item[header.key];
                   return (
-                    <Stack direction="row" alignItems="center" key={header.key} my={1}>
-                      <Box sx={{ width: "75%" }}>
-                        <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 700 }}>
-                          {header.label}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ width: "25%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Stack 
+                      direction="row" 
+                      alignItems="center" 
+                      justifyContent="space-between" 
+                      key={header.key} 
+                      my={1}
+                      spacing={2}
+                    >
+                      <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 700, flexShrink: 0 }}>
+                        {header.label}
+                      </Typography>
+                      <Box sx={{ textAlign: "right", flexGrow: 1 }}>
                         {typeof cellValue === "string" || typeof cellValue === "number" ? (
                           <Typography variant="body2">{cellValue}</Typography>
                         ) : (
@@ -448,13 +453,18 @@ const BaseTable = <T extends readonly TableHeader[]>({
                         {headers.map((header) => {
                           const cellValue = header.render ? header.render(subItem[header.key], subItem) : subItem[header.key];
                           return (
-                            <Stack direction="row" alignItems="center" key={header.key} my={1}>
-                              <Box sx={{ width: "75%" }}>
-                                <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 700 }}>
-                                  {header.label}
-                                </Typography>
-                              </Box>
-                              <Box sx={{ width: "25%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <Stack 
+                              direction="row" 
+                              alignItems="center" 
+                              justifyContent="space-between" 
+                              key={header.key} 
+                              my={1}
+                              spacing={2}
+                            >
+                              <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 700, flexShrink: 0 }}>
+                                {header.label}
+                              </Typography>
+                              <Box sx={{ textAlign: "right", flexGrow: 1 }}>
                                 {typeof cellValue === "string" || typeof cellValue === "number" ? (
                                   <Typography variant="body2">{cellValue}</Typography>
                                 ) : (
