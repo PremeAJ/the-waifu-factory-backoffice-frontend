@@ -4,7 +4,7 @@ import React from "react";
 import { TextField, InputAdornment, TextFieldProps, Skeleton, IconButton } from "@mui/material";
 import { IconEye, IconEyeOff, IconSearch, IconX } from "@tabler/icons-react";
 import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import BaseLabel from "./BaseLabel";
 
@@ -22,7 +22,8 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   lang?: IsLanguage;
   suffix?: React.ReactNode; // ส่วนต่อท้าย เช่น %, ฿ ฯลฯ
   readOnly?: boolean;
-  // keyboardType removed
+  // show formatted display with thousands separators when NOT focused
+  thousandSeparator?: boolean;
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -81,6 +82,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     InputProps,
     suffix,
     readOnly,
+    thousandSeparator = false,
     ...rest
   } = props;
   const theme = useTheme();
@@ -283,7 +285,34 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
 
   // decide controlled/uncontrolled using nested get
   const shouldControl = Boolean(formik) || rest.value !== undefined;
-  const controlledValue = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
+  const controlledValueRaw = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
+
+  // focus state to toggle formatted display
+  const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    // if parent changes value while focused, keep showing raw; otherwise when not focused show formatted
+    if (!isFocused && thousandSeparator) {
+      // no-op; re-render will show formatted version
+    }
+  }, [controlledValueRaw, isFocused, thousandSeparator]);
+
+  // helper to format with commas without altering underlying value
+  const formatWithCommas = (val: any) => {
+    if (val === null || val === undefined) return "";
+    const s = String(val);
+    if (s === "") return "";
+    // preserve decimal part if any
+    const neg = s.startsWith("-");
+    const body = neg ? s.slice(1) : s;
+    const parts = body.split(".");
+    const intPart = parts[0].replace(/,/g, "");
+    const fracPart = parts[1];
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return (neg ? "-" : "") + formattedInt + (typeof fracPart !== "undefined" ? `.${fracPart}` : "");
+  };
+
+  const displayValue = thousandSeparator && !isFocused ? formatWithCommas(controlledValueRaw) : (controlledValueRaw ?? "");
 
   // choose effective input type to hint browser (avoid native number spinners)
   const effectiveType = type === "password" ? (showPassword ? "text" : "password") : type ?? "text";
@@ -295,17 +324,27 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       id={name}
       name={name}
       type={effectiveType}
-      {...(shouldControl ? { value: controlledValue } : {})}
+      {...(shouldControl ? { value: displayValue } : {})}
       onChange={(e: any) => {
         if (readOnly) return;
+        // incoming input might contain commas when not focused; remove commas before emitting
+        const rawInput = String(e.target.value).replace(/,/g, "");
         if (formik && typeof formik.setFieldValue === "function") {
-          const val = type === "number" ? (e.target.value === "" ? "" : String(e.target.value).replace(/\D+/g, "")) : e.target.value;
+          const val = type === "number" ? (rawInput === "" ? "" : String(rawInput).replace(/\D+/g, "")) : rawInput;
           formik.setFieldValue(name, val);
         } else if (rest.onChange) {
-          rest.onChange(e);
+          // emit event with cleaned value
+          rest.onChange({ target: { name, value: rawInput } } as any);
         }
       }}
-      onBlur={handleBlurWithClamp}
+      onFocus={(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setIsFocused(true);
+        if (typeof rest.onFocus === "function") rest.onFocus(e);
+      }}
+      onBlur={(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setIsFocused(false);
+        handleBlurWithClamp(e);
+      }}
       placeholder={placeholder}
       error={Boolean(fieldTouched && fieldError)}
       helperText={fieldTouched && fieldError ? fieldError : helperText}
@@ -322,7 +361,19 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
             if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
           },
           onPaste: (e: any) => {
-            handlePaste(e);
+            // sanitize pasted content (remove commas) before passing to handlers
+            const pasted = e.clipboardData?.getData?.("text") ?? "";
+            const cleaned = pasted.replace(/,/g, "");
+            if (type === "number") {
+              const digits = cleaned.replace(/\D+/g, "");
+              e.preventDefault();
+              if (formik) formik.setFieldValue(name, digits);
+              else if (rest.onChange) rest.onChange({ target: { name, value: digits } } as any);
+            } else {
+              e.preventDefault();
+              if (formik) formik.setFieldValue(name, cleaned);
+              else if (rest.onChange) rest.onChange({ target: { name, value: cleaned } } as any);
+            }
             if (userSlotInput.onPaste) userSlotInput.onPaste(e);
           },
         },
