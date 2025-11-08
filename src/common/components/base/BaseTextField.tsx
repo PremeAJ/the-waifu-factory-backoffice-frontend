@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { TextField, InputAdornment, TextFieldProps, Skeleton, Tooltip, IconButton } from "@mui/material";
-import { IconEye, IconEyeOff, IconSearch, IconX, IconInfoCircle } from "@tabler/icons-react";
+import { TextField, InputAdornment, TextFieldProps, Skeleton, IconButton } from "@mui/material";
+import { IconEye, IconEyeOff, IconSearch, IconX } from "@tabler/icons-react";
 import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
 import { ReactNode, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
@@ -22,13 +22,7 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   lang?: IsLanguage;
   suffix?: React.ReactNode; // ส่วนต่อท้าย เช่น %, ฿ ฯลฯ
   readOnly?: boolean;
-  /**
-   * keyboardType:
-   * - "number": numeric keypad (0-9) — only digits allowed
-   * - "decimal": numeric keypad with dot — digits and one dot allowed
-   * - "email": email-optimized keyboard (allows @ and .)
-   */
-  keyboardType?: "number" | "decimal" | "email";
+  // keyboardType removed
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -87,7 +81,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     InputProps,
     suffix,
     readOnly,
-    keyboardType,
     ...rest
   } = props;
   const theme = useTheme();
@@ -114,20 +107,12 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   const mergedInputProps = React.useMemo(() => {
     const endAd = suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined;
     const base = { ...(InputProps || {}) };
-    // cast to any so we can set inputMode / pattern etc. without TS complaining
     const inputProps = { ...(base.inputProps || {}), readOnly: readOnly ?? base.inputProps?.readOnly } as any;
 
-    // set mobile keyboard inputMode and pattern based on keyboardType
-    if (keyboardType === "number") {
+    // keep numeric hint for legacy `type="number"` only
+    if (type === "number") {
       inputProps.inputMode = "numeric";
       inputProps.pattern = "\\d*";
-    } else if (keyboardType === "decimal") {
-      // decimal keypad on many platforms
-      inputProps.inputMode = "decimal";
-      inputProps.pattern = "\\d*(\\.\\d*)?";
-    } else if (keyboardType === "email") {
-      inputProps.inputMode = "email";
-      // do not force pattern for email
     }
 
     return {
@@ -136,7 +121,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       readOnly: readOnly ?? base.readOnly,
       inputProps,
     };
-  }, [InputProps, suffix, readOnly, keyboardType]);
+  }, [InputProps, suffix, readOnly, type]);
 
   if (loading) {
     const skeleton = (
@@ -188,7 +173,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   };
 
   const handleBlurWithClamp = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    // get current raw from formik or from event
     const rawVal = formik ? getIn(formik.values, name) : e.target?.value ?? "";
     const clamped = clampNumberValue(rawVal);
     if (formik && clamped !== rawVal) {
@@ -198,14 +182,12 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     if (typeof formik?.handleBlur === "function") formik.handleBlur(e);
   };
 
-  // prevent invalid chars for numbers and sanitize paste
+  // prevent invalid chars for legacy `type="number"` and sanitize paste
   const userSlotInput = (rest.slotProps && (rest.slotProps as any).input) || {};
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // prioritize keyboardType rules; fallback to legacy numeric behavior when type === "number"
-    const mode = keyboardType ?? (type === "number" ? "number" : undefined);
-
-    if (!mode) {
+    // legacy numeric enforcement only when type === "number"
+    if (type !== "number") {
       if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
       return;
     }
@@ -215,35 +197,15 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
       return;
     }
-
-    if (mode === "number") {
-      // allow only digits
-      if (!/^\d$/.test(e.key)) {
-        e.preventDefault();
-      }
-    } else if (mode === "decimal") {
-      // allow digits and one dot
-      const input = e.currentTarget as HTMLInputElement;
-      const hasDot = input.value.includes(".");
-      if (!/^\d$/.test(e.key) && e.key !== ".") {
-        e.preventDefault();
-      } else if (e.key === "." && hasDot) {
-        e.preventDefault();
-      }
-    } else if (mode === "email") {
-      // allow most printable chars but disallow spaces
-      if (e.key === " ") {
-        e.preventDefault();
-      }
-      // allow typical email chars, don't be overly restrictive here
+    // allow only digits for type="number"
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
     }
-
     if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const mode = keyboardType ?? (type === "number" ? "number" : undefined);
-    if (!mode) {
+    if (type !== "number") {
       if (userSlotInput.onPaste) userSlotInput.onPaste(e);
       return;
     }
@@ -252,28 +214,10 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       e.preventDefault();
       return;
     }
-
-    if (mode === "number") {
-      const digits = text.replace(/\D+/g, "");
-      e.preventDefault();
-      if (formik) formik.setFieldValue(name, digits);
-      else if (rest.onChange) rest.onChange({ target: { name, value: digits } } as any);
-    } else if (mode === "decimal") {
-      // keep only digits and first dot
-      const cleaned = text.replace(/[^0-9.]/g, "");
-      const parts = cleaned.split(".");
-      const normalized = parts.length <= 1 ? parts[0] : parts.shift() + "." + parts.join("");
-      e.preventDefault();
-      if (formik) formik.setFieldValue(name, normalized);
-      else if (rest.onChange) rest.onChange({ target: { name, value: normalized } } as any);
-    } else {
-      // email: accept paste but trim spaces
-      const trimmed = text.trim();
-      e.preventDefault();
-      if (formik) formik.setFieldValue(name, trimmed);
-      else if (rest.onChange) rest.onChange({ target: { name, value: trimmed } } as any);
-    }
-
+    const digits = text.replace(/\D+/g, "");
+    e.preventDefault();
+    if (formik) formik.setFieldValue(name, digits);
+    else if (rest.onChange) rest.onChange({ target: { name, value: digits } } as any);
     if (userSlotInput.onPaste) userSlotInput.onPaste(e);
   };
 
@@ -342,16 +286,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   const controlledValue = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
 
   // choose effective input type to hint browser (avoid native number spinners)
-  const effectiveType =
-    type === "password"
-      ? showPassword
-        ? "text"
-        : "password"
-      : keyboardType === "number"
-      ? "tel"
-      : keyboardType === "decimal"
-      ? "text"
-      : type ?? "text";
+  const effectiveType = type === "password" ? (showPassword ? "text" : "password") : type ?? "text";
 
   const textField = (
     <StyledTextField
@@ -364,18 +299,10 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       onChange={(e: any) => {
         if (readOnly) return;
         if (formik && typeof formik.setFieldValue === "function") {
-          const val =
-            keyboardType === "number"
-              ? (e.target.value === "" ? "" : String(e.target.value).replace(/\D+/g, ""))
-              : keyboardType === "decimal"
-              ? (e.target.value === "" ? "" : String(e.target.value).replace(/[^0-9.]/g, ""))
-              : type === "number"
-              ? (e.target.value === "" ? "" : Number(e.target.value))
-              : e.target.value;
+          const val = type === "number" ? (e.target.value === "" ? "" : String(e.target.value).replace(/\D+/g, "")) : e.target.value;
           formik.setFieldValue(name, val);
         } else if (rest.onChange) {
           rest.onChange(e);
-        } else {
         }
       }}
       onBlur={handleBlurWithClamp}
@@ -386,6 +313,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       InputProps={mergedInputProps}
       slotProps={{
         input: {
+          // keep adornments and user-provided slot props
           startAdornment: getStartAdornment(),
           endAdornment: getEndAdornment(),
           ...(userSlotInput || {}),

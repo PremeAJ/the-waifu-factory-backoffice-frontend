@@ -80,23 +80,27 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           <Grid size={{ xs: 6, md: 3 }}>
             <BaseTextField
               formik={formik}
-              keyboardType="decimal"
               name={`${optionPath}.basePrice`}
               label="ราคาพื้นฐาน"
               fullWidth
               suffix="฿"
               onFocus={() => setLastEdited("base")}
+              inputProps={{
+                inputMode: "decimal",
+              }}
             />
           </Grid>
           <Grid size={{ xs: 6, md: 3 }}>
             <BaseTextField
               formik={formik}
-              keyboardType="decimal"
               name={`${optionPath}.finalPrice`}
               label="ราคาหลังคำนวน"
               fullWidth
               suffix="฿"
               onFocus={() => setLastEdited("final")}
+              inputProps={{
+                inputMode: "decimal",
+              }}
             />
           </Grid>
         </>
@@ -109,28 +113,47 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           <BaseLabel>ราคาพื้นฐาน</BaseLabel>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <BaseTextField
-              keyboardType="decimal"
               formik={formik}
               name={`${optionPath}.basePrice`}
               onFocus={() => setLastEdited("base")}
               suffix="฿"
+              inputProps={{
+                inputMode: "decimal",
+              }}
             />
             <Typography variant="body1"> ต่อ </Typography>
-            <BaseTextField formik={formik} name={`${optionPath}.pricePerUnit`}  suffix={unit} />
+            <BaseTextField
+              formik={formik}
+              name={`${optionPath}.pricePerUnit`}
+              suffix={unit}
+              inputProps={{
+                inputMode: "numeric",
+              }}
+            />
           </Box>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <BaseLabel>ราคาหลังคำนวณ</BaseLabel>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <BaseTextField
-              keyboardType="decimal"
               formik={formik}
               name={`${optionPath}.finalPrice`}
               onFocus={() => setLastEdited("final")}
               suffix="฿"
+              inputProps={{
+                inputMode: "decimal",
+              }}
             />
             <Typography variant="body1"> ต่อ </Typography>
-            <BaseTextField formik={formik} name={`${optionPath}.pricePerUnit`}  disabled suffix={unit} />
+            <BaseTextField
+              formik={formik}
+              name={`${optionPath}.pricePerUnit`}
+              disabled
+              suffix={unit}
+              inputProps={{
+                inputMode: "numeric",
+              }}
+            />
           </Box>
         </Grid>
       </>
@@ -177,10 +200,12 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
             formik={formik}
             name={`${optionPath}.discountRate`}
             label="มูลค่าส่วนลด (คงที่)"
-            inputProps={{ min: 0 }}
             fullWidth
             suffix="฿"
             onFocus={() => setLastEdited("base")}
+            inputProps={{
+              inputMode: "decimal",
+            }}
           />
         </Grid>
       )}
@@ -192,11 +217,12 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           formik={formik}
           name={`${optionPath}.inventory.stock`}
           label="จำนวนสต็อก"
-          inputMode="numeric"
           tooltip="จำนวนสินค้าที่มีอยู่ในคลัง"
-          keyboardType="number"
           fullWidth
           suffix={unit}
+          inputProps={{
+            inputMode: "numeric",
+          }}
         />
       </Grid>
       <Grid size={{ xs: 6, md: 3 }} justifyContent={"flex-end"}>
