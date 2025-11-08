@@ -85,6 +85,8 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               fullWidth
               suffix="฿"
               onFocus={() => setLastEdited("base")}
+              allowFloat
+              noLeadingZero
               thousandSeparator
               inputProps={{
                 inputMode: "decimal",
@@ -99,6 +101,8 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               fullWidth
               suffix="฿"
               onFocus={() => setLastEdited("final")}
+              allowFloat
+              noLeadingZero
               thousandSeparator
               inputProps={{
                 inputMode: "decimal",
@@ -119,6 +123,8 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               name={`${optionPath}.basePrice`}
               onFocus={() => setLastEdited("base")}
               suffix="฿"
+              allowFloat
+              noLeadingZero
               thousandSeparator
               inputProps={{
                 inputMode: "decimal",
@@ -129,6 +135,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               formik={formik}
               name={`${optionPath}.pricePerUnit`}
               suffix={unit}
+              noLeadingZero
               thousandSeparator
               inputProps={{
                 inputMode: "numeric",
@@ -144,6 +151,8 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               name={`${optionPath}.finalPrice`}
               onFocus={() => setLastEdited("final")}
               suffix="฿"
+              allowFloat
+              noLeadingZero
               thousandSeparator
               inputProps={{
                 inputMode: "decimal",
@@ -155,6 +164,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               name={`${optionPath}.pricePerUnit`}
               disabled
               suffix={unit}
+              noLeadingZero
               thousandSeparator
               inputProps={{
                 inputMode: "numeric",
@@ -209,6 +219,8 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
             fullWidth
             suffix="฿"
             onFocus={() => setLastEdited("base")}
+            allowFloat
+            noLeadingZero
             thousandSeparator
             inputProps={{
               inputMode: "decimal",
@@ -228,6 +240,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           fullWidth
           suffix={unit}
           thousandSeparator
+          noLeadingZero
           inputProps={{
             inputMode: "numeric",
           }}
