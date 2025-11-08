@@ -22,6 +22,13 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   lang?: IsLanguage;
   suffix?: React.ReactNode; // ส่วนต่อท้าย เช่น %, ฿ ฯลฯ
   readOnly?: boolean;
+  /**
+   * keyboardType:
+   * - "number": numeric keypad (0-9) — only digits allowed
+   * - "decimal": numeric keypad with dot — digits and one dot allowed
+   * - "email": email-optimized keyboard (allows @ and .)
+   */
+  keyboardType?: "number" | "decimal" | "email";
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -80,6 +87,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     InputProps,
     suffix,
     readOnly,
+    keyboardType,
     ...rest
   } = props;
   const theme = useTheme();
@@ -106,14 +114,29 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   const mergedInputProps = React.useMemo(() => {
     const endAd = suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined;
     const base = { ...(InputProps || {}) };
-    const inputProps = { ...(base.inputProps || {}), readOnly: readOnly ?? base.inputProps?.readOnly };
+    // cast to any so we can set inputMode / pattern etc. without TS complaining
+    const inputProps = { ...(base.inputProps || {}), readOnly: readOnly ?? base.inputProps?.readOnly } as any;
+
+    // set mobile keyboard inputMode and pattern based on keyboardType
+    if (keyboardType === "number") {
+      inputProps.inputMode = "numeric";
+      inputProps.pattern = "\\d*";
+    } else if (keyboardType === "decimal") {
+      // decimal keypad on many platforms
+      inputProps.inputMode = "decimal";
+      inputProps.pattern = "\\d*(\\.\\d*)?";
+    } else if (keyboardType === "email") {
+      inputProps.inputMode = "email";
+      // do not force pattern for email
+    }
+
     return {
       ...base,
       endAdornment: endAd ?? base.endAdornment,
       readOnly: readOnly ?? base.readOnly,
       inputProps,
     };
-  }, [InputProps, suffix, readOnly]);
+  }, [InputProps, suffix, readOnly, keyboardType]);
 
   if (loading) {
     const skeleton = (
@@ -178,34 +201,80 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   // prevent invalid chars for numbers and sanitize paste
   const userSlotInput = (rest.slotProps && (rest.slotProps as any).input) || {};
 
-  const handleNumberKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (type !== "number") return;
-    if (["e", "E", "+", "-"].includes(e.key)) {
-      e.preventDefault();
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // prioritize keyboardType rules; fallback to legacy numeric behavior when type === "number"
+    const mode = keyboardType ?? (type === "number" ? "number" : undefined);
+
+    if (!mode) {
+      if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
+      return;
     }
+
+    const allowedControlKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab", "Home", "End"];
+    if (allowedControlKeys.includes(e.key)) {
+      if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
+      return;
+    }
+
+    if (mode === "number") {
+      // allow only digits
+      if (!/^\d$/.test(e.key)) {
+        e.preventDefault();
+      }
+    } else if (mode === "decimal") {
+      // allow digits and one dot
+      const input = e.currentTarget as HTMLInputElement;
+      const hasDot = input.value.includes(".");
+      if (!/^\d$/.test(e.key) && e.key !== ".") {
+        e.preventDefault();
+      } else if (e.key === "." && hasDot) {
+        e.preventDefault();
+      }
+    } else if (mode === "email") {
+      // allow most printable chars but disallow spaces
+      if (e.key === " ") {
+        e.preventDefault();
+      }
+      // allow typical email chars, don't be overly restrictive here
+    }
+
+    if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
   };
 
-  const handlePasteNumber = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    if (type !== "number") return;
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const mode = keyboardType ?? (type === "number" ? "number" : undefined);
+    if (!mode) {
+      if (userSlotInput.onPaste) userSlotInput.onPaste(e);
+      return;
+    }
     const text = e.clipboardData.getData("text");
     if (!text) {
       e.preventDefault();
       return;
     }
-    const num = Number(text);
-    if (Number.isNaN(num)) {
+
+    if (mode === "number") {
+      const digits = text.replace(/\D+/g, "");
       e.preventDefault();
-      return;
+      if (formik) formik.setFieldValue(name, digits);
+      else if (rest.onChange) rest.onChange({ target: { name, value: digits } } as any);
+    } else if (mode === "decimal") {
+      // keep only digits and first dot
+      const cleaned = text.replace(/[^0-9.]/g, "");
+      const parts = cleaned.split(".");
+      const normalized = parts.length <= 1 ? parts[0] : parts.shift() + "." + parts.join("");
+      e.preventDefault();
+      if (formik) formik.setFieldValue(name, normalized);
+      else if (rest.onChange) rest.onChange({ target: { name, value: normalized } } as any);
+    } else {
+      // email: accept paste but trim spaces
+      const trimmed = text.trim();
+      e.preventDefault();
+      if (formik) formik.setFieldValue(name, trimmed);
+      else if (rest.onChange) rest.onChange({ target: { name, value: trimmed } } as any);
     }
-    // clamp pasted value
-    const min = (rest.inputProps && (rest.inputProps as any).min) ?? (InputProps && (InputProps as any).min);
-    const max = (rest.inputProps && (rest.inputProps as any).max) ?? (InputProps && (InputProps as any).max);
-    let clamped = num;
-    if (min !== undefined && clamped < Number(min)) clamped = Number(min);
-    if (max !== undefined && clamped > Number(max)) clamped = Number(max);
-    e.preventDefault();
-    if (formik) formik.setFieldValue(name, clamped);
-    else if (rest.onChange) rest.onChange({ target: { name, value: clamped } } as any);
+
+    if (userSlotInput.onPaste) userSlotInput.onPaste(e);
   };
 
   // --- helper text / error using nested path
@@ -272,18 +341,37 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
   const shouldControl = Boolean(formik) || rest.value !== undefined;
   const controlledValue = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
 
+  // choose effective input type to hint browser (avoid native number spinners)
+  const effectiveType =
+    type === "password"
+      ? showPassword
+        ? "text"
+        : "password"
+      : keyboardType === "number"
+      ? "tel"
+      : keyboardType === "decimal"
+      ? "text"
+      : type ?? "text";
+
   const textField = (
     <StyledTextField
       fullWidth
       variant="outlined"
       id={name}
       name={name}
-      type={type === "password" ? (showPassword ? "text" : "password") : type}
+      type={effectiveType}
       {...(shouldControl ? { value: controlledValue } : {})}
       onChange={(e: any) => {
         if (readOnly) return;
         if (formik && typeof formik.setFieldValue === "function") {
-          const val = type === "number" ? (e.target.value === "" ? "" : Number(e.target.value)) : e.target.value;
+          const val =
+            keyboardType === "number"
+              ? (e.target.value === "" ? "" : String(e.target.value).replace(/\D+/g, ""))
+              : keyboardType === "decimal"
+              ? (e.target.value === "" ? "" : String(e.target.value).replace(/[^0-9.]/g, ""))
+              : type === "number"
+              ? (e.target.value === "" ? "" : Number(e.target.value))
+              : e.target.value;
           formik.setFieldValue(name, val);
         } else if (rest.onChange) {
           rest.onChange(e);
@@ -302,11 +390,11 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
           endAdornment: getEndAdornment(),
           ...(userSlotInput || {}),
           onKeyDown: (e: any) => {
-            handleNumberKeyDown(e);
+            handleKeyDown(e);
             if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
           },
           onPaste: (e: any) => {
-            handlePasteNumber(e);
+            handlePaste(e);
             if (userSlotInput.onPaste) userSlotInput.onPaste(e);
           },
         },
