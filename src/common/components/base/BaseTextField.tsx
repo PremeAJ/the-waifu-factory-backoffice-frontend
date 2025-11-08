@@ -4,7 +4,7 @@ import React from "react";
 import { TextField, InputAdornment, TextFieldProps, Skeleton, IconButton } from "@mui/material";
 import { IconEye, IconEyeOff, IconSearch, IconX } from "@tabler/icons-react";
 import { IsLanguage } from "@/common/contexts/ProfileContext/interfaces/interface";
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import BaseLabel from "./BaseLabel";
 
@@ -20,14 +20,8 @@ interface CustomTextFieldProps extends Omit<TextFieldProps, "name"> {
   loading?: boolean;
   labelIcon?: ReactNode;
   lang?: IsLanguage;
-  suffix?: React.ReactNode; // ส่วนต่อท้าย เช่น %, ฿ ฯลฯ
+  suffix?: React.ReactNode;
   readOnly?: boolean;
-  // show formatted display with thousands separators when NOT focused
-  thousandSeparator?: boolean;
-  // ถ้า true จะตัด/ป้องกันเลข 0 นำหน้า เช่น "09124" -> "9124"
-  noLeadingZero?: boolean;
-  // ถ้า true จะอนุญาตทศนิยม เช่น "0.5"
-  allowFloat?: boolean;
 }
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -86,28 +80,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     InputProps,
     suffix,
     readOnly,
-    thousandSeparator = false,
-    noLeadingZero = false,
-    allowFloat = false,
     ...rest
   } = props;
   const theme = useTheme();
-
-  // sanitize function: ลบ 0 นำหน้า บนส่วน integer แต่ยังคงอนุญาต "0", "0.xxx", "-" intermediates
-  const sanitizeLeadingZeros = (val: string) => {
-    if (val === undefined || val === null) return val;
-    const s = String(val);
-    // keep intermediate editing states
-    if (s === "-" || s === "." || s === "-.") return s;
-    const neg = s.startsWith("-");
-    let body = neg ? s.slice(1) : s;
-    const parts = body.split(".");
-    let intPart = parts[0].replace(/^0+(?=\d)/, "");
-    if (intPart === "") intPart = "0";
-    const fracPart = parts[1];
-    const res = intPart + (typeof fracPart !== "undefined" ? `.${fracPart}` : "");
-    return (neg ? "-" : "") + res;
-  };
 
   const langText = React.useMemo(() => {
     if (!label || !lang) return null;
@@ -133,16 +108,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     const base = { ...(InputProps || {}) };
     const inputProps = { ...(base.inputProps || {}), readOnly: readOnly ?? base.inputProps?.readOnly } as any;
 
-    // keep numeric hint for legacy `type="number"` only
     if (type === "number") {
-      if (allowFloat) {
-        inputProps.inputMode = "decimal";
-        // allow decimals via pattern
-        inputProps.pattern = "\\d*(\\.\\d+)?";
-      } else {
-        inputProps.inputMode = "numeric";
-        inputProps.pattern = "\\d*";
-      }
+      inputProps.inputMode = "numeric";
+      inputProps.pattern = "\\d*";
     }
 
     return {
@@ -166,7 +134,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
           },
         }}
       />
-
     );
 
     return (
@@ -182,7 +149,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     );
   }
 
-  // --- helper: nested get/set for paths like "productOptions[0].price"
   const getIn = (obj: any, path: string) => {
     if (!obj || !path) return undefined;
     const parts = path
@@ -213,11 +179,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     if (typeof formik?.handleBlur === "function") formik.handleBlur(e);
   };
 
-  // prevent invalid chars for legacy `type="number"` and sanitize paste
   const userSlotInput = (rest.slotProps && (rest.slotProps as any).input) || {};
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // legacy numeric enforcement only when type === "number"
     if (type !== "number") {
       if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
       return;
@@ -228,24 +192,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
       return;
     }
-    // allow digits, and dot when allowFloat=true (only one dot)
-    const cur = (e.target as HTMLInputElement).value ?? "";
-    if (allowFloat) {
-      if (e.key === ".") {
-        // prevent second dot
-        if (cur.includes(".")) {
-          e.preventDefault();
-        }
-        if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
-        return;
-      }
-      if (!/^[0-9]$/.test(e.key)) {
-        e.preventDefault();
-      }
-    } else {
-      if (!/^\d$/.test(e.key)) {
-        e.preventDefault();
-      }
+
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
     }
     if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
   };
@@ -260,18 +209,13 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       e.preventDefault();
       return;
     }
-    // preserve dot when allowFloat
-    let digits = allowFloat ? text.replace(/[^0-9.]+/g, "") : text.replace(/\D+/g, "");
-    // if multiple dots, keep first only
-    if (allowFloat) digits = digits.replace(/\.(?=.*\.)/g, "");
-    if (noLeadingZero) digits = sanitizeLeadingZeros(digits);
+    const digits = text.replace(/\D+/g, "");
     e.preventDefault();
     if (formik) formik.setFieldValue(name, digits);
     else if (rest.onChange) rest.onChange({ target: { name, value: digits } } as any);
     if (userSlotInput.onPaste) userSlotInput.onPaste(e);
   };
 
-  // --- helper text / error using nested path
   let helperText: any = null;
   const fieldError = formik ? getIn(formik.errors, name) : undefined;
   const fieldTouched = formik ? getIn(formik.touched, name) : undefined;
@@ -331,38 +275,9 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
     return null;
   };
 
-  // decide controlled/uncontrolled using nested get
   const shouldControl = Boolean(formik) || rest.value !== undefined;
   const controlledValueRaw = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
 
-  // focus state to toggle formatted display
-  const [isFocused, setIsFocused] = useState(false);
-
-  useEffect(() => {
-    // if parent changes value while focused, keep showing raw; otherwise when not focused show formatted
-    if (!isFocused && thousandSeparator) {
-      // no-op; re-render will show formatted version
-    }
-  }, [controlledValueRaw, isFocused, thousandSeparator]);
-
-  // helper to format with commas without altering underlying value
-  const formatWithCommas = (val: any) => {
-    if (val === null || val === undefined) return "";
-    const s = String(val);
-    if (s === "") return "";
-    // preserve decimal part if any
-    const neg = s.startsWith("-");
-    const body = neg ? s.slice(1) : s;
-    const parts = body.split(".");
-    const intPart = parts[0].replace(/,/g, "");
-    const fracPart = parts[1];
-    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return (neg ? "-" : "") + formattedInt + (typeof fracPart !== "undefined" ? `.${fracPart}` : "");
-  };
-
-  const displayValue = thousandSeparator && !isFocused ? formatWithCommas(controlledValueRaw) : (controlledValueRaw ?? "");
-
-  // choose effective input type to hint browser (avoid native number spinners)
   const effectiveType = type === "password" ? (showPassword ? "text" : "password") : type ?? "text";
 
   const textField = (
@@ -372,38 +287,21 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       id={name}
       name={name}
       type={effectiveType}
-      {...(shouldControl ? { value: displayValue } : {})}
+      {...(shouldControl ? { value: controlledValueRaw } : {})}
       onChange={(e: any) => {
         if (readOnly) return;
-        // remove visual commas
-        let rawInput = String(e.target.value).replace(/,/g, "");
-        // decide whether underlying value should be numeric
-        const shouldBeNumber = type === "number" || typeof controlledValueRaw === "number";
-        let emitValue: any = rawInput;
-        if (shouldBeNumber) {
-          // allow decimal and negative, then convert to number when possible
-          let cleaned = rawInput === "" ? "" : rawInput.replace(/[^0-9.\-]/g, "");
-          if (noLeadingZero) cleaned = sanitizeLeadingZeros(cleaned);
-          // keep intermediate editing states (".", "-.", "-") as string so user can type decimal/negative
-          if (cleaned === "" || cleaned === "-" || cleaned === "." || cleaned === "-.") {
-            emitValue = cleaned;
-          } else {
-            const n = Number(cleaned);
-            emitValue = Number.isFinite(n) ? n : cleaned;
-          }
-        }
+        const rawInput = e.target.value;
+
         if (formik && typeof formik.setFieldValue === "function") {
-          formik.setFieldValue(name, emitValue);
+          formik.setFieldValue(name, rawInput);
         } else if (rest.onChange) {
-          rest.onChange({ target: { name, value: emitValue } } as any);
+          rest.onChange({ target: { name, value: rawInput } } as any);
         }
       }}
       onFocus={(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setIsFocused(true);
         if (typeof rest.onFocus === "function") rest.onFocus(e);
       }}
       onBlur={(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setIsFocused(false);
         handleBlurWithClamp(e);
       }}
       placeholder={placeholder}
@@ -413,7 +311,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
       InputProps={mergedInputProps}
       slotProps={{
         input: {
-          // keep adornments and user-provided slot props
           startAdornment: getStartAdornment(),
           endAdornment: getEndAdornment(),
           ...(userSlotInput || {}),
@@ -421,28 +318,7 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
             handleKeyDown(e);
             if (userSlotInput.onKeyDown) userSlotInput.onKeyDown(e);
           },
-          onPaste: (e: any) => {
-            const pasted = e.clipboardData?.getData?.("text") ?? "";
-            const cleaned = pasted.replace(/,/g, "");
-            const shouldBeNumber = type === "number" || typeof controlledValueRaw === "number";
-            e.preventDefault();
-            if (shouldBeNumber) {
-              // preserve dot when allowFloat; keep intermediate states
-              let cleanedNum = cleaned === "" ? "" : (allowFloat ? cleaned.replace(/[^0-9.\-]/g, "") : cleaned.replace(/[^0-9.\-]/g, ""));
-              if (allowFloat) cleanedNum = cleanedNum.replace(/\.(?=.*\.)/g, "");
-              let asValue: any = cleanedNum;
-              if (!(cleanedNum === "" || cleanedNum === "-" || cleanedNum === "." || cleanedNum === "-.")) {
-                const n = Number(cleanedNum);
-                asValue = Number.isFinite(n) ? n : cleanedNum;
-              }
-              if (formik) formik.setFieldValue(name, asValue);
-              else if (rest.onChange) rest.onChange({ target: { name, value: asValue } } as any);
-            } else {
-              if (formik) formik.setFieldValue(name, cleaned);
-              else if (rest.onChange) rest.onChange({ target: { name, value: cleaned } } as any);
-            }
-            if (userSlotInput.onPaste) userSlotInput.onPaste(e);
-          },
+          onPaste: handlePaste,
         },
       }}
       {...rest}

@@ -14,6 +14,7 @@ export { default as BaseFloatingButton } from './BaseFloatingButton';
 export { default as BaseLabel } from './BaseLabel';
 export { default as BaseLightBox } from './BaseLightBox';
 export { default as BaseLinkButton } from './BaseLinkButton';
+export { default as BaseNumberField } from './BaseNumberField';
 export { default as BaseOTP } from './BaseOTP';
 export { default as BaseRadio } from './BaseRadio';
 export { default as BaseScrollBar } from './BaseScrollBar';

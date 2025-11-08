@@ -3,7 +3,7 @@
 import { FC, useEffect, useState } from "react";
 import { getIn } from "formik";
 import { Box, Grid, Typography } from "@mui/material";
-import { BaseChip, BaseDropdown, BaseLabel, BaseRadio, BaseSlider, BaseTextField } from "@/common/components/base";
+import { BaseChip, BaseDropdown, BaseLabel, BaseNumberField, BaseRadio, BaseSlider, BaseTextField } from "@/common/components/base";
 import { discountTypeOptions, inventoryStatusOptions } from "@/common/contexts/ProductsContext/constants/constants";
 import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
 
@@ -78,35 +78,31 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
       return (
         <>
           <Grid size={{ xs: 6, md: 3 }}>
-            <BaseTextField
+            <BaseNumberField
               formik={formik}
               name={`${optionPath}.basePrice`}
               label="ราคาพื้นฐาน"
               fullWidth
               suffix="฿"
               onFocus={() => setLastEdited("base")}
-              allowFloat
-              noLeadingZero
-              thousandSeparator
-              inputProps={{
-                inputMode: "decimal",
-              }}
+              maximumFractionDigits={2}
+              minimumFractionDigits={0}
+              allowDecimal={true}
+              allowNegative={false}
             />
           </Grid>
           <Grid size={{ xs: 6, md: 3 }}>
-            <BaseTextField
+            <BaseNumberField
               formik={formik}
               name={`${optionPath}.finalPrice`}
               label="ราคาหลังคำนวน"
               fullWidth
               suffix="฿"
               onFocus={() => setLastEdited("final")}
-              allowFloat
-              noLeadingZero
-              thousandSeparator
-              inputProps={{
-                inputMode: "decimal",
-              }}
+              maximumFractionDigits={2}
+              minimumFractionDigits={0}
+              allowDecimal={true}
+              allowNegative={false}
             />
           </Grid>
         </>
@@ -118,57 +114,43 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
         <Grid size={{ xs: 12, md: 6 }}>
           <BaseLabel>ราคาพื้นฐาน</BaseLabel>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <BaseTextField
+            <BaseNumberField
               formik={formik}
               name={`${optionPath}.basePrice`}
-              onFocus={() => setLastEdited("base")}
               suffix="฿"
-              allowFloat
-              noLeadingZero
-              thousandSeparator
-              inputProps={{
-                inputMode: "decimal",
-              }}
+              onFocus={() => setLastEdited("base")}
+              maximumFractionDigits={2}
+              allowDecimal={true}
             />
             <Typography variant="body1"> ต่อ </Typography>
-            <BaseTextField
+            <BaseNumberField
               formik={formik}
               name={`${optionPath}.pricePerUnit`}
               suffix={unit}
-              noLeadingZero
-              thousandSeparator
-              inputProps={{
-                inputMode: "numeric",
-              }}
+              maximumFractionDigits={3}
+              allowDecimal={true}
             />
           </Box>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <BaseLabel>ราคาหลังคำนวณ</BaseLabel>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <BaseTextField
+            <BaseNumberField
               formik={formik}
               name={`${optionPath}.finalPrice`}
-              onFocus={() => setLastEdited("final")}
               suffix="฿"
-              allowFloat
-              noLeadingZero
-              thousandSeparator
-              inputProps={{
-                inputMode: "decimal",
-              }}
+              onFocus={() => setLastEdited("final")}
+              maximumFractionDigits={2}
+              allowDecimal={true}
             />
             <Typography variant="body1"> ต่อ </Typography>
-            <BaseTextField
+            <BaseNumberField
               formik={formik}
               name={`${optionPath}.pricePerUnit`}
-              disabled
               suffix={unit}
-              noLeadingZero
-              thousandSeparator
-              inputProps={{
-                inputMode: "numeric",
-              }}
+              disabled
+              maximumFractionDigits={3}
+              allowDecimal={true}
             />
           </Box>
         </Grid>
@@ -212,19 +194,16 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
       )}
       {discountType === "fixed" && (
         <Grid size={{ xs: 12 }}>
-          <BaseTextField
+          <BaseNumberField
             formik={formik}
             name={`${optionPath}.discountRate`}
             label="มูลค่าส่วนลด (คงที่)"
             fullWidth
             suffix="฿"
             onFocus={() => setLastEdited("base")}
-            allowFloat
-            noLeadingZero
-            thousandSeparator
-            inputProps={{
-              inputMode: "decimal",
-            }}
+            maximumFractionDigits={2}
+            allowDecimal={true}
+            allowNegative={false}
           />
         </Grid>
       )}
@@ -232,18 +211,15 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
       {renderPricingFields()}
 
       <Grid size={{ xs: 6, md: 3 }} alignSelf={"flex-end"}>
-        <BaseTextField
+        <BaseNumberField
           formik={formik}
           name={`${optionPath}.inventory.stock`}
           label="จำนวนสต็อก"
           tooltip="จำนวนสินค้าที่มีอยู่ในคลัง"
           fullWidth
           suffix={unit}
-          thousandSeparator
-          noLeadingZero
-          inputProps={{
-            inputMode: "numeric",
-          }}
+          allowDecimal={false}
+          allowNegative={false}
         />
       </Grid>
       <Grid size={{ xs: 6, md: 3 }} justifyContent={"flex-end"}>
