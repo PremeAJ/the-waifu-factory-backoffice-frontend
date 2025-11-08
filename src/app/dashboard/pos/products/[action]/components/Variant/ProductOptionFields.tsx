@@ -83,7 +83,6 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               keyboardType="decimal"
               name={`${optionPath}.basePrice`}
               label="ราคาพื้นฐาน"
-              type="number"
               fullWidth
               suffix="฿"
               onFocus={() => setLastEdited("base")}
@@ -95,7 +94,6 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               keyboardType="decimal"
               name={`${optionPath}.finalPrice`}
               label="ราคาหลังคำนวน"
-              type="number"
               fullWidth
               suffix="฿"
               onFocus={() => setLastEdited("final")}
@@ -118,7 +116,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               suffix="฿"
             />
             <Typography variant="body1"> ต่อ </Typography>
-            <BaseTextField formik={formik} name={`${optionPath}.pricePerUnit`} type="number" suffix={unit} />
+            <BaseTextField formik={formik} name={`${optionPath}.pricePerUnit`}  suffix={unit} />
           </Box>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -132,7 +130,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               suffix="฿"
             />
             <Typography variant="body1"> ต่อ </Typography>
-            <BaseTextField formik={formik} name={`${optionPath}.pricePerUnit`} type="number" disabled suffix={unit} />
+            <BaseTextField formik={formik} name={`${optionPath}.pricePerUnit`}  disabled suffix={unit} />
           </Box>
         </Grid>
       </>
@@ -179,7 +177,6 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
             formik={formik}
             name={`${optionPath}.discountRate`}
             label="มูลค่าส่วนลด (คงที่)"
-            type="number"
             inputProps={{ min: 0 }}
             fullWidth
             suffix="฿"
@@ -195,7 +192,6 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           formik={formik}
           name={`${optionPath}.inventory.stock`}
           label="จำนวนสต็อก"
-          type="number"
           inputMode="numeric"
           tooltip="จำนวนสินค้าที่มีอยู่ในคลัง"
           keyboardType="number"
