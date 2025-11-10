@@ -14,7 +14,7 @@ const ScrollToTopButton = () => {
   };
 
   const toggleVisibility = () => {
-    if (window.pageYOffset > 300) {
+    if (window.pageYOffset > 2000) {
       setIsVisible(true);
     } else {
       setIsVisible(false);
