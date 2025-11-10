@@ -1,6 +1,6 @@
 "use client";
 import { FabProps } from "@mui/material/Fab";
-import { IconPlus, IconAdjustmentsAlt, IconDeviceFloppy, IconX } from "@tabler/icons-react";
+import { IconPlus, IconAdjustmentsAlt, IconDeviceFloppy, IconX, IconFilter } from "@tabler/icons-react";
 import BaseFab from "./BaseFab";
 import React from "react";
 
@@ -43,7 +43,7 @@ const presetMap: Record<
   { position: FloatingButtonPosition; icon: React.ReactNode; color: FabProps["color"] }
 > = {
   create: { position: FloatingButtonPosition.BOTTOM_RIGHT, icon: <IconPlus />, color: "primary" },
-  filter: { position: FloatingButtonPosition.TOP_RIGHT, icon: <IconAdjustmentsAlt />, color: "primary" },
+  filter: { position: FloatingButtonPosition.TOP_RIGHT, icon: <IconFilter />, color: "primary" },
   save: { position: FloatingButtonPosition.BOTTOM_RIGHT, icon: <IconDeviceFloppy />, color: "primary" },
   cancel: { position: FloatingButtonPosition.BOTTOM_LEFT, icon: <IconX />, color: "error" },
 };

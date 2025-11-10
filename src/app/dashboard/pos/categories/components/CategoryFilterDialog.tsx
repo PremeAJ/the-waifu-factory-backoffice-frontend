@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import { Box, Grid, useTheme } from "@mui/material";
+import { CategoryStatus } from "@/common/contexts/CategoriesContext/interfaces/categories";
+import { IconFilter } from "@tabler/icons-react";
+import BaseChip from "@/common/components/base/BaseChip";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
-import { CategoryStatus } from "@/common/contexts/CategoriesContext/interfaces/categories";
-import { IconAdjustmentsAlt } from "@tabler/icons-react";
-import BaseChip from "@/common/components/base/BaseChip";
+import React, { useState, useEffect } from "react";
 
 interface FilterValues {
   status: CategoryStatus | "all";
@@ -47,7 +47,7 @@ const CategoryFilterDialog: React.FC<CategoryFilterDialogProps> = ({ open, onClo
 
   return (
     <BaseDialog
-      icon={<IconAdjustmentsAlt size={50} color={theme.palette.primary.main} />}
+      icon={<IconFilter size={50} color={theme.palette.primary.main} />}
       open={open}
       title="Filter Categories"
       content={

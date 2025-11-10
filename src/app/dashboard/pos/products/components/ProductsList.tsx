@@ -1,6 +1,6 @@
 "use client";
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
-import { Box, Stack } from "@mui/material";
+import { Badge, Box, Stack } from "@mui/material";
 import { getProductHeaders } from "../constants/productHeaders";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useProducts } from "@/common/contexts/ProductsContext";
@@ -8,17 +8,29 @@ import ProductPreviewDialog from "./ProductPreviewDialog";
 import React, { useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import { IconAdjustmentsAlt } from "@tabler/icons-react";
+import ProductFilterDialog from "./ProductFilterDialog";
 
 function ProductsList() {
-  const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct } = useProducts();
+  const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
+  const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
   const isMobilePortrait = isMobile && isPortrait;
 
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filters.status && filters.status !== "all") count++;
+    if (filters.categoryId) count++;
+    if (filters.minPrice !== undefined && filters.minPrice !== null) count++;
+    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++;
+    return count;
+  }, [filters]);
+
   const tableData: any = useMemo(() => {
-    return (products || []).map((prod:ProductType) => {
+    return (products || []).map((prod: ProductType) => {
       if (!prod.variant && prod.productOptions?.length === 1) {
         const singleOption = prod.productOptions[0];
         return {
@@ -79,20 +91,22 @@ function ProductsList() {
     () => [
       {
         type: "view",
+        tooltip: "ดู",
         onClick: (item: any) => setPreviewState({ open: true, item }),
       },
       {
         type: "edit",
-        href: (item: any) => `/dashboard/pos/products/edit?id=${item.id}`, 
+        tooltip: "แก้ไข",
+        href: (item: any) => `/dashboard/pos/products/edit?id=${item.id}`,
       },
       {
         type: "delete",
-        tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีตัวเลือกย่อย" :  ''),
+        tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีตัวเลือกย่อย" : "ลบ"),
         disabled: (item: any) => !!(item?.subItems?.length > 0),
         onClick: (item: any) => setDeleteDialogState({ open: true, item: item }),
       },
     ],
-    [isMobilePortrait] // ตัด router ออก
+    [isMobilePortrait]
   );
 
   const handlePageChange = (event: unknown, newPage: number) => {
@@ -106,27 +120,54 @@ function ProductsList() {
 
   const handleClosePreview = () => setPreviewState({ open: false, item: null });
 
+  const handleApplyFilter = (newFilters: any) => {
+    setFilters(newFilters);
+  };
+
   return (
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
           <BaseSearchField value={search} onSearchChange={setSearch} />
         ) : (
-          <BaseTextField
-            fullWidth={false}
-            name="search"
-            placeholder="Search products"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            sx={{ width: 300 }}
-            type="search"
-          />
+          <Stack direction="row" spacing={2} alignItems="center">
+            <BaseTextField
+              fullWidth={false}
+              name="search"
+              placeholder="Search products"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              sx={{ width: 300 }}
+              type="search"
+            />
+            <Badge badgeContent={activeFilterCount} color="error">
+              <BaseButton
+                variant="outlined"
+                onClick={() => setOpenFilterDialog(true)}
+                fullWidth={false}
+                label="Filter"
+                startIcon={<IconAdjustmentsAlt size={20} />}
+              />
+            </Badge>
+          </Stack>
         )}
 
         {isMobile ? (
           <BaseFloatingButton preset="create" href="/dashboard/pos/products/create" />
         ) : (
           <BaseButton variant="contained" href="/dashboard/pos/products/create" fullWidth={false} preset="add" label="Add Product" />
+        )}
+
+        {isMobile && (
+          <BaseFloatingButton
+            preset="filter"
+            onClick={() => setOpenFilterDialog(true)}
+            icon={
+              <Badge badgeContent={activeFilterCount} color="error">
+                <IconAdjustmentsAlt />
+              </Badge>
+            }
+          />
         )}
       </Stack>
 
@@ -143,6 +184,13 @@ function ProductsList() {
           onPageChange: handlePageChange,
           onRowsPerPageChange: handleRowsPerPageChange,
         }}
+      />
+
+      <ProductFilterDialog
+        open={openFilterDialog}
+        onClose={() => setOpenFilterDialog(false)}
+        onApply={handleApplyFilter}
+        currentFilters={filters}
       />
 
       <BaseDialog
