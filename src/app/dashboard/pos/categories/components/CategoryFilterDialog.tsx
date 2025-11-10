@@ -1,11 +1,10 @@
 "use client";
-import { Box, Grid, useTheme } from "@mui/material";
+import { Grid } from "@mui/material";
 import { CategoryStatus } from "@/common/contexts/CategoriesContext/interfaces/categories";
-import { IconFilter } from "@tabler/icons-react";
 import BaseChip from "@/common/components/base/BaseChip";
-import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
 import React, { useState, useEffect } from "react";
+import FilterDialog from "@/common/components/dialogs/FilterDialog";
 
 interface FilterValues {
   status: CategoryStatus | "all";
@@ -20,7 +19,6 @@ interface CategoryFilterDialogProps {
 
 const CategoryFilterDialog: React.FC<CategoryFilterDialogProps> = ({ open, onClose, onApply, currentFilters }) => {
   const [filters, setFilters] = useState<FilterValues>(currentFilters);
-  const theme = useTheme();
 
   useEffect(() => {
     if (open) {
@@ -34,7 +32,9 @@ const CategoryFilterDialog: React.FC<CategoryFilterDialogProps> = ({ open, onClo
   };
 
   const handleReset = () => {
-    onApply({ status: "all" });
+    const resetFilters = { status: "all" as const };
+    setFilters(resetFilters);
+    onApply(resetFilters);
     onClose();
   };
 
@@ -42,33 +42,27 @@ const CategoryFilterDialog: React.FC<CategoryFilterDialogProps> = ({ open, onClo
     { value: "all", text: "ทั้งหมด" },
     { value: "active", text: "เปิดใช้งาน" },
     { value: "inactive", text: "ปิดใช้งาน" },
-    // { value: "deleted", text: "ถูกลบ" },
   ];
 
   return (
-    <BaseDialog
-      icon={<IconFilter size={50} color={theme.palette.primary.main} />}
+    <FilterDialog
       open={open}
+      onClose={onClose}
+      onApply={handleApply}
+      onReset={handleReset}
       title="Filter Categories"
-      content={
-        <Box>
-          <Grid size={{ xs: 12 }}>
-            <BaseDropdown
-              name="status"
-              label="สถานะ"
-              options={statusOptions}
-              value={filters.status}
-              onChange={(newValue) => setFilters({ ...filters, status: newValue as FilterValues["status"] })}
-              renderOption={(option) => <BaseChip preset={option.value} />}
-            />
-          </Grid>
-        </Box>
-      }
-      confirmText="Apply"
-      cancelText="Reset"
-      onConfirm={handleApply}
-      onClose={handleReset}
-    />
+    >
+      <Grid size={{ xs: 12 }}>
+        <BaseDropdown
+          name="status"
+          label="สถานะ"
+          options={statusOptions}
+          value={filters.status}
+          onChange={(newValue) => setFilters({ ...filters, status: newValue as FilterValues["status"] })}
+          renderOption={(option) => <BaseChip preset={option.value} />}
+        />
+      </Grid>
+    </FilterDialog>
   );
 };
 

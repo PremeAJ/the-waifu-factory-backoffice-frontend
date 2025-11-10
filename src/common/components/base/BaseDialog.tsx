@@ -1,5 +1,5 @@
 "use client";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box, SxProps, Theme } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box, SxProps, Theme, IconButton } from "@mui/material";
 import { IconAlertTriangle, IconCircleCheck, IconInfoCircle, IconX } from "@tabler/icons-react";
 import { TransitionProps } from "@mui/material/transitions";
 import BaseButton from "@/common/components/base/BaseButton";
@@ -20,16 +20,17 @@ interface BaseDialogProps {
   fullScreen?: boolean;
   fullScreenCenter?: boolean;
   htmlContent?: boolean;
-  icon?: string | React.ReactNode; // เปลี่ยน type ให้รองรับ ReactNode
+  icon?: string | React.ReactNode;
   iconSize?: number;
   iconType?: "success" | "error" | "warning" | "info";
   loading?: boolean;
   noAction?: boolean;
   onClose: () => void;
-  onConfirm?: () => void; // ทำให้ onConfirm เป็น optional
-  onCancel?: () => void; // เพิ่ม onCancel
+  onConfirm?: () => void;
+  onCancel?: () => void;
   open: boolean;
   scrolling?: boolean;
+  showCloseButton?: boolean; // เพิ่ม prop นี้
   sx?: SxProps<Theme>;
   title: string;
 }
@@ -52,9 +53,10 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
   noAction = false,
   onClose,
   onConfirm,
-  onCancel, // เพิ่ม onCancel
+  onCancel,
   open,
   scrolling = false,
+  showCloseButton = false, // default false
   sx,
   title,
 }) => {
@@ -84,7 +86,6 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
     }
   };
 
-  // dialog content sx - apply center layout when fullScreen + fullScreenCenter
   const dialogContentSx: SxProps<Theme> = {
     minWidth: 320,
     ...(fullScreen && fullScreenCenter
@@ -111,6 +112,24 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
       scroll={scrolling ? "paper" : undefined}
       sx={sx}
     >
+      {/* Close Button - มุมขวาบน */}
+      {showCloseButton && (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          disabled={loading}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+            zIndex: 1,
+          }}
+        >
+          <IconX size={20} />
+        </IconButton>
+      )}
+
       <DialogContent dividers={scrolling} sx={dialogContentSx}>
         {(icon || iconType) && (
           <Box display="flex" justifyContent="center" mb={2}>
@@ -126,7 +145,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
                 }}
               />
             ) : (
-              icon 
+              icon
             )}
           </Box>
         )}
@@ -152,49 +171,49 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
         )}
       </DialogContent>
       {noAction ? null : (
-      <DialogActions
-        sx={
-          fullScreen
-            ? {
-                flexDirection: "column",
-                gap: 2,
-                padding: 3,
-              }
-            : {
-                margin: 1,
-              }
-        }
-      >
-        {fullScreen ? (
-          <>
-            {confirmText && (
-              <BaseButton
-                label={confirmText}
-                onClick={onConfirm}
-                disabled={loading || confirmDisabled}
-                fullWidth={true}
-                loading={loading}
-                {...(confirmColor ? { color: confirmColor } : null)}
-              />
-            )}
-            {cancelText && <BaseButton label={cancelText} onClick={onCancel || onClose} disabled={loading} fullWidth={true} variant="outlined" />}
-          </>
-        ) : (
-          <>
-            {cancelText && <BaseButton label={cancelText} onClick={onCancel || onClose} disabled={loading || cancelDisabled} fullWidth={false} variant="outlined" />}
-            {confirmText && (
-              <BaseButton
-                label={confirmText}
-                onClick={onConfirm}
-                disabled={loading || confirmDisabled}
-                fullWidth={false}
-                loading={loading}
-                {...(confirmColor ? { color: confirmColor } : null)}
-              />
-            )}
-          </>
-        )}
-      </DialogActions>
+        <DialogActions
+          sx={
+            fullScreen
+              ? {
+                  flexDirection: "column",
+                  gap: 2,
+                  padding: 3,
+                }
+              : {
+                  margin: 1,
+                }
+          }
+        >
+          {fullScreen ? (
+            <>
+              {confirmText && (
+                <BaseButton
+                  label={confirmText}
+                  onClick={onConfirm}
+                  disabled={loading || confirmDisabled}
+                  fullWidth={true}
+                  loading={loading}
+                  {...(confirmColor ? { color: confirmColor } : null)}
+                />
+              )}
+              {cancelText && <BaseButton label={cancelText} onClick={onCancel || onClose} disabled={loading || cancelDisabled} fullWidth={true} variant="outlined" />}
+            </>
+          ) : (
+            <>
+              {cancelText && <BaseButton label={cancelText} onClick={onCancel || onClose} disabled={loading || cancelDisabled} fullWidth={false} variant="outlined" />}
+              {confirmText && (
+                <BaseButton
+                  label={confirmText}
+                  onClick={onConfirm}
+                  disabled={loading || confirmDisabled}
+                  fullWidth={false}
+                  loading={loading}
+                  {...(confirmColor ? { color: confirmColor } : null)}
+                />
+              )}
+            </>
+          )}
+        </DialogActions>
       )}
     </Dialog>
   );

@@ -53,18 +53,12 @@ function ProductsList() {
         ? "active"
         : "inactive";
 
-      const prices = subItems
-        .map((s: any) => Number(s?.basePrice ?? s?.finalPrice ?? NaN))
-        .filter((n: number) => !Number.isNaN(n));
+      const prices = subItems.map((s: any) => Number(s?.basePrice ?? s?.finalPrice ?? NaN)).filter((n: number) => !Number.isNaN(n));
       const fallbackProdPrice = Number((prod as any)?.basePrice ?? (prod as any)?.finalPrice ?? NaN);
       const priceMin = prices.length ? Math.min(...prices) : fallbackProdPrice;
       const priceMax = prices.length ? Math.max(...prices) : fallbackProdPrice;
       const priceDisplay =
-        !Number.isNaN(priceMin) && !Number.isNaN(priceMax)
-          ? priceMin === priceMax
-            ? String(priceMin)
-            : `${priceMin} ~ ${priceMax}`
-          : "-";
+        !Number.isNaN(priceMin) && !Number.isNaN(priceMax) ? (priceMin === priceMax ? String(priceMin) : `${priceMin} ~ ${priceMax}`) : "-";
 
       return {
         ...prod,
@@ -158,17 +152,7 @@ function ProductsList() {
           <BaseButton variant="contained" href="/dashboard/pos/products/create" fullWidth={false} preset="add" label="Add Product" />
         )}
 
-        {isMobile && (
-          <BaseFloatingButton
-            preset="filter"
-            onClick={() => setOpenFilterDialog(true)}
-            icon={
-              <Badge badgeContent={activeFilterCount} color="error">
-                <IconAdjustmentsAlt />
-              </Badge>
-            }
-          />
-        )}
+        {isMobile && <BaseFloatingButton preset="filter" onClick={() => setOpenFilterDialog(true)} />}
       </Stack>
 
       <BaseTable
@@ -186,12 +170,7 @@ function ProductsList() {
         }}
       />
 
-      <ProductFilterDialog
-        open={openFilterDialog}
-        onClose={() => setOpenFilterDialog(false)}
-        onApply={handleApplyFilter}
-        currentFilters={filters}
-      />
+      <ProductFilterDialog open={openFilterDialog} onClose={() => setOpenFilterDialog(false)} onApply={handleApplyFilter} currentFilters={filters} />
 
       <BaseDialog
         loading={loading}

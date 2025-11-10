@@ -1,14 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Box, Grid, useTheme } from "@mui/material";
-import BaseDialog from "@/common/components/base/BaseDialog";
+import { Box, Grid } from "@mui/material";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
-import BaseTextField from "@/common/components/base/BaseTextField";
+import BaseNumberField from "@/common/components/base/BaseNumberField";
 import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
-import { IconAdjustmentsAlt, IconFilter } from "@tabler/icons-react";
 import BaseChip from "@/common/components/base/BaseChip";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import FilterDialog from "@/common/components/dialogs/FilterDialog";
 
 interface FilterValues {
   status?: "all" | "active" | "inactive";
@@ -26,7 +25,6 @@ interface ProductFilterDialogProps {
 
 const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose, onApply, currentFilters }) => {
   const [filters, setFilters] = useState<FilterValues>(currentFilters);
-  const theme = useTheme();
   const { dropdown: categoryDropdown } = useCategories();
 
   useEffect(() => {
@@ -41,7 +39,9 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
   };
 
   const handleReset = () => {
-    onApply({ status: "all", categoryId: undefined, minPrice: undefined, maxPrice: undefined });
+    const resetFilters = { status: "all" as const, categoryId: undefined, minPrice: undefined, maxPrice: undefined };
+    setFilters(resetFilters);
+    onApply(resetFilters);
     onClose();
   };
 
@@ -58,75 +58,84 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
   }));
 
   return (
-    <BaseDialog
-      icon={<IconFilter size={50} color={theme.palette.primary.main} />}
+    <FilterDialog
       open={open}
+      onClose={onClose}
+      onApply={handleApply}
+      onReset={handleReset}
       title="Filter Products"
-      content={
-        <Box>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12 }}>
-              <BaseDropdown
-                name="status"
-                label="สถานะ"
-                options={statusOptions}
-                value={filters.status || "all"}
-                onChange={(newValue) => setFilters({ ...filters, status: newValue as FilterValues["status"] })}
-                renderOption={(option) => <BaseChip preset={option.value as any} />}
-              />
-            </Grid>
+    >
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12 }}>
+          <BaseDropdown
+            name="status"
+            label="สถานะ"
+            options={statusOptions}
+            value={filters.status || "all"}
+            onChange={(newValue) => setFilters({ ...filters, status: newValue as FilterValues["status"] })}
+            renderOption={(option) => <BaseChip preset={option.value as any} />}
+          />
+        </Grid>
 
-            <Grid size={{ xs: 12 }}>
-              <BaseAutoComplete
-                name="categoryId"
-                label="หมวดหมู่"
-                options={categoryOptions}
-                value={filters.categoryId || ""}
-                onChange={(newValue) => setFilters({ ...filters, categoryId: newValue || undefined })}
-                placeholder="เลือกหมวดหมู่"
-                freeSolo={false}
-                clearOnEscape
-                renderOption={(props, option) => {
-                  const { key, ...otherProps } = props;
-                  return (
-                    <Box component="li" key={key} {...otherProps} display="flex" alignItems="center" gap={1}>
-                      {option.icon && renderTablerIcon(option.icon, { size: 16 })}
-                      {option.text}
-                    </Box>
-                  );
-                }}
-              />
-            </Grid>
+        <Grid size={{ xs: 12 }}>
+          <BaseAutoComplete
+            name="categoryId"
+            label="หมวดหมู่"
+            options={categoryOptions}
+            value={filters.categoryId || ""}
+            onChange={(newValue) => setFilters({ ...filters, categoryId: newValue || undefined })}
+            placeholder="เลือกหมวดหมู่"
+            freeSolo={false}
+            clearOnEscape
+            renderOption={(props, option) => {
+              const { key, ...otherProps } = props;
+              return (
+                <Box component="li" key={key} {...otherProps} display="flex" alignItems="center" gap={1}>
+                  {option.icon && renderTablerIcon(option.icon, { size: 16 })}
+                  {option.text}
+                </Box>
+              );
+            }}
+          />
+        </Grid>
 
-            <Grid size={{ xs: 6 }}>
-              <BaseTextField
-                name="minPrice"
-                label="ราคาต่ำสุด"
-                type="number"
-                placeholder="0"
-                value={filters.minPrice ?? ""}
-                onChange={(e) => setFilters({ ...filters, minPrice: e.target.value ? Number(e.target.value) : undefined })}
-              />
-            </Grid>
+        <Grid size={{ xs: 6 }}>
+          <BaseNumberField
+            name="minPrice"
+            label="ราคาต่ำสุด"
+            placeholder="0"
+            value={filters.minPrice ?? ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              setFilters({ ...filters, minPrice: val === "" || val === null || val === undefined ? undefined : Number(val) });
+            }}
+            suffix="฿"
+            maximumFractionDigits={2}
+            minimumFractionDigits={0}
+            allowDecimal={true}
+            allowNegative={false}
+          />
+        </Grid>
 
-            <Grid size={{ xs: 6 }}>
-              <BaseTextField
-                name="maxPrice"
-                label="ราคาสูงสุด"
-                type="number"
-                placeholder="9999999"
-                value={filters.maxPrice ?? ""}
-                onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value ? Number(e.target.value) : undefined })}
-              />
-            </Grid>
-          </Grid>
-        </Box>
-      }
-      confirmText="Apply"
-      cancelText="Reset"
-      onConfirm={handleApply}
-      onClose={handleReset}
-    />
+        <Grid size={{ xs: 6 }}>
+          <BaseNumberField
+            name="maxPrice"
+            label="ราคาสูงสุด"
+            placeholder="9,999,999"
+            value={filters.maxPrice ?? ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              setFilters({ ...filters, maxPrice: val === "" || val === null || val === undefined ? undefined : Number(val) });
+            }}
+            suffix="฿"
+            maximumFractionDigits={2}
+            minimumFractionDigits={0}
+            allowDecimal={true}
+            allowNegative={false}
+          />
+        </Grid>
+      </Grid>
+    </FilterDialog>
   );
 };
 
