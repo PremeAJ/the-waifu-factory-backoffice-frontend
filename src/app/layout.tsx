@@ -5,12 +5,12 @@ import { EncryptProvider } from "@/common/contexts/EncryptContext";
 import { Metadata, Viewport } from "next";
 import { ProfileProvider } from "@/common/contexts/ProfileContext";
 import { ThemeAwareTopLoader } from "@/common/components/main/ThemeAwareComponents";
-import ActionButton from "@/common/components/floating/ActionButton";
+import ActionButton from "@/common/components/FAB/ActionButton";
 import Head from "./head";
 import MyApp from "./app";
 import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 import React from "react";
-import ScrollToTopButton from "../common/components/floating/ScrollToTopButton";
+import ScrollToTopButton from "../common/components/FAB/ScrollToTopButton";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 
 export const metadata: Metadata = {

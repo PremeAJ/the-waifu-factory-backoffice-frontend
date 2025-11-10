@@ -16,7 +16,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Sidebar from "./category/Sidebar";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import useIsMobile from "@/common/utils/state/isMobile";
-import CategoryButton from "@/common/components/floating/CategoryButton";
+import CategoryButton from "@/common/components/FAB/CategoryButton";
 import PageContainer from "@/components/container/PageContainer";
 
 export default function POSPage() {

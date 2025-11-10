@@ -4,7 +4,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
-import AppShortcutButton from "@/common/components/floating/AppShortcutButton";
+import AppShortcutButton from "@/common/components/FAB/AppShortcutButton";
 import AppShortcutDrawer from "@/common/components/shared/AppShortcutDrawer";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";

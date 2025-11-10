@@ -1,5 +1,5 @@
 "use client";
-import { BaseButton, BaseFileInput } from "@/common/components/base";
+import { BaseButton, BaseFileInput, BaseFloatingButton } from "@/common/components/base";
 import { fileTypeGroup } from "@/common/constants/file/fileType";
 import { Grid, Stack } from "@mui/material";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
@@ -237,30 +237,35 @@ const ProductForm: React.FC = () => {
             </BlankCard>
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12 }}>
-          <BlankCard>
-            <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>
-              <BaseButton
-                preset="cancel"
-                label="ยกเลิก"
-                variant="outlined"
-                color="error"
-                fullWidth={isMobile}
-                href="/dashboard/pos/products"
-              />
-              <BaseButton
-                preset="save"
-                label={id ? "อัปเดต" : "บันทึก"}
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth={isMobile}
-                loading={formik.isSubmitting}
-              />
-            </Stack>
-          </BlankCard>
-        </Grid>
+
+        {/* Desktop: ปุ่มด้านล่าง */}
+        {!isMobile && (
+          <Grid size={{ xs: 12 }}>
+            <BlankCard>
+              <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>
+                <BaseButton preset="cancel" label="ยกเลิก" variant="outlined" color="error" href="/dashboard/pos/products" fullWidth={false} />
+                <BaseButton
+                  preset="save"
+                  label={id ? "อัปเดต" : "บันทึก"}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  loading={formik.isSubmitting}
+                  fullWidth={false}
+                />
+              </Stack>
+            </BlankCard>
+          </Grid>
+        )}
       </Grid>
+
+      {/* Mobile: Floating Buttons */}
+      {isMobile && (
+        <>
+          <BaseFloatingButton preset="cancel" href="/dashboard/pos/products" disabled={formik.isSubmitting} />
+          <BaseFloatingButton preset="save" type="submit" disabled={formik.isSubmitting} />
+        </>
+      )}
     </form>
   );
 };

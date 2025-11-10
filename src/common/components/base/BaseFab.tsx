@@ -52,7 +52,17 @@ export interface BaseFabProps extends FabProps {
   onExited?: () => void;
 }
 
-const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeDirection = "up", open = true, onExited, ...rest }) => {
+const BaseFab: React.FC<BaseFabProps> = ({ 
+  children, 
+  sx, 
+  animation = true, 
+  fadeDirection = "up", 
+  open = true, 
+  onExited, 
+  color = "primary",
+  variant = "circular",
+  ...rest 
+}) => {
   const [visible, setVisible] = useState(open);
   const [exiting, setExiting] = useState(false);
   const isMobile = useIsMobile();
@@ -77,28 +87,26 @@ const BaseFab: React.FC<BaseFabProps> = ({ children, sx, animation = true, fadeD
 
   return (
     <Fab
-      // size={isMobile ? "large" : "medium"}
-      size='large'
-      color="primary"
+      size="large"
+      color={color}
+      variant={variant}
       {...rest}
       sx={{
         backdropFilter: "blur(5px)",
         zIndex: 1000,
         WebkitBackdropFilter: "blur(5px)",
-        backgroundColor: (theme) => theme.palette.primary.main,
-        border: "1px solid rgba(255,255,255,0.3)",
+        border: variant === "circular" ? "1px solid rgba(255,255,255,0.3)" : undefined,
         boxShadow: "0 4px 30px rgba(0,0,0,0.1)",
-        color: "#fff",
-        // scale animation like BaseButton
         transition: "all 0.18s",
         "&:hover": {
-          backgroundColor: (theme) => theme.palette.primary.main,
           transform: "scale(1.07)",
         },
         "&:active": {
           transform: "scale(0.96)",
         },
-        animation: animation ? `${exiting ? fadeOutMap[fadeDirection] : fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)` : undefined,
+        animation: animation 
+          ? `${exiting ? fadeOutMap[fadeDirection] : fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)` 
+          : undefined,
         ...sx,
       }}
     >
