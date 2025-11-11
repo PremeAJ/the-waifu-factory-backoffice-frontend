@@ -8,10 +8,10 @@ import {
   IconBread,
   IconCircle,
 } from "@tabler/icons-react";
-import { NavGroup } from "@/common/components/base/sidebar/sidebar";
 import { getTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import { NavGroupType } from "@/common/components/base/sidebar/interface/sidebar";
 
-const Menuitems: NavGroup[] = [
+const Menuitems: NavGroupType[] = [
   {
     navlabel: true,
     subheader: "หมวดหมู่",
@@ -24,8 +24,8 @@ const Menuitems: NavGroup[] = [
   },
 ];
 
-export const buildMenuItems = (categories: any[]): NavGroup[] => {
-  const menuItems: NavGroup[] = [
+export const buildMenuItems = (categories: any[]): NavGroupType[] => {
+  const menuItems: NavGroupType[] = [
     {
       navlabel: true,
       subheader: "หมวดหมู่",

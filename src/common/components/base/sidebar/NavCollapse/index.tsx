@@ -13,7 +13,7 @@ import NavItem from "../NavItem";
 import React, { useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
-import { NavCollapseProps, NavGroup } from "../interface/sidebar";
+import { NavCollapseProps, NavGroupType } from "../interface/sidebar";
 
 export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
@@ -23,6 +23,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
   const theme = useTheme();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [hover, setHover] = useState(false);
 
   const menuIcon = Icon ? level > 1 ? <Icon stroke={1.5} size="1rem" /> : <Icon stroke={1.5} size="1.3rem" /> : null;
 
@@ -32,7 +33,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
 
   React.useEffect(() => {
     setOpen(false);
-    menu?.children?.forEach((item: NavGroup) => {
+    menu?.children?.forEach((item: NavGroupType) => {
       if (item?.href === pathDirect) {
         setOpen(true);
       }
@@ -80,12 +81,18 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
       {hideMenu ? (
         <BaseTooltip title={t(`${menu.title}`)} placement='right'>
           <span>
-            <ListItemStyled onClick={handleClick} selected={pathWithoutLastPart === menu.href} key={menu?.id}>
+            <ListItemStyled 
+              onClick={handleClick} 
+              selected={pathWithoutLastPart === menu.href} 
+              key={menu?.id}
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+            >
               <ListItemIcon
                 sx={{
                   minWidth: "36px",
                   p: "3px 0 0 3px",
-                  color: (open && level < 2) ? "white" : (menu.color || "inherit"),
+                  color: (open && level < 2) || hover ? "white" : (menu.color || "inherit"),
                 }}
               >
                 {menuIcon}
@@ -96,12 +103,18 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
           </span>
         </BaseTooltip>
       ) : (
-        <ListItemStyled onClick={handleClick} selected={pathWithoutLastPart === menu.href} key={menu?.id}>
+        <ListItemStyled 
+          onClick={handleClick} 
+          selected={pathWithoutLastPart === menu.href} 
+          key={menu?.id}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        >
           <ListItemIcon
             sx={{
               minWidth: "36px",
               p: "3px 0 0 3px",
-              color: (open && level < 2) ? "white" : (menu.color || "inherit"),
+              color: (open && level < 2) || hover ? "white" : (menu.color || "inherit"),
             }}
           >
             {menuIcon}

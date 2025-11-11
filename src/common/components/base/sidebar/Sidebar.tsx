@@ -8,10 +8,10 @@ import SidebarItems from "./SidebarItems";
 import useIsMobile from "@/common/utils/state/isMobile";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
-import { NavGroup } from "./interface/sidebar";
+import { NavGroupType } from "./interface/sidebar";
 
 interface SidebarProps {
-  menuItems?: NavGroup[];
+  menuItems?: NavGroupType[];
 }
 
 const Sidebar = ({ menuItems }: SidebarProps) => {

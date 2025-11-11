@@ -1,8 +1,8 @@
-import Sidebar from "@/common/components/base/sidebar/sidebar";
-import { NavGroup } from "./interface/sidebar";
+import { NavGroupType } from "./interface/sidebar";
+import Sidebar from "./Sidebar";
 
 interface BaseSidebarProps {
-  menuItems?: NavGroup[];
+  menuItems?: NavGroupType[];
 }
 
 const BaseSidebar = ({ menuItems }: BaseSidebarProps) => {

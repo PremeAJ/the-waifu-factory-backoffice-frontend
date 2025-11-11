@@ -1,6 +1,6 @@
 import type { MouseEvent, ElementType } from "react";
 
-export type NavGroup = {
+export type NavGroupType = {
   subtitle?: string;
   disabled?: boolean;
   id?: string;
@@ -9,7 +9,7 @@ export type NavGroup = {
   title?: string;
   icon?: ElementType;
   href?: string;
-  children?: NavGroup[];
+  children?: NavGroupType[];
   chip?: string;
   chipColor?: string;
   variant?: string;
@@ -20,7 +20,7 @@ export type NavGroup = {
 };
 
 export interface ItemType {
-  item: NavGroup;
+  item: NavGroupType;
 
   onClick: (event: MouseEvent<HTMLElement>) => void;
   hideMenu?: boolean | "";
@@ -36,7 +36,7 @@ export interface NavGroupProps {
   icon?: ElementType;
   href?: string;
   color?: string;
-  children?: NavGroup[];
+  children?: NavGroupType[];
 }
 
 export interface NavCollapseProps {

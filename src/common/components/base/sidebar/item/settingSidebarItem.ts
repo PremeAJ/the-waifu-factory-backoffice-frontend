@@ -11,10 +11,10 @@ import {
   IconUser,
   IconWallet,
 } from "@tabler/icons-react";
-import { NavGroup } from "@/common/components/base/sidebar/sidebar";
 import { PageUrl } from "@/common/constants/pageUrl";
+import { NavGroupType } from "../interface/sidebar";
 
-export const settingSidebarItem: NavGroup[] = [
+export const settingSidebarItem: NavGroupType[] = [
   {
     navlabel: true,
     subheader: "บัญชี",

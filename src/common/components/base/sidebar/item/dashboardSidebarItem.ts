@@ -17,10 +17,10 @@ import {
   IconCategory,
   IconBasket,
 } from "@tabler/icons-react";
-import { NavGroup } from "../interface/sidebar";
 import { PageUrl } from "@/common/constants/pageUrl";
+import { NavGroupType } from "../interface/sidebar";
 
-const dashboardSidebarItem: NavGroup[] = [
+const dashboardSidebarItem: NavGroupType[] = [
   {
     navlabel: true,
     subheader: "หน้าหลัก",
