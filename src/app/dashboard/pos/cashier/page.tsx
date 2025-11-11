@@ -1,13 +1,9 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { Grid, Card, CardContent, Typography, TextField, InputAdornment, useTheme, useMediaQuery } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-
-import { categories, products } from "@/common/constants/products/dataMock";
+import React, { useContext, useState, useMemo } from "react";
+import { Grid, Card, CardContent, Typography, Badge } from "@mui/material";
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
-import { useSidebarState } from "@/common/contexts/SidebarStateContext";
-import Badge from "@mui/material/Badge";
-import BaseSearchField from "@/common/components/base/BaseSearchField";
+import { useCategories } from "@/common/contexts/CategoriesContext";
+import { useProducts } from "@/common/contexts/ProductsContext";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import OrderSummary from "./OrderSummary";
@@ -18,35 +14,73 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import useIsMobile from "@/common/utils/state/isMobile";
 import CategoryButton from "@/common/components/FAB/CategoryButton";
 import PageContainer from "@/components/container/PageContainer";
+import BaseSearchField from "@/common/components/base/BaseSearchField";
 
 export default function POSPage() {
-  const [openCategory, setOpenCategory] = useState<{ [key: number]: boolean }>({});
-  const [order, setOrder] = useState<{ id: number; name: string; price: number; qty: number; image: string }[]>([]);
+  const [order, setOrder] = useState<{ id: string; name: string; price: number; qty: number; image: string; stock?: number }[]>([]);
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(0);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const isMobile = useIsMobile();
-  const theme = useTheme();
-  const handleToggleCategory = (catId: number) => {
-    setOpenCategory((prev) => ({
-      ...prev,
-      [catId]: !prev[catId],
-    }));
-  };
+  const { setIsMobileSidebar } = useContext(CustomizerContext);
+  
+  const { categories } = useCategories();
+  const { products } = useProducts();
 
-  const filteredProducts = products.filter((p) => {
-    if (selectedCategory === 0) {
-      return p.name.toLowerCase().includes(search.toLowerCase());
-    }
-    if (selectedSubCategory) {
-      return p.categoryId === selectedSubCategory && p.name.toLowerCase().includes(search.toLowerCase());
-    }
-    const cat = categories.find((c) => c.id === selectedCategory);
-    const subIds = cat?.children?.map((c) => c.id) || [];
-    return (p.categoryId === selectedCategory || subIds.includes(p.categoryId)) && p.name.toLowerCase().includes(search.toLowerCase());
-  });
+  // แปลง products เป็น format ที่ใช้งาน
+  const mappedProducts = useMemo(() => {
+    if (!products) return [];
+    
+    return products.flatMap((product: any) => {
+      const thumbnail = product.productFiles?.find((f: any) => f.uploadedFile?.bucket === "product_thumbnail")?.uploadedFile?.url;
+      
+      // ถ้ามี variant
+      if (product.productOptions && product.productOptions.length > 0) {
+        return product.productOptions.map((option: any) => ({
+          id: option.id,
+          name: `${product.nameTh}${option.variantOption ? ` - ${option.variantOption.nameTh}` : ""}`,
+          price: option.finalPrice,
+          image: thumbnail || "/images/products/no-image.jpg",
+          stock: option.inventory?.stock,
+          categoryId: product.categories?.id,
+        }));
+      }
+      
+      // ถ้าไม่มี variant
+      const mainOption = product.productOptions?.[0];
+      return [{
+        id: product.id,
+        name: product.nameTh,
+        price: mainOption?.finalPrice || 0,
+        image: thumbnail || "/images/products/no-image.jpg",
+        stock: mainOption?.inventory?.stock,
+        categoryId: product.categories?.id,
+      }];
+    });
+  }, [products]);
 
-  const addToOrder = (product: (typeof products)[0]) => {
+  const filteredProducts = useMemo(() => {
+    let filtered = mappedProducts;
+
+    // Filter by category
+    if (selectedCategory) {
+      const category = categories.find((c: any) => c.id === selectedCategory);
+      const subCategoryIds = category?.subCategories?.map((s: any) => s.id) || [];
+      
+      filtered = filtered.filter((p:any) => 
+        p.categoryId === selectedCategory || subCategoryIds.includes(p.categoryId)
+      );
+    }
+
+    // Filter by search
+    if (search) {
+      const term = search.toLowerCase();
+      filtered = filtered.filter((p:any) => p.name.toLowerCase().includes(term));
+    }
+
+    return filtered;
+  }, [mappedProducts, selectedCategory, search, categories]);
+
+  const addToOrder = (product: typeof mappedProducts[0]) => {
     const inOrder = order.find((item) => item.id === product.id)?.qty || 0;
     if (product.stock !== undefined && inOrder >= product.stock) return;
 
@@ -59,11 +93,11 @@ export default function POSPage() {
     });
   };
 
-  const removeFromOrder = (productId: number) => {
+  const removeFromOrder = (productId: string) => {
     setOrder((prev) => prev.map((item) => (item.id === productId ? { ...item, qty: item.qty - 1 } : item)).filter((item) => item.qty > 0));
   };
+
   const total = order.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const { setIsMobileSidebar } = useContext(CustomizerContext);
 
   return (
     <PageContainer title="Cashier" description="this is Cashier">
@@ -82,7 +116,7 @@ export default function POSPage() {
           id="product"
           size={isMobile ? 12 : 9}
           sx={{
-            mt:5,
+            mt: 5,
             order: isMobile ? 2 : 0,
             transition: (theme) => theme.transitions.create("margin-left"),
           }}

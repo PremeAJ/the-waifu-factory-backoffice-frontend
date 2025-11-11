@@ -9,6 +9,7 @@ import {
   IconCircle,
 } from "@tabler/icons-react";
 import { NavGroup } from "@/common/utils/types/layout/sidebar";
+import { getTablerIcon } from "@/common/utils/icon/getTablerIcon";
 
 const Menuitems: NavGroup[] = [
   {
@@ -16,57 +17,57 @@ const Menuitems: NavGroup[] = [
     subheader: "หมวดหมู่",
   },
   {
-    id: "0",
+    id: "all",
     title: "ทั้งหมด",
     icon: IconCircle,
-    href: "#",
-  },
-  {
-    id: "1",
-    title: "เครื่องดื่ม",
-    icon: IconCoffee,
-    href: "#",
-    children: [
-      {
-        id: "11",
-        title: "นม",
-        icon: IconMilk,
-        href: "#",
-      },
-      {
-        id: "12",
-        title: "โค้ก",
-        icon: IconBottle,
-        href: "#",
-      },
-      {
-        id: "13",
-        title: "เหล้า",
-        icon: IconGlass,
-        href: "#",
-      },
-    ],
-  },
-  {
-    id: "2",
-    title: "อาหารจานเดียว",
-    icon: IconBowl,
-    href: "#",
-    children: [
-      {
-        id: "21",
-        title: "กระเพรา",
-        icon: IconBowl,
-        href: "#",
-      },
-    ],
-  },
-  {
-    id: "3",
-    title: "ขนม",
-    icon: IconBread,
-    href: "#",
+    href: "/dashboard/pos/cashier",
   },
 ];
+
+export const buildMenuItems = (categories: any[]): NavGroup[] => {
+  const menuItems: NavGroup[] = [
+    {
+      navlabel: true,
+      subheader: "หมวดหมู่",
+    },
+    {
+      id: "all",
+      title: "ทั้งหมด",
+      icon: IconCircle,
+      href: "/dashboard/pos/cashier",
+    },
+  ];
+
+  // ตรวจสอบว่า categories เป็น array และมีข้อมูล
+  if (!Array.isArray(categories) || categories.length === 0) {
+    return menuItems;
+  }
+
+  categories.forEach((cat) => {
+    const parentIcon = cat.icon ? getTablerIcon(cat.icon) : IconCircle;
+    
+    const menuItem: any = {
+      id: cat.id,
+      title: cat.nameTh,
+      icon: parentIcon,
+      href: `/dashboard/pos/cashier?category=${cat.id}`,
+      color: cat.color || undefined,
+    };
+
+    if (cat.subCategories && cat.subCategories.length > 0) {
+      menuItem.children = cat.subCategories.map((sub: any) => ({
+        id: sub.id,
+        title: sub.nameTh,
+        icon: sub.icon ? getTablerIcon(sub.icon) : IconCircle,
+        href: `/dashboard/pos/cashier?category=${sub.id}`,
+        color: sub.color || undefined,
+      }));
+    }
+
+    menuItems.push(menuItem);
+  });
+
+  return menuItems;
+};
 
 export default Menuitems;

@@ -1,86 +1,16 @@
-import { useProfile } from "@/common/contexts/ProfileContext";
-import { useSidebarState } from "@/common/contexts/SidebarStateContext";
-import { useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import config from "@/common/contexts/setting/config";
-import Drawer from "@mui/material/Drawer";
-import Scrollbar from "@/components/custom-scroll/Scrollbar";
-import SidebarItems from "./SidebarItems";
-import useMediaQuery from "@mui/material/useMediaQuery";
+"use client";
+import { useMemo } from "react";
+import { useCategories } from "@/common/contexts/CategoriesContext";
+import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
+import { buildMenuItems } from "./MenuItems";
 
 const Sidebar = () => {
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const { isMobileSidebar, setIsMobileSidebar } = useSidebarState();
-  const { isCollapse } = useProfile().appearance;
-  const MiniSidebarWidth = config.miniSidebarWidth;
-  const SidebarWidth = config.sidebarWidth;
-  const theme = useTheme();
-  const toggleWidth = isCollapse == "mini_sidebar" ? MiniSidebarWidth : SidebarWidth;
+  const { categories, loading } = useCategories();
+  console.log("🚀 ~ Sidebar ~ categories:", categories)
+  
+  const menuItems = useMemo(() => buildMenuItems(categories || []), [categories]);
 
-  return (
-    <>
-      {!lgUp ? (
-        <Box
-          sx={{
-            zIndex: 99,
-            width: toggleWidth,
-            flexShrink: 0,
-            ...(isCollapse == "mini_sidebar" && {
-              position: "absolute",
-            }),
-          }}
-        >
-          <Drawer
-            anchor="left"
-            open
-            variant="permanent"
-            slotProps={{
-              paper: {
-                sx: {
-                  transition: theme.transitions.create("width", {
-                    duration: theme.transitions.duration.shortest,
-                  }),
-                  width: toggleWidth,
-                  boxSizing: "border-box",
-                  zIndex: 99,
-                  mt: 8,
-                },
-              },
-            }}
-          >
-            <Box
-              sx={{
-                height: "100%",
-              }}
-            >
-              <Scrollbar sx={{ height: "calc(100% - 190px)" }}>
-                <SidebarItems />
-              </Scrollbar>
-            </Box>
-          </Drawer>
-        </Box>
-      ) : (
-        <Drawer
-          anchor="left"
-          open={isMobileSidebar}
-          onClose={() => setIsMobileSidebar(false)}
-          variant="temporary"
-          slotProps={{
-            paper: {
-              sx: {
-                width: SidebarWidth,
-                border: "0 !important",
-                boxShadow: (theme) => theme.shadows[8],
-                zIndex: 99,
-              },
-            },
-          }}
-        >
-          <SidebarItems />
-        </Drawer>
-      )}
-    </>
-  );
+  return <BaseSidebar menuItems={menuItems} />;
 };
 
 export default Sidebar;

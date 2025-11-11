@@ -12,6 +12,7 @@ const nextConfig = {
   images: {
     unoptimized: false,
     domains: [
+      "afsafklyxzzychxntdwu.supabase.co",
       "images.unsplash.com",
       "yalamarketplace.com",
       "assets.tops.co.th",
