@@ -11,6 +11,7 @@ export interface OptionType {
   text: string;
   disabled?: boolean;
   icon?: string | null;
+  color?: string | null;
   group?: string;
 }
 
@@ -30,6 +31,7 @@ interface BaseDropdownProps extends Omit<SelectProps, "onChange" | "value"> {
   emptyOptionText?: string;
   loading?: boolean;
   renderOption?: (option: OptionType) => React.ReactNode;
+  renderValue?: (selected: any) => React.ReactNode;
   dimOnOpen?: boolean; // เพิ่มตัวเลือกให้ dim พื้นหลังเมื่อเปิดเมนู
 }
 
@@ -61,24 +63,24 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
 }));
 
 const BaseDropdown: React.FC<BaseDropdownProps> = ({
-  dimOnOpen = true,
-  emptyOptionText = "-- กรุณาเลือก --",
-  formik,
-  fullWidth = true,
-  groupBy,
-  label,
-  loading = false,
   name,
-  onChange: controlledOnChange,
+  size,
+  label,
+  formik,
+  groupBy,
   options,
   orderBy,
+  tooltip,
+  required,
   placeholder,
   renderOption,
-  required,
-  showEmptyOption = false,
-  size,
-  tooltip,
+  loading = false,
+  dimOnOpen = true,
+  fullWidth = true,
   value: controlledValue,
+  showEmptyOption = false,
+  onChange: controlledOnChange,
+  emptyOptionText = "-- กรุณาเลือก --",
   ...rest
 }) => {
   const isMultiple = Boolean((rest as any).multiple);
@@ -140,7 +142,10 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
     if (option.icon) {
       return (
         <Box display="flex" alignItems="center" gap={1}>
-          {renderTablerIcon(option.icon, { size: 16 })}
+          {renderTablerIcon(option.icon, {
+            size: 16,
+            color: option.color || undefined,
+          })}
           {option.text}
         </Box>
       );
@@ -164,7 +169,10 @@ const BaseDropdown: React.FC<BaseDropdownProps> = ({
     if (opt?.icon) {
       return (
         <Box display="flex" alignItems="center" gap={1}>
-          {renderTablerIcon(opt.icon, { size: 16 })}
+          {renderTablerIcon(opt.icon, {
+            size: 16,
+            color: opt.color || undefined,
+          })}
           {opt.text}
         </Box>
       );

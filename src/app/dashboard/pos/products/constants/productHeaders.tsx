@@ -1,7 +1,9 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box } from "@mui/material";
 import { CreateProductOptionPayload } from "@/common/contexts/ProductsContext/interfaces/products";
 import { IconList } from "@tabler/icons-react";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import BaseChip from "@/common/components/base/BaseChip";
+import BaseTooltip from "@/common/components/base/BaseTooltip";
 import formatNumber from "@/common/utils/formatNumber";
 import formatCurrency from "@/common/utils/formatCurrency";
 
@@ -28,7 +30,7 @@ export const getProductHeaders = (): any => [
         return (
           <Box component="span" sx={{ display: "inline-flex", alignItems: "center", gap: 1 }}>
             <Box component="span">{first}</Box>
-            <Tooltip title={title} placement="top" arrow>
+            <BaseTooltip title={title} arrow>
               <Box
                 component="span"
                 sx={{
@@ -48,7 +50,7 @@ export const getProductHeaders = (): any => [
               >
                 <IconList size={14} />
               </Box>
-            </Tooltip>
+            </BaseTooltip>
           </Box>
         );
       }
@@ -59,8 +61,34 @@ export const getProductHeaders = (): any => [
     key: "nameTh",
     label: "ชื่อ (TH)",
     align: "center",
-    width: "20%",
-    render: (_val: any, item: any) => (item.parentNameTh ? item.variantOption?.nameTh || item.parentNameTh : item.nameTh),
+    width: "18%",
+    render: (_val: any, item: any) => {
+      return item.parentNameTh ? item.variantOption?.nameTh || item.parentNameTh : item.nameTh;
+    },
+  },
+  {
+    key: "categories",
+    label: "หมวดหมู่",
+    align: "center",
+    width: "10%",
+    render: (_val: any, item: any) => {
+      const categoryIcon = _val?.icon;
+      const categoryColor = _val?.color;
+      const categoryName = _val?.nameTh;
+
+      if (!categoryIcon) return "-";
+
+      return (
+        <BaseTooltip title={categoryName || "หมวดหมู่"} arrow>
+          <Box component="span">
+            {renderTablerIcon(categoryIcon, {
+              size: 18,
+              color: categoryColor || undefined,
+            })}
+          </Box>
+        </BaseTooltip>
+      );
+    },
   },
   {
     key: "basePrice",
@@ -102,7 +130,7 @@ export const getProductHeaders = (): any => [
     key: "status",
     label: "สถานะ",
     align: "center",
-    width: "20%",
+    width: "17%",
     render: (_val: any, item: any) => {
       const s = item.status ?? item.inventory?.status;
       return s ? <BaseChip preset={s} /> : "-";
