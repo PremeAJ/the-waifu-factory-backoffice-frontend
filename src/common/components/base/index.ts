@@ -26,3 +26,4 @@ export { default as BaseTabs, BaseTabPanel } from './BaseTabs';
 export { default as BaseTextField } from './BaseTextField';
 export { default as BaseTiptap } from './BaseTipTap/BaseTiptap';
 export { default as BaseTooltip } from './BaseTooltip';
+export { default as BaseColorPicker } from './BaseColorPicker';

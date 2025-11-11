@@ -10,6 +10,7 @@ export interface CategoryType {
   icon: string | null;
   parent: string | null;
   status: CategoryStatus;
+  color?: string | null;
   subCategories: CategoryType[];
 }
 
@@ -26,14 +27,10 @@ export interface CreateCategoryDto {
   parent?: string | null;
   status: CategoryStatus;
   icon?: string | null;
+  color?: string | null;
 }
 
-export interface UpdateCategoryDto {
-  nameTh?: string;
-  nameEn?: string;
-  parent?: string | null;
-  status?: CategoryStatus;
-  icon?: string | null;
+export interface UpdateCategoryDto extends Partial<CreateCategoryDto> {
 }
 
 export interface CategoryDetailType extends CategoryType {

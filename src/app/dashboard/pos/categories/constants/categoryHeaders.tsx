@@ -2,13 +2,18 @@ import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import BaseChip from "@/common/components/base/BaseChip";
 import type { CategoryStatus } from "@/common/contexts/CategoriesContext/interfaces/categories";
 
-export const getCategoryHeaders = (isLanguage?: string):any => [
+export const getCategoryHeaders = (isLanguage?: string): any => [
   {
     key: "icon",
     label: "Icon",
     align: "center",
     width: "10%",
-    render: (iconName: string) => (iconName ? renderTablerIcon(iconName) : "-"),
+    render: (iconName: string, item: any) => 
+      iconName ? renderTablerIcon(iconName, { 
+        size: 20,
+        color: item.color || undefined,
+        style: item.color ? { color: item.color } : undefined
+      }) : "-",
   },
   {
     key: "nameTh",

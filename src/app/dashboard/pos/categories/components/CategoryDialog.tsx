@@ -11,6 +11,7 @@ import BaseTextField from "@/common/components/base/BaseTextField";
 import React, { useState, useMemo, useEffect } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import BaseChip from "@/common/components/base/BaseChip";
+import { BaseColorPicker } from "@/common/components/base";
 
 type DialogType = "create" | "edit";
 
@@ -27,6 +28,7 @@ const validationSchema = yup.object({
   nameEn: categoryNameEn,
   parent: stringOptional,
   status: statusRequired,
+  color: stringOptional,
 });
 
 const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, categoryId, parent }) => {
@@ -36,13 +38,12 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
   const { createCategory, updateCategory, getCategoryById, dropdown, categoryIcons, categories } = useCategories();
   const isMobile = useIsMobile();
   const hasSubCategories = categoryData?.subCategories?.length > 0;
-  // use full categories list (same source as table) for parent dropdown
+  
   const parentCategoryOptions = useMemo(() => {
     if (!categories || categories.length === 0) return [];
 
     return categories
       .filter((cat) => {
-        // when editing, exclude the current category itself
         if (type === "edit" && categoryId) {
           return cat.id !== categoryId;
         }
@@ -77,6 +78,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           status: values.status,
           parent: parent || values.parent || null,
           icon: values.icon || null,
+          color: values.color || null,
         });
       } else if (type === "edit" && categoryId) {
         await updateCategory(categoryId, {
@@ -85,6 +87,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           status: values.status,
           parent: hasSubCategories ? undefined : parent || values.parent || null,
           icon: values.icon || null,
+          color: values.color || null,
         });
       }
 
@@ -106,6 +109,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
       parent: "",
       status: "active",
       icon: "",
+      color: "",
     },
     validationSchema,
     onSubmit: handleSubmit,
@@ -129,6 +133,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
           parent: fetchedCategoryData.parent || "",
           status: fetchedCategoryData.status,
           icon: fetchedCategoryData.icon || "",
+          color: fetchedCategoryData.color || "",
         });
       } catch (error: any) {
         formik.setStatus(error.message || "เกิดข้อผิดพลาดในการโหลดข้อมูลหมวดหมู่");
@@ -180,6 +185,15 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({ open, onClose, type, ca
                 name="nameEn"
                 label="ชื่อหมวดหมู่ (ภาษาอังกฤษ)"
                 placeholder="Category name in English"
+              />
+            </Grid>
+
+            <Grid size={12}>
+              <BaseColorPicker
+                loading={fetchLoading}
+                formik={formik}
+                name="color"
+                label="สีหมวดหมู่"
               />
             </Grid>
 
