@@ -61,6 +61,7 @@ const CategoryAndTags: FC<CategoryAndTagsProps> = ({ formik }) => {
         value: String(cat.id),
         text: parentText,
         icon: cat.icon || null,
+        color: cat.color || null,
         group: "หมวดหมู่หลัก",
       });
       if (Array.isArray(cat.subCategories) && cat.subCategories.length > 0) {
@@ -69,6 +70,7 @@ const CategoryAndTags: FC<CategoryAndTagsProps> = ({ formik }) => {
             value: String(sub.id),
             text: `${sub.nameTh}${sub.nameEn ? ` (${sub.nameEn})` : ""}`,
             icon: sub.icon || null,
+            color: sub.color || null,
             group: parentText,
           });
         });

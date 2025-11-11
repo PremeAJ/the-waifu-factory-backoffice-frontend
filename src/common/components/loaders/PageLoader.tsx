@@ -12,7 +12,6 @@ export default function PageLoader() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#ffffff",
         zIndex: 1400,
       }}
       aria-label="loading"
