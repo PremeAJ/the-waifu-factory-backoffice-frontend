@@ -85,7 +85,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
                 sx={{
                   minWidth: "36px",
                   p: "3px 0 0 3px",
-                  color: menu.color || "inherit",
+                  color: (open && level < 2) ? "white" : (menu.color || "inherit"),
                 }}
               >
                 {menuIcon}
@@ -101,7 +101,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
             sx={{
               minWidth: "36px",
               p: "3px 0 0 3px",
-              color: menu.color || "inherit",
+              color: (open && level < 2) ? "white" : (menu.color || "inherit"),
             }}
           >
             {menuIcon}
