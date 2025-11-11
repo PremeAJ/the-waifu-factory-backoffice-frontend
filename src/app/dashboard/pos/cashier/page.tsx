@@ -41,6 +41,7 @@ export default function POSPage() {
           price: option.finalPrice,
           image: thumbnail || "/images/products/no-image.jpg",
           stock: option.inventory?.stock,
+          unit: product.unit,
           categoryId: product.categories?.id,
         }));
       }
@@ -53,6 +54,7 @@ export default function POSPage() {
         price: mainOption?.finalPrice || 0,
         image: thumbnail || "/images/products/no-image.jpg",
         stock: mainOption?.inventory?.stock,
+        unit: product.unit,
         categoryId: product.categories?.id,
       }];
     });

@@ -192,7 +192,10 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
                           color={isOutOfStock ? "error" : "text.secondary"}
                           sx={{ fontSize: 11, mt: 0.5 }}
                         >
-                          {product.stock !== undefined ? `คงเหลือ ${product.stock - inOrder}` : ""}
+                          {product.stock !== undefined 
+                            ? `คงเหลือ ${product.stock - inOrder} ${product.unit || ""}` 
+                            : ""
+                          }
                         </Typography>
                       </Box>
                     </Card>

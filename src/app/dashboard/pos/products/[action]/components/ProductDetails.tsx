@@ -134,10 +134,12 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
         break;
     }
 
-    if (defaultUnit && formik.values.unit !== defaultUnit) {
+    // ลบเงื่อนไข if (defaultUnit && formik.values.unit !== defaultUnit) ออก
+    // ให้ set ค่าเฉพาะตอน unitType เปลี่ยนเท่านั้น
+    if (defaultUnit && !formik.values.unit) {
       formik.setFieldValue("unit", defaultUnit);
     }
-  }, [formik, formik?.values?.unitType]);
+  }, [formik?.values?.unitType]);
 
   const renderUnitField = () => {
     const unitType = formik?.values?.unitType;
