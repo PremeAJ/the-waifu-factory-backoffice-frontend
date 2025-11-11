@@ -35,6 +35,15 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
   const { uploadFile, getBulkFileUrls, finalizeFiles, deleteDraft, isUploading } = useUpload();
   
   const imageFiles = files.filter(isImageFile);
+  
+  // เช็คว่าเลือกไฟล์ครบแล้วหรือยัง
+  // ถ้าไม่ใช่ multiple และมีไฟล์แล้ว 1 ไฟล์ = ครบแล้ว
+  // หรือถ้ามี maxFiles และเลือกครบแล้ว = ครบแล้ว
+  const isMaxFilesReached = !multiple 
+    ? files.length >= 1 
+    : maxFiles 
+    ? files.length >= maxFiles 
+    : false;
 
   useEffect(() => {
     const fetchExistingFiles = async () => {
@@ -78,7 +87,6 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
   }, [value, getBulkFileUrls]);
 
   const handleUploadFile = async (file: File): Promise<UploadedFile> => {
- 
     try {
       const result = await uploadFile(file, (progress) => {
         setFiles((prevFiles) => 
@@ -158,10 +166,17 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
         });
       }
 
+      // ถ้าไม่ใช่ multiple ให้เก็บได้แค่ 1 ไฟล์
+      const effectiveMaxFiles = !multiple ? 1 : maxFiles;
+      
       const totalFiles = files.length + validFiles.length;
-      if (maxFiles && totalFiles > maxFiles) {
-        validFiles = validFiles.slice(0, Math.max(0, maxFiles - files.length));
-        errorMsg = `เลือกไฟล์ได้สูงสุด ${maxFiles} ไฟล์`;
+      if (effectiveMaxFiles && totalFiles > effectiveMaxFiles) {
+        validFiles = validFiles.slice(0, Math.max(0, effectiveMaxFiles - files.length));
+        if (!multiple) {
+          errorMsg = `เลือกได้เพียง 1 ไฟล์เท่านั้น`;
+        } else {
+          errorMsg = `เลือกไฟล์ได้สูงสุด ${effectiveMaxFiles} ไฟล์`;
+        }
       }
 
       const newFiles: UploadedFile[] = validFiles.map(file => ({
@@ -173,16 +188,14 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
       
       setFiles(prev => (multiple ? [...prev, ...newFiles] : newFiles));
 
-      const rejectionMsg = formatDropzoneErrors(fileRejections, { maxSize, maxFiles, accept });
+      const rejectionMsg = formatDropzoneErrors(fileRejections, { maxSize, maxFiles: effectiveMaxFiles, accept });
       setError([errorMsg, rejectionMsg].filter(Boolean).join("\n") || null);
 
-      // 5) แจ้ง parent
       if (onChange) {
         const allFiles = multiple ? [...files.map(f => f.file), ...validFiles] : validFiles;
         onChange(allFiles);
       }
 
-      // 6) อัปโหลดอัตโนมัติหากตั้งค่าไว้
       if (autoUpload) {
         const uploadedFiles: UploadedFile[] = [];
         for (const file of validFiles) {
@@ -199,20 +212,19 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
         });
 
         if (onUploadComplete) {
-          onUploadComplete(finalIds); // ส่ง id ของไฟล์ทั้งหมดหลังรวม
+          onUploadComplete(finalIds);
         }
       }
     },
     [maxSize, maxFiles, files, autoUpload, onChange, onUploadComplete, multiple, handleUploadFile]
   );
 
-  // Setup dropzone: ไม่กำหนด maxSize เพื่อให้ไฟล์ใหญ่เข้ามาให้เราบีบอัดเอง
   const normalizedAccept = normalizeAccept(accept);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple,
     accept: normalizedAccept,
-    // maxSize: undefined,
+    disabled: isMaxFilesReached, // ปิดการเลือกไฟล์เพิ่มเมื่อครบแล้ว
   });
 
   const handleRemoveFile = async (index: number) => {
@@ -289,7 +301,7 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     });
     
     if (onUploadComplete) {
-      onUploadComplete(finalIds); // ส่ง id ของไฟล์ทั้งหมดหลังรวม
+      onUploadComplete(finalIds);
     }
   };
 
@@ -328,12 +340,15 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
         </BaseLabel>
       )}
       
-      <DropzoneArea
-        placeholder={placeholder}
-        getRootProps={getRootProps}
-        getInputProps={getInputProps}
-        isDragActive={isDragActive}
-      />
+      {/* แสดง Dropzone เฉพาะเมื่อยังไม่ครบจำนวนไฟล์ */}
+      {!isMaxFilesReached && (
+        <DropzoneArea
+          placeholder={placeholder}
+          getRootProps={getRootProps}
+          getInputProps={getInputProps}
+          isDragActive={isDragActive}
+        />
+      )}
       
       {error && (
         <Typography color="error" mt={1} textAlign="center" sx={{ whiteSpace: 'pre-line' }}>
@@ -343,7 +358,7 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
       
       <FileList
         files={files}
-        maxFiles={maxFiles}
+        maxFiles={!multiple ? 1 : maxFiles}
         autoUpload={autoUpload}
         isUploading={isUploading}
         onOpenLightbox={handleOpenLightbox}

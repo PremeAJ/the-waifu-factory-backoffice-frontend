@@ -3,9 +3,11 @@
 import { FC, useEffect, useState } from "react";
 import { getIn } from "formik";
 import { Box, Grid, Typography } from "@mui/material";
-import { BaseChip, BaseDropdown, BaseLabel, BaseNumberField, BaseRadio, BaseSlider, BaseTextField } from "@/common/components/base";
+import { BaseChip, BaseDropdown, BaseFileInput, BaseLabel, BaseNumberField, BaseRadio, BaseSlider, BaseTextField } from "@/common/components/base";
 import { discountTypeOptions, inventoryStatusOptions } from "@/common/contexts/ProductsContext/constants/constants";
 import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
+import { fileTypeGroup } from "@/common/constants/file/fileType";
+import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
 
 type Props = {
   formik: any;
@@ -123,13 +125,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
               allowDecimal={true}
             />
             <Typography variant="body1"> ต่อ </Typography>
-            <BaseNumberField
-              formik={formik}
-              name={`${optionPath}.pricePerUnit`}
-              suffix={unit}
-              maximumFractionDigits={3}
-              allowDecimal={true}
-            />
+            <BaseNumberField formik={formik} name={`${optionPath}.pricePerUnit`} suffix={unit} maximumFractionDigits={3} allowDecimal={true} />
           </Box>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -232,6 +228,20 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           renderOption={(option: any) => <BaseChip preset={option.value} />}
           renderValue={(selected: any) => <BaseChip preset={selected} />}
           fullWidth
+        />
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <BaseFileInput
+          label="อัปโหลดภาพสินค้า"
+          placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
+          multiple={false}
+          accept={fileTypeGroup.image}
+          autoUpload={true}
+          toBucket={StorageBucket.PRODUCT_THUMBNAIL}
+          onUploadComplete={(fileIds) => {
+            formik.setFieldValue("thumbnailImageId", fileIds?.[0] ?? undefined);
+          }}
+          value={formik.values.thumbnailImageId ? [formik.values.thumbnailImageId] : []}
         />
       </Grid>
     </Grid>

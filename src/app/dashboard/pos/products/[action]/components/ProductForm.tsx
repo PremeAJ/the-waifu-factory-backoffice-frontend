@@ -174,11 +174,16 @@ const ProductForm: React.FC = () => {
       };
 
       if (isEdit && productId) {
-        await updateProduct(productId, payload);
+        const response = await updateProduct(productId, payload);
+        if (!response.error) {
+          router.replace("/dashboard/pos/products");
+        }
       } else {
-        await createProduct(payload);
+        const response = await createProduct(payload);
+        if (!response.error) {
+          router.replace("/dashboard/pos/products");
+        }
       }
-      router.replace("/dashboard/pos/products");
     },
   });
 
@@ -196,24 +201,6 @@ const ProductForm: React.FC = () => {
             <BlankCard>
               <ProductDetails formik={formik} />
             </BlankCard>
-          </Stack>
-        </Grid>
-        <Grid size={{ lg: 4 }}>
-          <Stack spacing={3}>
-            <BlankCard>
-              <BaseFileInput
-                label="อัปโหลดภาพสินค้า"
-                placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
-                multiple={false}
-                accept={fileTypeGroup.image}
-                autoUpload={true}
-                toBucket={StorageBucket.PRODUCT_THUMBNAIL}
-                onUploadComplete={(fileIds) => {
-                  formik.setFieldValue("thumbnailImageId", fileIds?.[0] ?? undefined);
-                }}
-                value={formik.values.thumbnailImageId ? [formik.values.thumbnailImageId] : []}
-              />
-            </BlankCard>
             <BlankCard>
               <BaseFileInput
                 label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์)"
@@ -229,6 +216,10 @@ const ProductForm: React.FC = () => {
                 value={formik.values.detailImageIds}
               />
             </BlankCard>
+          </Stack>
+        </Grid>
+        <Grid size={{ lg: 4 }}>
+          <Stack spacing={3}>
             <BlankCard>
               <CategoryAndTags formik={formik} />
             </BlankCard>
