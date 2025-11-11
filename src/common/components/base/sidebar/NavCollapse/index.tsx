@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { isNull } from "lodash";
-import { NavCollapseProps, NavGroup } from "@/common/utils/types/layout/sidebar";
 import { styled, useTheme } from "@mui/material/styles";
 import { Theme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
@@ -14,6 +13,7 @@ import NavItem from "../NavItem";
 import React, { useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
+import { NavCollapseProps, NavGroup } from "../interface/sidebar";
 
 export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
@@ -85,7 +85,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
                 sx={{
                   minWidth: "36px",
                   p: "3px 0 0 3px",
-                  color: "inherit",
+                  color: menu.color || "inherit",
                 }}
               >
                 {menuIcon}
@@ -101,7 +101,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
             sx={{
               minWidth: "36px",
               p: "3px 0 0 3px",
-              color: "inherit",
+              color: menu.color || "inherit",
             }}
           >
             {menuIcon}

@@ -11,7 +11,7 @@ import {
   IconUser,
   IconWallet,
 } from "@tabler/icons-react";
-import { NavGroup } from "@/common/utils/types/layout/sidebar";
+import { NavGroup } from "@/common/components/base/sidebar/sidebar";
 import { PageUrl } from "@/common/constants/pageUrl";
 
 export const settingSidebarItem: NavGroup[] = [

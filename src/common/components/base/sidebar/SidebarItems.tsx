@@ -10,7 +10,7 @@ import NavGroup from "./NavGroup/NavGroup";
 import NavItem from "./NavItem";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import type { NavGroup as NavGroupType } from "@/common/utils/types/layout/sidebar";
+import type { NavGroup as NavGroupType } from "@/common/components/base/sidebar/sidebar";
 
 interface SidebarItemsProps {
   menuItems?: NavGroupType[];

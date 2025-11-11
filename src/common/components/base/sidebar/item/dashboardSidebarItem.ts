@@ -17,8 +17,8 @@ import {
   IconCategory,
   IconBasket,
 } from "@tabler/icons-react";
-import { NavGroup } from "@/common/utils/types/layout/sidebar";
-import { PageUrl } from "../../../../constants/pageUrl";
+import { NavGroup } from "../interface/sidebar";
+import { PageUrl } from "@/common/constants/pageUrl";
 
 const dashboardSidebarItem: NavGroup[] = [
   {

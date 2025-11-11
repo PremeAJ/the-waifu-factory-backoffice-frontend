@@ -8,7 +8,7 @@ import {
   IconBread,
   IconCircle,
 } from "@tabler/icons-react";
-import { NavGroup } from "@/common/utils/types/layout/sidebar";
+import { NavGroup } from "@/common/components/base/sidebar/sidebar";
 import { getTablerIcon } from "@/common/utils/icon/getTablerIcon";
 
 const Menuitems: NavGroup[] = [

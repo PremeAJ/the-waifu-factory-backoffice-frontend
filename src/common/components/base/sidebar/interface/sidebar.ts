@@ -35,6 +35,7 @@ export interface NavGroupProps {
   title?: string;
   icon?: ElementType;
   href?: string;
+  color?: string;
   children?: NavGroup[];
 }
 
@@ -44,6 +45,5 @@ export interface NavCollapseProps {
   pathWithoutLastPart: string;
   pathDirect: string;
   hideMenu?: boolean | "";
-
   onClick: (event: MouseEvent<HTMLElement>) => void;
 }
