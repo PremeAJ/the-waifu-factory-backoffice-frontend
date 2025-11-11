@@ -1,43 +1,65 @@
-import withPWA from 'next-pwa';
+import withPWA from "next-pwa";
 
-const withPWACfg = withPWA({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === "development",
-});
+const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: false, // ปิดใน dev เพื่อความเร็ว (render 1 ครั้ง แทน 2 ครั้ง)
+
   images: {
-    unoptimized: false,
-    domains: [
-      "afsafklyxzzychxntdwu.supabase.co",
-      "images.unsplash.com",
-      "yalamarketplace.com",
-      "assets.tops.co.th",
-      "www.maggi.co.th",
-      "www.coca-cola.com",
-      "img.wongnai.com",
-      "www.sgethai.com",
-      "image.bangkokbiznews.com",
-      "7elevenweb.s3.ap-southeast-1.amazonaws.com",
-      "static.wixstatic.com",
-      "www.sangdamrong.com",
-      "www.k-bigc.com",
-      "beer6.net",
-      "www.thammculture.com",
-      "s359.kapook.com",
-      "media.lul.la",
-      "i.ytimg.com",
-      "image.makewebcdn.com",
-      "www.falconforprofessional.com",
-      "ufm.co.th",
-      "www.pholfoodmafia.com",
-      "agarmermaid.com",
-      "api2.krua.co"
+    unoptimized: true, // ไม่ optimize รูปเลยใน dev
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "afsafklyxzzychxntdwu.supabase.co",
+      },
     ],
+  },
+
+  // เพิ่ม compiler options
+  compiler: {
+    removeConsole: !isDev, // เอา console.log ออกใน production
+  },
+
+  // ปรับแต่ง Turbopack
+  experimental: {
+    ...(isDev && {
+      turbo: {
+        resolveAlias: {
+          "@": "./src",
+        },
+      },
+    }),
+    // เพิ่ม optimizePackageImports สำหรับ MUI
+    optimizePackageImports: [
+      "@mui/material",
+      "@mui/icons-material",
+      "@tabler/icons-react",
+    ],
+  },
+
+  // ลด webpack build time
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      // ลด bundle size ใน dev
+      config.optimization = {
+        ...config.optimization,
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: false,
+      };
+    }
+    return config;
   },
 };
 
-export default withPWACfg(nextConfig);
+// ใช้ PWA เฉพาะ production
+const config = isDev
+  ? nextConfig
+  : withPWA({
+      dest: "public",
+      register: true,
+      skipWaiting: true,
+      disable: false,
+    })(nextConfig);
+
+export default config;

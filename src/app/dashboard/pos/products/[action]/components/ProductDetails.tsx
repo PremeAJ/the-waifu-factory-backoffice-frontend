@@ -42,10 +42,19 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
   const theme = useTheme();
   const { taxes } = useTax();
 
-  const [tab, setTab] = useState<number>(() => {
-    const hasVariant = Boolean(formik?.values?.variant) || (formik?.values?.productOptions || []).some((o: any) => o?.variantOption);
-    return hasVariant ? 1 : 0;
-  });
+  const [tab, setTab] = useState<number>(0);
+
+  // เพิ่ม useEffect เพื่อตรวจสอบและ update tab เมื่อ formik.values เปลี่ยน
+  useEffect(() => {
+    if (!formik?.values) return;
+    
+    const hasVariant = Boolean(formik.values.variant) || 
+                      (formik.values.productOptions || []).some((o: any) => o?.variantOption);
+    
+    if (hasVariant && tab === 0) {
+      setTab(1);
+    }
+  }, [formik?.values?.variant, formik?.values?.productOptions]);
 
   const tabs = useMemo(
     () => [
@@ -134,8 +143,6 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
         break;
     }
 
-    // ลบเงื่อนไข if (defaultUnit && formik.values.unit !== defaultUnit) ออก
-    // ให้ set ค่าเฉพาะตอน unitType เปลี่ยนเท่านั้น
     if (defaultUnit && !formik.values.unit) {
       formik.setFieldValue("unit", defaultUnit);
     }
