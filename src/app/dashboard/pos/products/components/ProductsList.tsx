@@ -1,15 +1,17 @@
 "use client";
-import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
 import { Badge, Box, Stack } from "@mui/material";
+import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
 import { getProductHeaders } from "../constants/productHeaders";
+import { I18nString } from "@/common/utils/i18n/I18nString";
+import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useProducts } from "@/common/contexts/ProductsContext";
+import { useProfile } from "@/common/contexts";
+import ProductFilterDialog from "./ProductFilterDialog";
 import ProductPreviewDialog from "./ProductPreviewDialog";
 import React, { useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
-import { IconAdjustmentsAlt } from "@tabler/icons-react";
-import ProductFilterDialog from "./ProductFilterDialog";
 
 function ProductsList() {
   const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
@@ -18,6 +20,7 @@ function ProductsList() {
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
+  const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
   const activeFilterCount = useMemo(() => {
@@ -43,7 +46,11 @@ function ProductsList() {
 
       const subItems: any[] = (prod.productOptions || []).map((opt: any) => ({
         ...opt,
-        nameTh: prod.nameTh,
+        nameTh: `${I18nString(isLanguage, prod.variant?.nameTh, prod.variant?.nameEn)} : ${I18nString(
+          isLanguage,
+          opt.variantOption.nameTh,
+          opt.variantOption.nameEn
+        )}`,
         unit: prod.unit,
       }));
 
@@ -85,18 +92,16 @@ function ProductsList() {
     () => [
       {
         type: "view",
-        tooltip: "ดู",
+        hide: (item: any) => !item.subItems,
         onClick: (item: any) => setPreviewState({ open: true, item }),
       },
       {
         type: "edit",
-        tooltip: "แก้ไข",
         href: (item: any) => `/dashboard/pos/products/edit?id=${item.id}`,
       },
       {
         type: "delete",
-        tooltip: (item: any) => (item?.subItems?.length > 0 ? "ไม่สามารถลบได้ เนื่องจากมีตัวเลือกย่อย" : "ลบ"),
-        disabled: (item: any) => !!(item?.subItems?.length > 0),
+        hide: (item: any) => !item.subItems,
         onClick: (item: any) => setDeleteDialogState({ open: true, item: item }),
       },
     ],

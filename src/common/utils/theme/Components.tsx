@@ -373,12 +373,12 @@ const components: any = (theme: Theme) => {
         },
       },
     },
-
     MuiChip: {
       styleOverrides: {
         root: {
           fontWeight: 600,
           fontSize: "0.75rem",
+          borderRadius: theme.shape.borderRadius,
         },
       },
     },
