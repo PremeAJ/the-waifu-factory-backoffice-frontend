@@ -6,6 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import BaseButton from "@/common/components/base/BaseButton";
 import BaseScrollbar from "@/common/components/base/BaseScrollBar";
+import formatCurrency from "@/common/utils/formatCurrency";
 
 export default function OrderSummary({ order, addToOrder, removeFromOrder, setOrder, total, isMobile }: any) {
   return (
@@ -76,7 +77,7 @@ export default function OrderSummary({ order, addToOrder, removeFromOrder, setOr
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h6">รวม</Typography>
             <Typography variant="h5" color="primary">
-              ฿{total}
+              {formatCurrency(total,2)}
             </Typography>
           </Box>
           <BaseButton
