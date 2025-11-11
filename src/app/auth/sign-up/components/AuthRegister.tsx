@@ -81,6 +81,9 @@ const AuthRegister = () => {
               formik={formik}
               label="Email Adddress"
               placeholder="กรุณากรอก อีเมล"
+              inputProps={{
+                inputMode:'email'
+              }}
               startAdornment={
                 <InputAdornment position="start">
                   <IconMail width={20} />

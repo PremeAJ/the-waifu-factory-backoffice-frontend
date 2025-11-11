@@ -44,7 +44,7 @@ const presetMap: Record<
 > = {
   create: { position: FloatingButtonPosition.BOTTOM_RIGHT, icon: <IconPlus />, color: "primary" },
   filter: { position: FloatingButtonPosition.TOP_RIGHT, icon: <IconFilter />, color: "primary" },
-  save: { position: FloatingButtonPosition.BOTTOM_RIGHT, icon: <IconDeviceFloppy />, color: "primary" },
+  save: { position: FloatingButtonPosition.BOTTOM_RIGHT, icon: <IconDeviceFloppy />, color: "info" },
   cancel: { position: FloatingButtonPosition.BOTTOM_LEFT, icon: <IconX />, color: "error" },
 };
 

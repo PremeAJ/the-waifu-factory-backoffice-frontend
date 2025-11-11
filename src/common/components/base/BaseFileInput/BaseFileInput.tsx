@@ -1,16 +1,16 @@
 "use client";
-import React, { useCallback, useState, useEffect } from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import BaseLabel from "../BaseLabel";
-import { useUpload } from "@/common/contexts/UploadContext";
+import { normalizeAccept, isImageFile, formatDropzoneErrors, compressImageIfNeeded, CLIENT_MAX_BYTES } from './utils';
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
 import { UploadedFile, BaseFileInputProps } from './types';
-import { normalizeAccept, isImageFile, formatDropzoneErrors, compressImageIfNeeded, CLIENT_MAX_BYTES } from './utils';
-import DropzoneArea from './DropzoneArea';
-import FileList from './FileList';
-import FileLightbox from './FileLightbox';
 import { useDropzone } from "react-dropzone";
+import { useUpload } from "@/common/contexts/UploadContext";
+import BaseLabel from "../BaseLabel";
+import Box from "@mui/material/Box";
+import DropzoneArea from './DropzoneArea';
+import FileLightbox from './FileLightbox';
+import FileList from './FileList';
+import React, { useCallback, useState, useEffect } from "react";
+import Typography from "@mui/material/Typography";
 
 const BaseFileInput: React.FC<BaseFileInputProps> = ({
   label,
@@ -32,12 +32,10 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  const { uploadFile, /* getFileUrl, */ getBulkFileUrls, finalizeFiles, deleteDraft, isUploading } = useUpload();
+  const { uploadFile, getBulkFileUrls, finalizeFiles, deleteDraft, isUploading } = useUpload();
   
-  // Filter image files for lightbox
   const imageFiles = files.filter(isImageFile);
 
-  // Handle existing files from value prop
   useEffect(() => {
     const fetchExistingFiles = async () => {
       if (!value?.length) return;
@@ -79,15 +77,8 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     fetchExistingFiles();
   }, [value, getBulkFileUrls]);
 
-  // Upload a single file
   const handleUploadFile = async (file: File): Promise<UploadedFile> => {
-    const uploadingFile: UploadedFile = {
-      file,
-      id: "",
-      uploading: true,
-      progress: 0,
-    };
-    
+ 
     try {
       const result = await uploadFile(file, (progress) => {
         setFiles((prevFiles) => 
@@ -116,7 +107,6 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
         }
       }
 
-      // เดิม: const urlResponse = await getFileUrl(result.id, { public: true });
       const map = await getBulkFileUrls([result.id], { public: true });
       const urlResponse = map[result.id];
 
@@ -139,7 +129,6 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     }
   };
 
-  // Handle file drop
   const onDrop = useCallback(
     async (acceptedFiles: File[], fileRejections: any[]) => {
       const targetBytes = Math.min(

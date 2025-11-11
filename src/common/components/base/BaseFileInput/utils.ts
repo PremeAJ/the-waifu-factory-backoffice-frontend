@@ -80,12 +80,18 @@ const loadImageFromFile = (file: File) =>
     img.src = url;
   });
 
-const changeExt = (name: string, ext: string) => {
-  const idx = name.lastIndexOf(".");
-  return (idx === -1 ? name : name.slice(0, idx)) + "." + ext.replace(/^\./, "");
+const preserveOriginalName = (originalFile: File, compressedBlob: Blob): File => {
+  const originalName = originalFile.name;
+  const ext = originalName.lastIndexOf('.');
+  const baseName = ext !== -1 ? originalName.substring(0, ext) : originalName;
+  const newName = `${baseName}.jpg`;
+  
+  return new File([compressedBlob], newName, { 
+    type: 'image/jpeg', 
+    lastModified: Date.now() 
+  });
 };
 
-// fallback แบบ Canvas
 const compressViaCanvas = async (file: File, targetBytes: number) => {
   const img = await loadImageFromFile(file);
   const canvas = document.createElement("canvas");
@@ -118,10 +124,9 @@ const compressViaCanvas = async (file: File, targetBytes: number) => {
   try { URL.revokeObjectURL(img.src); } catch {}
   if (!best || best.size >= file.size) return file;
 
-  return new File([best], changeExt(file.name || "image", "jpg"), { type: outType, lastModified: Date.now() });
+  return preserveOriginalName(file, best);
 };
 
-// ใช้ไลบรารีเป็นหลัก แล้วค่อย fallback
 export const compressImageIfNeeded = async (
   file: File,
   opts?: { targetBytes?: number }
@@ -130,27 +135,28 @@ export const compressImageIfNeeded = async (
   const target = Math.max(32 * 1024, opts?.targetBytes ?? CLIENT_MAX_BYTES);
   if (file.size <= target) return file;
 
+  const originalName = file.name;
+
   try {
     const imageCompression = (await import("browser-image-compression")).default;
-    const out = await imageCompression(file, {
+    const compressedBlob = await imageCompression(file, {
       maxSizeMB: target / (1024 * 1024),
       useWebWorker: true,
       initialQuality: 0.85,
       alwaysKeepResolution: false,
-      // ถ้าอยากบังคับแปลงเป็น JPEG เพื่อลดขนาด:
       fileType: "image/jpeg",
     });
-    if (out.size < file.size) return out as File;
+    
+    if (compressedBlob.size < file.size) {
+      return preserveOriginalName(file, compressedBlob);
+    }
   } catch {
-    // ignore and fallback
   }
 
   return await compressViaCanvas(file, target);
 };
 
-/**
- * Truncate filename but keep extension. Example: "verylongname...jpg"
- */
+
 export function truncateFileName(name: string, max = 12): string {
   if (!name || name.length <= max) return name;
 
@@ -159,7 +165,6 @@ export function truncateFileName(name: string, max = 12): string {
   const ext = hasExt ? name.slice(lastDot + 1) : "";
   const base = hasExt ? name.slice(0, lastDot) : name;
 
-  // Reserve space for "..." and extension (if any)
   const reserve = (ext ? ext.length + 1 : 0) + 3;
   if (max <= reserve) return name.slice(0, max - 1) + "…";
 

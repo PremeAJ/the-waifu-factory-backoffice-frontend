@@ -81,6 +81,9 @@ const AuthLogin = () => {
               formik={formik}
               label="Email"
               placeholder={`${t("Form.Validator.PleaseEnterYour")}${t("email")}`}
+              inputProps={{
+                inputMode:'email'
+              }}
               startAdornment={
                 <InputAdornment position="start">
                   <IconMail width={20} />

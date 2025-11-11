@@ -277,7 +277,6 @@ const BaseTextField: React.FC<CustomTextFieldProps> = (props) => {
 
   const shouldControl = Boolean(formik) || rest.value !== undefined;
   const controlledValueRaw = formik ? getIn(formik.values, name) ?? "" : (rest.value as any);
-
   const effectiveType = type === "password" ? (showPassword ? "text" : "password") : type ?? "text";
 
   const textField = (

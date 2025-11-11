@@ -1,14 +1,14 @@
-import React from 'react';
+import { IconX } from "@tabler/icons-react";
+import { truncateFileName } from "./utils";
+import { UploadedFile } from './types';
+import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress";
 import IconButton from "@mui/material/IconButton";
-import { IconX } from "@tabler/icons-react";
+import React from 'react';
 import Tooltip from "@mui/material/Tooltip";
-import { useTheme } from "@mui/material/styles";
-import { UploadedFile } from './types';
-import { truncateFileName } from "./utils";
+import Typography from "@mui/material/Typography";
 
 interface FileItemProps {
   file: UploadedFile;
@@ -26,7 +26,40 @@ export const FileItem: React.FC<FileItemProps> = ({
   const theme = useTheme();
 
   const fullName = file.originName || file.file?.name || "";
-  const shownName = truncateFileName(fullName, 16); // ปรับความยาวได้
+  const shownName = truncateFileName(fullName, 16);
+
+  const renderChip = () => {
+    if (file.deleting) {
+      return (
+        <Chip 
+          color="error"
+          label="กำลังลบ..."
+          size="small"
+        />
+      );
+    }
+    
+    if (file.uploading) {
+      return (
+        <Chip 
+          color="warning"
+          label="กำลังอัปโหลด..."
+          size="small"
+        />
+      );
+    }
+    
+    return (
+      <Chip 
+        color={file.id ? "success" : "primary"} 
+        label={file.id 
+          ? "อัปโหลดแล้ว"
+          : `${Math.round(file.file.size / 1024)} KB`
+        }
+        size="small"
+      />
+    );
+  };
 
   return (
     <Box
@@ -36,6 +69,7 @@ export const FileItem: React.FC<FileItemProps> = ({
       sx={{ 
         borderTop: `1px solid ${theme.palette.divider}`,
         opacity: file.deleting ? 0.6 : 1,
+        transition: 'opacity 0.3s',
       }}
       justifyContent="space-between"
       gap={2}
@@ -52,13 +86,14 @@ export const FileItem: React.FC<FileItemProps> = ({
             objectFit: "cover",
             borderRadius: 1,
             boxShadow: 1,
-            cursor: 'pointer',
+            cursor: file.deleting ? 'default' : 'pointer',
+            pointerEvents: file.deleting ? 'none' : 'auto',
             '&:hover': {
-              opacity: 0.8,
+              opacity: file.deleting ? 1 : 0.8,
               transition: 'opacity 0.2s'
             }
           }}
-          onClick={() => onOpenLightbox(index)}
+          onClick={() => !file.deleting && onOpenLightbox(index)}
         />
       )}
       
@@ -66,7 +101,6 @@ export const FileItem: React.FC<FileItemProps> = ({
         <Tooltip title={fullName} placement="top" arrow>
           <Typography
             variant="body2"
-            // ห้ามมี title ที่นี่ เพราะใช้ Tooltip แล้ว
             sx={{
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -85,29 +119,21 @@ export const FileItem: React.FC<FileItemProps> = ({
         )}
       </Box>
       
-      {file.uploading ? (
-        <Box display="flex" alignItems="center" gap={1}>
-          <CircularProgress size={16} variant="determinate" value={file.progress} />
-          <Typography variant="caption">{file.progress}%</Typography>
-        </Box>
-      ) : (
-        <Chip 
-          color={file.id ? "success" : "primary"} 
-          label={file.id 
-            ? "อัปโหลดแล้ว"
-            : `${Math.round(file.file.size / 1024)} KB`
-          }
-          size="small"
-        />
-      )}
+      {renderChip()}
       
-      {file.deleting ? (
-        <CircularProgress size={16} sx={{ mx: 1 }} />
-      ) : (
-        <IconButton size="small" color="error" onClick={() => onRemove(index)} sx={{ ml: 1 }}>
+      <IconButton 
+        size="small" 
+        color="error" 
+        onClick={() => onRemove(index)} 
+        disabled={file.deleting || file.uploading}
+        sx={{ ml: 1 }}
+      >
+        {file.deleting ? (
+          <CircularProgress size={18} color="error" />
+        ) : (
           <IconX size={18} />
-        </IconButton>
-      )}
+        )}
+      </IconButton>
     </Box>
   );
 };

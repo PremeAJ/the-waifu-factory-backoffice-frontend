@@ -249,7 +249,7 @@ const ProductForm: React.FC = () => {
                   label={id ? "อัปเดต" : "บันทึก"}
                   type="submit"
                   variant="contained"
-                  color="primary"
+                  color="info"
                   loading={formik.isSubmitting}
                   fullWidth={false}
                 />
