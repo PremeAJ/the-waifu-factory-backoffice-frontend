@@ -25,11 +25,15 @@ const FileLightbox: React.FC<FileLightboxProps> = ({
   useEffect(() => {
     const created: string[] = [];
     const mapped: LightboxItem[] = imageFiles.map((f) => {
+      // ✅ แก้ไข: ใช้ URL จาก backend ถ้ามี ไม่ต้องสร้าง object URL
       let src = f.url || "";
+      
+      // ✅ สร้าง object URL เฉพาะเมื่อไม่มี URL จาก backend
       if (!src && f.file instanceof File) {
         src = URL.createObjectURL(f.file);
         created.push(src);
       }
+      
       return {
         src,
         alt: f.originName || f.file.name || "image",

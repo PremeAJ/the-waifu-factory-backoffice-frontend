@@ -27,6 +27,7 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
   onUploadComplete,
   value,
 }) => {
+  console.log("🚀 ~ BaseFileInput ~ value:", value)
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);

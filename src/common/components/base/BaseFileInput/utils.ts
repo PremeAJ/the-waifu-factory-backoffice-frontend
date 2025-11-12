@@ -1,8 +1,19 @@
 import { UploadedFile } from './types';
 
 export const isImageFile = (file: UploadedFile): boolean => {
-  return !!file.url && 
-    (file.url.match(/\.(jpeg|jpg|png|gif|webp)$/i) !== null || file.file.type.startsWith("image/"));
+  // ✅ แก้ไข: ตรวจสอบจาก file.type ก่อน จากนั้นตรวจสอบจาก URL
+  if (file.file.type.startsWith("image/")) {
+    return true;
+  }
+  
+  // ✅ ตรวจสอบจาก URL ถ้ามี (รองรับทั้ง URL ที่มี query parameters)
+  if (file.url) {
+    // แยก URL ออกจาก query parameters ก่อนเช็ค extension
+    const urlWithoutQuery = file.url.split('?')[0];
+    return urlWithoutQuery.match(/\.(jpeg|jpg|png|gif|webp)$/i) !== null;
+  }
+  
+  return false;
 };
 
 export const normalizeAccept = (accept: string | string[] | undefined): Record<string, string[]> | undefined => {

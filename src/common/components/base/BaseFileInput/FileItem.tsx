@@ -78,6 +78,7 @@ export const FileItem: React.FC<FileItemProps> = ({
       {(file.url || file.file.type.startsWith("image/")) && (
         <Box
           component="img"
+          // ✅ แก้ไข: ใช้ URL จาก backend ถ้ามี
           src={file.url || URL.createObjectURL(file.file)}
           alt={file.originName || file.file.name}
           sx={{
