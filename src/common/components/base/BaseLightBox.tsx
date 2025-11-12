@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import { IconArrowLeft, IconArrowRight, IconMaximize, IconZoomIn, IconZoomInArea, IconZoomOut,  } from "@tabler/icons-react";
 import BaseDialog from "./BaseDialog";
 import type { SxProps, Theme } from "@mui/material/styles";
 
@@ -37,12 +37,21 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
   sx,
 }) => {
   const [internalIndex, setInternalIndex] = useState(0);
+  const [zoom, setZoom] = useState(1); // ✅ เพิ่ม zoom state
+  const [panX, setPanX] = useState(0); // ✅ pan position
+  const [panY, setPanY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false); // ✅ drag state
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
   const hasExternalIndex = typeof currentIndex === "number";
   const index = hasExternalIndex ? (currentIndex as number) : internalIndex;
 
   useEffect(() => {
     if (!hasExternalIndex && open) setInternalIndex(0);
-  }, [open, hasExternalIndex]);
+    setZoom(1); // ✅ reset zoom เมื่อ open
+    setPanX(0);
+    setPanY(0);
+  }, [open, hasExternalIndex, index]);
 
   const count = items.length;
   const canNavigate = count > 1;
@@ -63,16 +72,58 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
     else setInternalIndex(next);
   };
 
+  // ✅ Zoom handlers
+  const handleZoomIn = () => {
+    setZoom(prev => Math.min(prev + 0.25, 3));
+  };
+
+  const handleZoomOut = () => {
+    setZoom(prev => Math.max(prev - 0.25, 1));
+  };
+
+  const handleResetZoom = () => {
+    setZoom(1);
+    setPanX(0);
+    setPanY(0);
+  };
+
+  // ✅ Drag handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoom <= 1) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - panX, y: e.clientY - panY });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || zoom <= 1) return;
+    setPanX(e.clientX - dragStart.x);
+    setPanY(e.clientY - dragStart.y);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // ✅ Wheel zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    setZoom(prev => Math.max(1, Math.min(prev + delta, 3)));
+  };
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") goPrev();
       else if (e.key === "ArrowRight") goNext();
       else if (e.key === "Escape") onClose();
+      else if (e.key === "+") handleZoomIn();
+      else if (e.key === "-") handleZoomOut();
+      else if (e.key === "0") handleResetZoom();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, index, count]);
+  }, [open, index, count, zoom]);
 
   const current = items[index];
 
@@ -94,7 +145,13 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
           height: "100%",
           backgroundColor: "black",
           overflow: "hidden",
+          cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "default",
         }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onWheel={handleWheel}
       >
         {canNavigate && (
           <IconButton
@@ -115,6 +172,54 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
           </IconButton>
         )}
 
+        {/* ✅ Zoom controls */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            display: "flex",
+            gap: 1,
+            zIndex: 2,
+          }}
+        >
+          <IconButton
+            onClick={handleZoomIn}
+            sx={{
+              color: "white",
+              backgroundColor: "rgba(0,0,0,0.35)",
+              "&:hover": { backgroundColor: "rgba(0,0,0,0.5)" },
+            }}
+            size="small"
+          >
+            <IconZoomIn size={18} />
+          </IconButton>
+          <IconButton
+            onClick={handleZoomOut}
+            sx={{
+              color: "white",
+              backgroundColor: "rgba(0,0,0,0.35)",
+              "&:hover": { backgroundColor: "rgba(0,0,0,0.5)" },
+            }}
+            size="small"
+            disabled={zoom <= 1}
+          >
+            <IconZoomOut size={18} />
+          </IconButton>
+          <IconButton
+            onClick={handleResetZoom}
+            sx={{
+              color: "white",
+              backgroundColor: "rgba(0,0,0,0.35)",
+              "&:hover": { backgroundColor: "rgba(0,0,0,0.5)" },
+            }}
+            size="small"
+            disabled={zoom === 1}
+          >
+            <IconMaximize size={18} />
+          </IconButton>
+        </Box>
+
         <Box
           component="img"
           src={current.src}
@@ -127,6 +232,10 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
             objectFit: "contain",
             display: "block",
             zIndex: 1,
+            transform: `scale(${zoom}) translate(${panX}px, ${panY}px)`,
+            transition: isDragging ? "none" : "transform 0.2s ease-out",
+            userSelect: "none",
+            pointerEvents: "auto",
           }}
         />
 
@@ -166,12 +275,13 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
             <Typography variant="body2" sx={{ color: "white" }}>
               {captionWithoutCounter}
               {shouldShowCounter && ` (${index + 1}/${count})`}
+              {zoom > 1 && ` - Zoom: ${Math.round(zoom * 100)}%`}
             </Typography>
           </Box>
         )}
       </Box>
     );
-  }, [current, count, index, showCounter, canNavigate, goNext, goPrev]);
+  }, [current, count, index, showCounter, canNavigate, zoom, panX, panY, isDragging]);
 
   return (
     <BaseDialog
