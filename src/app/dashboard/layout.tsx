@@ -15,8 +15,8 @@ import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog
 import SessionGuard from "@/common/guards/sessionGuard";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsSubMenu from "@/common/utils/state/isSubMenu";
-import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
-import dashboardSidebarItem from "@/common/components/base/sidebar/item/dashboardSidebarItem";
+import BaseSidebar from "@/common/components/base/BaseSidebar/BaseSidebar";
+import dashboardSidebarItem from "@/common/components/base/BaseSidebar/item/dashboardSidebarItem";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",

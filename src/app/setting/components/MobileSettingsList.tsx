@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useTheme } from "@mui/material/styles";
 import React, { Fragment, useState } from "react";
 import BaseAvatar from "@/common/components/base/BaseAvatar"; 
-import { settingSidebarItem } from "@/common/components/base/sidebar/item/settingSidebarItem";
+import { settingSidebarItem } from "@/common/components/base/BaseSidebar/item/settingSidebarItem";
 
 const MobileSettingsList = () => {
   const theme = useTheme();

@@ -9,7 +9,7 @@ import {
   IconCircle,
 } from "@tabler/icons-react";
 import { getTablerIcon } from "@/common/utils/icon/getTablerIcon";
-import { NavGroupType } from "@/common/components/base/sidebar/interface/sidebar";
+import { NavGroupType } from "@/common/components/base/BaseSidebar/interface/sidebar";
 
 const Menuitems: NavGroupType[] = [
   {

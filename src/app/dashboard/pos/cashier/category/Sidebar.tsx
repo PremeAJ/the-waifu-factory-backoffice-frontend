@@ -1,7 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
-import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
+import BaseSidebar from "@/common/components/base/BaseSidebar/BaseSidebar";
 import { buildMenuItems } from "./MenuItems";
 
 const Sidebar = () => {

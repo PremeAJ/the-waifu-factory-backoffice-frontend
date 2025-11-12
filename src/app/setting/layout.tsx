@@ -2,13 +2,13 @@
 import { styled, useTheme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
-import BaseSidebar from "@/common/components/base/sidebar/BaseSidebar";
+import BaseSidebar from "@/common/components/base/BaseSidebar/BaseSidebar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import React from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
-import { settingSidebarItem } from "@/common/components/base/sidebar/item/settingSidebarItem";
+import { settingSidebarItem } from "@/common/components/base/BaseSidebar/item/settingSidebarItem";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
