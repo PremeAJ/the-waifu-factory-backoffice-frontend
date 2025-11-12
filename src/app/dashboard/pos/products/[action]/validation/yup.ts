@@ -15,8 +15,30 @@ export const validationSchema = Yup.object({
 
   categoryId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
   branchId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
-  thumbnailImageId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
-  detailImageIds: Yup.array().of(Yup.string().uuid("รูปภาพต้องเป็น UUID")).nullable().notRequired(),
+  
+  // ✅ ลบ thumbnailImageId ออก (ย้ายไปอยู่ใน productOptions แล้ว)
+  
+  // ✅ detailImageIds รองรับทั้ง string และ object
+  detailImageIds: Yup.array().of(
+    Yup.mixed().test(
+      'is-valid-file',
+      'รูปภาพต้องเป็น UUID หรือ object ที่มี id',
+      (value) => {
+        if (!value) return true;
+        if (typeof value === 'string') {
+          // ตรวจสอบว่าเป็น UUID
+          return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+        }
+        if (typeof value === 'object' && value !== null) {
+          // ตรวจสอบว่ามี id และเป็น UUID
+          return 'id' in value && typeof value.id === 'string' && 
+                 /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value.id);
+        }
+        return false;
+      }
+    )
+  ).nullable().notRequired(),
+  
   tags: Yup.array().of(Yup.string()).nullable().notRequired(),
 
   isTaxInclusive: Yup.boolean().required("กรุณาระบุโหมดภาษี"),
@@ -43,6 +65,13 @@ export const validationSchema = Yup.object({
           .oneOf(["none", "percentage", "fixed"])
           .required("กรุณาเลือกประเภทส่วนลด"),
         discountRate: Yup.number().min(0, "ส่วนลดต้องไม่ติดลบ").typeError("กรุณากรอกส่วนลดเป็นตัวเลข").required("กรุณากรอกส่วนลด"),
+
+        // ✅ thumbnailImageId รองรับทั้ง string และไม่จำเป็นต้องมี
+        thumbnailImageId: Yup.string().uuid("รูปภาพต้องเป็น UUID").nullable().notRequired(),
+        
+        // ✅ ฟิลด์เหล่านี้ใช้แค่ใน form (ไม่ validate)
+        thumbnailImageUrl: Yup.string().notRequired(),
+        thumbnailOriginName: Yup.string().notRequired(),
 
         variantOption: Yup.mixed().when("$variant", {
           is: (variant: any) => variant && variant.nameTh,

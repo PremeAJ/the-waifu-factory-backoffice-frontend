@@ -7,7 +7,7 @@ import {
   GetFileUrlParams,
   FinalizeFilesParams,
   StorageBucket,
-  FileUrlResponse  // เพิ่ม import FileUrlResponse
+  FileUrlResponse
 } from './interfaces/upload';
 import { useDialog } from '../DialogContext';
 import { getFetcher, postFetcher, deleteFetcher } from "@/app/api/globalFetcher";
@@ -22,7 +22,6 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { showError } = useDialog();
   const endpoint = '/api/upload';
 
-  // เพิ่ม state สำหรับ cache
   const [urlCache, setUrlCache] = useState<Record<string, FileUrlResponse>>({});
 
   const uploadFile = async (file: File, onProgress?: (progress: number) => void): Promise<UploadDraftResult> => {
@@ -34,7 +33,6 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const formData = new FormData();
       formData.append('file', file);
 
-      // ใช้ axios โดยตรงเพราะต้องส่ง FormData และติดตาม progress
       const response = await axios.post(endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -48,8 +46,7 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         },
       });
 
-      // แก้จุดนี้: return เฉพาะข้อมูลที่อยู่ใน data.data
-      return response.data.data; // แทนที่จะเป็น response.data
+      return response.data.data;
 
     } catch (err: any) {
       setError(err);
@@ -60,7 +57,6 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  // ปรับปรุงฟังก์ชัน getFileUrl ให้ใช้ cache
   const getFileUrl = async (fileId: string, params?: GetFileUrlParams): Promise<FileUrlResponse> => {
     const map = await getBulkFileUrls([fileId], params);
     const data = map[fileId];
@@ -73,8 +69,7 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const finalizeFiles = async (params: FinalizeFilesParams): Promise<FileMetadata[]> => {
     try {
       const response = await postFetcher(`${endpoint}/finalize`, params);
-      // แก้จุดนี้: ตรวจสอบโครงสร้างของ response
-    return response.data?.finalized || response.finalized || [];
+      return response.data?.finalized || response.finalized || [];
     } catch (err: any) {
       showError({ message: err.message || 'Failed to finalize files', title: 'Error' });
       throw err;
@@ -99,7 +94,6 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         const result = await uploadFile(file);
         results.push(result);
       } catch (error) {
-        // ทำต่อแม้จะมีไฟล์ที่อัปโหลดไม่สำเร็จ
         console.error('Error uploading file:', file.name, error);
       }
     }
@@ -121,42 +115,54 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       throw new Error('Failed to finalize file');
     }
     
-    // เพิ่ม originName จาก uploadResult
     return {
       ...finalizeResult[0],
       originName: uploadResult.originName
     };
   };
 
-  // ปรับปรุงฟังก์ชัน getBulkFileUrls ให้ใช้ cache
-  const getBulkFileUrls = async (fileIds: string[], params?: GetFileUrlParams): Promise<Record<string, FileUrlResponse>> => {
+  const getBulkFileUrls = async (fileIds: (string | any)[], params?: GetFileUrlParams): Promise<Record<string, FileUrlResponse>> => {
     if (!fileIds.length) return {};
     
-    // แยกไฟล์ที่มีใน cache และไม่มีใน cache
-    const cachedResults: Record<string, FileUrlResponse> = {};
-    const idsToFetch: string[] = [];
+    // ✅ เช็คว่า fileIds เป็น object ที่มี url แล้วหรือไม่
+    const hasUrls = fileIds.some(item => typeof item === 'object' && item.url);
     
-    if (params?.public) {
-      fileIds.forEach(id => {
-        if (urlCache[id]) {
-          cachedResults[id] = urlCache[id];
-        } else {
-          idsToFetch.push(id);
+    if (hasUrls) {
+      const result: Record<string, FileUrlResponse> = {};
+      fileIds.forEach((item: any) => {
+        if (typeof item === 'object' && item.id) {
+          result[item.id] = item;
         }
       });
-      
-      // ถ้ามีข้อมูลใน cache ครบแล้ว ไม่ต้อง fetch ข้อมูลใหม่
-      if (idsToFetch.length === 0) {
-        return cachedResults;
+      return result;
+    }
+    
+    // ถ้าเป็น array ของ string (fileIds) ให้เรียก API
+    const stringIds = fileIds.filter(id => typeof id === 'string') as string[];
+    
+    if (!stringIds.length) return {};
+    
+    // ✅ แก้ไข: ใช้ urlCache แทน cachedResults
+    const cachedResults: Record<string, FileUrlResponse> = {};
+    const uncachedIds: string[] = [];
+    
+    // เช็ค cache ก่อน
+    stringIds.forEach(id => {
+      if (urlCache[id]) {
+        cachedResults[id] = urlCache[id];
+      } else {
+        uncachedIds.push(id);
       }
-    } else {
-      // กรณีไม่ใช่ public URL ต้อง fetch ใหม่ทั้งหมด
-      idsToFetch.push(...fileIds);
+    });
+    
+    // ถ้าทุก ID อยู่ใน cache แล้ว ไม่ต้องเรียก API
+    if (uncachedIds.length === 0) {
+      return cachedResults;
     }
     
     try {
       const response = await postFetcher(`${endpoint}/urls`, {
-        ids: idsToFetch,
+        ids: uncachedIds,
         public: params?.public,
         expires: params?.expires
       });
@@ -167,16 +173,11 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         response?.data?.files.forEach((file: any) => {
           if (file.id) {
             newResults[file.id] = file;
-            
-            // เก็บผลลัพธ์ลง cache ถ้าเป็นการเรียกแบบ public
-            if (params?.public) {
-              cachedResults[file.id] = file;
-            }
           }
         });
       }
       
-      // อัพเดต cache
+      // อัพเดต cache ถ้าเป็นการเรียกแบบ public
       if (params?.public && Object.keys(newResults).length > 0) {
         setUrlCache(prev => ({
           ...prev,
@@ -192,7 +193,6 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  // อย่าลืมเพิ่มเข้าไปใน value object ที่ส่งให้ context
   const value: UploadContextType = {
     isUploading,
     progress,
@@ -201,7 +201,7 @@ export const UploadProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     getFileUrl,
     finalizeFiles,
     deleteDraft,
-    getBulkFileUrls, // เพิ่มฟังก์ชันใหม่
+    getBulkFileUrls,
     uploadMultipleFiles,
     uploadAndFinalize,
   };

@@ -36,11 +36,10 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return `${endpoint}?${qp.toString()}`;
   }, [isMobile, page, perPage, filters]);
 
-  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher,swrOption);
+  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher, swrOption);
 
   const getMobileKey = (pageIndex: number, previousPageData: any) => {
     if (!isMobile) return null;
-    // stop if previous page returned empty data
     if (previousPageData && previousPageData.data && previousPageData.data.length === 0) return null;
     const qp = new URLSearchParams();
     qp.set("page", String(pageIndex + 1));
@@ -92,7 +91,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const getProductById = async (id: string):Promise<ProductType | null> => {
+  const getProductById = async (id: string): Promise<ProductType | null> => {
     try {
       const response = await getFetcher(`${endpoint}/${id}`);
       if (response.error) {
@@ -104,37 +103,52 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
+  // ✅ แปลง payload ก่อนส่ง API - ลบ thumbnailImageUrl และ thumbnailOriginName
+  const cleanPayloadForApi = (payload: CreateProductPayload | UpdateProductPayload) => {
+    return {
+      ...payload,
+      productOptions: payload.productOptions?.map((opt: any) => {
+        const { thumbnailImageUrl, thumbnailOriginName, ...rest } = opt;
+        return rest;
+      }),
+    };
+  };
+
   const createProduct = async (payload: CreateProductPayload) => {
     try {
       setActionLoading(true);
-      const response = await postFetcher(endpoint, payload);
+      const cleanedPayload = cleanPayloadForApi(payload);
+      console.log('Create payload:', cleanedPayload); // ✅ Debug log
+      const response = await postFetcher(endpoint, cleanedPayload);
       if (response.error) {
         showError({ message: response?.message });
       }
       await productsMutate();
       return response;
-    } catch (error:any) {
-        showError({ message: error?.message });
-       throw error;
+    } catch (error: any) {
+      showError({ message: error?.message });
+      throw error;
     } finally {
-       setActionLoading(false);
+      setActionLoading(false);
     }
   };
 
   const updateProduct = async (id: string, payload: UpdateProductPayload) => {
     try {
       setActionLoading(true);
-      const response = await putFetcher(`${endpoint}/${id}`, payload); 
-        if (response.error) {
+      const cleanedPayload = cleanPayloadForApi(payload);
+      console.log('Update payload:', cleanedPayload); // ✅ Debug log
+      const response = await putFetcher(`${endpoint}/${id}`, cleanedPayload);
+      if (response.error) {
         showError({ message: response?.message });
       }
-      await productsMutate(); 
+      await productsMutate();
       return response;
-    } catch (error:any) {
-        showError({ message: error?.message });
-       throw error;
+    } catch (error: any) {
+      showError({ message: error?.message });
+      throw error;
     } finally {
-       setActionLoading(false);
+      setActionLoading(false);
     }
   };
 
@@ -147,7 +161,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } catch (err) {
       throw err;
     } finally {
-     setActionLoading(false);
+      setActionLoading(false);
     }
   };
 
@@ -165,7 +179,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     isReachingEnd,
     loading,
     error,
-    actionLoading, 
+    actionLoading,
     getProductById,
     createProduct,
     updateProduct,

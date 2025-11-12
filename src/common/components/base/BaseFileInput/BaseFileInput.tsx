@@ -1,7 +1,7 @@
 "use client";
 import { normalizeAccept, isImageFile, formatDropzoneErrors, compressImageIfNeeded, CLIENT_MAX_BYTES } from './utils';
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
-import { UploadedFile, BaseFileInputProps } from './types';
+import { UploadedFile, BaseFileInputProps, FileValue } from './types';
 import { useDropzone } from "react-dropzone";
 import { useUpload } from "@/common/contexts/UploadContext";
 import BaseLabel from "../BaseLabel";
@@ -32,59 +32,66 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  const { uploadFile, getBulkFileUrls, finalizeFiles, deleteDraft, isUploading } = useUpload();
+  const { uploadFile, finalizeFiles, deleteDraft, isUploading } = useUpload();
   
   const imageFiles = files.filter(isImageFile);
   
-  // เช็คว่าเลือกไฟล์ครบแล้วหรือยัง
-  // ถ้าไม่ใช่ multiple และมีไฟล์แล้ว 1 ไฟล์ = ครบแล้ว
-  // หรือถ้ามี maxFiles และเลือกครบแล้ว = ครบแล้ว
   const isMaxFilesReached = !multiple 
     ? files.length >= 1 
     : maxFiles 
     ? files.length >= maxFiles 
     : false;
 
+  // ❌ ลบการเรียก getBulkFileUrls ออก - ใช้ value ที่ส่งมาโดยตรง
   useEffect(() => {
-    const fetchExistingFiles = async () => {
-      if (!value?.length) return;
-      
-      try {
-        const filesMap = await getBulkFileUrls(value, { public: true });
-        const existingFiles: UploadedFile[] = [];
-        
-        for (const fileId of value) {
-          try {
-            const fileInfo = filesMap[fileId];
-            
-            if (fileInfo) {
-              const fileName = fileInfo.originName || fileInfo.storagePath?.split("/").pop() || fileId;
-              const dummyFile = new File([""], fileName, { 
-                type: fileInfo.url?.match(/\.(jpeg|jpg|png|gif|webp)$/i) ? "image/jpeg" : "application/octet-stream" 
-              });
-              
-              existingFiles.push({
-                file: dummyFile,
-                id: fileId,
-                url: fileInfo.url,
-                originName: fileInfo.originName,
-                uploading: false,
-                progress: 100
-              });
-            } 
-          } catch (err) {
-            console.error(`Error processing file ${fileId}:`, err);
-          }
-        }
-        
-        setFiles(existingFiles);
-      } catch (err) {
-        console.error("Error loading existing files:", err);
+    if (!value?.length) {
+      setFiles([]);
+      return;
+    }
+    
+    console.log('BaseFileInput value:', value); // ✅ Debug log
+    
+    // ถ้า value เป็น array ของ string (fileIds) ให้แปลงเป็น UploadedFile
+    const existingFiles: UploadedFile[] = value.map((item: any) => {
+      // ถ้าเป็น string (fileId) ให้สร้าง dummy file
+      if (typeof item === 'string') {
+        const dummyFile = new File([""], item, { type: "image/jpeg" });
+        return {
+          file: dummyFile,
+          id: item,
+          url: undefined, // ✅ ไม่มี URL ให้ undefined
+          uploading: false,
+          progress: 100
+        };
       }
-    };
-
-    fetchExistingFiles();
-  }, [value, getBulkFileUrls]);
+      
+      // ถ้าเป็น object ที่มี id และ url แล้ว (จาก backend)
+      const fileName = item.originName || item.id || "file";
+      const fileType = item.url?.match(/\.(jpeg|jpg|png|gif|webp)$/i) 
+        ? "image/jpeg" 
+        : "application/octet-stream";
+      
+      const dummyFile = new File([""], fileName, { type: fileType });
+      
+      console.log('Mapping file item:', { // ✅ Debug log
+        id: item.id,
+        url: item.url,
+        originName: item.originName
+      });
+      
+      return {
+        file: dummyFile,
+        id: item.id,
+        url: item.url || undefined, // ✅ ต้องมี url ถ้าเป็น object
+        originName: item.originName || fileName,
+        uploading: false,
+        progress: 100
+      };
+    });
+    
+    console.log('Existing files:', existingFiles); // ✅ Debug log
+    setFiles(existingFiles);
+  }, [value]);
 
   const handleUploadFile = async (file: File): Promise<UploadedFile> => {
     try {
@@ -101,28 +108,24 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
           fileIds: [result.id],
           toBucket
         });
+        
         if (finalizeResult && finalizeResult.length > 0) {
-          const map = await getBulkFileUrls([finalizeResult[0].id], { public: true });
-          const urlResponse = map[finalizeResult[0].id];
           return {
             file,
             id: finalizeResult[0].id,
-            url: urlResponse?.url || "",
-            originName: urlResponse?.originName || file.name,
+            url: finalizeResult[0].url || undefined, // ✅ แก้ไข: เปลี่ยน null เป็น undefined
+            originName: finalizeResult[0].originName || file.name,
             uploading: false,
             progress: 100,
           };
         }
       }
 
-      const map = await getBulkFileUrls([result.id], { public: true });
-      const urlResponse = map[result.id];
-
       return {
         file,
         id: result.id,
-        url: urlResponse?.url || "",
-        originName: urlResponse?.originName || result.originName || file.name,
+        url: result.url || undefined, // ✅ แก้ไข: เปลี่ยน null เป็น undefined
+        originName: result.originName || file.name,
         uploading: false,
         progress: 100,
       };
@@ -166,7 +169,6 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
         });
       }
 
-      // ถ้าไม่ใช่ multiple ให้เก็บได้แค่ 1 ไฟล์
       const effectiveMaxFiles = !multiple ? 1 : maxFiles;
       
       const totalFiles = files.length + validFiles.length;
@@ -203,20 +205,25 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
           uploadedFiles.push(uploadedFile);
         }
 
-        let finalIds: string[] = [];
         setFiles(prev => {
           const filtered = prev.filter(p => !uploadedFiles.some(u => u.file === p.file));
-          const merged = [...filtered, ...uploadedFiles];
-          finalIds = merged.filter(f => f.id && !f.error).map(f => f.id as string);
-          return merged;
+          return [...filtered, ...uploadedFiles];
         });
 
         if (onUploadComplete) {
-          onUploadComplete(finalIds);
+          // ✅ ส่ง FileValue[] แทน string[]
+          const fileValues: FileValue[] = uploadedFiles
+            .filter(f => f.id && !f.error)
+            .map(f => ({
+              id: f.id,
+              url: f.url,
+              originName: f.originName
+            }));
+          onUploadComplete(fileValues);
         }
       }
     },
-    [maxSize, maxFiles, files, autoUpload, onChange, onUploadComplete, multiple, handleUploadFile]
+    [maxSize, maxFiles, files, autoUpload, onChange, onUploadComplete, multiple]
   );
 
   const normalizedAccept = normalizeAccept(accept);
@@ -224,7 +231,7 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     onDrop,
     multiple,
     accept: normalizedAccept,
-    disabled: isMaxFilesReached, // ปิดการเลือกไฟล์เพิ่มเมื่อครบแล้ว
+    disabled: isMaxFilesReached,
   });
 
   const handleRemoveFile = async (index: number) => {
@@ -257,7 +264,15 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
       }
       
       if (onUploadComplete) {
-        onUploadComplete(newFiles.filter(f => f.id).map(f => f.id));
+        // ✅ ส่ง FileValue[] แทน string[]
+        const fileValues: FileValue[] = newFiles
+          .filter(f => f.id)
+          .map(f => ({
+            id: f.id,
+            url: f.url,
+            originName: f.originName
+          }));
+        onUploadComplete(fileValues);
       }
       
       const newImageFiles = newFiles.filter(isImageFile);
@@ -301,7 +316,26 @@ const BaseFileInput: React.FC<BaseFileInputProps> = ({
     });
     
     if (onUploadComplete) {
-      onUploadComplete(finalIds);
+      // ✅ ส่ง FileValue[] แทน string[]
+      const fileValues: FileValue[] = [];
+      setFiles(prev => {
+        const filtered = prev.filter(p => !uploadedFiles.some(u => u.file === p.file));
+        const merged = [...filtered, ...uploadedFiles];
+        
+        merged
+          .filter(f => f.id && !f.error)
+          .forEach(f => {
+            fileValues.push({
+              id: f.id,
+              url: f.url,
+              originName: f.originName
+            });
+          });
+        
+        return merged;
+      });
+      
+      onUploadComplete(fileValues);
     }
   };
 

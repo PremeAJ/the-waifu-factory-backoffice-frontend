@@ -24,7 +24,9 @@ const emptyOption = (withVariant: boolean = true) => {
     inventory: { status: "active", stock: 0 },
     discountType: "none",
     discountRate: 0,
-    thumbnailImageId: undefined, // ✅ เพิ่มที่นี่
+    thumbnailImageId: undefined,
+    thumbnailImageUrl: undefined, // ✅ เพิ่ม
+    thumbnailOriginName: undefined, // ✅ เพิ่ม
   };
 
   if (withVariant) {
@@ -85,11 +87,11 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
       formik.setFieldValue("variant", undefined);
       formik.setFieldValue("productOptions", [singleOption]);
     } else {
-      const variant = formik.values.variant ?? { nameTh: "", nameEn: "" };
+      const variant = formik.values.variant ?? { nameTh: null, nameEn: null };
       const hasAnyOption = currentOptions.length > 0;
       const newOptions = (hasAnyOption ? currentOptions : [emptyOption()]).map((opt: any) => ({
         ...opt,
-        variantOption: opt.variantOption ?? { nameTh: "", nameEn: "" },
+        variantOption: opt.variantOption ?? { nameTh: null, nameEn: null },
         inventory: opt.inventory ?? { status: "active", stock: 0 },
       }));
       formik.setFieldValue("variant", variant);

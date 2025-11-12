@@ -4,11 +4,17 @@ export interface UploadedFile {
   file: File;
   id: string;
   url?: string;
+  originName?: string;
   uploading: boolean;
   progress: number;
   error?: string;
-  originName?: string;
   deleting?: boolean;
+}
+
+export interface FileValue {
+  id: string;
+  url?: string;
+  originName?: string;
 }
 
 export interface BaseFileInputProps {
@@ -16,13 +22,13 @@ export interface BaseFileInputProps {
   required?: boolean;
   placeholder?: string;
   multiple?: boolean;
-  accept?: string | string[];
+  accept?: string[];
   maxSize?: number;
   maxFiles?: number;
   autoUpload?: boolean;
   toBucket?: StorageBucket;
   finalize?: boolean;
   onChange?: (files: File[]) => void;
-  onUploadComplete?: (fileIds: string[]) => void;
-  value?: string[];
+  onUploadComplete?: (files: FileValue[]) => void; // ✅ เปลี่ยนจาก string[] เป็น FileValue[]
+  value?: (string | FileValue)[];
 }

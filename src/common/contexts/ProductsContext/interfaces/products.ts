@@ -104,6 +104,8 @@ export interface CreateProductOptionPayload {
   variantOption?: VariantOptionType;
   inventory: { status: ApiInventoryStatus; stock: number; branchId?: string };
   thumbnailImageId?: string;
+  thumbnailImageUrl?: string; 
+  thumbnailOriginName?: string;
 }
 
 export interface CreateProductPayload {

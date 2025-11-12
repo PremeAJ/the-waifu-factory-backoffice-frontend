@@ -47,6 +47,8 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
           discountType: "none",
           discountRate: 0,
           thumbnailImageId: undefined,
+          thumbnailImageUrl: undefined, // ✅ เพิ่ม
+          thumbnailOriginName: undefined, // ✅ เพิ่ม
           variantOption: undefined,
           inventory: { status: "active", stock: 0 },
         },
@@ -65,6 +67,8 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     discountType: opt.discountType ?? "none",
     discountRate: Number(opt.discountRate ?? 0),
     thumbnailImageId: opt.productFiles?.id ?? undefined,
+    thumbnailImageUrl: opt.productFiles?.url ?? undefined, // ✅ เพิ่ม url
+    thumbnailOriginName: opt.productFiles?.originName ?? undefined, // ✅ เพิ่ม originName
     variantOption: opt.variantOption ?? undefined,
     inventory: opt.inventory ?? { status: "active", stock: 0 },
   })) as CreateProductOptionPayload[];
@@ -96,6 +100,8 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
             discountType: "none",
             discountRate: 0,
             thumbnailImageId: undefined,
+            thumbnailImageUrl: undefined, // ✅ เพิ่ม
+            thumbnailOriginName: undefined, // ✅ เพิ่ม
             variantOption: undefined,
             inventory: { status: "active", stock: 0 },
           },
@@ -140,6 +146,33 @@ const ProductForm: React.FC = () => {
       const isEdit = Boolean(id);
       const productId = id;
 
+      // ✅ แปลง detailImageIds เป็น string[]
+      const detailImageIds = (values.detailImageIds || []).map((item: any) => {
+        if (typeof item === 'string') return item;
+        return item.id;
+      }).filter(Boolean) as string[];
+
+      // ✅ แปลง productOptions - ลบ url และ originName
+      const productOptions = (values.productOptions || []).map((opt, idx) => {
+        const { thumbnailImageUrl, thumbnailOriginName, ...rest } = opt;
+        return {
+          id: product?.productOptions?.[idx]?.id,
+          upc: rest.upc || undefined,
+          sku: rest.sku || undefined,
+          basePrice: Number(rest.basePrice ?? 0),
+          finalPrice: Number(rest.finalPrice ?? 0),
+          pricePerUnit: Number(rest.pricePerUnit ?? 1),
+          discountType: rest.discountType,
+          discountRate: Number(rest.discountRate ?? 0),
+          thumbnailImageId: rest.thumbnailImageId || undefined,
+          variantOption: rest.variantOption,
+          inventory: {
+            status: rest.inventory.status,
+            stock: Number(rest.inventory.stock ?? 0),
+          },
+        };
+      }) as CreateProductOptionPayload[];
+
       const payload: CreateProductPayload = {
         nameTh: values.nameTh,
         nameEn: values.nameEn || undefined,
@@ -149,30 +182,16 @@ const ProductForm: React.FC = () => {
         unit: values.unit,
         categoryId: values.categoryId || undefined,
         branchId: values.branchId || branchIdFromSession,
-        // thumbnailImageId: values.thumbnailImageId || undefined, // ❌ ลบออก
-        detailImageIds: values.detailImageIds?.length ? values.detailImageIds : undefined,
+        detailImageIds: detailImageIds.length ? detailImageIds : undefined,
         tags: values.tags?.length ? values.tags : undefined,
         isTaxInclusive: values.isTaxInclusive,
         taxClassId: values.taxClassId,
         taxRate: Number(values.taxRate ?? 0),
         variant: values.variant,
-        productOptions: (values.productOptions || []).map((opt, idx) => ({
-          id: product?.productOptions?.[idx]?.id,
-          upc: opt.upc || undefined,
-          sku: opt.sku || undefined,
-          basePrice: Number(opt.basePrice ?? 0),
-          finalPrice: Number(opt.finalPrice ?? 0),
-          pricePerUnit: Number(opt.pricePerUnit ?? 1),
-          discountType: opt.discountType,
-          discountRate: Number(opt.discountRate ?? 0),
-          thumbnailImageId: opt.thumbnailImageId || undefined, // ✅ ส่งไปกับแต่ละ option
-          variantOption: opt.variantOption,
-          inventory: {
-            status: opt.inventory.status,
-            stock: Number(opt.inventory.stock ?? 0),
-          },
-        })) as CreateProductOptionPayload[],
+        productOptions,
       };
+
+      console.log('Payload to send:', payload); // ✅ Debug log
 
       if (isEdit && productId) {
         const response = await updateProduct(productId, payload);
@@ -211,8 +230,8 @@ const ProductForm: React.FC = () => {
                 maxFiles={3}
                 autoUpload={true}
                 toBucket={StorageBucket.PRODUCT_DETAIL}
-                onUploadComplete={(fileIds) => {
-                  formik.setFieldValue("detailImageIds", fileIds);
+                onUploadComplete={(files) => { // ✅ รับ FileValue[]
+                  formik.setFieldValue("detailImageIds", files);
                 }}
                 value={formik.values.detailImageIds}
               />
