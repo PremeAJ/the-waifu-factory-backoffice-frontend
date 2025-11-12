@@ -92,7 +92,8 @@ function ProductsList() {
     () => [
       {
         type: "view",
-        hide: (item: any) => !item.subItems,
+        // ✅ แก้ไข: แสดงปุ่ม view สำหรับทั้ง parent และ sub-items
+        hide: () => false,
         onClick: (item: any) => setPreviewState({ open: true, item }),
       },
       {
@@ -117,11 +118,28 @@ function ProductsList() {
     setPage(1);
   };
 
-  const handleClosePreview = () => setPreviewState({ open: false, item: null });
+  // ✅ เพิ่ม: ฟังก์ชันจัดการการเปิด dialog ของ variant
+  const handlePreviewVariant = (variant: any) => {
+    // แปลง variant เป็น item ที่ดูเหมือน product object
+    const variantItem = {
+      ...variant,
+      id: variant.id,
+      nameTh: variant.variantOption?.nameTh ?? variant.sku ?? "-",
+      parentNameTh: previewState.item?.nameTh,
+      unit: previewState.item?.unit,
+      subItems: [], // variant ไม่มี sub-items
+      productFiles: variant.productFiles, // ใช้ thumbnail ของ variant
+      sku: variant.sku,
+      upc: variant.upc,
+    };
+    setPreviewState({ open: true, item: variantItem });
+  };
 
   const handleApplyFilter = (newFilters: any) => {
     setFilters(newFilters);
   };
+
+  const handleClosePreview = () => setPreviewState({ open: false, item: null });
 
   return (
     <Box>
@@ -188,7 +206,13 @@ function ProductsList() {
         open={deleteDialogState.open}
         title="Confirm Delete"
       />
-      <ProductPreviewDialog open={previewState.open} onClose={handleClosePreview} item={previewState.item} />
+      {/* ✅ แก้ไข: ส่ง onPreviewVariant callback ให้ ProductPreviewDialog */}
+      <ProductPreviewDialog
+        open={previewState.open}
+        onClose={handleClosePreview}
+        item={previewState.item}
+        onPreviewVariant={handlePreviewVariant}
+      />
     </Box>
   );
 }

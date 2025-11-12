@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Stack, Typography, Divider, List, ListItem, ListItemText, Grid } from "@mui/material";
+import { Box, Stack, Typography, Divider, Grid } from "@mui/material";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseChip from "@/common/components/base/BaseChip";
 import formatNumber from "@/common/utils/formatNumber";
@@ -11,6 +11,7 @@ interface ProductPreviewDialogProps {
   open: boolean;
   onClose: () => void;
   item?: any | null;
+  onPreviewVariant?: (variant: any) => void;
 }
 
 const formatCurrency = (val: number | string) => {
@@ -19,22 +20,42 @@ const formatCurrency = (val: number | string) => {
   return `${formatNumber(n, 0)} ฿`;
 };
 
-const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClose, item = null }) => {
+const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClose, item = null, onPreviewVariant }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   if (!item) return null;
 
-  // เลือกภาพบนเป็น product_thumbnail และภาพด้านล่างเป็น product_detail เท่านั้น
-  const uploadedFiles = (item.productFiles ?? [])
-    .map((f: any) => f?.uploadedFile)
-    .filter((u: any) => u && typeof u.url === "string");
+  // ✅ แก้ไข: ตรวจสอบว่า item เป็น sub-item หรือไม่
+  const isSubItem = !item.subItems || item.subItems.length === 0;
 
-  const thumbnailUrl: string | undefined = uploadedFiles.find((u: any) => u.bucket === "product_thumbnail")?.url;
-  const detailUrls: string[] = uploadedFiles
-    .filter((u: any) => u.bucket === "product_detail")
-    .map((u: any) => u.url)
-    .filter(Boolean);
+  // ✅ แก้ไข: รวมภาพทั้งหมด - product detail + variant thumbnails
+  const allImages: string[] = (() => {
+    if (isSubItem) {
+      return item.productFiles?.url ? [item.productFiles.url] : [];
+    }
+    
+    const images: string[] = [];
+    
+    const productFiles = (item.productFiles ?? [])
+      .map((f: any) => f?.uploadedFile)
+      .filter((u: any) => u && typeof u.url === "string");
+    
+    const detailUrls = productFiles
+      .filter((u: any) => u.bucket === "product_detail")
+      .map((u: any) => u.url);
+    
+    images.push(...detailUrls);
+    
+    const variants = item.subItems ?? item.productOptions ?? [];
+    const variantThumbnails = variants
+      .map((v: any) => v.productFiles?.url)
+      .filter((url: any) => url && typeof url === "string");
+    
+    images.push(...variantThumbnails);
+    
+    return images.filter(Boolean);
+  })();
 
   const openLightbox = (index = 0) => {
     setLightboxIndex(index);
@@ -42,7 +63,11 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
   };
   const closeLightbox = () => setLightboxOpen(false);
 
+  // ✅ แก้ไข: แสดง SKU ของ sub-item หรือ aggregate
   const skuAggregate = (() => {
+    if (isSubItem) {
+      return item.sku ?? item.upc ?? "-";
+    }
     const variants = item.subItems ?? item.productOptions ?? [];
     if (!Array.isArray(variants) || variants.length === 0) return item.sku ?? item.upc ?? "-";
     const values = variants.map((v: any) => v.sku ?? v.upc).filter(Boolean);
@@ -52,32 +77,45 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
     return uniq.join(", ");
   })();
 
-  const priceDisplay =
-    item.displayPrice && item.displayPrice !== "-"
-      ? item.displayPrice
-      : typeof item.basePrice === "number"
-      ? `${formatCurrency(item.basePrice)}`
-      : "-";
+  const priceDisplay = isSubItem
+    ? (typeof item.basePrice === "number" ? formatCurrency(item.basePrice) : "-")
+    : (item.displayPrice && item.displayPrice !== "-"
+        ? item.displayPrice
+        : typeof item.basePrice === "number"
+        ? formatCurrency(item.basePrice)
+        : "-");
 
-  const stockDisplay =
-    typeof item.totalStock === "number"
-      ? `${formatNumber(item.totalStock)} ${item.unit ?? ""}`
-      : item.inventory?.stock !== undefined
-      ? `${formatNumber(item.inventory.stock)} ${item.unit ?? ""}`
-      : "-";
+  const stockDisplay = isSubItem
+    ? (item.inventory?.stock !== undefined
+        ? `${formatNumber(item.inventory.stock)} ${item.unit ?? ""}`
+        : "-")
+    : (typeof item.totalStock === "number"
+        ? `${formatNumber(item.totalStock)} ${item.unit ?? ""}`
+        : item.inventory?.stock !== undefined
+        ? `${formatNumber(item.inventory.stock)} ${item.unit ?? ""}`
+        : "-");
 
   const status = item.status ?? item.inventory?.status ?? "-";
+
+  // ✅ เพิ่ม: ฟังก์ชันเมื่อกด card variant
+  const handleVariantClick = (variant: any) => {
+    onClose(); // ปิด dialog ปัจจุบัน
+    if (onPreviewVariant) {
+      onPreviewVariant(variant); // เปิด dialog ของ variant
+    }
+  };
 
   const dialogContent = (
     <Box sx={{ p: 2 }}>
       <Stack spacing={1}>
         <Box>
-          {thumbnailUrl || detailUrls.length > 0 ? (
+          {allImages.length > 0 ? (
             <>
+              {/* ✅ ภาพหลัก - แสดงภาพแรก */}
               <Box
                 component="img"
-                src={thumbnailUrl || detailUrls[0]}
-                alt={`${item.nameTh ?? "product"}-cover`}
+                src={allImages[0]}
+                alt={`${item.nameTh ?? "product"}-main`}
                 onClick={() => openLightbox(0)}
                 sx={{
                   width: "100%",
@@ -85,28 +123,39 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
                   objectFit: "cover",
                   borderRadius: 1,
                   cursor: "pointer",
+                  border: (theme) => `1px solid ${theme.palette.divider}`,
                 }}
               />
-              <Grid container spacing={1} sx={{ mt: 1 }}>
-                {detailUrls.map((src, i) => (
-                  <Grid key={src + i}>
-                    <Box
-                      component="img"
-                      src={src}
-                      alt={`${item.nameTh ?? "product"}-detail-${i}`}
-                      onClick={() => openLightbox(thumbnailUrl ? i + 1 : i)}
-                      sx={{
-                        width: 64,
-                        height: 64,
-                        objectFit: "cover",
-                        borderRadius: 1,
-                        cursor: "pointer",
-                        border: (theme) => `1px solid ${theme.palette.divider}`,
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+              
+              {/* ✅ Gallery thumbnails - แสดงทุกภาพ (product detail + variant thumbnails) */}
+              {allImages.length > 1 && (
+                <Grid container spacing={1} sx={{ mt: 1 }}>
+                  {allImages.map((src, i) => (
+                    <Grid key={src + i}>
+                      <Box
+                        component="img"
+                        src={src}
+                        alt={`${item.nameTh ?? "product"}-${i}`}
+                        onClick={() => openLightbox(i)}
+                        sx={{
+                          width: 64,
+                          height: 64,
+                          objectFit: "cover",
+                          borderRadius: 1,
+                          cursor: "pointer",
+                          border: (theme) => `2px solid ${i === 0 ? theme.palette.primary.main : theme.palette.divider}`,
+                          opacity: i === 0 ? 1 : 0.7,
+                          transition: "all 0.2s",
+                          "&:hover": {
+                            opacity: 1,
+                            borderColor: "primary.main",
+                          }
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
             </>
           ) : (
             <Box
@@ -129,57 +178,108 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
 
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="subtitle2">SKU / UPC</Typography>
-          <Typography variant="body2">{skuAggregate}</Typography>
+          <Typography variant="body2" fontWeight={600}>{skuAggregate}</Typography>
         </Stack>
 
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="subtitle2">ชื่อ (TH)</Typography>
-          <Typography variant="body2">{item.nameTh ?? "-"}</Typography>
+          <Typography variant="body2" fontWeight={600}>{item.nameTh ?? "-"}</Typography>
         </Stack>
 
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="subtitle2">ราคา</Typography>
-          <Typography variant="body2">{priceDisplay}</Typography>
+          <Typography variant="body2" fontWeight={600}>{priceDisplay}</Typography>
         </Stack>
 
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="subtitle2">จำนวนสต็อก</Typography>
-          <Typography variant="body2">{stockDisplay}</Typography>
+          <Typography variant="body2" fontWeight={600}>{stockDisplay}</Typography>
         </Stack>
 
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography variant="subtitle2">สถานะ</Typography>
-          <Box>{status !== "-" ? <BaseChip preset={status} /> : <Typography variant="body2">-</Typography>}</Box>
+          <Box>{status !== "-" ? <BaseChip preset={status} /> : <Typography variant="body2" fontWeight={600}>-</Typography>}</Box>
         </Stack>
 
-        <Divider sx={{ my: 1 }} />
+        {/* ✅ แก้ไข: ซ่อน Variants section ถ้าเป็น sub-item */}
+        {!isSubItem && (
+          <>
+            <Divider sx={{ my: 1 }} />
 
-        <Typography variant="subtitle2">Variants</Typography>
-        <List dense disablePadding>
-          {(item.subItems ?? item.productOptions ?? []).map((v: any) => (
-            <ListItem key={v.id ?? JSON.stringify(v)} sx={{ py: 0.5 }}>
-              <ListItemText
-                primary={v.variantOption?.nameTh ?? v.sku ?? v.upc ?? "-"}
-                secondary={`Price: ${
-                  typeof v.basePrice === "number" ? formatCurrency(v.basePrice) : v.finalPrice ? formatCurrency(v.finalPrice) : "-"
-                } • Stock: ${v.inventory?.stock ?? "-"}`}
-              />
-            </ListItem>
-          ))}
-          {(item.subItems ?? item.productOptions ?? []).length === 0 && (
-            <ListItem>
-              <ListItemText primary="No variants" />
-            </ListItem>
-          )}
-        </List>
+            <Typography variant="subtitle2" fontWeight={600}>Variants</Typography>
+            <Grid container spacing={1}>
+              {(item.subItems ?? item.productOptions ?? []).map((v: any) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={v.id ?? JSON.stringify(v)}>
+                  <Box
+                    onClick={() => handleVariantClick(v)}
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: 1,
+                      p: 1,
+                      mb: 1,
+                      bgcolor: "background.paper",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        borderColor: "primary.main",
+                        boxShadow: 2,
+                        transform: "translateY(-2px)",
+                      }
+                    }}
+                  >
+                    <Stack spacing={0.5}>
+                      <Typography variant="body2" fontWeight={600} color="primary">
+                        {v.variantOption?.nameTh ?? v.sku ?? v.upc ?? "-"}
+                      </Typography>
+                      <Stack direction="row" spacing={1}>
+                        <Typography variant="body2" color="text.secondary">ราคา:</Typography>
+                        <Typography variant="body2" fontWeight={600}>
+                          {typeof v.basePrice === "number"
+                            ? formatCurrency(v.basePrice)
+                            : v.finalPrice
+                            ? formatCurrency(v.finalPrice)
+                            : "-"}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1}>
+                        <Typography variant="body2" color="text.secondary">สต็อก:</Typography>
+                        <Typography variant="body2" fontWeight={600}>
+                          {v.inventory?.stock ?? "-"} {item.unit ?? ""}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1}>
+                        <Typography variant="body2" color="text.secondary">SKU:</Typography>
+                        <Typography variant="body2" fontWeight={600}>
+                          {v.sku ?? v.upc ?? "-"}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1}>
+                        <Typography variant="body2" color="text.secondary">สถานะ:</Typography>
+                        <Box>
+                          {v.inventory?.status ? <BaseChip preset={v.inventory.status} /> : <Typography variant="body2" fontWeight={600}>-</Typography>}
+                        </Box>
+                      </Stack>
+                    </Stack>
+                  </Box>
+                </Grid>
+              ))}
+              {(item.subItems ?? item.productOptions ?? []).length === 0 && (
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="body2">No variants</Typography>
+                </Grid>
+              )}
+            </Grid>
+          </>
+        )}
       </Stack>
     </Box>
   );
 
-  const lightboxItems: LightboxItem[] = ([...(thumbnailUrl ? [thumbnailUrl] : []), ...detailUrls]).map((src, i) => ({
+  const lightboxItems: LightboxItem[] = allImages.map((src, i) => ({
     src,
     alt: `${item.nameTh ?? "product"}-${i}`,
-    caption: item.nameTh ?? "-",
+    caption: `${item.nameTh ?? "-"} (${i + 1}/${allImages.length})`,
   }));
 
   return (
