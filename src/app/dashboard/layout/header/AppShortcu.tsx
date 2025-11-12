@@ -1,4 +1,4 @@
-import { IconApps, IconGridDots } from "@tabler/icons-react";
+import { IconApps } from "@tabler/icons-react";
 import { IconButton } from "@mui/material";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 

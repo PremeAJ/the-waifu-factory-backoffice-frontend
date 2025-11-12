@@ -93,6 +93,7 @@ const Sidebar = ({ menuItems, open, onOpenChange }: SidebarProps) => {
               sx: {
                 width: SidebarWidth,
                 border: "0 !important",
+                borderRadius: "0 24px 24px 0",
                 boxShadow: (theme) => theme.shadows[8],
                 overflow: "auto",
                 "&::-webkit-scrollbar": {

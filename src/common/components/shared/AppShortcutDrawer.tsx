@@ -1,20 +1,14 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Divider,
-  Drawer,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Drawer, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
+import { useProfile } from "@/common/contexts";
 
 const AppShortcutDrawer = () => {
   const { appShortcutisOpen, closeAppShortcut } = useSidebarState();
+  const { isBorderRadius } = useProfile().appearance;
   const [searchApp, setSearchApp] = useState("");
   const isMobile = useIsMobile();
 
@@ -74,6 +68,8 @@ const AppShortcutDrawer = () => {
             width: isMobile ? "100%" : { xs: "100%", sm: "350px" },
             height: isMobile ? "60%" : "100%",
             maxWidth: "100%",
+            borderRadius: isMobile ? `24px 24px 0 0` : "24px 0 0 24px",
+            overflow: "hidden",
           },
         },
       }}
@@ -82,9 +78,9 @@ const AppShortcutDrawer = () => {
         <Typography variant="h5" fontWeight={600}>
           Apps
         </Typography>
-        <IconButton onClick={closeAppShortcut}>
+        {/* <IconButton onClick={closeAppShortcut}>
           <IconX size={18} />
-        </IconButton>
+        </IconButton> */}
       </Box>
       {appContent}
     </Drawer>

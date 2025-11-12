@@ -10,23 +10,30 @@ interface SidebarStateContextProps {
   setIsMobileSidebar: (v: boolean) => void;
   openSwitchCompany: boolean;
   setOpenSwitchCompany: (v: boolean) => void;
+
+  // Cashier categories sidebar
+  isCashierCategoriesSidebar: boolean;
+  setIsCashierCategoriesSidebar: (v: boolean) => void;
 }
 
 const SidebarStateContext = createContext<SidebarStateContextProps>({
   isMobileSidebar: false,
   appShortcutisOpen: false,
   openSwitchCompany: false,
+  isCashierCategoriesSidebar: false,
   openAppShortcut: () => {},
   closeAppShortcut: () => {},
   toggleAppShortcut: () => {},
   setIsMobileSidebar: () => {},
   setOpenSwitchCompany: () => {},
+  setIsCashierCategoriesSidebar: () => {},
 });
 
 export const SidebarStateProvider = ({ children }: { children: ReactNode }) => {
   const [appShortcutisOpen, setAppShortcutIsOpen] = useState<boolean>(false);
   const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
   const [openSwitchCompany, setOpenSwitchCompany] = useState<boolean>(false);
+  const [isCashierCategoriesSidebar, setIsCashierCategoriesSidebar] = useState<boolean>(false);
 
   const openAppShortcut = () => setAppShortcutIsOpen(true);
   const closeAppShortcut = () => setAppShortcutIsOpen(false);
@@ -43,6 +50,8 @@ export const SidebarStateProvider = ({ children }: { children: ReactNode }) => {
         setIsMobileSidebar,
         openSwitchCompany,
         setOpenSwitchCompany,
+        isCashierCategoriesSidebar,
+        setIsCashierCategoriesSidebar,
       }}
     >
       {children}

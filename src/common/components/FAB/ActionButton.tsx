@@ -1,63 +1,130 @@
 "use client";
 import { AppearanceSettings } from "@/common/contexts/ProfileContext/interfaces/interface";
-import { IconArrowLeft, IconMenu2 } from "@tabler/icons-react";
+import { IconArrowLeft, IconMenu2, IconHome } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { useCustomize } from "@/common/contexts/setting/customizerContext";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import { useSession } from "next-auth/react";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import BaseFab from "../base/BaseFab";
 import useIsMobile from "@/common/utils/state/isMobile";
-import useIsSubMenu from "@/common/utils/state/isSubMenu";
 
-const hideButton: string[] = [PageUrl.AUTH_SIGN_IN, PageUrl.AUTH_SIGN_UP, PageUrl.CALLBACK, PageUrl.FORGOT_PASSWORD, PageUrl.MAIN, PageUrl.PRICING];
+type ActionType = "hide" | "back" | "menu" | "home";
+
+interface PageActionConfig {
+  pathname: string;
+  action: ActionType;
+}
+
+const pageActionConfig: PageActionConfig[] = [
+  //* Hide button
+  { pathname: PageUrl.AUTH_SIGN_IN, action: "hide" },
+  { pathname: PageUrl.AUTH_SIGN_UP, action: "hide" },
+  { pathname: PageUrl.CALLBACK, action: "hide" },
+  { pathname: PageUrl.FORGOT_PASSWORD, action: "hide" },
+  { pathname: PageUrl.MAIN, action: "hide" },
+  { pathname: PageUrl.PRICING, action: "hide" },
+  
+  //* Back button
+  { pathname: "/dashboard/pos/cashier/category", action: "back" },
+  
+  //* Menu button
+  { pathname: "/dashboard", action: "menu" },
+  { pathname: "/dashboard/pos/products", action: "menu" },
+  { pathname: "/dashboard/pos/categories", action: "menu" },
+
+  //* Home button
+  { pathname: "/dashboard/pos/cashier", action: "home" },
+];
+
+const getActionForPath = (pathname: string): ActionType => {
+  const exactMatch = pageActionConfig.find((config) => config.pathname === pathname);
+  if (exactMatch) return exactMatch.action;
+  const wildcardMatch = pageActionConfig.find((config) => {
+    if (!config.pathname.endsWith("/*")) return false;
+    const prefix = config.pathname.slice(0, -2);
+    return pathname.startsWith(prefix + "/") || pathname === prefix;
+  });
+  if (wildcardMatch) return wildcardMatch.action;
+  return "back";
+};
 
 const ActionButton = () => {
-  const isMobie = useIsMobile();
+  const isMobile = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
-  const isSubMenu = useIsSubMenu();
-  const { data: session, status } = useSession();
 
-  const [show, setShow] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [action, setAction] = useState<ActionType>("back");
+  const [visible, setVisible] = useState(true);
   const { loading } = useCustomize();
   const { isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { updateAppearance, appearance } = useProfile();
   const { isCollapse } = appearance;
+
   const updateSetting = (payload: Partial<AppearanceSettings>) => {
     updateAppearance(payload);
   };
+
   const isChecked = isCollapse === "mini_sidebar" ? true : false;
 
   useEffect(() => {
-    if (!hideButton.includes(pathname)) {
-      setShow(true);
-      setVisible(true);
-    } else {
-      setVisible(false);
-    }
+    const currentAction = getActionForPath(pathname);
+    setAction(currentAction);
+    setVisible(currentAction !== "hide");
   }, [pathname]);
 
-  const handleExited = () => setShow(false);
-  const sidebarAction = () => {
-    return isMobie ? setIsMobileSidebar(!isMobileSidebar) : updateSetting({ isCollapse: isChecked ? "full_sidebar" : "mini_sidebar" });
+  const handleExited = () => {
+    setAction("back");
   };
 
-  if (!show || loading) return null;
+  const handleClick = () => {
+    switch (action) {
+      case "back":
+        router.back();
+        break;
+      case "menu":
+        if (isMobile) {
+          setIsMobileSidebar(!isMobileSidebar);
+        } else {
+          updateSetting({
+            isCollapse: isChecked ? "full_sidebar" : "mini_sidebar",
+          });
+        }
+        break;
+      case "home":
+        router.push("/dashboard");
+        break;
+      default:
+        break;
+    }
+  };
+
+  if (loading || !visible) return null;
+
+  const renderIcon = () => {
+    switch (action) {
+      case "back":
+        return <IconArrowLeft />;
+      case "menu":
+        return <IconMenu2 />;
+      case "home":
+        return <IconHome />;
+      default:
+        return <IconArrowLeft />;
+    }
+  };
 
   return (
     <BaseFab
       fadeDirection="left"
       sx={{ position: "fixed", top: 16, left: 20, zIndex: 2000 }}
-      onClick={() => (isSubMenu ? router.back() : sidebarAction())}
+      onClick={handleClick}
       aria-label="action"
       open={visible}
       onExited={handleExited}
     >
-      {isSubMenu ? <IconArrowLeft /> : <IconMenu2 />}
+      {renderIcon()}
     </BaseFab>
   );
 };
