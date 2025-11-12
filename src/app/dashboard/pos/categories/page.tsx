@@ -7,11 +7,12 @@ import PageContainer from "@/components/container/PageContainer";
 import React from "react";
 import BaseCardContent from "@/common/components/base/BaseCardContent";
 
-const BCrumb = [{ to: "/", title: "POS" }, { title: "Categories" }];
+const PAGE = 'หมวดหมู่สินค้า'
+const BCrumb = [{ to: "/", title: "POS" }, { title: PAGE }];
 const CategoriesPage = () => {
   return (
-    <PageContainer title="หมวดหมู่สินค้า" description="Categories">
-      <Breadcrumb title="หมวดหมู่สินค้า" items={BCrumb} />
+    <PageContainer title={PAGE} description="Categories">
+      <Breadcrumb title={PAGE} items={BCrumb} />
       <BlankCard >
         <BaseCardContent >
           <CategoriesProvider>

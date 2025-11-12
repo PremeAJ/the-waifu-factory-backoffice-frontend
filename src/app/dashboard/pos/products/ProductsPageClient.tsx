@@ -9,7 +9,7 @@ import PageContainer from "@/components/container/PageContainer";
 import ProductsList from "./components/ProductsList";
 import React from "react";
 
-const BCrumb = [{ title: "POS" }, { title: "Products" }];
+const BCrumb = [{ title: "POS" }, { title: "สินค้า" }];
 
 export default function ProductsPageClient() {
   return (
