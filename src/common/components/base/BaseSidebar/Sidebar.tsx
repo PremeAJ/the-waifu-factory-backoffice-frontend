@@ -12,20 +12,25 @@ import { NavGroupType } from "./interface/sidebar";
 
 interface SidebarProps {
   menuItems?: NavGroupType[];
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const Sidebar = ({ menuItems }: SidebarProps) => {
-  const isMobie = useIsMobile();
-  const {  isMobileSidebar, setIsMobileSidebar } = useSidebarState();
+const Sidebar = ({ menuItems, open, onOpenChange }: SidebarProps) => {
+  const isMobile = useIsMobile();
+  const { isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { isCollapse } = useProfile().appearance;
   const MiniSidebarWidth = config.miniSidebarWidth;
   const SidebarWidth = config.sidebarWidth;
   const theme = useTheme();
-  const toggleWidth = isCollapse == "mini_sidebar"  ? MiniSidebarWidth : SidebarWidth;
+  const toggleWidth = isCollapse == "mini_sidebar" ? MiniSidebarWidth : SidebarWidth;
+
+  const isOpen = open !== undefined ? open : isMobileSidebar;
+  const handleOpenChange = onOpenChange || setIsMobileSidebar;
 
   return (
     <>
-      {!isMobie ? (
+      {!isMobile ? (
         <Box
           sx={{
             zIndex: 99,
@@ -80,8 +85,8 @@ const Sidebar = ({ menuItems }: SidebarProps) => {
       ) : (
         <Drawer
           anchor="left"
-          open={isMobileSidebar}
-          onClose={() => setIsMobileSidebar(false)}
+          open={isOpen}
+          onClose={() => handleOpenChange(false)}
           variant="temporary"
           slotProps={{
             paper: {
