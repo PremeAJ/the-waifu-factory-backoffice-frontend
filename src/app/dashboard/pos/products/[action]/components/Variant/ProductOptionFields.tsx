@@ -22,6 +22,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
   const discountType = getIn(formik.values, `${optionPath}.discountType`);
   const discountRate = Number(getIn(formik.values, `${optionPath}.discountRate`) ?? 0);
   const status = getIn(formik.values, `${optionPath}.inventory.status`);
+  const thumbnailImageId = getIn(formik.values, `${optionPath}.thumbnailImageId`); // ✅ ดึงจาก option level
 
   const taxRate = Number(formik.values?.taxRate ?? 0);
   const isTaxInclusive = formik.values?.isTaxInclusive ?? true;
@@ -230,6 +231,8 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           fullWidth
         />
       </Grid>
+      
+      {/* ✅ ย้าย thumbnail มาที่ option level */}
       <Grid size={{ xs: 12 }}>
         <BaseFileInput
           label="อัปโหลดภาพสินค้า"
@@ -239,9 +242,9 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           autoUpload={true}
           toBucket={StorageBucket.PRODUCT_THUMBNAIL}
           onUploadComplete={(fileIds) => {
-            formik.setFieldValue("thumbnailImageId", fileIds?.[0] ?? undefined);
+            formik.setFieldValue(`${optionPath}.thumbnailImageId`, fileIds?.[0] ?? undefined);
           }}
-          value={formik.values.thumbnailImageId ? [formik.values.thumbnailImageId] : []}
+          value={thumbnailImageId ? [thumbnailImageId] : []}
         />
       </Grid>
     </Grid>

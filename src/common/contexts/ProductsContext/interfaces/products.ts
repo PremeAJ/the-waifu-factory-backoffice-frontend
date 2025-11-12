@@ -38,6 +38,12 @@ export interface ProductOptionType {
   discountRate?: number;
   variantOption?: VariantOptionType | null;
   inventory?: InventoryType | null;
+  productFiles?: {
+    id: string;
+    bucket: string;
+    originName: string;
+    url: string;
+  };
 }
 
 export interface UploadedFile {
@@ -77,18 +83,11 @@ export interface ProductType {
   productFiles?: ProductFile[];
   productOptions?: ProductOptionType[];
   totalStock?: number;
-
-  // tax
   isTaxInclusive?: boolean;
   taxClassId?: string | null;
   taxClass?: TaxClassType | null;
-
-  // category (API returns a categories object on findOne)
   categories?: CategoryType | null;
-
-  // optional fields computed on frontend
   status?: ApiInventoryStatus | "active" | "inactive" | "deleted";
-  // display helpers (string shown in table)
   price?: string;
   displayPrice?: string;
   basePrice?: number;
@@ -104,6 +103,7 @@ export interface CreateProductOptionPayload {
   discountRate: number;
   variantOption?: VariantOptionType;
   inventory: { status: ApiInventoryStatus; stock: number; branchId?: string };
+  thumbnailImageId?: string;
 }
 
 export interface CreateProductPayload {
@@ -113,17 +113,13 @@ export interface CreateProductPayload {
   descriptionEn?: string;
   unitType: UnitTypeEnum;
   unit: string;
-
   categoryId?: string;
   branchId?: string;
-  thumbnailImageId?: string;
   detailImageIds?: string[];
   tags?: string[];
-
   isTaxInclusive: boolean;
   taxClassId: string;
   taxRate: number;
-
   variant?: VariantType;
   productOptions: CreateProductOptionPayload[];
 }

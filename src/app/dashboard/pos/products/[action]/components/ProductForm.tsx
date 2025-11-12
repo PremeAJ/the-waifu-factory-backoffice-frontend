@@ -31,7 +31,6 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
       unit: "ชิ้น",
       categoryId: undefined,
       branchId: undefined,
-      thumbnailImageId: undefined,
       detailImageIds: [],
       tags: [],
       isTaxInclusive: true,
@@ -47,6 +46,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
           pricePerUnit: 1,
           discountType: "none",
           discountRate: 0,
+          thumbnailImageId: undefined,
           variantOption: undefined,
           inventory: { status: "active", stock: 0 },
         },
@@ -54,7 +54,6 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     };
   }
 
-  const thumbnail = p.productFiles?.find((f) => f.uploadedFile?.bucket?.includes("thumbnail"));
   const details = (p.productFiles || []).filter((f) => f.uploadedFile?.bucket?.includes("detail"));
 
   const productOptions = (p.productOptions || []).map((opt) => ({
@@ -65,6 +64,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     pricePerUnit: Number(opt.pricePerUnit ?? 1),
     discountType: opt.discountType ?? "none",
     discountRate: Number(opt.discountRate ?? 0),
+    thumbnailImageId: opt.productFiles?.id ?? undefined,
     variantOption: opt.variantOption ?? undefined,
     inventory: opt.inventory ?? { status: "active", stock: 0 },
   })) as CreateProductOptionPayload[];
@@ -78,7 +78,6 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     unit: p.unit ?? "ชิ้น",
     categoryId: p.categories?.id ?? undefined,
     branchId: undefined,
-    thumbnailImageId: thumbnail?.uploadedFile?.id ?? undefined,
     detailImageIds: details.map((d) => d.uploadedFile?.id).filter(Boolean) as string[],
     tags: p.tags ?? [],
     isTaxInclusive: p.isTaxInclusive ?? true,
@@ -96,6 +95,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
             pricePerUnit: 1,
             discountType: "none",
             discountRate: 0,
+            thumbnailImageId: undefined,
             variantOption: undefined,
             inventory: { status: "active", stock: 0 },
           },
@@ -149,7 +149,7 @@ const ProductForm: React.FC = () => {
         unit: values.unit,
         categoryId: values.categoryId || undefined,
         branchId: values.branchId || branchIdFromSession,
-        thumbnailImageId: values.thumbnailImageId || undefined,
+        // thumbnailImageId: values.thumbnailImageId || undefined, // ❌ ลบออก
         detailImageIds: values.detailImageIds?.length ? values.detailImageIds : undefined,
         tags: values.tags?.length ? values.tags : undefined,
         isTaxInclusive: values.isTaxInclusive,
@@ -157,7 +157,7 @@ const ProductForm: React.FC = () => {
         taxRate: Number(values.taxRate ?? 0),
         variant: values.variant,
         productOptions: (values.productOptions || []).map((opt, idx) => ({
-          id: product?.productOptions?.[idx]?.id, // อ้างจากสินค้าปัจจุบันถ้ามี
+          id: product?.productOptions?.[idx]?.id,
           upc: opt.upc || undefined,
           sku: opt.sku || undefined,
           basePrice: Number(opt.basePrice ?? 0),
@@ -165,6 +165,7 @@ const ProductForm: React.FC = () => {
           pricePerUnit: Number(opt.pricePerUnit ?? 1),
           discountType: opt.discountType,
           discountRate: Number(opt.discountRate ?? 0),
+          thumbnailImageId: opt.thumbnailImageId || undefined, // ✅ ส่งไปกับแต่ละ option
           variantOption: opt.variantOption,
           inventory: {
             status: opt.inventory.status,

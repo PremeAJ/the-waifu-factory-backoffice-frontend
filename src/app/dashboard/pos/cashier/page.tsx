@@ -31,28 +31,33 @@ export default function POSPage() {
     if (!products) return [];
     
     return products.flatMap((product: any) => {
-      const thumbnail = product.productFiles?.find((f: any) => f.uploadedFile?.bucket === "product_thumbnail")?.uploadedFile?.url;
-      
       // ถ้ามี variant
       if (product.productOptions && product.productOptions.length > 0) {
-        return product.productOptions.map((option: any) => ({
-          id: option.id,
-          name: `${product.nameTh}${option.variantOption ? ` - ${option.variantOption.nameTh}` : ""}`,
-          price: option.finalPrice,
-          image: thumbnail || "/images/products/no-image.jpg",
-          stock: option.inventory?.stock,
-          unit: product.unit,
-          categoryId: product.categories?.id,
-        }));
+        return product.productOptions.map((option: any) => {
+          // ✅ ดึงรูปจาก option.productFiles แทน product.productFiles
+          const thumbnail = option.productFiles?.url || "/images/products/no-image.jpg";
+          
+          return {
+            id: option.id,
+            name: `${product.nameTh}${option.variantOption ? ` - ${option.variantOption.nameTh}` : ""}`,
+            price: option.finalPrice,
+            image: thumbnail,
+            stock: option.inventory?.stock,
+            unit: product.unit,
+            categoryId: product.categories?.id,
+          };
+        });
       }
       
       // ถ้าไม่มี variant
       const mainOption = product.productOptions?.[0];
+      const thumbnail = mainOption?.productFiles?.url || "/images/products/no-image.jpg";
+      
       return [{
         id: product.id,
         name: product.nameTh,
         price: mainOption?.finalPrice || 0,
-        image: thumbnail || "/images/products/no-image.jpg",
+        image: thumbnail,
         stock: mainOption?.inventory?.stock,
         unit: product.unit,
         categoryId: product.categories?.id,

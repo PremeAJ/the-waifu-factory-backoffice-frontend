@@ -24,6 +24,7 @@ const emptyOption = (withVariant: boolean = true) => {
     inventory: { status: "active", stock: 0 },
     discountType: "none",
     discountRate: 0,
+    thumbnailImageId: undefined, // ✅ เพิ่มที่นี่
   };
 
   if (withVariant) {
