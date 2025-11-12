@@ -13,8 +13,8 @@ const BCrumb = [{ title: "POS" }, { title: "Products" }];
 
 export default function ProductsPageClient() {
   return (
-    <PageContainer title="Products" description="Products">
-      <Breadcrumb title="Products" items={BCrumb} />
+    <PageContainer title="สินค้า" description="Products">
+      <Breadcrumb title="สินค้า" items={BCrumb} />
       <BlankCard>
         <BaseCardContent>
           <ProductsProvider>

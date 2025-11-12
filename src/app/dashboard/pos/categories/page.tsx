@@ -10,8 +10,8 @@ import BaseCardContent from "@/common/components/base/BaseCardContent";
 const BCrumb = [{ to: "/", title: "POS" }, { title: "Categories" }];
 const CategoriesPage = () => {
   return (
-    <PageContainer title="Categories" description="Categories">
-      <Breadcrumb title="Categories" items={BCrumb} />
+    <PageContainer title="หมวดหมู่สินค้า" description="Categories">
+      <Breadcrumb title="หมวดหมู่สินค้า" items={BCrumb} />
       <BlankCard >
         <BaseCardContent >
           <CategoriesProvider>
