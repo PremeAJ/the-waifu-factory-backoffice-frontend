@@ -46,7 +46,7 @@ export const validationSchema = Yup.object({
   taxRate: Yup.number().min(0, "อัตราภาษีต้องไม่ติดลบ").typeError("กรุณากรอกอัตราภาษีเป็นตัวเลข"),
 
   variant: Yup.object({
-    nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
+    nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").required("กรุณากรอก ประเภทตัวแปร"),
     nameEn: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
   })
     .nullable()
