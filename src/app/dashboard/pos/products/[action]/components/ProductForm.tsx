@@ -47,8 +47,8 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
           discountType: "none",
           discountRate: 0,
           thumbnailImageId: undefined,
-          thumbnailImageUrl: undefined, // ✅ เพิ่ม
-          thumbnailOriginName: undefined, // ✅ เพิ่ม
+          thumbnailImageUrl: undefined,
+          thumbnailOriginName: undefined,
           variantOption: undefined,
           inventory: { status: "active", stock: 0 },
         },
@@ -56,7 +56,15 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     };
   }
 
-  const details = (p.productFiles || []).filter((f) => f.uploadedFile?.bucket?.includes("detail"));
+  // ✅ แก้ไข: แปลง productFiles เป็น array of objects
+  const details = (p.productFiles || [])
+    .filter((f) => f.uploadedFile?.bucket?.includes("detail"))
+    .map((f) => ({
+      id: f.uploadedFile?.id!,
+      url: f.uploadedFile?.url,
+      originName: f.uploadedFile?.originName,
+    }))
+    .filter((f) => f.id); // กรองเฉพาะที่มี id
 
   const productOptions = (p.productOptions || []).map((opt) => ({
     upc: opt.upc ?? "",
@@ -67,8 +75,8 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     discountType: opt.discountType ?? "none",
     discountRate: Number(opt.discountRate ?? 0),
     thumbnailImageId: opt.productFiles?.id ?? undefined,
-    thumbnailImageUrl: opt.productFiles?.url ?? undefined, // ✅ เพิ่ม url
-    thumbnailOriginName: opt.productFiles?.originName ?? undefined, // ✅ เพิ่ม originName
+    thumbnailImageUrl: opt.productFiles?.url ?? undefined,
+    thumbnailOriginName: opt.productFiles?.originName ?? undefined,
     variantOption: opt.variantOption ?? undefined,
     inventory: opt.inventory ?? { status: "active", stock: 0 },
   })) as CreateProductOptionPayload[];
@@ -82,7 +90,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     unit: p.unit ?? "ชิ้น",
     categoryId: p.categories?.id ?? undefined,
     branchId: undefined,
-    detailImageIds: details.map((d) => d.uploadedFile?.id).filter(Boolean) as string[],
+    detailImageIds: details as any, // ✅ ใช้ array of objects
     tags: p.tags ?? [],
     isTaxInclusive: p.isTaxInclusive ?? true,
     taxClassId: p.taxClassId ?? "none",
@@ -100,8 +108,8 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
             discountType: "none",
             discountRate: 0,
             thumbnailImageId: undefined,
-            thumbnailImageUrl: undefined, // ✅ เพิ่ม
-            thumbnailOriginName: undefined, // ✅ เพิ่ม
+            thumbnailImageUrl: undefined,
+            thumbnailOriginName: undefined,
             variantOption: undefined,
             inventory: { status: "active", stock: 0 },
           },
