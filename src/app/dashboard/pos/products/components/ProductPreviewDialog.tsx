@@ -6,6 +6,8 @@ import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseChip from "@/common/components/base/BaseChip";
 import formatNumber from "@/common/utils/formatNumber";
 import BaseLightBox, { LightboxItem } from "@/common/components/base/BaseLightBox";
+import BaseTooltip from "@/common/components/base/BaseTooltip";
+import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 
 interface ProductPreviewDialogProps {
   open: boolean;
@@ -185,6 +187,27 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
           <Typography variant="subtitle2">ชื่อ (TH)</Typography>
           <Typography variant="body2" fontWeight={600}>{item.nameTh ?? "-"}</Typography>
         </Stack>
+
+        {/* ✅ เพิ่ม: หมวดหมู่ icon */}
+        {item.categories && (
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Typography variant="subtitle2">หมวดหมู่</Typography>
+            <Box>
+              {item.categories?.icon ? (
+                <BaseTooltip title={item.categories?.nameTh || "หมวดหมู่"} arrow>
+                  <Box component="span">
+                    {renderTablerIcon(item.categories.icon, {
+                      size: 18,
+                      color: item.categories?.color || undefined,
+                    })}
+                  </Box>
+                </BaseTooltip>
+              ) : (
+                <Typography variant="body2" fontWeight={600}>-</Typography>
+              )}
+            </Box>
+          </Stack>
+        )}
 
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="subtitle2">ราคา</Typography>

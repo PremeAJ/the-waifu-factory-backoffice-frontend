@@ -44,6 +44,7 @@ function ProductsList() {
         };
       }
 
+      // ✅ แก้ไข: เพิ่ม categories ให้กับ subItems
       const subItems: any[] = (prod.productOptions || []).map((opt: any) => ({
         ...opt,
         nameTh: `${I18nString(isLanguage, prod.variant?.nameTh, prod.variant?.nameEn)} : ${I18nString(
@@ -52,6 +53,7 @@ function ProductsList() {
           opt.variantOption.nameEn
         )}`,
         unit: prod.unit,
+        categories: prod.categories, // ✅ เพิ่ม: ส่ง categories จาก parent product
       }));
 
       const derivedStatus = subItems.some((opt: any) => {
@@ -118,7 +120,7 @@ function ProductsList() {
     setPage(1);
   };
 
-  // ✅ เพิ่ม: ฟังก์ชันจัดการการเปิด dialog ของ variant
+  // ✅ แก้ไข: ฟังก์ชันจัดการการเปิด dialog ของ variant
   const handlePreviewVariant = (variant: any) => {
     // แปลง variant เป็น item ที่ดูเหมือน product object
     const variantItem = {
@@ -127,6 +129,7 @@ function ProductsList() {
       nameTh: variant.variantOption?.nameTh ?? variant.sku ?? "-",
       parentNameTh: previewState.item?.nameTh,
       unit: previewState.item?.unit,
+      categories: previewState.item?.categories, // ✅ เพิ่ม: ส่ง categories มาด้วย
       subItems: [], // variant ไม่มี sub-items
       productFiles: variant.productFiles, // ใช้ thumbnail ของ variant
       sku: variant.sku,
