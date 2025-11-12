@@ -231,7 +231,7 @@ const ProductForm: React.FC = () => {
             </BlankCard>
             <BlankCard>
               <BaseFileInput
-                label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์)"
+                label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์) (ไม่บังคับ)" 
                 placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
                 multiple={true}
                 accept={fileTypeGroup.image}

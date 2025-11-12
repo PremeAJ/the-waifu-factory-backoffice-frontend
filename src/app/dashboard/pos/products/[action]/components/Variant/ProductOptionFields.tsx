@@ -255,6 +255,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
       {/* ✅ ใช้ thumbnailValue ที่มี url */}
       <Grid size={{ xs: 12 }}>
         <BaseFileInput
+          required
           label="อัปโหลดภาพสินค้า"
           placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
           multiple={false}

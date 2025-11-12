@@ -16,9 +16,6 @@ export const validationSchema = Yup.object({
   categoryId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
   branchId: Yup.string().uuid("รูปแบบ UUID ไม่ถูกต้อง").nullable().notRequired(),
   
-  // ✅ ลบ thumbnailImageId ออก (ย้ายไปอยู่ใน productOptions แล้ว)
-  
-  // ✅ detailImageIds รองรับทั้ง string และ object
   detailImageIds: Yup.array().of(
     Yup.mixed().test(
       'is-valid-file',
@@ -26,11 +23,9 @@ export const validationSchema = Yup.object({
       (value) => {
         if (!value) return true;
         if (typeof value === 'string') {
-          // ตรวจสอบว่าเป็น UUID
           return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
         }
         if (typeof value === 'object' && value !== null) {
-          // ตรวจสอบว่ามี id และเป็น UUID
           return 'id' in value && typeof value.id === 'string' && 
                  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value.id);
         }
@@ -45,12 +40,15 @@ export const validationSchema = Yup.object({
   taxClassId: Yup.string().trim().required("กรุณาเลือกประเภทภาษี"),
   taxRate: Yup.number().min(0, "อัตราภาษีต้องไม่ติดลบ").typeError("กรุณากรอกอัตราภาษีเป็นตัวเลข"),
 
-  variant: Yup.object({
-    nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").required("กรุณากรอก ประเภทตัวแปร"),
-    nameEn: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
-  })
-    .nullable()
-    .notRequired(),
+  // ✅ แก้ไข: ใช้ .when("productOptions") แทน .when("variant") เพื่อหลีกเลี่ยง cyclic dependency
+  variant: Yup.object().when("productOptions", {
+    is: (productOptions: any) => Array.isArray(productOptions) && productOptions.length > 1,
+    then: (schema) => Yup.object({
+      nameTh: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").required("กรุณากรอก ประเภทตัวแปร"),
+      nameEn: Yup.string().trim().min(1, "กรอกอย่างน้อย 1 อักขระ").nullable().notRequired(),
+    }).required("กรุณากรอกข้อมูลตัวแปร"),
+    otherwise: (schema) => Yup.object().nullable().notRequired(),
+  }),
 
   productOptions: Yup.array()
     .of(
@@ -66,15 +64,14 @@ export const validationSchema = Yup.object({
           .required("กรุณาเลือกประเภทส่วนลด"),
         discountRate: Yup.number().min(0, "ส่วนลดต้องไม่ติดลบ").typeError("กรุณากรอกส่วนลดเป็นตัวเลข").required("กรุณากรอกส่วนลด"),
 
-        // ✅ thumbnailImageId รองรับทั้ง string และไม่จำเป็นต้องมี
         thumbnailImageId: Yup.string().uuid("รูปภาพต้องเป็น UUID").nullable().notRequired(),
         
-        // ✅ ฟิลด์เหล่านี้ใช้แค่ใน form (ไม่ validate)
         thumbnailImageUrl: Yup.string().notRequired(),
         thumbnailOriginName: Yup.string().notRequired(),
 
-        variantOption: Yup.mixed().when("$variant", {
-          is: (variant: any) => variant && variant.nameTh,
+        // ✅ แก้ไข: ใช้ .when("$productOptions") เพื่อตรวจสอบจำนวน productOptions
+        variantOption: Yup.mixed().when("$productOptions", {
+          is: (productOptions: any) => Array.isArray(productOptions) && productOptions.length > 1,
           then: (schema) => schema.required("กรุณาเลือกตัวเลือกย่อย"),
           otherwise: (schema) => schema.notRequired(),
         }),
