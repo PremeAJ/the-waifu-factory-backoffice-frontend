@@ -1,23 +1,21 @@
 import { Box } from "@mui/material";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { isNull } from "lodash";
+import { NavCollapseProps, NavGroupType } from "../interface/sidebar";
 import { styled, useTheme } from "@mui/material/styles";
-import { Theme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useTranslation } from "react-i18next";
+import BaseTooltip from "@/common/components/base/BaseTooltip";
 import Collapse from "@mui/material/Collapse";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import NavItem from "../NavItem";
 import React, { useState } from "react";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import BaseTooltip from "@/common/components/base/BaseTooltip";
-import { NavCollapseProps, NavGroupType } from "../interface/sidebar";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
-  const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
-
+  const isMobile = useIsMobile();
   const { isBorderRadius } = useProfile().appearance;
   const Icon = menu?.icon;
   const theme = useTheme();
@@ -70,7 +68,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
     } else {
       return (
         <Box sx={{ pl: '3px' }} key={item.id}>
-          <NavItem key={item.id} item={item} level={level + 1} pathDirect={pathDirect} hideMenu={hideMenu} onClick={lgDown ? onClick : isNull} />
+          <NavItem key={item.id} item={item} level={level + 1} pathDirect={pathDirect} hideMenu={hideMenu} onClick={isMobile ? onClick : isNull} />
         </Box>
       );
     }

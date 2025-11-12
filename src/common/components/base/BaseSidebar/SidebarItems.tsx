@@ -1,4 +1,5 @@
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
+import { NavGroupType } from "./interface/sidebar";
 import { useContext } from "react";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
@@ -9,8 +10,7 @@ import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
 import NavItem from "./NavItem";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { NavGroupType } from "./interface/sidebar";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 interface SidebarItemsProps {
   menuItems?: NavGroupType[];
@@ -25,8 +25,8 @@ const SidebarItems = ({ menuItems = [] }: SidebarItemsProps) => {
   const { isCollapse } = useProfile().appearance;
   const { loading: isLoading } = useContext(CustomizerContext);
 
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-  const hideMenu = lgUp ? isCollapse == "mini_sidebar" : "";
+  const isMobile = useIsMobile();
+  const hideMenu = !isMobile ? isCollapse == "mini_sidebar" : "";
   if (isLoading) return <SidebarItemsSkeleton />;
   return (
     <Box sx={{ px: 3 }}>
