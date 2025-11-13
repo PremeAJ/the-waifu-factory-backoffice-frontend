@@ -22,17 +22,15 @@ export default function POSPage() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const isMobile = useIsMobile();
-  const searchParams = useSearchParams(); // ✅ อ่าน query parameter
+  const searchParams = useSearchParams();
   const { setIsCashierCategoriesSidebar } = useSidebarState();
   const { categories } = useCategories();
   const { products, loading } = useProducts();
 
-  // ✅ อ่าน category จาก query parameter
+  // ✅ อ่าน category จาก query parameter หรือ reset เป็น null (all)
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
-    if (categoryFromUrl) {
-      setSelectedCategory(categoryFromUrl);
-    }
+    setSelectedCategory(categoryFromUrl || null); // ✅ ถ้าไม่มี query param ให้เป็น null = all
   }, [searchParams]);
 
   const mappedProducts = useMemo(() => {
@@ -75,13 +73,12 @@ export default function POSPage() {
   const filteredProducts = useMemo(() => {
     let filtered = mappedProducts;
 
+    // ✅ ถ้า selectedCategory เป็น null ให้แสดงทั้งหมด (all)
     if (selectedCategory) {
       const category = categories.find((c: any) => c.id === selectedCategory);
       
-      // ✅ ดึง sub-categories ids
       const subCategoryIds = category?.subCategories?.map((s: any) => s.id) || [];
       
-      // ✅ filter: main category หรือ sub-category ไหนก็ได้
       filtered = filtered.filter(
         (p: any) => p.categoryId === selectedCategory || subCategoryIds.includes(p.categoryId)
       );
