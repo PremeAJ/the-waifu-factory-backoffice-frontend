@@ -4,10 +4,10 @@ import { FC, SyntheticEvent, useEffect, useMemo, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Grid, Typography, Box } from "@mui/material";
 import { IconTag, IconStack } from "@tabler/icons-react";
-import { BaseDropdown, BaseSwitch, BaseTabs, BaseTextField } from "@/common/components/base";
+import { BaseAutoComplete, BaseDropdown, BaseSwitch, BaseTabs, BaseTextField } from "@/common/components/base";
 import { OptionType } from "@/common/components/base/BaseDropdown";
 import { useProfile, useTax } from "@/common/contexts";
-import { unitTypeOptions, volumeUnitOptions, weightUnitOptions } from "@/common/contexts/ProductsContext/constants/constants";
+import { pieceUnitOptions, unitTypeOptions, volumeUnitOptions, weightUnitOptions } from "@/common/contexts/ProductsContext/constants/constants";
 import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
@@ -146,21 +146,60 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
         break;
     }
 
-    if (defaultUnit && !formik.values.unit) {
+    // ✅ เปลี่ยนหน่วยเป็น default เสมอเมื่อเปลี่ยน unitType
+    if (defaultUnit) {
       formik.setFieldValue("unit", defaultUnit);
     }
   }, [formik?.values?.unitType]);
 
+
   const renderUnitField = () => {
     const unitType = formik?.values?.unitType;
+    const currentUnit = formik?.values?.unit || "";
 
     switch (unitType) {
       case UnitTypeEnum.WEIGHT:
-        return <BaseDropdown formik={formik} name="unit" label="หน่วยย่อย" options={weightUnitOptions} fullWidth required />;
+        return (
+          <BaseDropdown 
+            formik={formik} 
+            name="unit" 
+            label="หน่วยย่อย" 
+            options={weightUnitOptions} 
+            fullWidth 
+            required 
+          />
+        );
       case UnitTypeEnum.VOLUME:
-        return <BaseDropdown formik={formik} name="unit" label="หน่วยย่อย" options={volumeUnitOptions} fullWidth required />;
-      default:
-        return <BaseTextField formik={formik} fullWidth label="หน่วยย่อย" name="unit" placeholder="เช่น ชิ้น, แท่ง, เล่ม" required />;
+        return (
+          <BaseDropdown 
+            formik={formik} 
+            name="unit" 
+            label="หน่วยย่อย" 
+            options={volumeUnitOptions} 
+            fullWidth 
+            required 
+          />
+        );
+      default: // PIECE
+        return (
+          <BaseAutoComplete
+            name="unit"
+            label="หน่วยย่อย"
+            formik={formik}
+            options={pieceUnitOptions}
+            placeholder="เช่น ชิ้น, แท่ง, เล่ม"
+            fullWidth
+            freeSolo
+            multiple={false}
+            value={currentUnit}
+            openOnFocus
+            clearOnBlur={false}
+            onChange={(val: any) => {
+              formik?.setFieldValue("unit", val || "");
+            }}
+            required
+          />
+        );
     }
   };
 

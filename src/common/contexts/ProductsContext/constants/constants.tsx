@@ -30,6 +30,7 @@ export const discountTypeOptions = [
 ];
 
 export const tagOptions = ["ใหม่ ✨", "ยอดนิยม 🔥", "ลดราคา 💸", "แนะนำ 👍"];
+export const pieceUnitOptions = ["ชิ้น", "แท่ง", "เล่ม", "แก้ว", "ชาม", "จาน", "ถ้วย", "ขวด", "กล่อง", "ห่อ"];
 
 export const languageTabs = [
   { label: "ไทย", icon: <Avatar src="/images/flag/icon-flag-th.svg" alt="TH" sx={{ width: 22, height: 22 }} /> },

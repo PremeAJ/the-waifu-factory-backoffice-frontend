@@ -135,7 +135,7 @@ export const getProductHeaders = (): any => [
         lowStockThreshold = item.productOptions[0].lowStockThreshold || 3;
       }
 
-      const isLowStock = stockValue < lowStockThreshold && stockValue > 0;
+      const isLowStock = stockValue <= lowStockThreshold && stockValue > 0;
       const displayText = `${formatNumber(stockValue)} ${item.unit || ""}`;
 
       return (
