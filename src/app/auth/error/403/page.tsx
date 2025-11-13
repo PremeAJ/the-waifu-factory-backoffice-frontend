@@ -1,5 +1,5 @@
 import { Box, Container, Typography, Button } from "@mui/material";
-import Image from "next/image";
+import { IconHandStop } from "@tabler/icons-react";
 import Link from "next/link";
 
 const Error403 = () => (
@@ -11,13 +11,9 @@ const Error403 = () => (
     justifyContent="center"
   >
     <Container maxWidth="md">
-      <Image
-        src={"/images/backgrounds/Error/403.png"}
-        alt="403"
-        width={400}
-        height={400}
-        style={{ width: "100%", maxWidth: "400px", maxHeight: "400px" }}
-      />
+      <Box mb={4}>
+        <IconHandStop size={120} stroke={1.5} style={{ margin: "0 auto" }} color="red"/>
+      </Box>
       <Typography align="center" variant="h1" mb={4}>
         403 Forbidden
       </Typography>

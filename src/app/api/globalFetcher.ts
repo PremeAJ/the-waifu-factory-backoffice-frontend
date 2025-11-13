@@ -37,8 +37,8 @@ async function handleResponse(
     return tryJson();
   }
   if (res.status === 403) {
-    await signOut();
-    return Promise.reject(new Error("Forbidden"));
+    window.location.href = "/auth/error/403";
+    return Promise.reject(new Error("Forbidden - Access Denied"));
   }
   if (isRefreshing) {
     return new Promise((resolve, reject) => {
