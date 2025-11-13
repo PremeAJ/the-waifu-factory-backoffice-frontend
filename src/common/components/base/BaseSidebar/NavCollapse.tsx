@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { isNull } from "lodash";
-import { NavCollapseProps, NavGroupType } from "../interface/sidebar";
+import { NavCollapseProps, NavGroupType } from "./interface/sidebar";
 import { styled, useTheme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import Collapse from "@mui/material/Collapse";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import NavItem from "../NavItem";
+import NavItem from "./NavItem";
 import React, { useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 

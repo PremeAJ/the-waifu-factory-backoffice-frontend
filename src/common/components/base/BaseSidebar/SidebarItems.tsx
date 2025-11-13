@@ -7,7 +7,7 @@ import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import NavCollapse from "./NavCollapse";
-import NavGroup from "./NavGroup/NavGroup";
+import NavGroup from "./NavGroup";
 import NavItem from "./NavItem";
 import SidebarItemsSkeleton from "@/components/dashboard/user-auth/skeleton/SidebarItemsSkeleton";
 import useIsMobile from "@/common/utils/state/isMobile";
