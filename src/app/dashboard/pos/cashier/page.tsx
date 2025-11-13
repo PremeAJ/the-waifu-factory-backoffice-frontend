@@ -10,20 +10,30 @@ import CategoryButton from "@/common/components/FAB/CategoryButton";
 import OrderSummary from "./OrderSummary";
 import PageContainer from "@/components/container/PageContainer";
 import ProductList from "./ProductList";
-import React, {  useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Sidebar from "./category/Sidebar";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import useIsMobile from "@/common/utils/state/isMobile";
+import { useSearchParams } from "next/navigation";
 
 export default function POSPage() {
   const [order, setOrder] = useState<{ id: string; name: string; price: number; qty: number; image: string; stock?: number }[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const isMobile = useIsMobile();
+  const searchParams = useSearchParams(); // ✅ อ่าน query parameter
   const { setIsCashierCategoriesSidebar } = useSidebarState();
   const { categories } = useCategories();
   const { products, loading } = useProducts();
+
+  // ✅ อ่าน category จาก query parameter
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get("category");
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [searchParams]);
 
   const mappedProducts = useMemo(() => {
     if (!products) return [];
@@ -67,9 +77,14 @@ export default function POSPage() {
 
     if (selectedCategory) {
       const category = categories.find((c: any) => c.id === selectedCategory);
+      
+      // ✅ ดึง sub-categories ids
       const subCategoryIds = category?.subCategories?.map((s: any) => s.id) || [];
-
-      filtered = filtered.filter((p: any) => p.categoryId === selectedCategory || subCategoryIds.includes(p.categoryId));
+      
+      // ✅ filter: main category หรือ sub-category ไหนก็ได้
+      filtered = filtered.filter(
+        (p: any) => p.categoryId === selectedCategory || subCategoryIds.includes(p.categoryId)
+      );
     }
 
     if (search) {
@@ -129,7 +144,7 @@ export default function POSPage() {
                 order={order} 
                 addToOrder={addToOrder} 
                 isMobile={isMobile}
-                loading={loading} // ✅ เพิ่ม
+                loading={loading}
               />
             </CardContent>
           </Card>

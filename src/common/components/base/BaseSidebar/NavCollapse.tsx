@@ -1,6 +1,5 @@
 import { Box } from "@mui/material";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
-import { isNull } from "lodash";
 import { NavCollapseProps, NavGroupType } from "./interface/sidebar";
 import { styled, useTheme } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
@@ -13,9 +12,11 @@ import ListItemText from "@mui/material/ListItemText";
 import NavItem from "./NavItem";
 import React, { useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
+import { useRouter } from "next/navigation";
 
 export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
   const isMobile = useIsMobile();
+  const router = useRouter();
   const { isBorderRadius } = useProfile().appearance;
   const Icon = menu?.icon;
   const theme = useTheme();
@@ -24,8 +25,20 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
 
   const menuIcon = Icon ? level > 1 ? <Icon stroke={1.5} size="1rem" /> : <Icon stroke={1.5} size="1.3rem" /> : null;
 
-  const handleClick = () => {
+  // ✅ แก้: toggle folder + navigate ถ้ามี href
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    
+    // ✅ 1. Toggle folder เสมอ
     setOpen(!open);
+    
+    // ✅ 2. เรียก onClick callback ถ้ามี
+    onClick?.(e);
+    
+    // ✅ 3. Navigate ถ้า menu มี href
+    if (menu.href) {
+      router.push(menu.href);
+    }
   };
 
   React.useEffect(() => {
@@ -67,7 +80,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
     } else {
       return (
         <Box sx={{ pl: '3px' }} key={item.id}>
-          <NavItem key={item.id} item={item} level={level + 1} pathDirect={pathDirect} hideMenu={hideMenu} onClick={isMobile ? onClick : isNull} />
+          <NavItem key={item.id} item={item} level={level + 1} pathDirect={pathDirect} hideMenu={hideMenu} />
         </Box>
       );
     }
