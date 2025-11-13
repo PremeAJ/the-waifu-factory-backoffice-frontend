@@ -74,14 +74,14 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
         flexDirection: "column",
         alignItems: "center",
         p: 0,
-        height: isMobile ? 140 : 220,
+        height: 220,
         overflow: "hidden",
       }}
     >
       <Skeleton
         variant="rectangular"
         width="100%"
-        height={isMobile ? 60 : 120}
+        height={120}
         sx={{ flexShrink: 0 }}
       />
       <Box sx={{ flex: 1, width: "100%", p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
