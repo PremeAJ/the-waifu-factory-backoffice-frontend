@@ -5,7 +5,7 @@ import { Grid, Stack } from "@mui/material";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
 import { unitTypeOptions } from "@/common/contexts/ProductsContext/constants/constants";
 import { useFormik } from "formik";
-import { useProducts } from "@/common/contexts";
+import { useProducts, useUpload } from "@/common/contexts";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { validationSchema } from "../validation/yup";
@@ -13,12 +13,12 @@ import BaseDebug from "@/common/components/debug/BaseDebug";
 import BlankCard from "@/components/shared/BlankCard";
 import CategoryAndTags from "./CategoryAndTags";
 import GeneralCard from "./GeneralCard";
+import PageLoader from "@/common/components/loaders/PageLoader";
 import ProductDetails from "./ProductDetails";
 import ProductTemplate from "./ProductTemplate";
 import React, { useMemo, useEffect, useState } from "react";
 import type { CreateProductPayload, CreateProductOptionPayload, ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
-import PageLoader from "@/common/components/loaders/PageLoader";
 
 const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload => {
   if (!p) {
@@ -121,6 +121,7 @@ const ProductForm: React.FC = () => {
   const isMobile = useIsMobile();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isUploading } = useUpload();
   const id = searchParams?.get("id") ?? undefined; // มี id = โหมดแก้ไข
   const { data: session } = useSession();
   const { createProduct, updateProduct, getProductById } = useProducts();
@@ -155,10 +156,12 @@ const ProductForm: React.FC = () => {
       const productId = id;
 
       // ✅ แปลง detailImageIds เป็น string[]
-      const detailImageIds = (values.detailImageIds || []).map((item: any) => {
-        if (typeof item === 'string') return item;
-        return item.id;
-      }).filter(Boolean) as string[];
+      const detailImageIds = (values.detailImageIds || [])
+        .map((item: any) => {
+          if (typeof item === "string") return item;
+          return item.id;
+        })
+        .filter(Boolean) as string[];
 
       // ✅ แปลง productOptions - ลบ url และ originName
       const productOptions = (values.productOptions || []).map((opt, idx) => {
@@ -199,7 +202,7 @@ const ProductForm: React.FC = () => {
         productOptions,
       };
 
-      console.log('Payload to send:', payload); // ✅ Debug log
+      console.log("Payload to send:", payload); // ✅ Debug log
 
       if (isEdit && productId) {
         const response = await updateProduct(productId, payload);
@@ -231,14 +234,15 @@ const ProductForm: React.FC = () => {
             </BlankCard>
             <BlankCard>
               <BaseFileInput
-                label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์) (ไม่บังคับ)" 
+                label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์) (ไม่บังคับ)"
                 placeholder="เลือกภาพสินค้า (JPG, PNG, สูงสุด 2MB)"
                 multiple={true}
                 accept={fileTypeGroup.image}
                 maxFiles={3}
                 autoUpload={true}
                 toBucket={StorageBucket.PRODUCT_DETAIL}
-                onUploadComplete={(files) => { // ✅ รับ FileValue[]
+                onUploadComplete={(files) => {
+                  // ✅ รับ FileValue[]
                   formik.setFieldValue("detailImageIds", files);
                 }}
                 value={formik.values.detailImageIds}
@@ -262,14 +266,22 @@ const ProductForm: React.FC = () => {
           <Grid size={{ xs: 12 }}>
             <BlankCard>
               <Stack direction="row" spacing={2} justifyContent="space-between" p={2}>
-                <BaseButton preset="cancel" label="ยกเลิก" variant="outlined" color="error" href="/dashboard/pos/products" fullWidth={false} />
+                <BaseButton
+                  preset="cancel"
+                  label="ยกเลิก"
+                  variant="outlined"
+                  color="error"
+                  href="/dashboard/pos/products"
+                  fullWidth={false}
+                  loading={formik.isSubmitting || isUploading}
+                />
                 <BaseButton
                   preset="save"
                   label={id ? "อัปเดต" : "บันทึก"}
                   type="submit"
                   variant="contained"
                   color="info"
-                  loading={formik.isSubmitting}
+                  loading={formik.isSubmitting || isUploading}
                   fullWidth={false}
                 />
               </Stack>
@@ -281,8 +293,8 @@ const ProductForm: React.FC = () => {
       {/* Mobile: Floating Buttons */}
       {isMobile && (
         <>
-          <BaseFloatingButton preset="cancel" href="/dashboard/pos/products" disabled={formik.isSubmitting} />
-          <BaseFloatingButton preset="save" type="submit" disabled={formik.isSubmitting} />
+          <BaseFloatingButton preset="cancel" href="/dashboard/pos/products" disabled={formik.isSubmitting || isUploading} />
+          <BaseFloatingButton preset="save" type="submit" disabled={formik.isSubmitting || isUploading} />
         </>
       )}
     </form>

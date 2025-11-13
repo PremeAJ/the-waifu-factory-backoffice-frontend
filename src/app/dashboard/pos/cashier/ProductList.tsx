@@ -10,10 +10,8 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
   const { categories } = useCategories();
   const [activeProductId, setActiveProductId] = useState<string | null>(null);
 
-  // จัดกลุ่มสินค้าตามหมวดหมู่
   const groupedProducts = useMemo(() => {
     const groups: Record<string, { category: any; products: any[] }> = {};
-
     filteredProducts.forEach((product: any) => {
       const categoryId = product.categoryId || "uncategorized";
       
@@ -33,7 +31,29 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
       groups[categoryId].products.push(product);
     });
 
-    return Object.values(groups);
+    const sortedGroups = categories
+      .flatMap((mainCat: any) => {
+        const result = [];
+        
+        if (groups[mainCat.id]) {
+          result.push(groups[mainCat.id]);
+        }
+        
+        mainCat.subCategories?.forEach((subCat: any) => {
+          if (groups[subCat.id]) {
+            result.push(groups[subCat.id]);
+          }
+        });
+        
+        return result;
+      })
+      .filter((group) => group !== undefined); 
+
+    if (groups["uncategorized"]) {
+      sortedGroups.push(groups["uncategorized"]);
+    }
+
+    return sortedGroups;
   }, [filteredProducts, categories]);
 
   const handleProductClick = (product: any) => {
@@ -46,7 +66,6 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
     }
   };
 
-  // ✅ Skeleton Component
   const ProductSkeleton = () => (
     <Card
       variant="outlined"
@@ -83,15 +102,12 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
         }}
       >
         <Box sx={{ pb: 2 }}>
-          {/* Skeleton Categories */}
           {[1, 2, 3].map((categoryIdx) => (
             <Box key={categoryIdx} sx={{ mb: 3 }}>
-              {/* Category Header Skeleton */}
               <Box sx={{ mb: 2, pb: 1 }}>
                 <Skeleton variant="text" width={150} height={24} />
               </Box>
 
-              {/* Products Grid Skeleton */}
               <Grid
                 container
                 spacing={isMobile ? 1 : 2}
@@ -118,7 +134,7 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
       }}
     >
       <Box sx={{ pb: 2 }}>
-        {groupedProducts.map((group, groupIndex) => (
+        {groupedProducts.map((group) => (
           <Box key={group.category.id} sx={{ mb: 3 }}>
             {/* Category Header */}
             <Box
@@ -182,7 +198,7 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
                         flexDirection: "column",
                         alignItems: "center",
                         p: 0,
-                        height: isMobile ? 140 : 220,
+                        height: 220,
                         overflow: "hidden",
                         cursor: isOutOfStock ? "not-allowed" : "pointer",
                         opacity: isOutOfStock ? 0.5 : 1,
@@ -208,7 +224,7 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
                       <Box
                         sx={{
                           width: "100%",
-                          height: isMobile ? 60 : 120,
+                          height: 120,
                           overflow: "hidden",
                           bgcolor: "#f5f5f5",
                           display: "flex",
