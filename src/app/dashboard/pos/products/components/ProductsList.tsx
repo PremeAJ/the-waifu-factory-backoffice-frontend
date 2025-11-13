@@ -12,12 +12,14 @@ import ProductPreviewDialog from "./ProductPreviewDialog";
 import React, { useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import StockEditDialog from "./StockEditDialog";
 
 function ProductsList() {
   const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
+  const [stockEditState, setStockEditState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null }); // ✅ เพิ่ม
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
   const isLanguage = useProfile().appearance.isLanguage;
@@ -94,13 +96,18 @@ function ProductsList() {
     () => [
       {
         type: "view",
-        // ✅ แก้ไข: แสดงปุ่ม view สำหรับทั้ง parent และ sub-items
         hide: () => false,
         onClick: (item: any) => setPreviewState({ open: true, item }),
       },
       {
         type: "edit",
+        hide: (item: any) => !item.subItems,
         href: (item: any) => `/dashboard/pos/products/edit?id=${item.id}`,
+      },
+      {
+        type: "package",
+        hide: (item: any) => item.variant,
+        onClick: (item: any) => setStockEditState({ open: true, item }), 
       },
       {
         type: "delete",
@@ -143,6 +150,13 @@ function ProductsList() {
   };
 
   const handleClosePreview = () => setPreviewState({ open: false, item: null });
+  const handleCloseStockEdit = () => setStockEditState({ open: false, item: null });
+
+  const handleSaveStock = (updatedStock: number) => {
+    // TODO: เชื่อมต่อ API ในอนาคต
+    console.log("Stock updated:", updatedStock, stockEditState.item);
+    handleCloseStockEdit();
+  };
 
   return (
     <Box>
@@ -215,6 +229,13 @@ function ProductsList() {
         onClose={handleClosePreview}
         item={previewState.item}
         onPreviewVariant={handlePreviewVariant}
+      />
+      {/* ✅ เพิ่ม: Stock Edit Dialog */}
+      <StockEditDialog
+        open={stockEditState.open}
+        onClose={handleCloseStockEdit}
+        item={stockEditState.item}
+        onSave={handleSaveStock}
       />
     </Box>
   );

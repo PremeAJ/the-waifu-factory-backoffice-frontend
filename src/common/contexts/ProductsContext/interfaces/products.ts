@@ -38,6 +38,7 @@ export interface ProductOptionType {
   discountRate?: number;
   variantOption?: VariantOptionType | null;
   inventory?: InventoryType | null;
+  lowStockThreshold?: number;
   productFiles?: {
     id: string;
     bucket: string;
@@ -91,6 +92,7 @@ export interface ProductType {
   price?: string;
   displayPrice?: string;
   basePrice?: number;
+  lowStockThreshold?: number;
 }
 
 export interface CreateProductOptionPayload {
@@ -106,6 +108,7 @@ export interface CreateProductOptionPayload {
   thumbnailImageId?: string;
   thumbnailImageUrl?: string; 
   thumbnailOriginName?: string;
+  lowStockThreshold?:number;
 }
 
 export interface CreateProductPayload {

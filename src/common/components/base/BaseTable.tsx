@@ -27,7 +27,7 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import BaseTooltip from "./BaseTooltip";
-import { IconEdit, IconPlus, IconTrash, IconEye } from "@tabler/icons-react";
+import { IconEdit, IconPlus, IconTrash, IconEye, IconPackage } from "@tabler/icons-react";
 import config from "@/common/contexts/setting/config";
 import { defaultPageOptions } from "@/common/interface/paginate";
 import Link from "next/link"; // เพิ่ม
@@ -195,25 +195,26 @@ const BaseTable = <T extends readonly TableHeader[]>({
     create: {
       type: "create",
       icon: <IconPlus />,
-      // tooltip: "Add",
       color: "success",
     },
     edit: {
       type: "edit",
       icon: <IconEdit />,
-      // tooltip: "Edit",
       color: "warning",
+    },
+    package:{
+      type: "package",
+      icon: <IconPackage/>,
+      color: "success"
     },
     delete: {
       type: "delete",
       icon: <IconTrash />,
-      // tooltip: "Delete",
       color: "error",
     },
     view: {
       type: "view",
       icon: <IconEye />,
-      // tooltip: "View",
       color: "info",
     },
   };

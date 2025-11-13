@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, keyframes } from "@mui/material";
 import { CreateProductOptionPayload } from "@/common/contexts/ProductsContext/interfaces/products";
 import { IconList } from "@tabler/icons-react";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
@@ -121,9 +121,37 @@ export const getProductHeaders = (): any => [
     align: "center",
     width: "10%",
     render: (_val: any, item: any) => {
-      if (typeof item.totalStock === "number") return `${formatNumber(item.totalStock)} ${item.unit || ""}`;
-      if (item.inventory?.stock !== undefined) return `${formatNumber(item.inventory.stock)} ${item.unit || ""}`;
-      return "-";
+      let stockValue = 0;
+      let lowStockThreshold = 3;
+
+      if (typeof item.totalStock === "number") {
+        stockValue = item.totalStock;
+      } else if (item.inventory?.stock !== undefined) {
+        stockValue = item.inventory.stock;
+      }
+
+      // หาค่า lowStockThreshold จาก productOptions
+      if (item.productOptions && item.productOptions.length > 0) {
+        lowStockThreshold = item.productOptions[0].lowStockThreshold || 3;
+      }
+
+      const isLowStock = stockValue < lowStockThreshold && stockValue > 0;
+      const displayText = `${formatNumber(stockValue)} ${item.unit || ""}`;
+
+      return (
+        <Box
+          sx={{
+            display: "inline-block",
+            padding: "4px 8px",
+            borderRadius: 1,
+            ...(isLowStock && {
+              color: 'red',
+            }),
+          }}
+        >
+          {displayText}
+        </Box>
+      );
     },
   },
   {
