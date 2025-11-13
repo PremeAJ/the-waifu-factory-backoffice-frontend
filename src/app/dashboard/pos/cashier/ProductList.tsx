@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Grid, Card, Box, Typography, Divider } from "@mui/material";
 import Image from "next/image";
 import BlockIcon from "@mui/icons-material/Block";
@@ -8,6 +8,7 @@ import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 
 export default function ProductList({ filteredProducts, order, addToOrder, isMobile }: any) {
   const { categories } = useCategories();
+  const [activeProductId, setActiveProductId] = useState<string | null>(null);
 
   // จัดกลุ่มสินค้าตามหมวดหมู่
   const groupedProducts = useMemo(() => {
@@ -34,6 +35,16 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
 
     return Object.values(groups);
   }, [filteredProducts, categories]);
+
+  const handleProductClick = (product: any) => {
+    const isOutOfStock = product.stock !== undefined && product.stock - (order.find((item: any) => item.id === product.id)?.qty || 0) <= 0;
+    
+    if (!isOutOfStock) {
+      setActiveProductId(product.id);
+      addToOrder(product);
+      setTimeout(() => setActiveProductId(null), 150);
+    }
+  };
 
   return (
     <BaseScrollbar
@@ -95,11 +106,13 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
               {group.products.map((product: any) => {
                 const inOrder = order.find((item: any) => item.id === product.id)?.qty || 0;
                 const isOutOfStock = product.stock !== undefined && product.stock - inOrder <= 0;
+                const isActive = activeProductId === product.id;
+                
                 return (
                   <Grid size={{ xs: 6, sm: 3, md: 2 }} key={product.id}>
                     <Card
                       variant="outlined"
-                      onClick={() => !isOutOfStock && addToOrder(product)}
+                      onClick={() => handleProductClick(product)}
                       sx={{
                         display: "flex",
                         flexDirection: "column",
@@ -109,10 +122,21 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
                         overflow: "hidden",
                         cursor: isOutOfStock ? "not-allowed" : "pointer",
                         opacity: isOutOfStock ? 0.5 : 1,
-                        transition: "box-shadow 0.2s",
-                        "&:hover": {
-                          boxShadow: isOutOfStock ? undefined : 6,
-                          bgcolor: isOutOfStock ? undefined : "grey.100",
+                        transition: "all 0.18s",
+                        ...(isActive && {
+                          transform: "scale(0.96)",
+                          boxShadow: 6,
+                          bgcolor: "grey.100",
+                        }),
+                        "@media (hover: hover)": {
+                          "&:hover": {
+                            boxShadow: isOutOfStock ? undefined : 6,
+                            bgcolor: isOutOfStock ? undefined : "grey.100",
+                            transform: isOutOfStock ? undefined : "scale(1.02)",
+                          },
+                          "&:active": {
+                            transform: isOutOfStock ? undefined : "scale(0.96)",
+                          },
                         },
                         position: "relative",
                       }}
