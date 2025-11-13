@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from "react";
-import { Grid, Card, Box, Typography, Divider } from "@mui/material";
-import Image from "next/image";
-import BlockIcon from "@mui/icons-material/Block";
-import BaseScrollbar from "@/common/components/base/BaseScrollBar";
-import { useCategories } from "@/common/contexts/CategoriesContext";
+import { Grid, Card, Box, Typography, Skeleton } from "@mui/material";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
+import { useCategories } from "@/common/contexts/CategoriesContext";
+import BaseScrollbar from "@/common/components/base/BaseScrollBar";
+import BlockIcon from "@mui/icons-material/Block";
+import Image from "next/image";
+import React, { useMemo, useState } from "react";
 
-export default function ProductList({ filteredProducts, order, addToOrder, isMobile }: any) {
+export default function ProductList({ filteredProducts, order, addToOrder, isMobile, loading }: any) {
   const { categories } = useCategories();
   const [activeProductId, setActiveProductId] = useState<string | null>(null);
 
@@ -45,6 +45,70 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
       setTimeout(() => setActiveProductId(null), 150);
     }
   };
+
+  // ✅ Skeleton Component
+  const ProductSkeleton = () => (
+    <Card
+      variant="outlined"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        p: 0,
+        height: isMobile ? 140 : 220,
+        overflow: "hidden",
+      }}
+    >
+      <Skeleton
+        variant="rectangular"
+        width="100%"
+        height={isMobile ? 60 : 120}
+        sx={{ flexShrink: 0 }}
+      />
+      <Box sx={{ flex: 1, width: "100%", p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
+        <Skeleton variant="text" width="80%" height={20} sx={{ mx: "auto" }} />
+        <Skeleton variant="text" width="60%" height={16} sx={{ mx: "auto" }} />
+        <Skeleton variant="text" width="70%" height={14} sx={{ mx: "auto" }} />
+      </Box>
+    </Card>
+  );
+
+  // ✅ แสดง loading skeleton
+  if (loading) {
+    return (
+      <BaseScrollbar
+        sx={{
+          maxHeight: isMobile ? "none" : "calc(100vh - 180px)",
+          overflow: isMobile ? "visible" : "auto",
+        }}
+      >
+        <Box sx={{ pb: 2 }}>
+          {/* Skeleton Categories */}
+          {[1, 2, 3].map((categoryIdx) => (
+            <Box key={categoryIdx} sx={{ mb: 3 }}>
+              {/* Category Header Skeleton */}
+              <Box sx={{ mb: 2, pb: 1 }}>
+                <Skeleton variant="text" width={150} height={24} />
+              </Box>
+
+              {/* Products Grid Skeleton */}
+              <Grid
+                container
+                spacing={isMobile ? 1 : 2}
+                sx={{ alignItems: "flex-start" }}
+              >
+                {[1, 2, 3, 4, 5, 6].map((productIdx) => (
+                  <Grid size={{ xs: 6, sm: 3, md: 2 }} key={productIdx}>
+                    <ProductSkeleton />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          ))}
+        </Box>
+      </BaseScrollbar>
+    );
+  }
 
   return (
     <BaseScrollbar

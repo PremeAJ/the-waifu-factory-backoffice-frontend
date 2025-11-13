@@ -23,7 +23,7 @@ export default function POSPage() {
   const isMobile = useIsMobile();
   const { setIsCashierCategoriesSidebar } = useSidebarState();
   const { categories } = useCategories();
-  const { products } = useProducts();
+  const { products, loading } = useProducts();
 
   const mappedProducts = useMemo(() => {
     if (!products) return [];
@@ -124,7 +124,13 @@ export default function POSPage() {
           <Card sx={{ display: "flex", flexDirection: "column", height: isMobile ? "auto" : "100%" }}>
             <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
               <BaseSearchField value={search} onSearchChange={setSearch} sx={{ mb: 2 }} />
-              <ProductList filteredProducts={filteredProducts} order={order} addToOrder={addToOrder} isMobile={isMobile} />
+              <ProductList 
+                filteredProducts={filteredProducts} 
+                order={order} 
+                addToOrder={addToOrder} 
+                isMobile={isMobile}
+                loading={loading} // ✅ เพิ่ม
+              />
             </CardContent>
           </Card>
         </Grid>
