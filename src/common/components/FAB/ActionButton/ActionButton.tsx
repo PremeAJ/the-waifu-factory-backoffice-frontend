@@ -1,41 +1,31 @@
 "use client";
 import { AppearanceSettings } from "@/common/contexts/ProfileContext/interfaces/interface";
+import { backButtonRoute } from "./backButton";
+import { hideButtonRoute } from "./hideButton";
+import { homeButtonRoute } from "./homeButton";
 import { IconArrowLeft, IconMenu2, IconHome } from "@tabler/icons-react";
-import { PageUrl } from "@/common/constants/pageUrl";
+import { menuButtonRoute } from "./menuButton";
 import { useCustomize } from "@/common/contexts/setting/customizerContext";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
-import BaseFab from "../base/BaseFab";
+import BaseFab from "../../base/BaseFab";
 import useIsMobile from "@/common/utils/state/isMobile";
+
 
 type ActionType = "hide" | "back" | "menu" | "home";
 
-interface PageActionConfig {
+export interface PageActionConfig {
   pathname: string;
   action: ActionType;
 }
 
 const pageActionConfig: PageActionConfig[] = [
-  //* Hide button
-  { pathname: PageUrl.AUTH_SIGN_IN, action: "hide" },
-  { pathname: PageUrl.AUTH_SIGN_UP, action: "hide" },
-  { pathname: PageUrl.CALLBACK, action: "hide" },
-  { pathname: PageUrl.FORGOT_PASSWORD, action: "hide" },
-  { pathname: PageUrl.MAIN, action: "hide" },
-  { pathname: PageUrl.PRICING, action: "hide" },
-  
-  //* Back button
-  { pathname: "/dashboard/pos/cashier/category", action: "back" },
-  
-  //* Menu button
-  { pathname: "/dashboard", action: "menu" },
-  { pathname: "/dashboard/pos/products", action: "menu" },
-  { pathname: "/dashboard/pos/categories", action: "menu" },
-
-  //* Home button
-  { pathname: "/dashboard/pos/cashier", action: "home" },
+  ...hideButtonRoute,
+  ...backButtonRoute,
+  ...menuButtonRoute,
+  ...homeButtonRoute,
 ];
 
 const getActionForPath = (pathname: string): ActionType => {

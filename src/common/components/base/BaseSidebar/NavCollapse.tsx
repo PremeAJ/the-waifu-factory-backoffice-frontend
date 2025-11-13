@@ -14,7 +14,15 @@ import React, { useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import { useRouter } from "next/navigation";
 
-export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDirect, hideMenu, onClick }: NavCollapseProps) {
+export default function NavCollapse({ 
+  menu, 
+  level, 
+  pathWithoutLastPart, 
+  pathDirect, 
+  hideMenu, 
+  onClick,
+  enableNavigation = false // ✅ default true
+}: NavCollapseProps) {
   const isMobile = useIsMobile();
   const router = useRouter();
   const { isBorderRadius } = useProfile().appearance;
@@ -25,7 +33,6 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
 
   const menuIcon = Icon ? level > 1 ? <Icon stroke={1.5} size="1rem" /> : <Icon stroke={1.5} size="1.3rem" /> : null;
 
-  // ✅ แก้: toggle folder + navigate ถ้ามี href
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     
@@ -35,8 +42,8 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
     // ✅ 2. เรียก onClick callback ถ้ามี
     onClick?.(e);
     
-    // ✅ 3. Navigate ถ้า menu มี href
-    if (menu.href) {
+    // ✅ 3. Navigate ถ้า enableNavigation เป็น true และ menu มี href
+    if (enableNavigation && menu.href) {
       router.push(menu.href);
     }
   };
@@ -75,6 +82,7 @@ export default function NavCollapse({ menu, level, pathWithoutLastPart, pathDire
           pathDirect={pathDirect}
           hideMenu={hideMenu}
           onClick={onClick}
+          enableNavigation={enableNavigation} // ✅ ส่งต่อ
         />
       );
     } else {

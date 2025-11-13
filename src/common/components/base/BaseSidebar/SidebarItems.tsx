@@ -1,3 +1,5 @@
+"use client";
+
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { NavGroupType } from "./interface/sidebar";
 import { useContext } from "react";
@@ -14,9 +16,10 @@ import useIsMobile from "@/common/utils/state/isMobile";
 
 interface SidebarItemsProps {
   menuItems?: NavGroupType[];
+  enableNavigation?: boolean;
 }
 
-const SidebarItems = ({ menuItems = [] }: SidebarItemsProps) => {
+const SidebarItems = ({ menuItems = [], enableNavigation = false }: SidebarItemsProps) => {
   const currentPath = usePathname();
   const pathname = currentPath.split("/").slice(0, 4).join("/") || "/";
   const pathDirect = pathname;
@@ -27,7 +30,15 @@ const SidebarItems = ({ menuItems = [] }: SidebarItemsProps) => {
 
   const isMobile = useIsMobile();
   const hideMenu = !isMobile ? isCollapse == "mini_sidebar" : "";
+  
   if (isLoading) return <SidebarItemsSkeleton />;
+
+  const handleItemClick = () => {
+    if (enableNavigation && isMobile) {
+      setIsMobileSidebar(false);
+    }
+  };
+
   return (
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
@@ -43,12 +54,19 @@ const SidebarItems = ({ menuItems = [] }: SidebarItemsProps) => {
                 pathWithoutLastPart={pathWithoutLastPart}
                 level={1}
                 key={item.id}
-                onClick={() => setIsMobileSidebar(!isMobileSidebar)}
+                onClick={handleItemClick}
+                enableNavigation={enableNavigation}
               />
             );
           } else {
             return (
-              <NavItem item={item} key={item.id} pathDirect={pathDirect} hideMenu={hideMenu} onClick={() => setIsMobileSidebar(!isMobileSidebar)} />
+              <NavItem 
+                item={item} 
+                key={item.id} 
+                pathDirect={pathDirect} 
+                hideMenu={hideMenu} 
+                onClick={handleItemClick}
+              />
             );
           }
         })}
@@ -56,4 +74,5 @@ const SidebarItems = ({ menuItems = [] }: SidebarItemsProps) => {
     </Box>
   );
 };
+
 export default SidebarItems;

@@ -15,13 +15,11 @@ export type NavGroupType = {
   variant?: string;
   external?: boolean;
   level?: number;
-
   onClick?: (event: MouseEvent<HTMLElement>) => void;
 };
 
 export interface ItemType {
   item: NavGroupType;
-
   onClick: (event: MouseEvent<HTMLElement>) => void;
   hideMenu?: boolean | "";
   level?: number;
@@ -46,4 +44,5 @@ export interface NavCollapseProps {
   pathDirect: string;
   hideMenu?: boolean | "";
   onClick: (event: MouseEvent<HTMLElement>) => void;
+  enableNavigation?: boolean; // ✅ เพิ่ม
 }

@@ -5,13 +5,13 @@ import { EncryptProvider } from "@/common/contexts/EncryptContext";
 import { Metadata, Viewport } from "next";
 import { ProfileProvider } from "@/common/contexts/ProfileContext";
 import { ThemeAwareTopLoader } from "@/common/components/main/ThemeAwareComponents";
-import ActionButton from "@/common/components/FAB/ActionButton";
 import Head from "./head";
 import MyApp from "./app";
 import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 import React from "react";
 import ScrollToTopButton from "../common/components/FAB/ScrollToTopButton";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
+import ActionButton from "@/common/components/FAB/ActionButton/ActionButton";
 
 export const metadata: Metadata = {
   keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",

@@ -3,7 +3,7 @@
   "version": "0.0.7",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "dev:preview": "next build && next start",
     "build": "next build",
     "submit-version": "node scripts/version-increment.js",

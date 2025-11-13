@@ -2,6 +2,7 @@
 import { Grid, Card, CardContent, Badge } from "@mui/material";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import { useProducts } from "@/common/contexts/ProductsContext";
+import { useSearchParams } from "next/navigation";
 import { useSidebarState } from "@/common/contexts";
 import BaseSearchField from "@/common/components/base/BaseSearchField";
 import BottomNavigation from "@mui/material/BottomNavigation";
@@ -15,7 +16,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Sidebar from "./category/Sidebar";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import useIsMobile from "@/common/utils/state/isMobile";
-import { useSearchParams } from "next/navigation";
 
 export default function POSPage() {
   const [order, setOrder] = useState<{ id: string; name: string; price: number; qty: number; image: string; stock?: number }[]>([]);

@@ -14,9 +14,10 @@ interface SidebarProps {
   menuItems?: NavGroupType[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  enableNavigation?: boolean; // ✅ เพิ่ม
 }
 
-const Sidebar = ({ menuItems, open, onOpenChange }: SidebarProps) => {
+const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false }: SidebarProps) => {
   const isMobile = useIsMobile();
   const { isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { isCollapse } = useProfile().appearance;
@@ -76,7 +77,7 @@ const Sidebar = ({ menuItems, open, onOpenChange }: SidebarProps) => {
                   },
                 }}
               >
-                <SidebarItems menuItems={menuItems} />
+                <SidebarItems menuItems={menuItems} enableNavigation={enableNavigation} /> {/* ✅ ส่งต่อ */}
               </BaseScrollbar>
               <CurrentCompany />
             </Box>
@@ -133,7 +134,7 @@ const Sidebar = ({ menuItems, open, onOpenChange }: SidebarProps) => {
                 },
               }}
             >
-              <SidebarItems menuItems={menuItems} />
+              <SidebarItems menuItems={menuItems} enableNavigation={enableNavigation} /> {/* ✅ ส่งต่อ */}
             </Box>
             <CurrentCompany />
           </Box>

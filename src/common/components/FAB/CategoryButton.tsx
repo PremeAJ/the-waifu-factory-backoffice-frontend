@@ -14,7 +14,7 @@ type SidebarOpenButtonProps = {
 const CategoryButton: React.FC<SidebarOpenButtonProps> = ({ onClick, sx }) => {
   const isMobile = useIsMobile();
   const { isMobileSidebar } = useSidebarState();
-  if (isMobileSidebar || !isMobile) return null;
+  if (!isMobile) return null;
 
   return (
     <BaseFab
