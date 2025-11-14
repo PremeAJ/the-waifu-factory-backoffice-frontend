@@ -4,10 +4,48 @@ import { IconList } from "@tabler/icons-react";
 import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import BaseChip from "@/common/components/base/BaseChip";
 import BaseTooltip from "@/common/components/base/BaseTooltip";
+import BaseAvatar from "@/common/components/base/BaseAvatar";
 import formatNumber from "@/common/utils/formatNumber";
 import formatCurrency from "@/common/utils/formatCurrency";
 
 export const getProductHeaders = (): any => [
+  {
+    key: "avatar",
+    label: "",
+    align: "center",
+    width: "5%",
+    primary: false,
+    sortable: false,
+    render: (_val: any, item: any) => {
+      const imageUrl = (() => {
+        if (item.productFiles?.url) {
+          return item.productFiles.url;
+        }
+        if (Array.isArray(item.productFiles)) {
+          const detailImage = item.productFiles.find(
+            (f: any) => f?.uploadedFile?.bucket === "product_detail"
+          );
+          if (detailImage?.uploadedFile?.url) {
+            return detailImage.uploadedFile.url;
+          }
+        }
+        return undefined;
+      })();
+
+      return (  
+        <BaseAvatar
+          src={imageUrl}
+          alt={item.nameTh || "product"}
+          size={30}
+          lightbox={!!imageUrl}
+          caption={item.nameTh || "Product"}
+          sx={{
+            border: (theme) => `2px solid ${theme.palette.divider}`,
+          }}
+        />
+      );
+    },
+  },
   {
     key: "sku",
     label: "SKU / UPC",

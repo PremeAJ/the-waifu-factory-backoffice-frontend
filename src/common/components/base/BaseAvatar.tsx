@@ -9,12 +9,12 @@ export type BaseAvatarProps = Omit<MuiAvatarProps, "src" | "alt" | "sx" | "onCli
   src?: string;
   alt?: string;
   size?: number;
-  lightbox?: boolean;              // enable lightbox on click
+  lightbox?: boolean;
   caption?: string;
   showCounter?: boolean;
   sx?: SxProps<Theme>;
-  stopPropagationOnLightbox?: boolean; // prevent parent click (default true)
-  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void; // kept for non-lightbox usage
+  stopPropagationOnLightbox?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 const BaseAvatar: React.FC<BaseAvatarProps> = ({

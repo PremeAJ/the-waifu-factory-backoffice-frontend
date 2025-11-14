@@ -94,11 +94,11 @@ function ProductsList() {
 
   const actionTemplates = useMemo(
     () => [
-      {
-        type: "view",
-        hide: () => false,
-        onClick: (item: any) => setPreviewState({ open: true, item }),
-      },
+      // {
+      //   type: "view",
+      //   hide: () => false,
+      //   onClick: (item: any) => setPreviewState({ open: true, item }),
+      // },
       {
         type: "edit",
         hide: (item: any) => !item.subItems,
