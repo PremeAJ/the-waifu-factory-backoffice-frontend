@@ -8,6 +8,41 @@ import BaseAvatar from "@/common/components/base/BaseAvatar";
 import formatNumber from "@/common/utils/formatNumber";
 import formatCurrency from "@/common/utils/formatCurrency";
 import useIsMobile from "@/common/utils/state/isMobile";
+import { useMemo } from "react";
+
+// ✅ สร้าง component wrapper เพื่อใช้ hook
+const AvatarCell = ({ item }: { item: any }) => {
+  const isMobile = useIsMobile(); // ✅ ใช้ hook ที่นี่
+  const avatarSize = isMobile ? 80 : 30; // ✅ responsive size
+
+  const imageUrl = (() => {
+    if (item.productFiles?.url) {
+      return item.productFiles.url;
+    }
+    if (Array.isArray(item.productFiles)) {
+      const detailImage = item.productFiles.find(
+        (f: any) => f?.uploadedFile?.bucket === "product_detail"
+      );
+      if (detailImage?.uploadedFile?.url) {
+        return detailImage.uploadedFile.url;
+      }
+    }
+    return undefined;
+  })();
+
+  return (
+    <BaseAvatar
+      src={imageUrl}
+      alt={item.nameTh || "product"}
+      size={avatarSize}
+      lightbox={!!imageUrl}
+      caption={item.nameTh || "Product"}
+      sx={{
+        border: (theme) => `2px solid ${theme.palette.divider}`,
+      }}
+    />
+  );
+};
 
 export const getProductHeaders = (): any => [
   {
@@ -18,33 +53,7 @@ export const getProductHeaders = (): any => [
     primary: false,
     sortable: false,
     render: (_val: any, item: any) => {
-      const imageUrl = (() => {
-        if (item.productFiles?.url) {
-          return item.productFiles.url;
-        }
-        if (Array.isArray(item.productFiles)) {
-          const detailImage = item.productFiles.find(
-            (f: any) => f?.uploadedFile?.bucket === "product_detail"
-          );
-          if (detailImage?.uploadedFile?.url) {
-            return detailImage.uploadedFile.url;
-          }
-        }
-        return undefined;
-      })();
-
-      return (  
-        <BaseAvatar
-          src={imageUrl}
-          alt={item.nameTh || "product"}
-          size={30}
-          lightbox={!!imageUrl}
-          caption={item.nameTh || "Product"}
-          sx={{
-            border: (theme) => `2px solid ${theme.palette.divider}`,
-          }}
-        />
-      );
+      return <AvatarCell item={item} />; // ✅ ใช้ component แทน
     },
   },
   {
@@ -161,7 +170,7 @@ export const getProductHeaders = (): any => [
     width: "10%",
     render: (_val: any, item: any) => {
       let stockValue = 0;
-      let lowStockThreshold = 3; // ✅ default
+      let lowStockThreshold = 3;
 
       if (typeof item.totalStock === "number") {
         stockValue = item.totalStock;
