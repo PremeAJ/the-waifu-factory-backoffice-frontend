@@ -33,7 +33,6 @@ export const buildMenuItems = (categories: any[]): NavGroupType[] => {
     {
       id: "all",
       title: "ทั้งหมด",
-      icon: IconCircle,
       href: "/dashboard/pos/cashier",
     },
   ];
