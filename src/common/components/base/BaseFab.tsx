@@ -2,6 +2,7 @@ import { keyframes } from "@emotion/react";
 import Fab, { FabProps } from "@mui/material/Fab";
 import React, { useEffect, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
+import { useProfile } from "@/common/contexts";
 
 type FadeDirection = "up" | "down" | "left" | "right";
 
@@ -66,7 +67,7 @@ const BaseFab: React.FC<BaseFabProps> = ({
   const [visible, setVisible] = useState(open);
   const [exiting, setExiting] = useState(false);
   const isMobile = useIsMobile();
-
+  const {activeMode} = useProfile().appearance;
   useEffect(() => {
     if (open) {
       setVisible(true);
@@ -95,14 +96,15 @@ const BaseFab: React.FC<BaseFabProps> = ({
         backdropFilter: "blur(5px)",
         zIndex: 1000,
         WebkitBackdropFilter: "blur(5px)",
-        border: variant === "circular" ? "1px solid rgba(255,255,255,0.3)" : undefined,
-        boxShadow: "0 4px 30px rgba(0,0,0,0.1)",
+        boxShadow: "0 8px 30px rgba(0, 0, 0, 0.2), 0 4px 15px rgba(0, 0, 0, 0.1)", // ✅ เบาลง
         transition: "all 0.18s",
         "&:hover": {
           transform: "scale(1.07)",
+          boxShadow: "0 12px 40px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.15)", // ✅ เบาลง
         },
         "&:active": {
           transform: "scale(0.96)",
+          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08)", // ✅ เบาลง
         },
         animation: animation 
           ? `${exiting ? fadeOutMap[fadeDirection] : fadeInMap[fadeDirection]} 0.5s cubic-bezier(0.4,0,0.2,1)` 
