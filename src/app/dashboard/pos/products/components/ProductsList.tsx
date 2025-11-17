@@ -9,31 +9,43 @@ import { useProducts } from "@/common/contexts/ProductsContext";
 import { useProfile } from "@/common/contexts";
 import ProductFilterDialog from "./ProductFilterDialog";
 import ProductPreviewDialog from "./ProductPreviewDialog";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
 import StockEditDialog from "./StockEditDialog";
 
 function ProductsList() {
-  const { loading, products, search, setSearch, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
+  // ✅ ลบ mutate ออก เพราะไม่ใช้
+  const { loading, products, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
+
+  const [searchInput, setSearchInput] = useState<string>("");
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
-  const [stockEditState, setStockEditState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null }); // ✅ เพิ่ม
+  const [stockEditState, setStockEditState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
   const isMobile = useIsMobile();
   const isPortrait = useIsPortrait();
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
+  // ✅ Debounce search input - รอ 1 วิ แล้วค่อย setFilters
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFilters({ search: searchInput });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchInput, setFilters]);
+
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (filters.status && filters.status !== "all") count++;
-    if (filters.categoryId) count++; // ✅ เพิ่ม
-    if (filters.minPrice !== undefined && filters.minPrice !== null) count++; // ✅ เพิ่ม
-    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++; // ✅ เพิ่ม
-    if (filters.stockMin !== undefined && filters.stockMin !== null) count++; // ✅ เพิ่ม
-    if (filters.stockMax !== undefined && filters.stockMax !== null) count++; // ✅ เพิ่ม
-    if (filters.isLowStock) count++; // ✅ เพิ่ม
+    if (filters.categoryId) count++;
+    if (filters.minPrice !== undefined && filters.minPrice !== null) count++;
+    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++;
+    if (filters.stockMin !== undefined && filters.stockMin !== null) count++;
+    if (filters.stockMax !== undefined && filters.stockMax !== null) count++;
+    if (filters.isLowStock) count++;
     return count;
   }, [filters]);
 
@@ -45,7 +57,7 @@ function ProductsList() {
           ...prod,
           ...singleOption,
           id: prod.id,
-          lowStockThreshold: singleOption.lowStockThreshold || 3, // ✅ เพิ่ม
+          lowStockThreshold: singleOption.lowStockThreshold || 3,
           subItems: [],
         };
       }
@@ -59,7 +71,7 @@ function ProductsList() {
         )}`,
         unit: prod.unit,
         categories: prod.categories,
-        lowStockThreshold: opt.lowStockThreshold || 3, // ✅ เพิ่ม
+        lowStockThreshold: opt.lowStockThreshold || 3,
       }));
 
       const derivedStatus = subItems.some((opt: any) => {
@@ -83,10 +95,10 @@ function ProductsList() {
         displayPrice: priceDisplay,
         price: priceDisplay,
         subItems,
-        lowStockThreshold: prod.productOptions?.[0]?.lowStockThreshold || 3, // ✅ เพิ่ม
+        lowStockThreshold: prod.productOptions?.[0]?.lowStockThreshold || 3,
       };
     });
-  }, [products]);
+  }, [products, isLanguage]);
 
   const headers = useMemo(() => getProductHeaders(), []);
 
@@ -99,11 +111,6 @@ function ProductsList() {
 
   const actionTemplates = useMemo(
     () => [
-      // {
-      //   type: "view",
-      //   hide: () => false,
-      //   onClick: (item: any) => setPreviewState({ open: true, item }),
-      // },
       {
         type: "edit",
         hide: (item: any) => !item.subItems,
@@ -132,18 +139,16 @@ function ProductsList() {
     setPage(1);
   };
 
-  // ✅ แก้ไข: ฟังก์ชันจัดการการเปิด dialog ของ variant
   const handlePreviewVariant = (variant: any) => {
-    // แปลง variant เป็น item ที่ดูเหมือน product object
     const variantItem = {
       ...variant,
       id: variant.id,
       nameTh: variant.variantOption?.nameTh ?? variant.sku ?? "-",
       parentNameTh: previewState.item?.nameTh,
       unit: previewState.item?.unit,
-      categories: previewState.item?.categories, // ✅ เพิ่ม: ส่ง categories มาด้วย
-      subItems: [], // variant ไม่มี sub-items
-      productFiles: variant.productFiles, // ใช้ thumbnail ของ variant
+      categories: previewState.item?.categories,
+      subItems: [],
+      productFiles: variant.productFiles,
       sku: variant.sku,
       upc: variant.upc,
     };
@@ -158,7 +163,6 @@ function ProductsList() {
   const handleCloseStockEdit = () => setStockEditState({ open: false, item: null });
 
   const handleSaveStock = (updatedStock: number) => {
-    // TODO: เชื่อมต่อ API ในอนาคต
     console.log("Stock updated:", updatedStock, stockEditState.item);
     handleCloseStockEdit();
   };
@@ -167,19 +171,18 @@ function ProductsList() {
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
-          <BaseSearchField value={search} onSearchChange={setSearch} />
+          <BaseSearchField value={searchInput} onSearchChange={setSearchInput} />
         ) : (
           <Stack direction="row" spacing={2} alignItems="center">
             <BaseTextField
               fullWidth={false}
               name="search"
               placeholder="Search products"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               sx={{ width: 300 }}
               type="search"
             />
-            {/* ✅ ใช้ activeFilterCount */}
             <Badge badgeContent={activeFilterCount} color="error">
               <BaseButton
                 variant="outlined"
@@ -229,20 +232,10 @@ function ProductsList() {
         open={deleteDialogState.open}
         title="Confirm Delete"
       />
-      {/* ✅ แก้ไข: ส่ง onPreviewVariant callback ให้ ProductPreviewDialog */}
-      <ProductPreviewDialog
-        open={previewState.open}
-        onClose={handleClosePreview}
-        item={previewState.item}
-        onPreviewVariant={handlePreviewVariant}
-      />
-      {/* ✅ เพิ่ม: Stock Edit Dialog */}
-      <StockEditDialog
-        open={stockEditState.open}
-        onClose={handleCloseStockEdit}
-        item={stockEditState.item}
-        onSave={handleSaveStock}
-      />
+
+      <ProductPreviewDialog open={previewState.open} onClose={handleClosePreview} item={previewState.item} onPreviewVariant={handlePreviewVariant} />
+
+      <StockEditDialog open={stockEditState.open} onClose={handleCloseStockEdit} item={stockEditState.item} onSave={handleSaveStock} />
     </Box>
   );
 }

@@ -2,7 +2,7 @@
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
 import { useDialog } from "../DialogContext";
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useState, useEffect } from "react"; // ✅ เพิ่ม useEffect
 import type { CreateProductPayload, ProductFilters, ProductType, UpdateProductPayload } from "./interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
@@ -31,7 +31,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const endpoint = "/api/product";
 
   const setFiltersState = (newFilters: Partial<ProductFilters>) => {
-    setPage(1);
+    setPage(1); // ✅ reset page เมื่อ filter เปลี่ยน
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
@@ -89,6 +89,13 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setSize,
     isValidating,
   } = useSWRInfinite(getMobileKey, getFetcher);
+
+  // ✅ Reset mobile pagination เมื่อ filter เปลี่ยน
+  useEffect(() => {
+    if (isMobile) {
+      setSize(1);
+    }
+  }, [filters, isMobile, setSize]);
 
   const products = useMemo(() => {
     if (isMobile) return mobilePages?.flatMap((p: any) => p.data?.data ?? []) ?? [];
@@ -194,25 +201,25 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const value = {
-    products,
-    pageOptions,
-    page,
-    perPage,
-    setPage,
-    setPerPage,
+    actionLoading,
+    error,
     filters,
-    setFilters: setFiltersState,
-    loadMore,
     isLoadingMore,
     isReachingEnd,
     loading,
-    error,
-    actionLoading,
-    getProductById,
+    page,
+    pageOptions,
+    perPage,
+    products,
     createProduct,
-    updateProduct,
     deleteProduct,
+    getProductById,
+    loadMore,
     mutate: productsMutate,
+    setFilters: setFiltersState,
+    setPage,
+    setPerPage,
+    updateProduct,
   };
 
   return <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>;

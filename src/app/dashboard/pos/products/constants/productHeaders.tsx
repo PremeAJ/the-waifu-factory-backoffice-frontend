@@ -169,6 +169,7 @@ export const getProductHeaders = (): any => [
     align: "center",
     width: "10%",
     render: (_val: any, item: any) => {
+      console.log("🚀 ~ getProductHeaders ~ item:", item)
       let stockValue = 0;
       let lowStockThreshold = 3;
 
@@ -183,7 +184,7 @@ export const getProductHeaders = (): any => [
       } else if (item.productOptions && item.productOptions.length > 0) {
         lowStockThreshold = item.productOptions[0].lowStockThreshold || 3;
       }
-      const isLowStock = stockValue <= lowStockThreshold && stockValue > 0;
+      const isLowStock = stockValue <= lowStockThreshold;
       const displayText = `${formatNumber(stockValue)} ${item.unit || ""}`;
 
       return (
@@ -197,7 +198,7 @@ export const getProductHeaders = (): any => [
             }),
           }}
         >
-          {displayText}
+          {stockValue === 0 ? 'สินค้าหมด' : displayText}
         </Box>
       );
     },
