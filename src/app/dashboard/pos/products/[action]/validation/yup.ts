@@ -40,7 +40,6 @@ export const validationSchema = Yup.object({
   taxClassId: Yup.string().trim().required("กรุณาเลือกประเภทภาษี"),
   taxRate: Yup.number().min(0, "อัตราภาษีต้องไม่ติดลบ").typeError("กรุณากรอกอัตราภาษีเป็นตัวเลข"),
 
-  // ✅ แก้ไข: ใช้ .when("productOptions") แทน .when("variant") เพื่อหลีกเลี่ยง cyclic dependency
   variant: Yup.object().when("productOptions", {
     is: (productOptions: any) => Array.isArray(productOptions) && productOptions.length > 1,
     then: (schema) => Yup.object({
@@ -69,12 +68,18 @@ export const validationSchema = Yup.object({
         thumbnailImageUrl: Yup.string().notRequired(),
         thumbnailOriginName: Yup.string().notRequired(),
 
-        // ✅ แก้ไข: ใช้ .when("$productOptions") เพื่อตรวจสอบจำนวน productOptions
         variantOption: Yup.mixed().when("$productOptions", {
           is: (productOptions: any) => Array.isArray(productOptions) && productOptions.length > 1,
           then: (schema) => schema.required("กรุณาเลือกตัวเลือกย่อย"),
           otherwise: (schema) => schema.notRequired(),
         }),
+
+        // ✅ เพิ่ม lowStockThreshold
+        lowStockThreshold: Yup.number()
+          .min(0, "สินค้าเหลือน้อยต้องไม่ติดลบ")
+          .typeError("กรุณากรอกจำนวนเป็นตัวเลข")
+          .nullable()
+          .notRequired(),
 
         inventory: Yup.object({
           status: Yup.mixed<ApiInventoryStatus>().oneOf(["active", "inactive", "deleted"]).required("กรุณาเลือกสถานะสต็อก"),

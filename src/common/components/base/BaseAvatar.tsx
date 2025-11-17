@@ -53,7 +53,7 @@ const BaseAvatar: React.FC<BaseAvatarProps> = ({
         src={src}
         alt={alt}
         onClick={handleClick}
-        sx={{ width: size, height: size, cursor: lightbox ? "zoom-in" : "pointer", ...(sx as any) }}
+        sx={{ width: size, height: size, cursor: "pointer", ...(sx as any) }}
         {...rest}
       />
       <BaseLightBox

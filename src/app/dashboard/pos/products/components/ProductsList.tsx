@@ -42,11 +42,11 @@ function ProductsList() {
           ...prod,
           ...singleOption,
           id: prod.id,
+          lowStockThreshold: singleOption.lowStockThreshold || 3, // ✅ เพิ่ม
           subItems: [],
         };
       }
 
-      // ✅ แก้ไข: เพิ่ม categories ให้กับ subItems
       const subItems: any[] = (prod.productOptions || []).map((opt: any) => ({
         ...opt,
         nameTh: `${I18nString(isLanguage, prod.variant?.nameTh, prod.variant?.nameEn)} : ${I18nString(
@@ -55,7 +55,8 @@ function ProductsList() {
           opt.variantOption.nameEn
         )}`,
         unit: prod.unit,
-        categories: prod.categories, // ✅ เพิ่ม: ส่ง categories จาก parent product
+        categories: prod.categories,
+        lowStockThreshold: opt.lowStockThreshold || 3, // ✅ เพิ่ม
       }));
 
       const derivedStatus = subItems.some((opt: any) => {
@@ -79,6 +80,7 @@ function ProductsList() {
         displayPrice: priceDisplay,
         price: priceDisplay,
         subItems,
+        lowStockThreshold: prod.productOptions?.[0]?.lowStockThreshold || 3, // ✅ เพิ่ม
       };
     });
   }, [products]);
@@ -107,7 +109,7 @@ function ProductsList() {
       {
         type: "package",
         hide: (item: any) => item.variant,
-        onClick: (item: any) => setStockEditState({ open: true, item }), 
+        onClick: (item: any) => setStockEditState({ open: true, item }),
       },
       {
         type: "delete",

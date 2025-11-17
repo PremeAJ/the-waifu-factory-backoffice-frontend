@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import { IconArrowLeft, IconArrowRight, IconMaximize, IconZoomIn, IconZoomInArea, IconZoomOut,  } from "@tabler/icons-react";
+import { IconArrowLeft, IconArrowRight, IconMaximize, IconZoomIn, IconZoomOut } from "@tabler/icons-react";
 import BaseDialog from "./BaseDialog";
 import type { SxProps, Theme } from "@mui/material/styles";
 
@@ -37,18 +37,19 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
   sx,
 }) => {
   const [internalIndex, setInternalIndex] = useState(0);
-  const [zoom, setZoom] = useState(1); // ✅ เพิ่ม zoom state
-  const [panX, setPanX] = useState(0); // ✅ pan position
+  const [zoom, setZoom] = useState(1);
+  const [panX, setPanX] = useState(0);
   const [panY, setPanY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false); // ✅ drag state
+  const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [touchDistance, setTouchDistance] = useState(0); // ✅ pinch distance
 
   const hasExternalIndex = typeof currentIndex === "number";
   const index = hasExternalIndex ? (currentIndex as number) : internalIndex;
 
   useEffect(() => {
     if (!hasExternalIndex && open) setInternalIndex(0);
-    setZoom(1); // ✅ reset zoom เมื่อ open
+    setZoom(1);
     setPanX(0);
     setPanY(0);
   }, [open, hasExternalIndex, index]);
@@ -72,7 +73,6 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
     else setInternalIndex(next);
   };
 
-  // ✅ Zoom handlers
   const handleZoomIn = () => {
     setZoom(prev => Math.min(prev + 0.25, 3));
   };
@@ -87,7 +87,57 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
     setPanY(0);
   };
 
-  // ✅ Drag handlers
+  // ✅ Helper: calculate distance between two touch points
+  const getTouchDistance = (touches: TouchList) => {
+    if (touches.length < 2) return 0;
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // ✅ Helper: calculate center point between two touch points
+  const getTouchCenter = (touches: TouchList) => {
+    if (touches.length < 2) return { x: 0, y: 0 };
+    return {
+      x: (touches[0].clientX + touches[1].clientX) / 2,
+      y: (touches[0].clientY + touches[1].clientY) / 2,
+    };
+  };
+
+  // ✅ Touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      setTouchDistance(getTouchDistance(e.touches));
+    } else if (e.touches.length === 1 && zoom > 1) {
+      setIsDragging(true);
+      setDragStart({
+        x: e.touches[0].clientX - panX,
+        y: e.touches[0].clientY - panY,
+      });
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const newDistance = getTouchDistance(e.touches);
+      const scale = newDistance / touchDistance;
+      const newZoom = Math.max(1, Math.min(zoom * scale, 3));
+      setZoom(newZoom);
+      setTouchDistance(newDistance);
+    } else if (e.touches.length === 1 && isDragging && zoom > 1) {
+      setPanX(e.touches[0].clientX - dragStart.x);
+      setPanY(e.touches[0].clientY - dragStart.y);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    setTouchDistance(0);
+  };
+
+  // Mouse handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     if (zoom <= 1) return;
     setIsDragging(true);
@@ -104,7 +154,6 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
     setIsDragging(false);
   };
 
-  // ✅ Wheel zoom
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
@@ -146,12 +195,16 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
           backgroundColor: "black",
           overflow: "hidden",
           cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "default",
+          touchAction: zoom > 1 ? "none" : "auto", // ✅ ป้องกัน default pinch
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {canNavigate && (
           <IconButton
@@ -172,7 +225,6 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
           </IconButton>
         )}
 
-        {/* ✅ Zoom controls */}
         <Box
           sx={{
             position: "absolute",
@@ -236,6 +288,8 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
             transition: isDragging ? "none" : "transform 0.2s ease-out",
             userSelect: "none",
             pointerEvents: "auto",
+            WebkitTouchCallout: "none",
+            WebkitUserSelect: "none",
           }}
         />
 

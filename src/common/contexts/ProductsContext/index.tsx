@@ -118,7 +118,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       setActionLoading(true);
       const cleanedPayload = cleanPayloadForApi(payload);
-      console.log('Create payload:', cleanedPayload); // ✅ Debug log
       const response = await postFetcher(endpoint, cleanedPayload);
       if (response.error) {
         showError({ message: response?.message });
@@ -137,7 +136,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       setActionLoading(true);
       const cleanedPayload = cleanPayloadForApi(payload);
-      console.log('Update payload:', cleanedPayload); // ✅ Debug log
       const response = await putFetcher(`${endpoint}/${id}`, cleanedPayload);
       if (response.error) {
         showError({ message: response?.message });

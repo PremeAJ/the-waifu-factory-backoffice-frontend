@@ -22,7 +22,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
   const discountType = getIn(formik.values, `${optionPath}.discountType`);
   const discountRate = Number(getIn(formik.values, `${optionPath}.discountRate`) ?? 0);
   const status = getIn(formik.values, `${optionPath}.inventory.status`);
-  
+
   // ✅ ดึงทั้ง id, url, originName
   const thumbnailImageId = getIn(formik.values, `${optionPath}.thumbnailImageId`);
   const thumbnailImageUrl = getIn(formik.values, `${optionPath}.thumbnailImageUrl`);
@@ -37,17 +37,19 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
   // ✅ สร้าง thumbnailValue - ต้องเปลี่ยนเมื่อ formik values เปลี่ยน
   const thumbnailValue = useMemo(() => {
     if (!thumbnailImageId) return [];
-    
-    return [{
-      id: thumbnailImageId,
-      url: thumbnailImageUrl,
-      originName: thumbnailOriginName
-    }];
+
+    return [
+      {
+        id: thumbnailImageId,
+        url: thumbnailImageUrl,
+        originName: thumbnailOriginName,
+      },
+    ];
   }, [thumbnailImageId, thumbnailImageUrl, thumbnailOriginName]);
 
   // Debug log
   useEffect(() => {
-    console.log('ProductOptionFields thumbnailValue:', thumbnailValue);
+    console.log("ProductOptionFields thumbnailValue:", thumbnailValue);
   }, [thumbnailValue]);
 
   useEffect(() => {
@@ -224,22 +226,36 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           />
         </Grid>
       )}
+      <Grid size={{ xs: 12 }} container>
+        {renderPricingFields()}
 
-      {renderPricingFields()}
-
-      <Grid size={{ xs: 6, md: 3 }} alignSelf={"flex-end"}>
-        <BaseNumberField
-          formik={formik}
-          name={`${optionPath}.inventory.stock`}
-          label="จำนวนสต็อก"
-          tooltip="จำนวนสินค้าที่มีอยู่ในคลัง"
-          fullWidth
-          suffix={unit}
-          allowDecimal={false}
-          allowNegative={false}
-        />
+        <Grid size={{ xs: 6, md: 3 }} alignSelf={"flex-end"}>
+          <BaseNumberField
+            formik={formik}
+            name={`${optionPath}.inventory.stock`}
+            label="จำนวนสต็อก"
+            tooltip="จำนวนสินค้าที่มีอยู่ในคลัง"
+            fullWidth
+            suffix={unit}
+            allowDecimal={false}
+            allowNegative={false}
+          />
+        </Grid>
+        <Grid size={{ xs: 6, md: 3 }} alignSelf={"flex-end"}>
+          <BaseNumberField
+            formik={formik}
+            name={`${optionPath}.lowStockThreshold`}
+            label="สินค้าเหลือน้อย"
+            tooltip="เมื่อจำนวนสินค้าถึงจุดนี้ ระบบจะแจ้งเตือนให้ทราบ"
+            placeholder="3"
+            fullWidth
+            suffix={unit}
+            allowDecimal={false}
+            allowNegative={false}
+          />
+        </Grid>
       </Grid>
-      <Grid size={{ xs: 6, md: 3 }} justifyContent={"flex-end"}>
+      <Grid size={{ xs: 12, md: 3 }} justifyContent={"flex-end"}>
         <BaseDropdown
           formik={formik}
           name={`${optionPath}.inventory.status`}
@@ -251,8 +267,7 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           fullWidth
         />
       </Grid>
-      
-      {/* ✅ ใช้ thumbnailValue ที่มี url */}
+
       <Grid size={{ xs: 12 }}>
         <BaseFileInput
           required
@@ -263,18 +278,18 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
           autoUpload={true}
           toBucket={StorageBucket.PRODUCT_THUMBNAIL}
           onUploadComplete={(files) => {
-            console.log('onUploadComplete files:', files); // ✅ Debug log
+            console.log("onUploadComplete files:", files); // ✅ Debug log
             const file = files[0];
             if (file) {
               // ✅ บันทึกทั้ง id, url, originName
               formik.setFieldValue(`${optionPath}.thumbnailImageId`, file.id);
               formik.setFieldValue(`${optionPath}.thumbnailImageUrl`, file.url);
               formik.setFieldValue(`${optionPath}.thumbnailOriginName`, file.originName);
-              
-              console.log('Set formik values:', {
+
+              console.log("Set formik values:", {
                 id: file.id,
                 url: file.url,
-                originName: file.originName
+                originName: file.originName,
               });
             } else {
               formik.setFieldValue(`${optionPath}.thumbnailImageId`, undefined);

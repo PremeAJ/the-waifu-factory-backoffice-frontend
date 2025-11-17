@@ -7,6 +7,7 @@ import BaseTooltip from "@/common/components/base/BaseTooltip";
 import BaseAvatar from "@/common/components/base/BaseAvatar";
 import formatNumber from "@/common/utils/formatNumber";
 import formatCurrency from "@/common/utils/formatCurrency";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 export const getProductHeaders = (): any => [
   {
@@ -160,7 +161,7 @@ export const getProductHeaders = (): any => [
     width: "10%",
     render: (_val: any, item: any) => {
       let stockValue = 0;
-      let lowStockThreshold = 3;
+      let lowStockThreshold = 3; // ✅ default
 
       if (typeof item.totalStock === "number") {
         stockValue = item.totalStock;
@@ -168,11 +169,11 @@ export const getProductHeaders = (): any => [
         stockValue = item.inventory.stock;
       }
 
-      // หาค่า lowStockThreshold จาก productOptions
-      if (item.productOptions && item.productOptions.length > 0) {
+      if (item.lowStockThreshold !== undefined) {
+        lowStockThreshold = item.lowStockThreshold;
+      } else if (item.productOptions && item.productOptions.length > 0) {
         lowStockThreshold = item.productOptions[0].lowStockThreshold || 3;
       }
-
       const isLowStock = stockValue <= lowStockThreshold && stockValue > 0;
       const displayText = `${formatNumber(stockValue)} ${item.unit || ""}`;
 

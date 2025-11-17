@@ -17,6 +17,7 @@ const Sidebar = () => {
       open={isCashierCategoriesSidebar}
       onOpenChange={setIsCashierCategoriesSidebar}
       enableNavigation
+      autoCloseSidebar={false}
     />
   );
 };

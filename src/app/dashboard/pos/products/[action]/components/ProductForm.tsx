@@ -49,6 +49,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
           thumbnailImageId: undefined,
           thumbnailImageUrl: undefined,
           thumbnailOriginName: undefined,
+          lowStockThreshold: 3, // ✅ เพิ่ม default 3
           variantOption: undefined,
           inventory: { status: "active", stock: 0 },
         },
@@ -56,7 +57,6 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     };
   }
 
-  // ✅ แก้ไข: แปลง productFiles เป็น array of objects
   const details = (p.productFiles || [])
     .filter((f) => f.uploadedFile?.bucket?.includes("detail"))
     .map((f) => ({
@@ -64,7 +64,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
       url: f.uploadedFile?.url,
       originName: f.uploadedFile?.originName,
     }))
-    .filter((f) => f.id); // กรองเฉพาะที่มี id
+    .filter((f) => f.id);
 
   const productOptions = (p.productOptions || []).map((opt) => ({
     upc: opt.upc ?? "",
@@ -77,6 +77,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     thumbnailImageId: opt.productFiles?.id ?? undefined,
     thumbnailImageUrl: opt.productFiles?.url ?? undefined,
     thumbnailOriginName: opt.productFiles?.originName ?? undefined,
+    lowStockThreshold: Number(opt.lowStockThreshold ?? 3), // ✅ เพิ่ม
     variantOption: opt.variantOption ?? undefined,
     inventory: opt.inventory ?? { status: "active", stock: 0 },
   })) as CreateProductOptionPayload[];
@@ -90,7 +91,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
     unit: p.unit ?? "ชิ้น",
     categoryId: p.categories?.id ?? undefined,
     branchId: undefined,
-    detailImageIds: details as any, // ✅ ใช้ array of objects
+    detailImageIds: details as any,
     tags: p.tags ?? [],
     isTaxInclusive: p.isTaxInclusive ?? true,
     taxClassId: p.taxClassId ?? "none",
@@ -110,6 +111,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
             thumbnailImageId: undefined,
             thumbnailImageUrl: undefined,
             thumbnailOriginName: undefined,
+            lowStockThreshold: 3, // ✅ default 3
             variantOption: undefined,
             inventory: { status: "active", stock: 0 },
           },
@@ -122,7 +124,7 @@ const ProductForm: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isUploading } = useUpload();
-  const id = searchParams?.get("id") ?? undefined; // มี id = โหมดแก้ไข
+  const id = searchParams?.get("id") ?? undefined;
   const { data: session } = useSession();
   const { createProduct, updateProduct, getProductById } = useProducts();
 
@@ -155,7 +157,6 @@ const ProductForm: React.FC = () => {
       const isEdit = Boolean(id);
       const productId = id;
 
-      // ✅ แปลง detailImageIds เป็น string[]
       const detailImageIds = (values.detailImageIds || [])
         .map((item: any) => {
           if (typeof item === "string") return item;
@@ -163,7 +164,6 @@ const ProductForm: React.FC = () => {
         })
         .filter(Boolean) as string[];
 
-      // ✅ แปลง productOptions - ลบ url และ originName
       const productOptions = (values.productOptions || []).map((opt, idx) => {
         const { thumbnailImageUrl, thumbnailOriginName, ...rest } = opt;
         return {
@@ -176,6 +176,7 @@ const ProductForm: React.FC = () => {
           discountType: rest.discountType,
           discountRate: Number(rest.discountRate ?? 0),
           thumbnailImageId: rest.thumbnailImageId || undefined,
+          lowStockThreshold: Number(rest.lowStockThreshold ?? 3), 
           variantOption: rest.variantOption,
           inventory: {
             status: rest.inventory.status,
@@ -261,7 +262,6 @@ const ProductForm: React.FC = () => {
           </Stack>
         </Grid>
 
-        {/* Desktop: ปุ่มด้านล่าง */}
         {!isMobile && (
           <Grid size={{ xs: 12 }}>
             <BlankCard>

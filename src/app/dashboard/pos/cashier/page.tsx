@@ -27,10 +27,9 @@ export default function POSPage() {
   const { categories } = useCategories();
   const { products, loading } = useProducts();
 
-  // ✅ อ่าน category จาก query parameter หรือ reset เป็น null (all)
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
-    setSelectedCategory(categoryFromUrl || null); // ✅ ถ้าไม่มี query param ให้เป็น null = all
+    setSelectedCategory(categoryFromUrl || null); 
   }, [searchParams]);
 
   const mappedProducts = useMemo(() => {
@@ -73,7 +72,6 @@ export default function POSPage() {
   const filteredProducts = useMemo(() => {
     let filtered = mappedProducts;
 
-    // ✅ ถ้า selectedCategory เป็น null ให้แสดงทั้งหมด (all)
     if (selectedCategory) {
       const category = categories.find((c: any) => c.id === selectedCategory);
       

@@ -21,7 +21,6 @@ export interface VariantOptionType {
 }
 
 export interface InventoryType {
-  // response contains stock, status, branchId
   stock: number;
   status: ApiInventoryStatus;
   branchId?: string;
