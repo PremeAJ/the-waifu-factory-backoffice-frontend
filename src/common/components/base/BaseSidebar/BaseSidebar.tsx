@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+import { DrawerProps } from "@mui/material/Drawer";
 
 interface BaseSidebarProps {
   menuItems?: NavGroupType[];
@@ -10,9 +11,11 @@ interface BaseSidebarProps {
   onOpenChange?: (open: boolean) => void;
   enableNavigation?: boolean; 
   autoCloseSidebar?: boolean; 
+  anchor?: DrawerProps["anchor"]
 }
 
-const BaseSidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, autoCloseSidebar=true }: BaseSidebarProps) => {
+const BaseSidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, autoCloseSidebar=true,anchor='left' }: BaseSidebarProps) => {
+  console.log("🚀 ~ BaseSidebar ~ anchor:", anchor)
   const pathname = usePathname();
   const {setIsMobileSidebar, isMobileSidebar} = useSidebarState();
   useEffect(() => {
@@ -22,6 +25,7 @@ const BaseSidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, 
   }, [pathname]);
   return (
     <Sidebar 
+      anchor
       menuItems={menuItems} 
       open={open} 
       onOpenChange={onOpenChange} 

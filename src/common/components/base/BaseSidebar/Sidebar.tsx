@@ -3,7 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import BaseScrollbar from "@/common/components/base/BaseScrollBar";
 import Box from "@mui/material/Box";
 import config from "@/common/contexts/setting/config";
-import Drawer from "@mui/material/Drawer";
+import Drawer, { DrawerProps } from "@mui/material/Drawer";
 import SidebarItems from "./SidebarItems";
 import useIsMobile from "@/common/utils/state/isMobile";
 import { useProfile } from "@/common/contexts/ProfileContext";
@@ -14,10 +14,18 @@ interface SidebarProps {
   menuItems?: NavGroupType[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  enableNavigation?: boolean; // ✅ เพิ่ม
+  enableNavigation?: boolean;
+  anchor?: DrawerProps["anchor"]; // ✅ เพิ่ม anchor prop
 }
 
-const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false }: SidebarProps) => {
+const Sidebar = ({ 
+  menuItems, 
+  open, 
+  onOpenChange, 
+  enableNavigation = false,
+  anchor = "left" // ✅ default "left"
+}: SidebarProps) => {
+  console.log("🚀 ~ Sidebar ~ anchor:", anchor)
   const isMobile = useIsMobile();
   const { isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { isCollapse } = useProfile().appearance;
@@ -28,6 +36,11 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false }: Si
 
   const isOpen = open !== undefined ? open : isMobileSidebar;
   const handleOpenChange = onOpenChange || setIsMobileSidebar;
+  const validAnchor: DrawerProps["anchor"] = (anchor && ["left", "right", "top", "bottom"].includes(anchor as string)) 
+    ? (anchor as DrawerProps["anchor"]) 
+    : "left";
+  // ✅ Check ถ้า anchor เป็น top หรือ bottom
+  const isVerticalAnchor = anchor === "top" || anchor === "bottom";
 
   return (
     <>
@@ -35,24 +48,32 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false }: Si
         <Box
           sx={{
             zIndex: 99,
-            width: toggleWidth,
-            flexShrink: 0,
-            ...(isCollapse == "mini_sidebar" && {
+            ...(isVerticalAnchor 
+              ? { width: "100%" } 
+              : { width: toggleWidth, flexShrink: 0 }
+            ),
+            ...(isCollapse == "mini_sidebar" && !isVerticalAnchor && {
               position: "absolute",
             }),
           }}
         >
           <Drawer
-            anchor="left"
+            anchor={validAnchor}
             open
             variant="permanent"
             slotProps={{
               paper: {
                 sx: {
-                  transition: theme.transitions.create("width", {
-                    duration: theme.transitions.duration.shortest,
-                  }),
-                  width: toggleWidth,
+                  transition: theme.transitions.create(
+                    isVerticalAnchor ? "height" : "width",
+                    {
+                      duration: theme.transitions.duration.shortest,
+                    }
+                  ),
+                  ...(isVerticalAnchor
+                    ? { height: SidebarWidth }
+                    : { width: toggleWidth }
+                  ),
                   boxSizing: "border-box",
                   overflow: "hidden",
                 },
@@ -61,14 +82,20 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false }: Si
           >
             <Box
               sx={{
-                height: "100%",
-                mt: 8,
+                ...(isVerticalAnchor
+                  ? { width: "100%", height: "100%" }
+                  : { height: "100%" }
+                ),
+                mt: isVerticalAnchor ? 0 : 8,
                 overflow: "hidden",
               }}
             >
               <BaseScrollbar
                 sx={{
-                  height: "calc(100% - 120px)",
+                  ...(isVerticalAnchor
+                    ? { width: "100%", height: "100%" }
+                    : { height: "calc(100% - 120px)" }
+                  ),
                   "& .simplebar-content-wrapper": {
                     overflow: "hidden auto !important",
                   },
@@ -77,24 +104,37 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false }: Si
                   },
                 }}
               >
-                <SidebarItems menuItems={menuItems} enableNavigation={enableNavigation} /> {/* ✅ ส่งต่อ */}
+                <SidebarItems 
+                  menuItems={menuItems} 
+                  enableNavigation={enableNavigation} 
+                />
               </BaseScrollbar>
-              <CurrentCompany />
+              {!isVerticalAnchor && <CurrentCompany />}
             </Box>
           </Drawer>
         </Box>
       ) : (
         <Drawer
-          anchor="left"
+          anchor={validAnchor}
           open={isOpen}
           onClose={() => handleOpenChange(false)}
           variant="temporary"
           slotProps={{
             paper: {
               sx: {
-                width: SidebarWidth,
+                ...(isVerticalAnchor
+                  ? { height: "auto", maxHeight: "50vh", width: "100%" }
+                  : { width: SidebarWidth }
+                ),
                 border: "0 !important",
-                borderRadius: "0 24px 24px 0",
+                borderRadius:
+                  anchor === "left"
+                    ? "0 24px 24px 0"
+                    : anchor === "right"
+                    ? "24px 0 0 24px"
+                    : anchor === "top"
+                    ? "0 0 24px 24px"
+                    : "24px 24px 0 0", // ✅ bottom
                 boxShadow: (theme) => theme.shadows[8],
                 overflow: "auto",
                 "&::-webkit-scrollbar": {
@@ -118,7 +158,7 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false }: Si
             sx={{
               height: "100%",
               display: "flex",
-              flexDirection: "column",
+              flexDirection: isVerticalAnchor ? "row" : "column",
             }}
           >
             <Box
@@ -128,15 +168,18 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false }: Si
                 WebkitOverflowScrolling: "touch",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
-                mt: 8,
+                mt: isVerticalAnchor ? 0 : 8,
                 "&::-webkit-scrollbar": {
                   display: "none",
                 },
               }}
             >
-              <SidebarItems menuItems={menuItems} enableNavigation={enableNavigation} /> {/* ✅ ส่งต่อ */}
+              <SidebarItems 
+                menuItems={menuItems} 
+                enableNavigation={enableNavigation} 
+              />
             </Box>
-            <CurrentCompany />
+            {!isVerticalAnchor && <CurrentCompany />}
           </Box>
         </Drawer>
       )}
