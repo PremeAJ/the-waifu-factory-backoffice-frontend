@@ -25,7 +25,7 @@ const BaseSidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, 
   }, [pathname]);
   return (
     <Sidebar 
-      anchor
+      anchor={anchor}
       menuItems={menuItems} 
       open={open} 
       onOpenChange={onOpenChange} 

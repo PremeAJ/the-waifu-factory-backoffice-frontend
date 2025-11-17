@@ -123,7 +123,7 @@ const Sidebar = ({
             paper: {
               sx: {
                 ...(isVerticalAnchor
-                  ? { height: "auto", maxHeight: "50vh", width: "100%" }
+                  ? { height: "auto",  width: "100%" }
                   : { width: SidebarWidth }
                 ),
                 border: "0 !important",
