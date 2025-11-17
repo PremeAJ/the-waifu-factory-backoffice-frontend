@@ -10,10 +10,13 @@ import FilterDialog from "@/common/components/dialogs/FilterDialog";
 import { OptionType } from "@/common/components/base/BaseDropdown";
 
 interface FilterValues {
-  status?: "all" | "active" | "inactive";
+  status?: "all" | "active" | "inactive" | "deleted";
   categoryId?: string;
   minPrice?: number;
   maxPrice?: number;
+  stockMin?: number;
+  stockMax?: number;
+  isLowStock?: boolean;
 }
 
 interface ProductFilterDialogProps {
@@ -39,7 +42,15 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
   };
 
   const handleReset = () => {
-    const resetFilters = { status: "all" as const, categoryId: "", minPrice: undefined, maxPrice: undefined };
+    const resetFilters: FilterValues = {
+      status: "all",
+      categoryId: "",
+      minPrice: undefined,
+      maxPrice: undefined,
+      stockMin: undefined,
+      stockMax: undefined,
+      isLowStock: false,
+    };
     setFilters(resetFilters);
     onApply(resetFilters);
     onClose();
@@ -49,6 +60,12 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
     { value: "all", text: "ทั้งหมด" },
     { value: "active", text: "เปิดใช้งาน" },
     { value: "inactive", text: "ปิดใช้งาน" },
+    { value: "deleted", text: "ลบแล้ว" },
+  ];
+
+  const isLowStockOptions = [
+    { value: false, text: "ทั้งหมด" },
+    { value: true, text: "สต็อกต่ำ เท่านั้น" },
   ];
 
   const categoryOptions: OptionType[] = useMemo(() => {
@@ -56,7 +73,6 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
     const opts: OptionType[] = [];
 
     categoryDropdown.forEach((cat: any) => {
-      console.log("🚀 ~ ProductFilterDialog ~ cat:", cat);
       const parentText = `${cat.nameTh}${cat.nameEn ? ` (${cat.nameEn})` : ""}`;
       opts.push({
         value: String(cat.id),
@@ -82,9 +98,22 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
     return opts;
   }, [categoryDropdown]);
 
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filters.status && filters.status !== "all") count++;
+    if (filters.categoryId) count++;
+    if (filters.minPrice !== undefined && filters.minPrice !== null) count++;
+    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++;
+    if (filters.stockMin !== undefined && filters.stockMin !== null) count++;
+    if (filters.stockMax !== undefined && filters.stockMax !== null) count++;
+    if (filters.isLowStock) count++;
+    return count;
+  }, [filters]);
+
   return (
     <FilterDialog open={open} onClose={onClose} onApply={handleApply} onReset={handleReset} title="Filter Products">
       <Grid container spacing={2}>
+        {/* ✅ Status */}
         <Grid size={{ md: 6, xs: 12 }}>
           <BaseDropdown
             name="status"
@@ -101,6 +130,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
           />
         </Grid>
 
+        {/* ✅ Category */}
         <Grid size={{ md: 6, xs: 12 }}>
           <BaseDropdown
             name="categoryId"
@@ -115,6 +145,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
           />
         </Grid>
 
+        {/* ✅ Price Range */}
         <Grid size={{ xs: 6 }}>
           <BaseNumberField
             name="minPrice"
@@ -148,6 +179,52 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
             minimumFractionDigits={0}
             allowDecimal={true}
             allowNegative={false}
+          />
+        </Grid>
+
+        {/* ✅ Stock Range */}
+        <Grid size={{ xs: 6 }}>
+          <BaseNumberField
+            name="stockMin"
+            label="สต็อกต่ำสุด"
+            placeholder="0"
+            value={filters.stockMin ?? ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              setFilters({ ...filters, stockMin: val === "" || val === null || val === undefined ? undefined : Number(val) });
+            }}
+            maximumFractionDigits={0}
+            minimumFractionDigits={0}
+            allowDecimal={false}
+            allowNegative={false}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 6 }}>
+          <BaseNumberField
+            name="stockMax"
+            label="สต็อกสูงสุด"
+            placeholder="9,999,999"
+            value={filters.stockMax ?? ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              setFilters({ ...filters, stockMax: val === "" || val === null || val === undefined ? undefined : Number(val) });
+            }}
+            maximumFractionDigits={0}
+            minimumFractionDigits={0}
+            allowDecimal={false}
+            allowNegative={false}
+          />
+        </Grid>
+
+        {/* ✅ Low Stock */}
+        <Grid size={{ xs: 12 }}>
+          <BaseDropdown
+            name="isLowStock"
+            label="สต็อก"
+            options={isLowStockOptions}
+            value={filters.isLowStock ?? false}
+            onChange={(newValue) => setFilters({ ...filters, isLowStock: newValue as boolean })}
           />
         </Grid>
       </Grid>

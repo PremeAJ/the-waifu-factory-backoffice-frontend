@@ -16,7 +16,16 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const { showError } = useDialog();
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(20);
-  const [filters, setFilters] = useState<ProductFilters>({ search: "", status: "all" });
+  const [filters, setFilters] = useState<ProductFilters>({ 
+    search: "", 
+    status: "all",
+    categoryId: "",
+    minPrice: undefined,
+    maxPrice: undefined,
+    stockMin: undefined,
+    stockMax: undefined,
+    isLowStock: false,
+  });
   const [actionLoading, setActionLoading] = useState<boolean>(false);
 
   const endpoint = "/api/product";
@@ -26,14 +35,28 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
-  const desktopKey = useMemo(() => {
-    if (isMobile) return null;
+  // ✅ สร้าง URL params จาก filters
+  const buildQueryParams = () => {
     const qp = new URLSearchParams();
     qp.set("page", String(page));
     qp.set("perPage", String(perPage));
+    
     if (filters.search) qp.set("search", filters.search);
     if (filters.status && filters.status !== "all") qp.set("status", filters.status);
-    return `${endpoint}?${qp.toString()}`;
+    if (filters.categoryId) qp.set("categoryId", filters.categoryId);
+    if (filters.minPrice !== undefined && filters.minPrice !== null) qp.set("minPrice", String(filters.minPrice));
+    if (filters.maxPrice !== undefined && filters.maxPrice !== null) qp.set("maxPrice", String(filters.maxPrice));
+    if (filters.stockMin !== undefined && filters.stockMin !== null) qp.set("stockMin", String(filters.stockMin));
+    if (filters.stockMax !== undefined && filters.stockMax !== null) qp.set("stockMax", String(filters.stockMax));
+    if (filters.isLowStock) qp.set("isLowStock", String(filters.isLowStock));
+    
+    return qp.toString();
+  };
+
+  const desktopKey = useMemo(() => {
+    if (isMobile) return null;
+    const params = buildQueryParams();
+    return `${endpoint}?${params}`;
   }, [isMobile, page, perPage, filters]);
 
   const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher, swrOption);
@@ -44,8 +67,16 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const qp = new URLSearchParams();
     qp.set("page", String(pageIndex + 1));
     qp.set("perPage", String(perPage));
+    
     if (filters.search) qp.set("search", filters.search);
     if (filters.status && filters.status !== "all") qp.set("status", filters.status);
+    if (filters.categoryId) qp.set("categoryId", filters.categoryId);
+    if (filters.minPrice !== undefined && filters.minPrice !== null) qp.set("minPrice", String(filters.minPrice));
+    if (filters.maxPrice !== undefined && filters.maxPrice !== null) qp.set("maxPrice", String(filters.maxPrice));
+    if (filters.stockMin !== undefined && filters.stockMin !== null) qp.set("stockMin", String(filters.stockMin));
+    if (filters.stockMax !== undefined && filters.stockMax !== null) qp.set("stockMax", String(filters.stockMax));
+    if (filters.isLowStock) qp.set("isLowStock", String(filters.isLowStock));
+    
     return `${endpoint}?${qp.toString()}`;
   };
 
@@ -103,7 +134,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  // ✅ แปลง payload ก่อนส่ง API - ลบ thumbnailImageUrl และ thumbnailOriginName
   const cleanPayloadForApi = (payload: CreateProductPayload | UpdateProductPayload) => {
     return {
       ...payload,

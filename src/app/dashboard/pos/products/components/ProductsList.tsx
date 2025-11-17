@@ -28,9 +28,12 @@ function ProductsList() {
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (filters.status && filters.status !== "all") count++;
-    if (filters.categoryId) count++;
-    if (filters.minPrice !== undefined && filters.minPrice !== null) count++;
-    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++;
+    if (filters.categoryId) count++; // ✅ เพิ่ม
+    if (filters.minPrice !== undefined && filters.minPrice !== null) count++; // ✅ เพิ่ม
+    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++; // ✅ เพิ่ม
+    if (filters.stockMin !== undefined && filters.stockMin !== null) count++; // ✅ เพิ่ม
+    if (filters.stockMax !== undefined && filters.stockMax !== null) count++; // ✅ เพิ่ม
+    if (filters.isLowStock) count++; // ✅ เพิ่ม
     return count;
   }, [filters]);
 
@@ -176,6 +179,7 @@ function ProductsList() {
               sx={{ width: 300 }}
               type="search"
             />
+            {/* ✅ ใช้ activeFilterCount */}
             <Badge badgeContent={activeFilterCount} color="error">
               <BaseButton
                 variant="outlined"

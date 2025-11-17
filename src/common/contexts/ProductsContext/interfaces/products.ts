@@ -157,4 +157,10 @@ export type ProductStatus = "active" | "inactive" | "deleted";
 export interface ProductFilters {
   search: string;
   status: ProductStatus | "all";
+  categoryId?: string; // ✅ เพิ่ม
+  minPrice?: number; // ✅ เพิ่ม
+  maxPrice?: number; // ✅ เพิ่ม
+  stockMin?: number; // ✅ เพิ่ม
+  stockMax?: number; // ✅ เพิ่ม
+  isLowStock?: boolean; // ✅ เพิ่ม
 }
