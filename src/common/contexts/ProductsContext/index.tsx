@@ -2,7 +2,7 @@
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
 import { useDialog } from "../DialogContext";
-import React, { createContext, useContext, useMemo, useState, useEffect } from "react"; // ✅ เพิ่ม useEffect
+import React, { createContext, useContext, useMemo, useState } from "react";
 import type { CreateProductPayload, ProductFilters, ProductType, UpdateProductPayload } from "./interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
@@ -31,7 +31,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const endpoint = "/api/product";
 
   const setFiltersState = (newFilters: Partial<ProductFilters>) => {
-    setPage(1); // ✅ reset page เมื่อ filter เปลี่ยน
+    setPage(1);
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
@@ -89,13 +89,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setSize,
     isValidating,
   } = useSWRInfinite(getMobileKey, getFetcher);
-
-  // ✅ Reset mobile pagination เมื่อ filter เปลี่ยน
-  useEffect(() => {
-    if (isMobile) {
-      setSize(1);
-    }
-  }, [filters, isMobile, setSize]);
 
   const products = useMemo(() => {
     if (isMobile) return mobilePages?.flatMap((p: any) => p.data?.data ?? []) ?? [];
