@@ -1,6 +1,7 @@
 import { NavGroupType } from "./interface/sidebar";
 import Sidebar from "./Sidebar";
-
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 interface BaseSidebarProps {
   menuItems?: NavGroupType[];
   open?: boolean;
@@ -10,6 +11,7 @@ interface BaseSidebarProps {
 }
 
 const BaseSidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, autoCloseSidebar=true }: BaseSidebarProps) => {
+  const pathname = usePathname();
   useEffect(() => {
     if (open && onOpenChange && autoCloseSidebar) {
       onOpenChange(false);
