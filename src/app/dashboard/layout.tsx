@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const path = usePathname();
   const isMobile = useIsMobile();
   const isSubMenu = useIsSubMenu();
-  const { openSwitchCompany, setOpenSwitchCompany } = useSidebarState();
+  const { openSwitchCompany, setOpenSwitchCompany, isMobileSidebar,setIsMobileSidebar } = useSidebarState();
 
   if (ignoreLayout.includes(path)) return <>{children}</>;
 
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <DashboardGuard>
         <CompanyProvider>
           <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-            <BaseSidebar menuItems={dashboardSidebarItem} />
+            <BaseSidebar menuItems={dashboardSidebarItem} open={isMobileSidebar}/>
             <PageWrapper
               className="page-wrapper"
               sx={{

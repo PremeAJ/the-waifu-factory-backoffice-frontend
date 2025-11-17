@@ -2,27 +2,30 @@ import { NavGroupType } from "./interface/sidebar";
 import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useSidebarState } from "@/common/contexts/SidebarStateContext";
+
 interface BaseSidebarProps {
   menuItems?: NavGroupType[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  enableNavigation?: boolean; // ✅ เพิ่ม
-  autoCloseSidebar?: boolean; // ✅ เพิ่ม
+  enableNavigation?: boolean; 
+  autoCloseSidebar?: boolean; 
 }
 
 const BaseSidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, autoCloseSidebar=true }: BaseSidebarProps) => {
   const pathname = usePathname();
+  const {setIsMobileSidebar, isMobileSidebar} = useSidebarState();
   useEffect(() => {
-    if (open && onOpenChange && autoCloseSidebar) {
-      onOpenChange(false);
+    if (autoCloseSidebar) {
+      setIsMobileSidebar(false);
     }
-  }, [pathname, autoCloseSidebar, open, onOpenChange]);
+  }, [pathname]);
   return (
     <Sidebar 
       menuItems={menuItems} 
       open={open} 
       onOpenChange={onOpenChange} 
-      enableNavigation={enableNavigation} // ✅ ส่งต่อ
+      enableNavigation={enableNavigation} 
     />
   );
 };

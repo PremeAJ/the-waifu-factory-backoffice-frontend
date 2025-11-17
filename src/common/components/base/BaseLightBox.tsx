@@ -42,7 +42,7 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
   const [panY, setPanY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [touchDistance, setTouchDistance] = useState(0); // ✅ pinch distance
+  const [touchDistance, setTouchDistance] = useState(0);
 
   const hasExternalIndex = typeof currentIndex === "number";
   const index = hasExternalIndex ? (currentIndex as number) : internalIndex;
@@ -87,16 +87,16 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
     setPanY(0);
   };
 
-  // ✅ Helper: calculate distance between two touch points
-  const getTouchDistance = (touches: TouchList) => {
+  // ✅ แก้: ใช้ React.TouchList
+  const getTouchDistance = (touches: React.TouchList) => {
     if (touches.length < 2) return 0;
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
     return Math.sqrt(dx * dx + dy * dy);
   };
 
-  // ✅ Helper: calculate center point between two touch points
-  const getTouchCenter = (touches: TouchList) => {
+  // ✅ แก้: ใช้ React.TouchList
+  const getTouchCenter = (touches: React.TouchList) => {
     if (touches.length < 2) return { x: 0, y: 0 };
     return {
       x: (touches[0].clientX + touches[1].clientX) / 2,
@@ -104,7 +104,6 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
     };
   };
 
-  // ✅ Touch handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       e.preventDefault();
@@ -137,7 +136,6 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
     setTouchDistance(0);
   };
 
-  // Mouse handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     if (zoom <= 1) return;
     setIsDragging(true);
@@ -195,7 +193,7 @@ const BaseLightBox: React.FC<BaseLightBoxProps> = ({
           backgroundColor: "black",
           overflow: "hidden",
           cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "default",
-          touchAction: zoom > 1 ? "none" : "auto", // ✅ ป้องกัน default pinch
+          touchAction: zoom > 1 ? "none" : "auto",
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
