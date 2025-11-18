@@ -10,7 +10,7 @@ import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseFloatingButton, { FloatingButtonPosition } from "@/common/components/base/BaseFloatingButton";
 import BaseSearchField from "@/common/components/base/BaseSearchField";
-import BaseTable from "@/common/components/base/BaseTable";
+import BaseTable from "@/common/components/base/BaseTable/BaseTable";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import CategoryDialog from "./CategoryDialog";
 import CategoryFilterDialog from "./CategoryFilterDialog";
