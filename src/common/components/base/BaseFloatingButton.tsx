@@ -1,7 +1,7 @@
 "use client";
 import { FabProps } from "@mui/material/Fab";
-import { Badge, BadgeProps } from "@mui/material";
-import { IconPlus, IconAdjustmentsAlt, IconDeviceFloppy, IconX, IconFilter } from "@tabler/icons-react";
+import { Badge } from "@mui/material";
+import { IconPlus, IconDeviceFloppy, IconX, IconFilter } from "@tabler/icons-react";
 import BaseFab from "./BaseFab";
 import React from "react";
 
@@ -18,7 +18,7 @@ interface BaseFloatingButtonProps extends Omit<FabProps, "children"> {
   icon?: React.ReactNode;
   position?: FloatingButtonPosition;
   preset?: "create" | "filter" | "save" | "cancel";
-  badge?: number;
+  badgeContent?: number;
 }
 
 const getPositionStyles = (position: FloatingButtonPosition) => {
@@ -50,7 +50,7 @@ const presetMap: Record<
   cancel: { position: FloatingButtonPosition.BOTTOM_LEFT, icon: <IconX />, color: "error" },
 };
 
-const BaseFloatingButton: React.FC<BaseFloatingButtonProps> = ({ icon, onClick, position, preset, sx, color, badge = 0, ...rest }) => {
+const BaseFloatingButton: React.FC<BaseFloatingButtonProps> = ({ icon, onClick, position, preset, sx, color, badgeContent = 0, ...rest }) => {
   // preset provides defaults, explicit props override preset
   const presetDefaults = preset ? presetMap[preset] : undefined;
   const finalPosition = position ?? presetDefaults?.position ?? FloatingButtonPosition.TOP_RIGHT;
@@ -69,7 +69,7 @@ const BaseFloatingButton: React.FC<BaseFloatingButtonProps> = ({ icon, onClick, 
       }}
       {...rest}
     >
-      <Badge badgeContent={badge} color="error">
+      <Badge badgeContent={badgeContent} color="error">
         {finalIcon}
       </Badge>
     </BaseFab>

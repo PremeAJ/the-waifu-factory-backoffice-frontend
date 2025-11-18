@@ -196,7 +196,7 @@ function ProductsList() {
           <BaseButton variant="contained" href="/dashboard/pos/products/create" fullWidth={false} preset="add" label="Add Product" />
         )}
 
-        {isMobile && <BaseFloatingButton preset="filter" onClick={() => setOpenFilterDialog(true)} badge={activeFilterCount} />}
+        {isMobile && <BaseFloatingButton preset="filter" onClick={() => setOpenFilterDialog(true)} badgeContent={activeFilterCount} />}
       </Stack>
 
       <BaseTable
