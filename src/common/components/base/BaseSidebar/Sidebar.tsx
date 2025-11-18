@@ -25,7 +25,6 @@ const Sidebar = ({
   enableNavigation = false,
   anchor = "left" // ✅ default "left"
 }: SidebarProps) => {
-  console.log("🚀 ~ Sidebar ~ anchor:", anchor)
   const isMobile = useIsMobile();
   const { isMobileSidebar, setIsMobileSidebar } = useSidebarState();
   const { isCollapse } = useProfile().appearance;

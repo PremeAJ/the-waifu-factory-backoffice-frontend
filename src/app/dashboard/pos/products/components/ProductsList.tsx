@@ -7,16 +7,19 @@ import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useProfile } from "@/common/contexts";
+import { useRouter } from "next/navigation";
+import config from "@/common/contexts/setting/config";
 import ProductFilterDialog from "./ProductFilterDialog";
 import ProductPreviewDialog from "./ProductPreviewDialog";
-import React, { useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import StockEditDialog from "./StockEditDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
 
 function ProductsList() {
+  const searchParams = new URLSearchParams();
+  const router = useRouter();
   const { loading, products, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
-
   const [searchInput, setSearchInput] = useState<string>("");
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
@@ -26,6 +29,16 @@ function ProductsList() {
   const isPortrait = useIsPortrait();
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
+
+  const createQueryString = useCallback(
+    (name: string, value: any) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -126,10 +139,11 @@ function ProductsList() {
   );
 
   const handlePageChange = (event: unknown, newPage: number) => {
+    router.push("/dashboard/pos/products" + "?" + createQueryString("page", newPage + 1));
     setPage(newPage + 1);
   };
 
-  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPerPage(parseInt(event.target.value, 10));
     setPage(1);
   };
@@ -158,9 +172,14 @@ function ProductsList() {
   const handleCloseStockEdit = () => setStockEditState({ open: false, item: null });
 
   const handleSaveStock = (updatedStock: number) => {
-    console.log("Stock updated:", updatedStock, stockEditState.item);
     handleCloseStockEdit();
   };
+
+  useEffect(() => {
+    searchParams.set("page", config.defaultPage.toString());
+    searchParams.set("perPage", config.defaultPerPage.toString());
+    router.push(`?${searchParams.toString()}`);
+  }, []);
 
   return (
     <Box>

@@ -15,7 +15,6 @@ interface BaseSidebarProps {
 }
 
 const BaseSidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, autoCloseSidebar=true,anchor='left' }: BaseSidebarProps) => {
-  console.log("🚀 ~ BaseSidebar ~ anchor:", anchor)
   const pathname = usePathname();
   const {setIsMobileSidebar, isMobileSidebar} = useSidebarState();
   useEffect(() => {

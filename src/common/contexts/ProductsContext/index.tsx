@@ -32,7 +32,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const endpoint = "/api/product";
 
   const setFiltersState = (newFilters: Partial<ProductFilters>) => {
-    console.log("🚀 ~ setFiltersState ~ newFilters:", newFilters)
     setPage(1);
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
