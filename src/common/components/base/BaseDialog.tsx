@@ -203,6 +203,7 @@ const BaseDialog: React.FC<BaseDialogProps> = ({
               {cancelText && <BaseButton label={cancelText} onClick={onCancel || onClose} disabled={loading || cancelDisabled} fullWidth={false} variant="outlined" />}
               {confirmText && (
                 <BaseButton
+                  type='submit'
                   label={confirmText}
                   onClick={onConfirm}
                   disabled={loading || confirmDisabled}

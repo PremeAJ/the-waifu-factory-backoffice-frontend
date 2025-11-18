@@ -71,9 +71,9 @@ const LightThemeColors = [
     name: "GREEN_THEME",
     palette: {
       primary: {
-        main: "#0A7EA4",
+        main: "#5ca40aff",
         light: "#F4F9FB",
-        dark: "#06769A",
+        dark: "#185a0bff",
         contrastText: "#ffffff",
       },
       secondary: {

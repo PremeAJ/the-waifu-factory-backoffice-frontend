@@ -169,7 +169,6 @@ export const getProductHeaders = (): any => [
     align: "center",
     width: "10%",
     render: (_val: any, item: any) => {
-      console.log("🚀 ~ getProductHeaders ~ item:", item)
       let stockValue = 0;
       let lowStockThreshold = 3;
 

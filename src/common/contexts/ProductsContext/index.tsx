@@ -8,14 +8,15 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { swrOption } from "@/app/api/swrOption";
+import config from "../setting/config";
 
 export const ProductsContext = createContext<any>({} as any);
 
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isMobile = useIsMobile();
   const { showError } = useDialog();
-  const [page, setPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(20);
+  const [page, setPage] = useState<number>(config.defaultPage);
+  const [perPage, setPerPage] = useState<number>(config.defaultPerPage);
   const [filters, setFilters] = useState<ProductFilters>({ 
     search: "", 
     status: "all",
@@ -31,6 +32,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const endpoint = "/api/product";
 
   const setFiltersState = (newFilters: Partial<ProductFilters>) => {
+    console.log("🚀 ~ setFiltersState ~ newFilters:", newFilters)
     setPage(1);
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };

@@ -5,12 +5,11 @@ import { getProductHeaders } from "../constants/productHeaders";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
-import { useDebounceSearch } from "@/common/hooks/useDebounceSearch";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useProfile } from "@/common/contexts";
 import ProductFilterDialog from "./ProductFilterDialog";
 import ProductPreviewDialog from "./ProductPreviewDialog";
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState } from "react";
 import StockEditDialog from "./StockEditDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
@@ -28,18 +27,10 @@ function ProductsList() {
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
-  const handleSearchChange = useCallback(
-    (search: string) => {
-      setFilters({ ...filters, search });
-    },
-    [filters, setFilters]
-  );
-
-  useDebounceSearch({
-    searchInput,
-    onSearch: handleSearchChange,
-    delay: 1000,
-  });
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    setFilters({ ...filters, search: value });
+  };
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -175,7 +166,7 @@ function ProductsList() {
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
-          <BaseSearchField value={searchInput} onSearchChange={setSearchInput} />
+          <BaseSearchField value={searchInput} onSearchChange={handleSearchChange} />
         ) : (
           <Stack direction="row" spacing={2} alignItems="center">
             <BaseTextField
@@ -183,7 +174,7 @@ function ProductsList() {
               name="search"
               placeholder="Search products"
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               sx={{ width: 300 }}
               type="search"
             />
@@ -205,7 +196,7 @@ function ProductsList() {
           <BaseButton variant="contained" href="/dashboard/pos/products/create" fullWidth={false} preset="add" label="Add Product" />
         )}
 
-        {isMobile && <BaseFloatingButton preset="filter" onClick={() => setOpenFilterDialog(true)}  badge={activeFilterCount}/>}
+        {isMobile && <BaseFloatingButton preset="filter" onClick={() => setOpenFilterDialog(true)} badge={activeFilterCount} />}
       </Stack>
 
       <BaseTable
@@ -238,7 +229,6 @@ function ProductsList() {
       />
 
       <ProductPreviewDialog open={previewState.open} onClose={handleClosePreview} item={previewState.item} onPreviewVariant={handlePreviewVariant} />
-
       <StockEditDialog open={stockEditState.open} onClose={handleCloseStockEdit} item={stockEditState.item} onSave={handleSaveStock} />
     </Box>
   );
