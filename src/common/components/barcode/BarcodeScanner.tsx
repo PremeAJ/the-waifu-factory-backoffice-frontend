@@ -33,19 +33,15 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
       if (codeReader.current) codeReader.current.reset();
       stopScanning();
     };
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     if (!isScanning) stopScanning();
-    // eslint-disable-next-line
   }, [isScanning]);
 
   const startScanning = async () => {
     try {
       setError("");
-      
-      // ✅ ตรวจสอบ mediaDevices
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error("ส่วนหนึ่งของ API ไม่ได้รับการรองรับในบริษัท");
       }
@@ -64,7 +60,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       setStream(mediaStream);
       setHasPermission(true);
-      
+
       const videoTrack = mediaStream.getVideoTracks()[0];
       if (!videoTrack) throw new Error("ไม่สามารถรับวิดีโอ track ได้");
 
@@ -98,7 +94,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
       setIsScanning(false);
       setHasPermission(false);
       let msg = "เกิดข้อผิดพลาดในการเข้าถึงกล้อง";
-      
+
       if (err?.name === "NotAllowedError") {
         msg = "กรุณาอนุญาตให้เข้าถึงกล้องเพื่อใช้งานฟีเจอร์นี้";
       } else if (err?.name === "NotFoundError") {
@@ -110,7 +106,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
       } else if (err?.message) {
         msg = err.message;
       }
-      
+
       console.error("🚀 ~ startScanning error:", err);
       setError(msg);
       if (onError) onError(msg);
@@ -155,17 +151,16 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
     }
   };
 
-   const playSound = () => {
-     if (!audioRef.current) {
-       audioRef.current = new Audio("/sounds/beep.wav");
-       audioRef.current.volume = 0.3;
-     }
-     audioRef.current.currentTime = 0;
-     audioRef.current.play().catch((err) => {
-       console.error("🚀 ~ playSound error:", err); // ✅ เพิ่ม debug
-     });
-   };
-
+  const playSound = () => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio("/sounds/beep.wav");
+      audioRef.current.volume = 0.3;
+    }
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch((err) => {
+      console.error("🚀 ~ playSound error:", err); // ✅ เพิ่ม debug
+    });
+  };
 
   const clearResults = () => setScanResults([]);
 

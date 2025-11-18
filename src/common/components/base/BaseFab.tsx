@@ -66,8 +66,6 @@ const BaseFab: React.FC<BaseFabProps> = ({
 }) => {
   const [visible, setVisible] = useState(open);
   const [exiting, setExiting] = useState(false);
-  const isMobile = useIsMobile();
-  const {activeMode} = useProfile().appearance;
   useEffect(() => {
     if (open) {
       setVisible(true);

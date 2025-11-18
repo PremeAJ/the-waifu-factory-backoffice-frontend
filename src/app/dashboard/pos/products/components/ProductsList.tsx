@@ -5,17 +5,17 @@ import { getProductHeaders } from "../constants/productHeaders";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
+import { useDebounceSearch } from "@/common/hooks/useDebounceSearch";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useProfile } from "@/common/contexts";
 import ProductFilterDialog from "./ProductFilterDialog";
 import ProductPreviewDialog from "./ProductPreviewDialog";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useCallback } from "react";
+import StockEditDialog from "./StockEditDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
-import StockEditDialog from "./StockEditDialog";
 
 function ProductsList() {
-  // ✅ ลบ mutate ออก เพราะไม่ใช้
   const { loading, products, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
 
   const [searchInput, setSearchInput] = useState<string>("");
@@ -28,14 +28,18 @@ function ProductsList() {
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
-  // ✅ Debounce search input - รอ 1 วิ แล้วค่อย setFilters
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setFilters({ search: searchInput });
-    }, 1000);
+  const handleSearchChange = useCallback(
+    (search: string) => {
+      setFilters({ ...filters, search });
+    },
+    [filters, setFilters]
+  );
 
-    return () => clearTimeout(timer);
-  }, [searchInput, setFilters]);
+  useDebounceSearch({
+    searchInput,
+    onSearch: handleSearchChange,
+    delay: 1000,
+  });
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -201,7 +205,7 @@ function ProductsList() {
           <BaseButton variant="contained" href="/dashboard/pos/products/create" fullWidth={false} preset="add" label="Add Product" />
         )}
 
-        {isMobile && <BaseFloatingButton preset="filter" onClick={() => setOpenFilterDialog(true)} />}
+        {isMobile && <BaseFloatingButton preset="filter" onClick={() => setOpenFilterDialog(true)}  badge={activeFilterCount}/>}
       </Stack>
 
       <BaseTable

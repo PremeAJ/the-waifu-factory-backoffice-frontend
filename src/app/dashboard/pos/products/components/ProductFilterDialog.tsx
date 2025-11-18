@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Box, Grid } from "@mui/material";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseNumberField from "@/common/components/base/BaseNumberField";
 import BaseChip from "@/common/components/base/BaseChip";
 import { useCategories } from "@/common/contexts/CategoriesContext";
-import { renderTablerIcon } from "@/common/utils/icon/getTablerIcon";
 import FilterDialog from "@/common/components/dialogs/FilterDialog";
 import { OptionType } from "@/common/components/base/BaseDropdown";
+import { statusOptions, isLowStockOptions } from "../constants/filterOptions";
 
 interface FilterValues {
   status?: "all" | "active" | "inactive" | "deleted";
@@ -17,6 +17,7 @@ interface FilterValues {
   stockMin?: number;
   stockMax?: number;
   isLowStock?: boolean;
+  search?: string;
 }
 
 interface ProductFilterDialogProps {
@@ -26,15 +27,14 @@ interface ProductFilterDialogProps {
   currentFilters: FilterValues;
 }
 
-const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose, onApply, currentFilters }) => {
+const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ 
+  open, 
+  onClose, 
+  onApply, 
+  currentFilters 
+}) => {
   const [filters, setFilters] = useState<FilterValues>(currentFilters);
   const { dropdown: categoryDropdown } = useCategories();
-
-  useEffect(() => {
-    if (open) {
-      setFilters(currentFilters);
-    }
-  }, [open, currentFilters]);
 
   const handleApply = () => {
     onApply(filters);
@@ -55,18 +55,6 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
     onApply(resetFilters);
     onClose();
   };
-
-  const statusOptions = [
-    { value: "all", text: "ทั้งหมด" },
-    { value: "active", text: "เปิดใช้งาน" },
-    { value: "inactive", text: "ปิดใช้งาน" },
-    { value: "deleted", text: "ลบแล้ว" },
-  ];
-
-  const isLowStockOptions = [
-    { value: false, text: "ทั้งหมด" },
-    { value: true, text: "สต็อกต่ำ เท่านั้น" },
-  ];
 
   const categoryOptions: OptionType[] = useMemo(() => {
     if (!categoryDropdown) return [];
@@ -98,22 +86,15 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
     return opts;
   }, [categoryDropdown]);
 
-  const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (filters.status && filters.status !== "all") count++;
-    if (filters.categoryId) count++;
-    if (filters.minPrice !== undefined && filters.minPrice !== null) count++;
-    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++;
-    if (filters.stockMin !== undefined && filters.stockMin !== null) count++;
-    if (filters.stockMax !== undefined && filters.stockMax !== null) count++;
-    if (filters.isLowStock) count++;
-    return count;
-  }, [filters]);
-
   return (
-    <FilterDialog open={open} onClose={onClose} onApply={handleApply} onReset={handleReset} title="Filter Products">
+    <FilterDialog 
+      open={open} 
+      onClose={onClose} 
+      onApply={handleApply} 
+      onReset={handleReset} 
+      title="Filter Products"
+    >
       <Grid container spacing={2}>
-        {/* ✅ Status */}
         <Grid size={{ md: 6, xs: 12 }}>
           <BaseDropdown
             name="status"
@@ -130,7 +111,6 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
           />
         </Grid>
 
-        {/* ✅ Category */}
         <Grid size={{ md: 6, xs: 12 }}>
           <BaseDropdown
             name="categoryId"
@@ -145,7 +125,6 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
           />
         </Grid>
 
-        {/* ✅ Price Range */}
         <Grid size={{ xs: 6 }}>
           <BaseNumberField
             name="minPrice"
@@ -182,7 +161,6 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
           />
         </Grid>
 
-        {/* ✅ Stock Range */}
         <Grid size={{ xs: 6 }}>
           <BaseNumberField
             name="stockMin"
@@ -217,7 +195,6 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ open, onClose
           />
         </Grid>
 
-        {/* ✅ Low Stock */}
         <Grid size={{ xs: 12 }}>
           <BaseDropdown
             name="isLowStock"
