@@ -233,6 +233,10 @@ const ProductForm: React.FC = () => {
             <BlankCard>
               <ProductDetails formik={formik} />
             </BlankCard>
+          </Stack>
+        </Grid>
+        <Grid size={{ lg: 4 }}>
+          <Stack spacing={3}>
             <BlankCard>
               <BaseFileInput
                 label="อัปโหลดภาพรายละเอียดสินค้า (3ไฟล์) (ไม่บังคับ)"
@@ -243,16 +247,11 @@ const ProductForm: React.FC = () => {
                 autoUpload={true}
                 toBucket={StorageBucket.PRODUCT_DETAIL}
                 onUploadComplete={(files) => {
-                  // ✅ รับ FileValue[]
                   formik.setFieldValue("detailImageIds", files);
                 }}
                 value={formik.values.detailImageIds}
               />
             </BlankCard>
-          </Stack>
-        </Grid>
-        <Grid size={{ lg: 4 }}>
-          <Stack spacing={3}>
             <BlankCard>
               <CategoryAndTags formik={formik} />
             </BlankCard>
