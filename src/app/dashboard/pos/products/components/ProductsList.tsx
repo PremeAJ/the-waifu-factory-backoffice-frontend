@@ -7,7 +7,7 @@ import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useProfile } from "@/common/contexts";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import config from "@/common/contexts/setting/config";
 import ProductFilterDialog from "./ProductFilterDialog";
 import ProductPreviewDialog from "./ProductPreviewDialog";
@@ -15,9 +15,10 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import StockEditDialog from "./StockEditDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import { updateSearchParams, removeSearchParams } from "@/common/utils/url/searchParams";
 
 function ProductsList() {
-  const searchParams = new URLSearchParams();
+  const currentSearchParams = useSearchParams(); // ✅ เปลี่ยน
   const router = useRouter();
   const { loading, products, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
   const [searchInput, setSearchInput] = useState<string>("");
@@ -29,16 +30,6 @@ function ProductsList() {
   const isPortrait = useIsPortrait();
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
-
-  const createQueryString = useCallback(
-    (name: string, value: any) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams]
-  );
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -139,12 +130,16 @@ function ProductsList() {
   );
 
   const handlePageChange = (event: unknown, newPage: number) => {
-    router.push("/dashboard/pos/products" + "?" + createQueryString("page", newPage + 1));
+    const queryString = updateSearchParams(currentSearchParams, { page: newPage + 1 });
+    router.push(`/dashboard/pos/products?${queryString}`);
     setPage(newPage + 1);
   };
 
   const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setPerPage(parseInt(event.target.value, 10));
+    const perPage = parseInt(event.target.value, 10);
+    const queryString = updateSearchParams(currentSearchParams, { perPage, page: 1 });
+    router.push(`/dashboard/pos/products?${queryString}`);
+    setPerPage(perPage);
     setPage(1);
   };
 
@@ -166,6 +161,11 @@ function ProductsList() {
 
   const handleApplyFilter = (newFilters: any) => {
     setFilters(newFilters);
+    const queryString = updateSearchParams(currentSearchParams, { 
+      ...newFilters,
+      page: 1 
+    });
+    router.push(`/dashboard/pos/products?${queryString}`);
   };
 
   const handleClosePreview = () => setPreviewState({ open: false, item: null });
@@ -176,9 +176,11 @@ function ProductsList() {
   };
 
   useEffect(() => {
-    searchParams.set("page", config.defaultPage.toString());
-    searchParams.set("perPage", config.defaultPerPage.toString());
-    router.push(`?${searchParams.toString()}`);
+    const queryString = updateSearchParams(currentSearchParams, {
+      page: config.defaultPage,
+      perPage: config.defaultPerPage,
+    });
+    router.push(`/dashboard/pos/products?${queryString}`);
   }, []);
 
   return (
