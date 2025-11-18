@@ -1,5 +1,5 @@
 export { default as BaseAppBar } from './BaseAppBar';
-export { default as BaseAutoComplete } from './BaseAutoComplete';
+export { default as BaseAutoComplete } from './BaseAutoComplete/BaseAutoComplete';
 export { default as BaseAvatar } from './BaseAvatar';
 export { default as BaseButton } from './BaseButton';
 export { default as BaseCard } from './BaseCard';

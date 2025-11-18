@@ -3,26 +3,9 @@ import { TextField, Skeleton } from "@mui/material";
 import { useState } from "react";
 import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import Backdrop from "@mui/material/Backdrop";
-import BaseLabel from "./BaseLabel";
+import BaseLabel from "../BaseLabel";
 import Portal from "@mui/material/Portal";
-interface BaseAutoCompleteProps<T = any> extends Omit<AutocompleteProps<T, boolean, false, boolean>, "renderInput" | "onChange" | "value"> {
-  formik?: any;
-  name?: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  orderBy?: (a: T, b: T) => number;
-  loading?: boolean;
-  renderOption?: (props: any, option: T) => React.ReactNode;
-  renderInput?: (params: any) => React.ReactNode;
-  value?: any;
-  onChange?: (value: any) => void;
-  toValue?: (option: T) => any;
-  dimOnOpen?: boolean;
-  backdropSx?: any;
-  highlightOnOpen?: boolean;
-  highlightSx?: any;
-}
+import { BaseAutoCompleteProps } from "./interface";
 
 function BaseAutoComplete<T = any>({
   formik,

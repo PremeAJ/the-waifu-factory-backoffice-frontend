@@ -3,7 +3,7 @@ import { AddressContext, useAddress } from "@/common/contexts/Master/AddressCont
 import { CustomizerContext } from "@/common/contexts/setting/customizerContext";
 import { Grid } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
-import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
+import BaseAutoComplete from "@/common/components/base/BaseAutoComplete/BaseAutoComplete";
 import BaseTextField from "@/common/components/base/BaseTextField";
 
 interface AddressZoneProps {

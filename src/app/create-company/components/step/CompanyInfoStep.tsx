@@ -4,7 +4,7 @@ import { Grid } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { UserContext } from "@/common/contexts/UserContext";
 import Address from "@/common/forms/AddressForm";
-import BaseAutoComplete from "@/common/components/base/BaseAutoComplete";
+import BaseAutoComplete from "@/common/components/base/BaseAutoComplete/BaseAutoComplete";
 import BaseCheckBox from "@/common/components/base/BaseCheckBox";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import React, { useContext, useEffect, useState } from "react";
