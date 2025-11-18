@@ -1,21 +1,21 @@
 "use client";
 import { Badge, Box, Stack } from "@mui/material";
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { getProductHeaders } from "../constants/productHeaders";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
+import { updateSearchParams } from "@/common/utils/url/searchParams";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useProfile } from "@/common/contexts";
 import { useRouter, useSearchParams } from "next/navigation";
 import config from "@/common/contexts/setting/config";
 import ProductFilterDialog from "./ProductFilterDialog";
 import ProductPreviewDialog from "./ProductPreviewDialog";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import StockEditDialog from "./StockEditDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
-import { updateSearchParams, removeSearchParams } from "@/common/utils/url/searchParams";
 
 function ProductsList() {
   const currentSearchParams = useSearchParams(); // ✅ เปลี่ยน
