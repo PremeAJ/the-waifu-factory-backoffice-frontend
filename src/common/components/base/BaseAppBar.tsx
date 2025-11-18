@@ -1,10 +1,10 @@
-import React, { FC } from "react";
-import AppBarStyled from "../shared/AppBarStyled";
 import { AppBarProps } from "@mui/material";
+import { FC, ReactNode } from "react";
 import { useProfile } from "@/common/contexts/ProfileContext";
+import AppBarStyled from "../shared/AppBarStyled";
 
-const BaseAppBar: FC<AppBarProps & { children?: React.ReactNode }> = (props) => {
-  const { appearance } = useProfile(); // hook inside component — OK
+const BaseAppBar: FC<AppBarProps & { children?: ReactNode }> = (props) => {
+  const { appearance } = useProfile();
   const isCardShadow = appearance?.isCardShadow ?? true;
 
   return <AppBarStyled isCardShadow={isCardShadow} {...props} />;

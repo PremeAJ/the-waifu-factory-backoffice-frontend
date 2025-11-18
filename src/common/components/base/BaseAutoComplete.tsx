@@ -1,20 +1,11 @@
 "use client";
-import React from "react";
-import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import { TextField, Skeleton } from "@mui/material";
+import { useState } from "react";
+import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import Backdrop from "@mui/material/Backdrop";
-import Portal from "@mui/material/Portal";
 import BaseLabel from "./BaseLabel";
-
-interface OptionType {
-  value: any;
-  text: string;
-  group?: string;
-}
-
-// รองรับ multiple และ freeSolo ได้จริง และอนุญาตควบคุมค่าเอง
-interface BaseAutoCompleteProps<T = any>
-  extends Omit<AutocompleteProps<T, boolean, false, boolean>, "renderInput" | "onChange" | "value"> {
+import Portal from "@mui/material/Portal";
+interface BaseAutoCompleteProps<T = any> extends Omit<AutocompleteProps<T, boolean, false, boolean>, "renderInput" | "onChange" | "value"> {
   formik?: any;
   name?: string;
   label?: string;
@@ -23,15 +14,14 @@ interface BaseAutoCompleteProps<T = any>
   orderBy?: (a: T, b: T) => number;
   loading?: boolean;
   renderOption?: (props: any, option: T) => React.ReactNode;
-  renderInput?: (params: any) => React.ReactNode; // เพิ่มให้ custom input ได้
+  renderInput?: (params: any) => React.ReactNode;
   value?: any;
   onChange?: (value: any) => void;
-  // ฟังก์ชันแปลงค่าจาก option -> value ที่ต้องการเก็บ
   toValue?: (option: T) => any;
-  dimOnOpen?: boolean;            // เปิด/ปิดพื้นหลังทึบ
-  backdropSx?: any;               // ปรับสไตล์ Backdrop เพิ่มเติม
-  highlightOnOpen?: boolean;     // ไฮไลต์ช่อง input เมื่อเปิด
-  highlightSx?: any;             // ปรับสไตล์ไฮไลต์เพิ่มเติม
+  dimOnOpen?: boolean;
+  backdropSx?: any;
+  highlightOnOpen?: boolean;
+  highlightSx?: any;
 }
 
 function BaseAutoComplete<T = any>({
@@ -56,29 +46,23 @@ function BaseAutoComplete<T = any>({
   highlightSx,
   ...rest
 }: BaseAutoCompleteProps<T>) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const isMultiple = Boolean(rest.multiple);
   const isFreeSolo = Boolean(rest.freeSolo);
 
   const sortedOptions = orderBy ? [...(options as T[])]?.sort(orderBy as any) : (options as T[]);
-
   const isStringOption = Array.isArray(sortedOptions) && typeof (sortedOptions?.[0] as any) === "string";
-  const getLabel = (option: any) =>
-    typeof option === "string" ? option : option?.text ?? option?.label ?? String(option ?? "");
-  const getOptionValue = (option: any) =>
-    toValue ? toValue(option as T) : typeof option === "string" ? option : option?.value ?? option;
+  const getLabel = (option: any) => (typeof option === "string" ? option : option?.text ?? option?.label ?? String(option ?? ""));
+  const getOptionValue = (option: any) => (toValue ? toValue(option as T) : typeof option === "string" ? option : option?.value ?? option);
 
-  // อ่านค่าเริ่มจาก prop > formik > ค่าดีฟอลต์
   const formikValue = formik && name ? formik.values?.[name] : undefined;
   const rawValue = valueProp !== undefined ? valueProp : formikValue;
 
-  // map ค่าที่เก็บ -> ค่า value ที่ Autocomplete ต้องการ
   let acValue: any = isMultiple ? [] : null;
   if (isMultiple) {
     if (isFreeSolo || isStringOption) {
       acValue = Array.isArray(rawValue) ? rawValue : [];
     } else {
-      // options เป็น object: map id ที่เก็บ -> object ใน options
       const set = new Set(Array.isArray(rawValue) ? rawValue : []);
       acValue = (sortedOptions || []).filter((opt: any) => set.has(getOptionValue(opt)));
     }
@@ -86,17 +70,13 @@ function BaseAutoComplete<T = any>({
     if (isFreeSolo || isStringOption) {
       acValue = rawValue ?? null;
     } else {
-      acValue =
-        (sortedOptions || []).find((opt: any) => getOptionValue(opt) === rawValue) ??
-        (rawValue ? null : null);
+      acValue = (sortedOptions || []).find((opt: any) => getOptionValue(opt) === rawValue) ?? (rawValue ? null : null);
     }
   }
 
-  // Error state
   const hasError = name ? formik?.touched?.[name] && Boolean(formik?.errors?.[name]) : false;
   const helperText = name ? formik?.touched?.[name] && formik?.errors?.[name] : undefined;
 
-  // Loading state
   if (loading) {
     return (
       <>
@@ -119,7 +99,6 @@ function BaseAutoComplete<T = any>({
           {required && <span style={{ color: "#d32f2f", marginLeft: 4 }}>*</span>}
         </BaseLabel>
       )}
-      {/* พื้นหลังทึบเมื่อเปิดเมนู (ใช้ Portal ให้คลุมทั้งหน้า/Sidebar) */}
       <Portal>
         <Backdrop
           open={!!open && dimOnOpen}
@@ -127,7 +106,6 @@ function BaseAutoComplete<T = any>({
           sx={{
             position: "fixed",
             inset: 0,
-            // ให้อยู่ชั้น modal
             zIndex: (t) => t.zIndex.modal,
             backgroundColor: "rgba(0,0,0,0.16)",
             ...backdropSx,
@@ -139,9 +117,8 @@ function BaseAutoComplete<T = any>({
         value={acValue as any}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
-        sx={{ zIndex: (t) => t.zIndex.modal + 2 }} // ให้อยู่เหนือ Backdrop
+        sx={{ zIndex: (t) => t.zIndex.modal + 2 }} 
         slotProps={{
-          // กล่องรายการเหนือ Backdrop
           popper: { sx: { zIndex: (t) => t.zIndex.modal + 1 } },
           paper: { sx: { zIndex: (t) => t.zIndex.modal + 1 } },
         }}
@@ -189,11 +166,10 @@ function BaseAutoComplete<T = any>({
                 ...(open && highlightOnOpen
                   ? {
                       position: "relative",
-                      zIndex: (t) => t.zIndex.modal + 2, 
+                      zIndex: (t) => t.zIndex.modal + 2,
                       "& .MuiOutlinedInput-root": {
                         bgcolor: "background.paper",
-                        boxShadow:
-                          "0 0 0 3px rgba(99,175,255,.28), 0 8px 24px rgba(0,0,0,.18)",
+                        boxShadow: "0 0 0 3px rgba(99,175,255,.28), 0 8px 24px rgba(0,0,0,.18)",
                       },
                       ...highlightSx,
                     }
