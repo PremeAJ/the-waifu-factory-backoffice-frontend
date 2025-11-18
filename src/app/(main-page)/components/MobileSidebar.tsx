@@ -5,7 +5,7 @@ import { stat } from "fs";
 import { UserContext } from "@/common/contexts/UserContext";
 import { useSession } from "next-auth/react";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Collapse from "@mui/material/Collapse";

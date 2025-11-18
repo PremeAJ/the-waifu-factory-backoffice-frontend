@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { Theme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Box from "@mui/material/Box";
 import React from "react";
 import Stack from "@mui/material/Stack";

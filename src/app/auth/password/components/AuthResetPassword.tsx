@@ -11,7 +11,7 @@ import { useFormik } from "formik";
 import { useParams, useSearchParams } from "next/navigation";
 import { uuidV4Regex } from "@/common/utils/validator/regex";
 import * as yup from "yup";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import { PageUrl } from "@/common/constants/pageUrl";
 

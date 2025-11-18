@@ -6,7 +6,7 @@ import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useState, useMemo, ChangeEvent } from "react";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseFloatingButton, { FloatingButtonPosition } from "@/common/components/base/BaseFloatingButton";
 import BaseSearchField from "@/common/components/base/BaseSearchField";

@@ -6,7 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useAuth } from "@/common/contexts/AuthContext";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import * as dropdownData from "../../../app/dashboard/layout/header/data";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDialog";
 import Link from "next/link";
 import React, { FC, useRef, useState } from "react";

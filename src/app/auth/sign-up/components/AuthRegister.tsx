@@ -13,7 +13,7 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import SignInWithGoogleButton from "../../components/SignInWithGoogleButton";

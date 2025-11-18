@@ -7,7 +7,7 @@ import { useDialog } from "@/common/contexts/DialogContext";
 import { useEffect, useState } from "react";
 import { useOtp, OtpType } from "@/common/contexts/OtpContext";
 import { useParams, useRouter } from "next/navigation";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseOTP from "@/common/components/base/BaseOTP";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";

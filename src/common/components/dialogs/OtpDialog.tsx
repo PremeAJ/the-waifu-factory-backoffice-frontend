@@ -7,7 +7,7 @@ import { useEncrypt } from "@/common/contexts/EncryptContext";
 import { genOtpUrl } from "@/common/utils/otpUrl";
 import BaseDialog from "@/common/components/base/BaseDialog";
 import BaseOTP from "@/common/components/base/BaseOTP";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 

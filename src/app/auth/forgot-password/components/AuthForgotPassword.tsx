@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import Turnstile from "react-turnstile";
 import { useDialog } from "@/common/contexts/DialogContext";

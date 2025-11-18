@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import Avatar from "@mui/material/Avatar";
 import AvatarCropDialog from "@/components/ui-components/dialog/AvatarCropDialog";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseLabel from "@/common/components/base/BaseLabel";
 import BaseLinkButton from "@/common/components/base/BaseLinkButton";
 import BaseTextField from "@/common/components/base/BaseTextField";

@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 import { UserContext } from "@/common/contexts/UserContext";
 import { useTranslation } from "react-i18next";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import DemosDD from "../../../components/landingpage/header/DemosDD";

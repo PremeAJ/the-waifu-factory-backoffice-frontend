@@ -3,7 +3,7 @@ import { Avatar, Box } from "@mui/material";
 import { signIn } from "next-auth/react";
 import { Stack } from "@mui/system";
 import { PageUrl } from "@/common/constants/pageUrl";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 
 const SignInWithGoogleButton = () => {
   const onClick = async () => {

@@ -7,7 +7,7 @@ import { useContext,  useState } from "react";
 import { useFormik } from "formik";
 import { useSession } from "next-auth/react";
 import * as Yup from "yup";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import CompanyInfoStep from "./step/CompanyInfoStep";
 import ConfirmStep from "./step/ConfirmStep";
 import ContactInfoStep from "./step/ContactInfoStep";

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Box, Typography, Container, Paper, CircularProgress } from "@mui/material";
 import { IconCheck, IconMail, IconAlertTriangle } from "@tabler/icons-react";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import { PageUrl } from "@/common/constants/pageUrl";
 
 const EmailConfirm = () => {

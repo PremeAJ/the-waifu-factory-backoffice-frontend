@@ -7,7 +7,7 @@ import Slider from "@mui/material/Slider";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import getCroppedImg from "./cropImageUtil";
 
 interface AvatarCropDialogProps {

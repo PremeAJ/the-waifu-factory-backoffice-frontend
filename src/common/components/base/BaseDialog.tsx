@@ -2,7 +2,7 @@
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, Avatar, Box, SxProps, Theme, IconButton } from "@mui/material";
 import { IconAlertTriangle, IconCircleCheck, IconInfoCircle, IconX } from "@tabler/icons-react";
 import { TransitionProps } from "@mui/material/transitions";
-import BaseButton from "@/common/components/base/BaseButton";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import React from "react";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & { children: React.ReactElement }, ref: React.Ref<unknown>) {
