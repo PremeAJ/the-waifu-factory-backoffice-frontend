@@ -4,11 +4,24 @@ import { useCategories } from "@/common/contexts/CategoriesContext";
 import BaseScrollbar from "@/common/components/base/BaseScrollBar";
 import BlockIcon from "@mui/icons-material/Block";
 import Image from "next/image";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 
 export default function ProductList({ filteredProducts, order, addToOrder, isMobile, loading }: any) {
   const { categories } = useCategories();
   const [activeProductId, setActiveProductId] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null); // ✅ เพิ่ม audio ref
+
+  // ✅ ฟังก์ชันเล่นเสียง
+  const playSound = () => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio("/sounds/click1.mp3");
+      audioRef.current.volume = 0.3;
+    }
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch((err) => {
+      console.error("🚀 ~ playSound error:", err); // ✅ เพิ่ม debug
+    });
+  };
 
   const groupedProducts = useMemo(() => {
     const groups: Record<string, { category: any; products: any[] }> = {};
@@ -60,6 +73,7 @@ export default function ProductList({ filteredProducts, order, addToOrder, isMob
     const isOutOfStock = product.stock !== undefined && product.stock - (order.find((item: any) => item.id === product.id)?.qty || 0) <= 0;
     
     if (!isOutOfStock) {
+      playSound(); // ✅ เล่นเสียง
       setActiveProductId(product.id);
       addToOrder(product);
       setTimeout(() => setActiveProductId(null), 150);

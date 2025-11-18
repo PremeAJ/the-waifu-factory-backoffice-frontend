@@ -22,6 +22,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
   const [error, setError] = useState<string>("");
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null); // ✅ เพิ่ม audio ref
 
   const codeReader = useRef<BrowserMultiFormatReader | null>(null);
   const scanCooldownRef = useRef(false);
@@ -43,6 +44,12 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
   const startScanning = async () => {
     try {
       setError("");
+      
+      // ✅ ตรวจสอบ mediaDevices
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("ส่วนหนึ่งของ API ไม่ได้รับการรองรับในบริษัท");
+      }
+
       if (!codeReader.current) throw new Error("Code reader not initialized");
 
       const constraints: MediaStreamConstraints = {
@@ -57,9 +64,12 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       setStream(mediaStream);
       setHasPermission(true);
+      
       const videoTrack = mediaStream.getVideoTracks()[0];
-      const capabilities = videoTrack.getCapabilities();
-      if ("zoom" in capabilities) {
+      if (!videoTrack) throw new Error("ไม่สามารถรับวิดีโอ track ได้");
+
+      const capabilities = videoTrack.getCapabilities?.();
+      if (capabilities && "zoom" in capabilities) {
         try {
           const zoom = capabilities.zoom as { max?: number; min?: number };
           if (zoom && typeof zoom.max === "number") {
@@ -71,13 +81,14 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
           console.warn("Zoom not supported or failed:", e);
         }
       }
+
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
         await new Promise((resolve, reject) => {
-          if (!videoRef.current) return reject();
+          if (!videoRef.current) return reject(new Error("Video ref not available"));
           videoRef.current.onloadedmetadata = () => resolve(true);
           videoRef.current.onerror = (e) => reject(e);
-          videoRef.current.play();
+          videoRef.current.play().catch(reject);
         });
       }
 
@@ -87,15 +98,20 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
       setIsScanning(false);
       setHasPermission(false);
       let msg = "เกิดข้อผิดพลาดในการเข้าถึงกล้อง";
+      
       if (err?.name === "NotAllowedError") {
         msg = "กรุณาอนุญาตให้เข้าถึงกล้องเพื่อใช้งานฟีเจอร์นี้";
       } else if (err?.name === "NotFoundError") {
         msg = "ไม่พบกล้องในอุปกรณ์นี้";
       } else if (err?.name === "OverconstrainedError") {
         msg = "ไม่พบกล้องหลังในอุปกรณ์นี้ หรืออุปกรณ์ไม่รองรับการเลือกกล้องหลัง";
+      } else if (err?.name === "NotReadableError") {
+        msg = "กล้องถูกใช้งานโดยโปรแกรมอื่นอยู่";
       } else if (err?.message) {
         msg = err.message;
       }
+      
+      console.error("🚀 ~ startScanning error:", err);
       setError(msg);
       if (onError) onError(msg);
     }
@@ -113,7 +129,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
         };
         setScanResults((prev) => [newResult, ...prev.slice(0, 4)]);
         if (onScan) onScan(newResult);
-        playBeepSound();
+        playSound();
         if ("vibrate" in navigator) navigator.vibrate(200);
         setTimeout(() => {
           scanCooldownRef.current = false;
@@ -139,20 +155,17 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
     }
   };
 
-  const playBeepSound = () => {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    oscillator.frequency.value = 800;
-    oscillator.type = "square";
-    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.1);
-  };
+   const playSound = () => {
+     if (!audioRef.current) {
+       audioRef.current = new Audio("/sounds/beep.wav");
+       audioRef.current.volume = 0.3;
+     }
+     audioRef.current.currentTime = 0;
+     audioRef.current.play().catch((err) => {
+       console.error("🚀 ~ playSound error:", err); // ✅ เพิ่ม debug
+     });
+   };
+
 
   const clearResults = () => setScanResults([]);
 
