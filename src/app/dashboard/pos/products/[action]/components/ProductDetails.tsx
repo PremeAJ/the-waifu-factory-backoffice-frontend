@@ -1,17 +1,18 @@
 "use client";
 
+import { BaseAutoComplete, BaseDropdown, BaseTabs, BaseTextField } from "@/common/components/base";
 import { FC, SyntheticEvent, useEffect, useMemo, useState } from "react";
-import { useTheme } from "@mui/material/styles";
 import { Grid, Typography, Box } from "@mui/material";
+import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconTag, IconStack } from "@tabler/icons-react";
-import { BaseAutoComplete, BaseDropdown, BaseSwitch, BaseTabs, BaseTextField } from "@/common/components/base";
 import { OptionType } from "@/common/components/base/BaseDropdown";
-import { useProfile, useTax } from "@/common/contexts";
 import { pieceUnitOptions, unitTypeOptions, volumeUnitOptions, weightUnitOptions } from "@/common/contexts/ProductsContext/constants/constants";
 import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
-import { I18nString } from "@/common/utils/i18n/I18nString";
+import { useProfile, useTax } from "@/common/contexts";
+import { useTheme } from "@mui/material/styles";
 import CustomFormLabel from "@/components/forms/theme-elements/CustomFormLabel";
 import SingleProductForm from "./Variant/SingleProductForm";
+import TaxSection from "./TaxSection";
 import VariantOptionsList from "./Variant/VariantOptionsList";
 
 const emptyOption = (withVariant: boolean = true) => {
@@ -25,8 +26,8 @@ const emptyOption = (withVariant: boolean = true) => {
     discountType: "none",
     discountRate: 0,
     thumbnailImageId: undefined,
-    thumbnailImageUrl: undefined, // ✅ เพิ่ม
-    thumbnailOriginName: undefined, // ✅ เพิ่ม
+    thumbnailImageUrl: undefined,
+    thumbnailOriginName: undefined,
   };
 
   if (withVariant) {
@@ -47,13 +48,11 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
 
   const [tab, setTab] = useState<number>(0);
 
-  // เพิ่ม useEffect เพื่อตรวจสอบและ update tab เมื่อ formik.values เปลี่ยน
   useEffect(() => {
     if (!formik?.values) return;
-    
-    const hasVariant = Boolean(formik.values.variant) || 
-                      (formik.values.productOptions || []).some((o: any) => o?.variantOption);
-    
+
+    const hasVariant = Boolean(formik.values.variant) || (formik.values.productOptions || []).some((o: any) => o?.variantOption);
+
     if (hasVariant && tab === 0) {
       setTab(1);
     }
@@ -61,8 +60,8 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
 
   const tabs = useMemo(
     () => [
-      { label: "ไม่มีตัวแปร", icon: <IconTag width={18} color={theme.palette.text.secondary} /> },
-      { label: "มีตัวแปร", icon: <IconStack width={18} color={theme.palette.primary.main} /> },
+      { label: "ไม่มีตัวแปร", icon: <IconTag width={18}  /> },
+      { label: "มีตัวแปร", icon: <IconStack width={18}  /> },
     ],
     [theme]
   );
@@ -146,12 +145,10 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
         break;
     }
 
-    // ✅ เปลี่ยนหน่วยเป็น default เสมอเมื่อเปลี่ยน unitType
     if (defaultUnit) {
       formik.setFieldValue("unit", defaultUnit);
     }
   }, [formik?.values?.unitType]);
-
 
   const renderUnitField = () => {
     const unitType = formik?.values?.unitType;
@@ -159,28 +156,10 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
 
     switch (unitType) {
       case UnitTypeEnum.WEIGHT:
-        return (
-          <BaseDropdown 
-            formik={formik} 
-            name="unit" 
-            label="หน่วยย่อย" 
-            options={weightUnitOptions} 
-            fullWidth 
-            required 
-          />
-        );
+        return <BaseDropdown formik={formik} name="unit" label="หน่วยย่อย" options={weightUnitOptions} fullWidth required />;
       case UnitTypeEnum.VOLUME:
-        return (
-          <BaseDropdown 
-            formik={formik} 
-            name="unit" 
-            label="หน่วยย่อย" 
-            options={volumeUnitOptions} 
-            fullWidth 
-            required 
-          />
-        );
-      default: // PIECE
+        return <BaseDropdown formik={formik} name="unit" label="หน่วยย่อย" options={volumeUnitOptions} fullWidth required />;
+      default:
         return (
           <BaseAutoComplete
             name="unit"
@@ -215,22 +194,7 @@ const ProductDetails: FC<ProductDetailsProps> = ({ formik }) => {
           <BaseDropdown formik={formik} name="unitType" label="ประเภทหน่วยนับ" options={unitTypeOptions} fullWidth required />
         </Grid>
         <Grid size={{ xs: 6, md: 6 }}>{renderUnitField()}</Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <BaseDropdown formik={formik} name="taxClassId" label="ประเภทภาษี" options={taxClassOptions} fullWidth/>
-        </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <BaseTextField name="taxRate" label="อัตรา VAT (%)" formik={formik} fullWidth type="number" suffix='%' disabled/>
-        </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <BaseSwitch
-            border
-            formik={formik}
-            name="isTaxInclusive"
-            label="ราคารวมภาษี"
-            labelPosition="inside"
-            tooltip="หากไม่ได้เปิดไว้ ภาษีจะถูกนำไปคิดในบิล"
-          />
-        </Grid>
+        <TaxSection formik={formik} taxClassOptions={taxClassOptions} />
       </Grid>
 
       {tab === 0 ? (

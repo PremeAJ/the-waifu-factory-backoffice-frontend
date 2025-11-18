@@ -22,19 +22,15 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
   const discountType = getIn(formik.values, `${optionPath}.discountType`);
   const discountRate = Number(getIn(formik.values, `${optionPath}.discountRate`) ?? 0);
   const status = getIn(formik.values, `${optionPath}.inventory.status`);
-
-  // ✅ ดึงทั้ง id, url, originName
   const thumbnailImageId = getIn(formik.values, `${optionPath}.thumbnailImageId`);
   const thumbnailImageUrl = getIn(formik.values, `${optionPath}.thumbnailImageUrl`);
   const thumbnailOriginName = getIn(formik.values, `${optionPath}.thumbnailOriginName`);
-
   const taxRate = Number(formik.values?.taxRate ?? 0);
   const isTaxInclusive = formik.values?.isTaxInclusive ?? true;
   const unitType = formik.values?.unitType;
   const unit = formik.values?.unit || "";
   const isSoldByPiece = unitType === UnitTypeEnum.PIECE;
 
-  // ✅ สร้าง thumbnailValue - ต้องเปลี่ยนเมื่อ formik values เปลี่ยน
   const thumbnailValue = useMemo(() => {
     if (!thumbnailImageId) return [];
 
