@@ -140,10 +140,6 @@ export interface ProductsContextType {
   loading: boolean;
   actionLoading: boolean;
   pageOptions: PageOptions;
-  search: string;
-  setSearch: (s: string) => void;
-  setPage: (p: number) => void;
-  setPerPage: (n: number) => void;
 }
 
 // helper generic for API response (optional, use where needed)
@@ -156,7 +152,7 @@ export type ProductStatus = "active" | "inactive" | "deleted";
 
 export interface ProductFilters {
   search: string;
-  status: ProductStatus | "all";
+  status?: ProductStatus | "all";
   categoryId?: string; // ✅ เพิ่ม
   minPrice?: number; // ✅ เพิ่ม
   maxPrice?: number; // ✅ เพิ่ม

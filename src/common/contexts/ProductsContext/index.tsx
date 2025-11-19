@@ -8,88 +8,43 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { swrOption } from "@/app/api/swrOption";
-import config from "../setting/config";
+import { useSearchParams } from "next/navigation";
+import { parseSearchParamsToFilters } from "./util";
 
 export const ProductsContext = createContext<any>({} as any);
 
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isMobile = useIsMobile();
   const { showError } = useDialog();
-  const [page, setPage] = useState<number>(config.defaultPage);
-  const [perPage, setPerPage] = useState<number>(config.defaultPerPage);
-  const [filters, setFilters] = useState<ProductFilters>({ 
-    search: "", 
-    status: "all",
-    categoryId: "",
-    minPrice: undefined,
-    maxPrice: undefined,
-    stockMin: undefined,
-    stockMax: undefined,
-    isLowStock: false,
-  });
+  const searchParams = useSearchParams();
   const [actionLoading, setActionLoading] = useState<boolean>(false);
 
   const endpoint = "/api/product";
 
-  const setFiltersState = (newFilters: Partial<ProductFilters>) => {
-    setPage(1);
-    setFilters((prev) => ({ ...prev, ...newFilters }));
-  };
-
-  // ✅ สร้าง URL params จาก filters
-  const buildQueryParams = () => {
-    const qp = new URLSearchParams();
-    qp.set("page", String(page));
-    qp.set("perPage", String(perPage));
-    
-    if (filters.search) qp.set("search", filters.search);
-    if (filters.status && filters.status !== "all") qp.set("status", filters.status);
-    if (filters.categoryId) qp.set("categoryId", filters.categoryId);
-    if (filters.minPrice !== undefined && filters.minPrice !== null) qp.set("minPrice", String(filters.minPrice));
-    if (filters.maxPrice !== undefined && filters.maxPrice !== null) qp.set("maxPrice", String(filters.maxPrice));
-    if (filters.stockMin !== undefined && filters.stockMin !== null) qp.set("stockMin", String(filters.stockMin));
-    if (filters.stockMax !== undefined && filters.stockMax !== null) qp.set("stockMax", String(filters.stockMax));
-    if (filters.isLowStock) qp.set("isLowStock", String(filters.isLowStock));
-    
-    return qp.toString();
-  };
+  const page = Number(searchParams.get("page")) || 1;
+  const perPage = Number(searchParams.get("perPage")) || 10;
+  const filters = parseSearchParamsToFilters(searchParams);
 
   const desktopKey = useMemo(() => {
     if (isMobile) return null;
-    const params = buildQueryParams();
-    return `${endpoint}?${params}`;
-  }, [isMobile, page, perPage, filters]);
+    return `${endpoint}?${searchParams.toString()}`;
+  }, [isMobile, searchParams]); 
 
   const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher, swrOption);
 
   const getMobileKey = (pageIndex: number, previousPageData: any) => {
     if (!isMobile) return null;
     if (previousPageData && previousPageData.data && previousPageData.data.length === 0) return null;
-    const qp = new URLSearchParams();
-    qp.set("page", String(pageIndex + 1));
-    qp.set("perPage", String(perPage));
-    
-    if (filters.search) qp.set("search", filters.search);
-    if (filters.status && filters.status !== "all") qp.set("status", filters.status);
-    if (filters.categoryId) qp.set("categoryId", filters.categoryId);
-    if (filters.minPrice !== undefined && filters.minPrice !== null) qp.set("minPrice", String(filters.minPrice));
-    if (filters.maxPrice !== undefined && filters.maxPrice !== null) qp.set("maxPrice", String(filters.maxPrice));
-    if (filters.stockMin !== undefined && filters.stockMin !== null) qp.set("stockMin", String(filters.stockMin));
-    if (filters.stockMax !== undefined && filters.stockMax !== null) qp.set("stockMax", String(filters.stockMax));
-    if (filters.isLowStock) qp.set("isLowStock", String(filters.isLowStock));
-    
-    return `${endpoint}?${qp.toString()}`;
+
+    const params = new URLSearchParams(searchParams);
+    params.set("page", String(pageIndex + 1));
+    return `${endpoint}?${params.toString()}`;
   };
 
-  const {
-    data: mobilePages,
-    error: mobileError,
-    isLoading: mobileLoading,
-    mutate: mobileMutate,
-    size,
-    setSize,
-    isValidating,
-  } = useSWRInfinite(getMobileKey, getFetcher);
+  const { data: mobilePages, error: mobileError, isLoading: mobileLoading, mutate: mobileMutate, size, setSize, isValidating } = useSWRInfinite(
+    getMobileKey,
+    getFetcher
+  );
 
   const products = useMemo(() => {
     if (isMobile) return mobilePages?.flatMap((p: any) => p.data?.data ?? []) ?? [];
@@ -110,16 +65,12 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const isLoadingMore = isMobile ? mobileLoading || (isValidating && (mobilePages?.length ?? 0) > 0) : false;
   const isReachingEnd = isMobile
-    ? !mobilePages ||
-      (mobilePages[mobilePages.length - 1]?.data?.data?.length ?? 0) < perPage ||
-      !!(pageOptions.total && products.length >= pageOptions.total)
+    ? !mobilePages || (mobilePages[mobilePages.length - 1]?.data?.data?.length ?? 0) < perPage || !!(pageOptions.total && products.length >= pageOptions.total)
     : true;
 
   const loadMore = () => {
     if (isMobile && !isLoadingMore && !isReachingEnd) {
       setSize(size + 1);
-    } else if (!isMobile) {
-      setPage((p) => p + 1);
     }
   };
 
@@ -210,9 +161,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     getProductById,
     loadMore,
     mutate: productsMutate,
-    setFilters: setFiltersState,
-    setPage,
-    setPerPage,
     updateProduct,
   };
 

@@ -1,7 +1,7 @@
 "use client";
 import { Badge, Box, Stack } from "@mui/material";
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
-import { ChangeEvent, useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { ChangeEvent, useEffect, useMemo, useState, useRef } from "react";
 import { getProductHeaders } from "../constants/productHeaders";
 import { handleApplyFilterUtil, handleInitSearchParamsUtil, handlePageChangeUtil, handleRowsPerPageChangeUtil, handleSearchChangeUtil } from "./util";
 import { I18nString } from "@/common/utils/i18n/I18nString";
@@ -21,7 +21,8 @@ import { debounce } from "@/common/utils/debounce";
 function ProductsList() {
   const currentSearchParams = useSearchParams();
   const router = useRouter();
-  const { loading, products, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
+  // ✅ ลบ setFilters, setPage, setPerPage ออก
+  const { loading, products, pageOptions, deleteProduct, filters } = useProducts();
   const [searchInput, setSearchInput] = useState<string>("");
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
@@ -32,15 +33,15 @@ function ProductsList() {
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
-  // ✅ Debounce search - รอ 500ms ที่ผู้ใช้หยุดพิมพ์
+  // ✅ Debounce search
   const debouncedSearch = useRef(
     debounce((value: string) => {
-      handleSearchChangeUtil(currentSearchParams, value, setFilters, filters, router.push);
-    }, 2000)
+      handleSearchChangeUtil(currentSearchParams, value, router.push);
+    }, 500)
   ).current;
 
   const handleSearchChange = (value: string) => {
-    setSearchInput(value); 
+    setSearchInput(value);
     debouncedSearch(value);
   };
 
@@ -138,16 +139,16 @@ function ProductsList() {
   );
 
   const handlePageChange = (event: unknown, newPage: number) => {
-    handlePageChangeUtil(currentSearchParams, newPage, router.push, setPage);
+    handlePageChangeUtil(currentSearchParams, newPage, router.push);
   };
 
   const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const perPage = parseInt(event.target.value, 10);
-    handleRowsPerPageChangeUtil(currentSearchParams, perPage, router.push, setPerPage, setPage);
+    handleRowsPerPageChangeUtil(currentSearchParams, perPage, router.push);
   };
 
   const handleApplyFilter = (newFilters: any) => {
-    handleApplyFilterUtil(currentSearchParams, newFilters, setFilters, router.push);
+    handleApplyFilterUtil(currentSearchParams, newFilters, router.push);
   };
 
   const handlePreviewVariant = (variant: any) => {
