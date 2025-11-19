@@ -21,7 +21,8 @@ import useIsPortrait from "@/common/utils/state/useIsPortrait";
 function ProductsList() {
   const currentSearchParams = useSearchParams();
   const router = useRouter();
-  const { loading, products, pageOptions, deleteProduct, filters } = useProducts();
+  // ✅ เพิ่ม loadMore, isLoadingMore, isReachingEnd
+  const { loading, products, pageOptions, deleteProduct, filters, loadMore, isLoadingMore, isReachingEnd } = useProducts();
   const [searchInput, setSearchInput] = useState<string>("");
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
@@ -226,6 +227,9 @@ function ProductsList() {
           onPageChange: handlePageChange,
           onRowsPerPageChange: handleRowsPerPageChange,
         }}
+        onLoadMore={loadMore}
+        isLoadingMore={isLoadingMore}
+        isReachingEnd={isReachingEnd}
       />
 
       <ProductFilterDialog open={openFilterDialog} onClose={() => setOpenFilterDialog(false)} onApply={handleApplyFilter} currentFilters={filters} />

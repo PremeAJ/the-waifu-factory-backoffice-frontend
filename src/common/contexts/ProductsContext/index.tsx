@@ -32,7 +32,9 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const getMobileKey = (pageIndex: number, previousPageData: any) => {
     if (!isMobile) return null;
-    if (previousPageData && previousPageData.data && previousPageData.data.length === 0) return null;
+    // ✅ แก้ไข: ตรวจสอบความยาว data ไม่ใช่ data.data
+    if (previousPageData && !previousPageData?.data?.data) return null;
+    if (previousPageData && previousPageData.data.data.length < perPage) return null; // ✅ ถ้า items < perPage = หมดแล้ว
 
     const params = new URLSearchParams(searchParams);
     params.set("page", String(pageIndex + 1));
@@ -62,13 +64,27 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const productsMutate = isMobile ? mobileMutate : desktopMutate;
 
   const isLoadingMore = isMobile ? mobileLoading || (isValidating && (mobilePages?.length ?? 0) > 0) : false;
-  const isReachingEnd = isMobile
-    ? !mobilePages || (mobilePages[mobilePages.length - 1]?.data?.data?.length ?? 0) < perPage || !!(pageOptions.total && products.length >= pageOptions.total)
-    : true;
+  
+  // ✅ แก้ไข logic isReachingEnd
+  const isReachingEnd = useMemo(() => {
+    if (!isMobile) return true; // Desktop ไม่ต้อง infinite scroll
+    
+    if (!mobilePages || mobilePages.length === 0) return false; // ยังไม่มี data
+    
+    const lastPage = mobilePages[mobilePages.length - 1]?.data;
+    if (!lastPage) return false;
+    
+    const lastPageItems = lastPage.data?.length ?? 0;
+    const totalLoaded = products.length;
+    const grandTotal = lastPage.pageOptions?.total ?? 0;
+    
+    // ✅ จบเมื่อ: items ที่ได้น้อยกว่า perPage หรือ loaded ครบทั้งหมด
+    return lastPageItems < perPage || totalLoaded >= grandTotal;
+  }, [isMobile, mobilePages, products, perPage]);
 
   const loadMore = () => {
     if (isMobile && !isLoadingMore && !isReachingEnd) {
-      setSize(size + 1);
+      setSize(size + 1); // ✅ เพิ่ม page ไป 1
     }
   };
 
