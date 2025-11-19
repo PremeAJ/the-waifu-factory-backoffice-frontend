@@ -22,7 +22,7 @@ function ProductsList() {
   const currentSearchParams = useSearchParams();
   const router = useRouter();
   const { loading, products, pageOptions, deleteProduct, filters, loadMore, isLoadingMore, isReachingEnd, activeFilterCount } = useProducts();
-  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>(filters.search || "");
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
