@@ -1,4 +1,5 @@
 "use client";
+import { CasheirProvider } from "@/common/contexts/CasheirContext";
 import { CategoriesProvider } from "@/common/contexts/CategoriesContext";
 import { ProductsProvider } from "@/common/contexts/ProductsContext";
 import { TaxProvider } from "@/common/contexts/Master/TaxContext";
@@ -17,13 +18,15 @@ export default function ProductsPageClient() {
       <Breadcrumb title="สินค้า" items={BCrumb} />
       <BlankCard>
         <BaseCardContent>
-          <ProductsProvider>
-            <TaxProvider>
-              <CategoriesProvider>
-                <ProductsList />
-              </CategoriesProvider>
-            </TaxProvider>
-          </ProductsProvider>
+          <CasheirProvider>
+            <ProductsProvider>
+              <TaxProvider>
+                <CategoriesProvider>
+                  <ProductsList />
+                </CategoriesProvider>
+              </TaxProvider>
+            </ProductsProvider>
+          </CasheirProvider>
         </BaseCardContent>
       </BlankCard>
     </PageContainer>

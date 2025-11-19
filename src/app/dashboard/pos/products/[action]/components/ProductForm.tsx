@@ -20,6 +20,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import type { CreateProductPayload, CreateProductOptionPayload, ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
 import { removeSearchParams } from "@/common/utils/url/searchParams";
+import { useCasheir } from "@/common/contexts/CasheirContext";
 
 const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload => {
   if (!p) {
@@ -123,6 +124,7 @@ const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload =>
 const ProductForm: React.FC = () => {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const { menusMutate } = useCasheir();
   const searchParams = useSearchParams();
   const { isUploading } = useUpload();
   const id = searchParams?.get("id") ?? undefined;
@@ -177,7 +179,7 @@ const ProductForm: React.FC = () => {
           discountType: rest.discountType,
           discountRate: Number(rest.discountRate ?? 0),
           thumbnailImageId: rest.thumbnailImageId || undefined,
-          lowStockThreshold: Number(rest.lowStockThreshold ?? 3), 
+          lowStockThreshold: Number(rest.lowStockThreshold ?? 3),
           variantOption: rest.variantOption,
           inventory: {
             status: rest.inventory.status,
@@ -209,11 +211,13 @@ const ProductForm: React.FC = () => {
       if (isEdit && productId) {
         const response = await updateProduct(productId, payload);
         if (!response.error) {
+          await menusMutate()
           router.replace("/dashboard/pos/products");
         }
       } else {
         const response = await createProduct(payload);
         if (!response.error) {
+          await menusMutate()
           router.replace("/dashboard/pos/products");
         }
       }

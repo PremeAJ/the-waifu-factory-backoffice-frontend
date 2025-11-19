@@ -5,7 +5,6 @@ import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { defaultSWROption } from "@/app/api/swrOption";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
 import { parseSearchParamsToFilters } from "./util";
-import { useCasheir } from "../CasheirContext";
 import { useDialog } from "../DialogContext";
 import { useSearchParams } from "next/navigation";
 import useIsMobile from "@/common/utils/state/isMobile";
@@ -14,7 +13,6 @@ import useSWRInfinite from "swr/infinite";
 
 export const ProductsContext = createContext<any>({} as any);
 export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const {menusMutate} = useCasheir();
   const isMobile = useIsMobile();
   const { showError } = useDialog();
   const searchParams = useSearchParams();
@@ -121,7 +119,6 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
         showError({ message: response?.message });
       }
       await productsMutate();
-      await menusMutate();
       return response;
     } catch (error: any) {
       showError({ message: error?.message });
@@ -140,7 +137,6 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
         showError({ message: response?.message });
       }
       await productsMutate();
-      await menusMutate();
       return response;
     } catch (error: any) {
       showError({ message: error?.message });
@@ -155,7 +151,6 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setActionLoading(true);
       const res = await deleteFetcher(`${endpoint}/${id}`, {});
       await productsMutate();
-      await menusMutate();
       return res;
     } catch (err) {
       throw err;
