@@ -25,18 +25,20 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const desktopKey = useMemo(() => {
     if (isMobile) return null;
-    return `${endpoint}?${searchParams.toString()}`;
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("id"); 
+    return `${endpoint}?${params.toString()}`;
   }, [isMobile, searchParams]); 
 
   const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher, defaultSWROption);
 
   const getMobileKey = (pageIndex: number, previousPageData: any) => {
     if (!isMobile) return null;
-    // ✅ แก้ไข: ตรวจสอบความยาว data ไม่ใช่ data.data
     if (previousPageData && !previousPageData?.data?.data) return null;
-    if (previousPageData && previousPageData.data.data.length < perPage) return null; // ✅ ถ้า items < perPage = หมดแล้ว
+    if (previousPageData && previousPageData.data.data.length < perPage) return null;
 
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("id"); 
     params.set("page", String(pageIndex + 1));
     return `${endpoint}?${params.toString()}`;
   };

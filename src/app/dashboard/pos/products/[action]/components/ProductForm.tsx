@@ -19,6 +19,7 @@ import ProductTemplate from "./ProductTemplate";
 import React, { useMemo, useEffect, useState } from "react";
 import type { CreateProductPayload, CreateProductOptionPayload, ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
+import { removeSearchParams } from "@/common/utils/url/searchParams";
 
 const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload => {
   if (!p) {
