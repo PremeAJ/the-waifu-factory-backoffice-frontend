@@ -49,7 +49,7 @@ export const buildMenuItems = (categories: any[]): NavGroupType[] => {
       id: cat.id,
       title: cat.nameTh,
       icon: parentIcon,
-      href: `/dashboard/pos/cashier?category=${cat.id}`,
+      href: `/dashboard/pos/cashier?categoryId=${cat.id}`,
       color: cat.color || undefined,
     };
 
@@ -58,7 +58,7 @@ export const buildMenuItems = (categories: any[]): NavGroupType[] => {
         id: sub.id,
         title: sub.nameTh,
         icon: sub.icon ? getTablerIcon(sub.icon) : IconCircle,
-        href: `/dashboard/pos/cashier?category=${sub.id}`,
+        href: `/dashboard/pos/cashier?categoryId=${sub.id}`,
         color: sub.color || undefined,
       }));
     }
