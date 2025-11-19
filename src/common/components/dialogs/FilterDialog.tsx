@@ -17,6 +17,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
   open, 
   onApply, 
   onReset, 
+  onClose,
   children,
   title = "Filter"
 }) => {
@@ -31,7 +32,8 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
       confirmText="Apply"
       cancelText="Reset"
       onConfirm={onApply}
-      onClose={onReset}
+      onClose={onClose}
+      onCancel={onReset}
       showCloseButton
     />
   );

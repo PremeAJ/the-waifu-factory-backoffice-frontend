@@ -3,10 +3,10 @@ import { Badge, Box, Stack } from "@mui/material";
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { getProductHeaders } from "../constants/productHeaders";
+import { handleApplyFilterUtil, handleInitSearchParamsUtil, handlePageChangeUtil, handleRowsPerPageChangeUtil, handleSearchChangeUtil } from "./util";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
-import { updateSearchParams } from "@/common/utils/url/searchParams";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useProfile } from "@/common/contexts";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -18,7 +18,7 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
 
 function ProductsList() {
-  const currentSearchParams = useSearchParams(); // ✅ เปลี่ยน
+  const currentSearchParams = useSearchParams();
   const router = useRouter();
   const { loading, products, pageOptions, setPage, setPerPage, deleteProduct, filters, setFilters } = useProducts();
   const [searchInput, setSearchInput] = useState<string>("");
@@ -31,9 +31,10 @@ function ProductsList() {
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
+  // ✅ แก้ไข handleSearchChange
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
-    setFilters({ ...filters, search: value });
+    handleSearchChangeUtil(currentSearchParams, value, setFilters, filters, router.push);
   };
 
   const activeFilterCount = useMemo(() => {
@@ -130,17 +131,16 @@ function ProductsList() {
   );
 
   const handlePageChange = (event: unknown, newPage: number) => {
-    const queryString = updateSearchParams(currentSearchParams, { page: newPage + 1 });
-    router.push(`/dashboard/pos/products?${queryString}`);
-    setPage(newPage + 1);
+    handlePageChangeUtil(currentSearchParams, newPage, router.push, setPage);
   };
 
   const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const perPage = parseInt(event.target.value, 10);
-    const queryString = updateSearchParams(currentSearchParams, { perPage, page: 1 });
-    router.push(`/dashboard/pos/products?${queryString}`);
-    setPerPage(perPage);
-    setPage(1);
+    handleRowsPerPageChangeUtil(currentSearchParams, perPage, router.push, setPerPage, setPage);
+  };
+
+  const handleApplyFilter = (newFilters: any) => {
+    handleApplyFilterUtil(currentSearchParams, newFilters, setFilters, router.push);
   };
 
   const handlePreviewVariant = (variant: any) => {
@@ -159,15 +159,6 @@ function ProductsList() {
     setPreviewState({ open: true, item: variantItem });
   };
 
-  const handleApplyFilter = (newFilters: any) => {
-    setFilters(newFilters);
-    const queryString = updateSearchParams(currentSearchParams, { 
-      ...newFilters,
-      page: 1 
-    });
-    router.push(`/dashboard/pos/products?${queryString}`);
-  };
-
   const handleClosePreview = () => setPreviewState({ open: false, item: null });
   const handleCloseStockEdit = () => setStockEditState({ open: false, item: null });
 
@@ -176,11 +167,7 @@ function ProductsList() {
   };
 
   useEffect(() => {
-    const queryString = updateSearchParams(currentSearchParams, {
-      page: config.defaultPage,
-      perPage: config.defaultPerPage,
-    });
-    router.push(`/dashboard/pos/products?${queryString}`);
+    handleInitSearchParamsUtil(currentSearchParams, config, router.push);
   }, []);
 
   return (

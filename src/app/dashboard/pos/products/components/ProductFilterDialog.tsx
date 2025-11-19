@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useMemo } from "react";
 import { Box, Grid } from "@mui/material";
-import BaseDropdown from "@/common/components/base/BaseDropdown";
-import BaseNumberField from "@/common/components/base/BaseNumberField";
-import BaseChip from "@/common/components/base/BaseChip";
-import { useCategories } from "@/common/contexts/CategoriesContext";
-import FilterDialog from "@/common/components/dialogs/FilterDialog";
 import { OptionType } from "@/common/components/base/BaseDropdown";
 import { statusOptions, isLowStockOptions } from "../constants/filterOptions";
+import { useCategories } from "@/common/contexts/CategoriesContext";
+import BaseChip from "@/common/components/base/BaseChip";
+import BaseDropdown from "@/common/components/base/BaseDropdown";
+import BaseNumberField from "@/common/components/base/BaseNumberField";
+import FilterDialog from "@/common/components/dialogs/FilterDialog";
+import { useState, useMemo } from "react";
 
 interface FilterValues {
   status?: "all" | "active" | "inactive" | "deleted";
