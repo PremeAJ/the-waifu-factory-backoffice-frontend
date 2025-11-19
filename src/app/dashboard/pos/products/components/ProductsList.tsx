@@ -36,7 +36,7 @@ function ProductsList() {
   const debouncedSearch = useRef(
     debounce((value: string) => {
       handleSearchChangeUtil(currentSearchParams, value, setFilters, filters, router.push);
-    }, 1000)
+    }, 2000)
   ).current;
 
   const handleSearchChange = (value: string) => {
