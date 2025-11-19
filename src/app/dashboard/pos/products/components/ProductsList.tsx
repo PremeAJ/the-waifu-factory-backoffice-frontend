@@ -41,7 +41,7 @@ function ProductsList() {
   const debouncedSearch = useMemo(
     () => debounce((value: string) => {
       handleSearchChangeUtil(currentSearchParams, value, router.push);
-    }, 2000),
+    }, 1500),
     [currentSearchParams, router]
   );
 
