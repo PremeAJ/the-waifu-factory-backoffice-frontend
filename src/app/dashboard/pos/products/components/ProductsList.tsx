@@ -1,7 +1,7 @@
 "use client";
 import { Badge, Box, Stack } from "@mui/material";
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { getProductHeaders } from "../constants/productHeaders";
 import { handleApplyFilterUtil, handleInitSearchParamsUtil, handlePageChangeUtil, handleRowsPerPageChangeUtil, handleSearchChangeUtil } from "./util";
 import { I18nString } from "@/common/utils/i18n/I18nString";
@@ -16,6 +16,7 @@ import ProductPreviewDialog from "./ProductPreviewDialog";
 import StockEditDialog from "./StockEditDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import { debounce } from "@/common/utils/debounce";
 
 function ProductsList() {
   const currentSearchParams = useSearchParams();
@@ -31,10 +32,17 @@ function ProductsList() {
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
-  // ✅ แก้ไข handleSearchChange
+  // ✅ Debounce search - รอ 500ms ที่ผู้ใช้หยุดพิมพ์
+  const debouncedSearch = useRef(
+    debounce((value: string) => {
+      handleSearchChangeUtil(currentSearchParams, value, setFilters, filters, router.push);
+    }, 500)
+  ).current;
+
+  // ✅ แก้ไข handleSearchChange - อัพเดท input แต่ debounce API call
   const handleSearchChange = (value: string) => {
-    setSearchInput(value);
-    handleSearchChangeUtil(currentSearchParams, value, setFilters, filters, router.push);
+    setSearchInput(value); // ✅ อัพเดท UI ทันที
+    debouncedSearch(value); // ✅ เรียก API หลังหยุดพิมพ์ 500ms
   };
 
   const activeFilterCount = useMemo(() => {
