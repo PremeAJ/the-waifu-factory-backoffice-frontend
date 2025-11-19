@@ -21,8 +21,7 @@ import useIsPortrait from "@/common/utils/state/useIsPortrait";
 function ProductsList() {
   const currentSearchParams = useSearchParams();
   const router = useRouter();
-  // ✅ เพิ่ม loadMore, isLoadingMore, isReachingEnd
-  const { loading, products, pageOptions, deleteProduct, filters, loadMore, isLoadingMore, isReachingEnd } = useProducts();
+  const { loading, products, pageOptions, deleteProduct, filters, loadMore, isLoadingMore, isReachingEnd, activeFilterCount } = useProducts();
   const [searchInput, setSearchInput] = useState<string>("");
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
@@ -43,18 +42,6 @@ function ProductsList() {
     setSearchInput(value);
     debouncedSearch(value);
   };
-
-  const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (filters.status && filters.status !== "all") count++;
-    if (filters.categoryId) count++;
-    if (filters.minPrice !== undefined && filters.minPrice !== null) count++;
-    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++;
-    if (filters.stockMin !== undefined && filters.stockMin !== null) count++;
-    if (filters.stockMax !== undefined && filters.stockMax !== null) count++;
-    if (filters.isLowStock) count++;
-    return count;
-  }, [filters]);
 
   const tableData: any = useMemo(() => {
     return (products || []).map((prod: ProductType) => {

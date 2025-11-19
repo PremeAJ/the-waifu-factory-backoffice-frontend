@@ -159,8 +159,22 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
+  // ✅ เพิ่ม activeFilterCount ใน Context
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filters.status && filters.status !== "all") count++;
+    if (filters.categoryId) count++;
+    if (filters.minPrice !== undefined && filters.minPrice !== null) count++;
+    if (filters.maxPrice !== undefined && filters.maxPrice !== null) count++;
+    if (filters.stockMin !== undefined && filters.stockMin !== null) count++;
+    if (filters.stockMax !== undefined && filters.stockMax !== null) count++;
+    if (filters.isLowStock) count++;
+    return count;
+  }, [filters]);
+
   const value = {
     actionLoading,
+    activeFilterCount,    // ✅ เพิ่มเข้า value
     error,
     filters,
     isLoadingMore,
