@@ -22,7 +22,9 @@ export const CasheirProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const desktopKey = useMemo(() => {
     if (isMobile) return null;
-    return `${endpoint}/menu-list?${searchParams.toString()}`;
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("id"); 
+    return `${endpoint}/menu-list?${params.toString()}`;
   }, [isMobile, searchParams]);
 
   const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher, defaultSWROption);
@@ -33,6 +35,7 @@ export const CasheirProvider: FC<{ children: ReactNode }> = ({ children }) => {
     if (previousPageData && previousPageData.data.data.length < perPage) return null;
 
     const params = new URLSearchParams(searchParams.toString());
+    params.delete("id"); 
     params.set("page", String(pageIndex + 1));
     return `${endpoint}/menu-list?${params.toString()}`;
   };

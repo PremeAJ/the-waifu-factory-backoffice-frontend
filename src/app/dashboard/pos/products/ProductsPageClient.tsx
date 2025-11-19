@@ -18,7 +18,6 @@ export default function ProductsPageClient() {
       <Breadcrumb title="สินค้า" items={BCrumb} />
       <BlankCard>
         <BaseCardContent>
-          <CasheirProvider>
             <ProductsProvider>
               <TaxProvider>
                 <CategoriesProvider>
@@ -26,7 +25,6 @@ export default function ProductsPageClient() {
                 </CategoriesProvider>
               </TaxProvider>
             </ProductsProvider>
-          </CasheirProvider>
         </BaseCardContent>
       </BlankCard>
     </PageContainer>
