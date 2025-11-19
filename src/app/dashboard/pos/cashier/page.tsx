@@ -1,5 +1,6 @@
 "use client";
 import { Grid, Card, CardContent, Badge } from "@mui/material";
+import { useCasheir } from "@/common/contexts/CasheirContext";
 import { useCategories } from "@/common/contexts/CategoriesContext";
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useSearchParams } from "next/navigation";
@@ -25,7 +26,9 @@ export default function POSPage() {
   const searchParams = useSearchParams();
   const { setIsCashierCategoriesSidebar } = useSidebarState();
   const { categories } = useCategories();
-  const { products, loading } = useProducts();
+  // const { products, loading } = useProducts();
+  const { menus, loading } = useCasheir();
+  console.log("🚀 ~ POSPage ~ menus:", menus)
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
@@ -33,9 +36,9 @@ export default function POSPage() {
   }, [searchParams]);
 
   const mappedProducts = useMemo(() => {
-    if (!products) return [];
+    if (!menus) return [];
 
-    return products.flatMap((product: any) => {
+    return menus.flatMap((product: any) => {
       if (product.productOptions && product.productOptions.length > 0) {
         return product.productOptions.map((option: any) => {
           const thumbnail = option.productFiles?.url || "/images/products/no-image.jpg";
@@ -67,7 +70,7 @@ export default function POSPage() {
         },
       ];
     });
-  }, [products]);
+  }, [menus]);
 
   const filteredProducts = useMemo(() => {
     let filtered = mappedProducts;

@@ -3,7 +3,7 @@ import { CreateProductPayload, ProductType, UpdateProductPayload } from "./inter
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
 import { parseSearchParamsToFilters } from "./util";
-import { swrOption } from "@/app/api/swrOption";
+import { defaultSWROption } from "@/app/api/swrOption";
 import { useDialog } from "../DialogContext";
 import { useSearchParams } from "next/navigation";
 import { createContext, FC, ReactNode, useContext, useMemo, useState } from "react";
@@ -28,7 +28,7 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     return `${endpoint}?${searchParams.toString()}`;
   }, [isMobile, searchParams]); 
 
-  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher, swrOption);
+  const { data: desktopData, error: desktopError, isLoading: desktopLoading, mutate: desktopMutate } = useSWR(desktopKey, getFetcher, defaultSWROption);
 
   const getMobileKey = (pageIndex: number, previousPageData: any) => {
     if (!isMobile) return null;

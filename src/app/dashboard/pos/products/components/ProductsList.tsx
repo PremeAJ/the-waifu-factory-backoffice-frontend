@@ -11,7 +11,6 @@ import { ProductType } from "@/common/contexts/ProductsContext/interfaces/produc
 import { useProducts } from "@/common/contexts/ProductsContext";
 import { useProfile } from "@/common/contexts";
 import { useRouter, useSearchParams } from "next/navigation";
-import config from "@/common/contexts/setting/config";
 import ProductFilterDialog from "./ProductFilterDialog";
 import ProductPreviewDialog from "./ProductPreviewDialog";
 import StockEditDialog from "./StockEditDialog";
@@ -168,7 +167,7 @@ function ProductsList() {
   };
 
   useEffect(() => {
-    handleInitSearchParamsUtil(currentSearchParams, config, router.push);
+    handleInitSearchParamsUtil(currentSearchParams, router.push);
   }, []);
 
   return (

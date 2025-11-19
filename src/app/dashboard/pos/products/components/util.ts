@@ -1,3 +1,4 @@
+import config from "@/common/contexts/setting/config";
 import { updateSearchParams } from "@/common/utils/url/searchParams";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -36,28 +37,20 @@ export const handleApplyFilterUtil = (
   newFilters: any,
   onNavigate: (url: string) => void
 ) => {
-  const params = new URLSearchParams(currentSearchParams);
-  Object.entries(newFilters).forEach(([key, value]) => {
-    if (value === null || value === undefined || value === "" || value === false) {
-      params.delete(key);
-    } else {
-      params.set(key, String(value));
-    }
-  });
-  
-  params.set("page", "1");
-  
-  onNavigate(`/dashboard/pos/products?${params.toString()}`);
+  const queryString = updateSearchParams(currentSearchParams, newFilters);
+  onNavigate(`/dashboard/pos/products?${queryString}`);
 };
 
 export const handleInitSearchParamsUtil = (
   currentSearchParams: ReadonlyURLSearchParams,
-  config: any,
   onNavigate: (url: string) => void
 ) => {
+  const params = new URLSearchParams(currentSearchParams);
+  const page = params.get("page");;
+  const perPage = params.get("perPage");
   const queryString = updateSearchParams(currentSearchParams, {
-    page: config.defaultPage,
-    perPage: config.defaultPerPage,
+    page: page ? page : config.defaultPage,
+    perPage: perPage ? perPage : config.defaultPerPage,
   });
   onNavigate(`/dashboard/pos/products?${queryString}`);
 };
