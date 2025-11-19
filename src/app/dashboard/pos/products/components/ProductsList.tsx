@@ -22,10 +22,7 @@ function ProductsList() {
   const currentSearchParams = useSearchParams();
   const router = useRouter();
   const { loading, products, pageOptions, deleteProduct, filters, loadMore, isLoadingMore, isReachingEnd, activeFilterCount } = useProducts();
-  
-  // ✅ เพิ่ม searchInput state - default จาก filters.search
   const [searchInput, setSearchInput] = useState<string>(filters.search || "");
-  
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
@@ -35,14 +32,16 @@ function ProductsList() {
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
+  //* default search input จาก params
   useEffect(() => {
     setSearchInput(filters.search || "");
   }, [filters.search]);
 
+  //* 
   const debouncedSearch = useMemo(
     () => debounce((value: string) => {
       handleSearchChangeUtil(currentSearchParams, value, router.push);
-    }, 500),
+    }, 2000),
     [currentSearchParams, router]
   );
 
