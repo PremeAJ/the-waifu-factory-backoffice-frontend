@@ -22,7 +22,6 @@ function ProductsList() {
   const currentSearchParams = useSearchParams();
   const router = useRouter();
   const { loading, products, pageOptions, deleteProduct, filters, loadMore, isLoadingMore, isReachingEnd, activeFilterCount } = useProducts();
-  const [searchInput, setSearchInput] = useState<string>(filters.search || "");
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
@@ -39,7 +38,6 @@ function ProductsList() {
   ).current;
 
   const handleSearchChange = (value: string) => {
-    setSearchInput(value);
     debouncedSearch(value);
   };
 
@@ -134,7 +132,6 @@ function ProductsList() {
   };
 
   const handleApplyFilter = (newFilters: any) => {
-    console.log("🚀 ~ handleApplyFilter ~ newFilters:", newFilters)
     handleApplyFilterUtil(currentSearchParams, newFilters, router.push);
   };
 
@@ -169,14 +166,14 @@ function ProductsList() {
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
-          <BaseSearchField value={searchInput} onSearchChange={handleSearchChange} />
+          <BaseSearchField value={filters.search || ""} onSearchChange={handleSearchChange} />
         ) : (
           <Stack direction="row" spacing={2} alignItems="center">
             <BaseTextField
               fullWidth={false}
               name="search"
               placeholder="Search products"
-              value={searchInput}
+              value={filters.search || ""}
               onChange={(e) => handleSearchChange(e.target.value)}
               sx={{ width: 300 }}
               type="search"
