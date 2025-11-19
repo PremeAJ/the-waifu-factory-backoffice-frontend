@@ -7,7 +7,7 @@ import BaseChip from "@/common/components/base/BaseChip";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseNumberField from "@/common/components/base/BaseNumberField";
 import FilterDialog from "@/common/components/dialogs/FilterDialog";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { parseSearchParamsToFilters } from "@/common/contexts/ProductsContext/util";
 
@@ -33,32 +33,40 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
   onClose, 
   onApply
 }) => {
-  // ✅ หยิบ searchParams เองจาก URL
   const searchParams = useSearchParams();
-  const filters = parseSearchParamsToFilters(searchParams);
-  
+  const currentFilters = parseSearchParamsToFilters(searchParams);
+  const [filters, setFilters] = useState<FilterValues>(currentFilters);
   const { dropdown: categoryDropdown } = useCategories();
 
-  // ✅ เปลี่ยน handleApply - ส่ง filters ที่อัพเดทแล้ว
-  const handleApply = (updatedFilters: FilterValues) => {
-    onApply(updatedFilters);
+  useEffect(() => {
+    if (open) {
+      setFilters(currentFilters);
+    }
+  }, [open]);
+  const handleApply = useCallback(() => {
+    onApply(filters);
     onClose();
-  };
+  }, [filters, onApply, onClose]);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     const resetFilters: FilterValues = {
       status: undefined,
       categoryId: "",
-      search: "",
       minPrice: undefined,
       maxPrice: undefined,
       stockMin: undefined,
       stockMax: undefined,
       isLowStock: undefined,
     };
+    setFilters(resetFilters);
     onApply(resetFilters);
     onClose();
-  };
+  }, [onApply, onClose]);
+
+  const handleClose = useCallback(() => {
+    setFilters(currentFilters);
+    onClose();
+  }, [currentFilters, onClose]);
 
   const categoryOptions: OptionType[] = useMemo(() => {
     if (!categoryDropdown) return [];
@@ -90,57 +98,55 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
     return opts;
   }, [categoryDropdown]);
 
-  // ✅ สร้าง wrapper function สำหรับแต่ละ field เพื่อหยิบค่าใหม่
-  const handleStatusChange = (newValue: any) => {
-    handleApply({ ...filters, status: newValue });
-  };
+  const handleStatusChange = useCallback((newValue: any) => {
+    setFilters((prev) => ({ ...prev, status: newValue }));
+  }, []);
 
-  const handleCategoryChange = (newValue: any) => {
-    handleApply({ ...filters, categoryId: newValue || "" });
-  };
+  const handleCategoryChange = useCallback((newValue: any) => {
+    setFilters((prev) => ({ ...prev, categoryId: newValue || "" }));
+  }, []);
 
-  const handleMinPriceChange = (e: any) => {
+  const handleMinPriceChange = useCallback((e: any) => {
     const val = e.target.value;
-    handleApply({ 
-      ...filters, 
+    setFilters((prev) => ({ 
+      ...prev, 
       minPrice: val === "" || val === null || val === undefined ? undefined : Number(val) 
-    });
-  };
+    }));
+  }, []);
 
-  const handleMaxPriceChange = (e: any) => {
+  const handleMaxPriceChange = useCallback((e: any) => {
     const val = e.target.value;
-    handleApply({ 
-      ...filters, 
+    setFilters((prev) => ({ 
+      ...prev, 
       maxPrice: val === "" || val === null || val === undefined ? undefined : Number(val) 
-    });
-  };
+    }));
+  }, []);
 
-  const handleStockMinChange = (e: any) => {
+  const handleStockMinChange = useCallback((e: any) => {
     const val = e.target.value;
-    handleApply({ 
-      ...filters, 
+    setFilters((prev) => ({ 
+      ...prev, 
       stockMin: val === "" || val === null || val === undefined ? undefined : Number(val) 
-    });
-  };
+    }));
+  }, []);
 
-  const handleStockMaxChange = (e: any) => {
+  const handleStockMaxChange = useCallback((e: any) => {
     const val = e.target.value;
-    handleApply({ 
-      ...filters, 
+    setFilters((prev) => ({ 
+      ...prev, 
       stockMax: val === "" || val === null || val === undefined ? undefined : Number(val) 
-    });
-  };
+    }));
+  }, []);
 
-  const handleIsLowStockChange = (newValue: any) => {
-    handleApply({ ...filters, isLowStock: newValue });
-  };
+  const handleIsLowStockChange = useCallback((newValue: any) => {
+    setFilters((prev) => ({ ...prev, isLowStock: newValue }));
+  }, []);
 
   return (
     <FilterDialog 
       open={open} 
-      onClose={onClose}
-      // ✅ ไม่มี handleApply ใน onApply แล้ว เพราะเราเรียก onApply ตรงใน handleApply
-      onApply={() => onClose()}
+      onClose={handleClose}
+      onApply={handleApply}
       onReset={handleReset} 
       title="Filter Products"
     >

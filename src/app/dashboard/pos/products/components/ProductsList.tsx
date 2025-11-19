@@ -22,6 +22,10 @@ function ProductsList() {
   const currentSearchParams = useSearchParams();
   const router = useRouter();
   const { loading, products, pageOptions, deleteProduct, filters, loadMore, isLoadingMore, isReachingEnd, activeFilterCount } = useProducts();
+  
+  // ✅ เพิ่ม searchInput state - default จาก filters.search
+  const [searchInput, setSearchInput] = useState<string>(filters.search || "");
+  
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [previewState, setPreviewState] = useState<{ open: boolean; item: any | null }>({ open: false, item: null });
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
@@ -31,14 +35,20 @@ function ProductsList() {
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
-  const debouncedSearch = useRef(
-    debounce((value: string) => {
+  useEffect(() => {
+    setSearchInput(filters.search || "");
+  }, [filters.search]);
+
+  const debouncedSearch = useMemo(
+    () => debounce((value: string) => {
       handleSearchChangeUtil(currentSearchParams, value, router.push);
-    }, 500)
-  ).current;
+    }, 500),
+    [currentSearchParams, router]
+  );
 
   const handleSearchChange = (value: string) => {
-    debouncedSearch(value);
+    setSearchInput(value);
+    debouncedSearch(value); 
   };
 
   const tableData: any = useMemo(() => {
@@ -166,14 +176,15 @@ function ProductsList() {
     <Box>
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
-          <BaseSearchField value={filters.search || ""} onSearchChange={handleSearchChange} />
+          // ✅ ใช้ searchInput จาก state
+          <BaseSearchField value={searchInput} onSearchChange={handleSearchChange} />
         ) : (
           <Stack direction="row" spacing={2} alignItems="center">
             <BaseTextField
               fullWidth={false}
               name="search"
               placeholder="Search products"
-              value={filters.search || ""}
+              value={searchInput}
               onChange={(e) => handleSearchChange(e.target.value)}
               sx={{ width: 300 }}
               type="search"

@@ -2,30 +2,30 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 
 /**
  * สร้าง URLSearchParams ใหม่พร้อมเก็บ params เก่า
- * @param currentParams - Current search params จาก useSearchParams()
- * @param updates - Object ของ key-value ที่ต้องการ update
- * @returns URLSearchParams string
  */
 export const updateSearchParams = (
   currentParams: ReadonlyURLSearchParams | URLSearchParams,
-  updates: Record<string, string | number | null>
+  updates: Record<string, string | number | boolean | null | undefined>
 ): string => {
-  const params = new URLSearchParams(currentParams);
+  // ใช้ .toString() เสมอเพื่อ copy ค่าให้เป็น URLSearchParams จริง
+  const params = new URLSearchParams(currentParams.toString());
 
   Object.entries(updates).forEach(([key, value]) => {
-    if (value === null || value === undefined || value === "" || value.toString() === 'false' || value === "all") {
+    if (value === null || value === undefined || value === "" || (typeof value === "boolean" && value === false)) {
       params.delete(key);
-    } else {
-      params.set(key, String(value));
+      return;
     }
+    if (key === "status" && String(value) === "all") {
+      params.delete(key);
+      return;
+    }
+    params.set(key, String(value));
   });
 
   return params.toString();
 };
 
-/**
- * ลบ params ออก
- */
+
 export const removeSearchParams = (
   currentParams: ReadonlyURLSearchParams | URLSearchParams,
   keys: string[]
@@ -35,9 +35,7 @@ export const removeSearchParams = (
   return params.toString();
 };
 
-/**
- * ดึงค่า param
- */
+
 export const getSearchParam = (
   currentParams: ReadonlyURLSearchParams | URLSearchParams,
   key: string
