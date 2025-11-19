@@ -28,6 +28,6 @@ export interface CasheirContextType {
   isLoadingMore: boolean;
   isReachingEnd: boolean;
   loadMore: () => void;
-  mutate: () => Promise<any>;
+  menusMutate: () => Promise<any>;
   getMenuById: (id: string) => Promise<MenuItem | null>;
 }

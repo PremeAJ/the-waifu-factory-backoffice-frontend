@@ -1,11 +1,11 @@
 "use client";
+import { createContext, useContext, useMemo, FC, ReactNode } from "react";
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { defaultSWROption, swrOption } from "@/app/api/swrOption";
 import { getFetcher } from "@/app/api/globalFetcher";
+import { MenuItem } from "./interfaces/menu";
 import { parseSearchParamsToMenuFilters } from "./util";
 import { useSearchParams } from "next/navigation";
-import React, { createContext, useContext, useMemo, FC, ReactNode } from "react";
-import type { MenuItem } from "./interfaces/menu";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
@@ -29,7 +29,6 @@ export const CasheirProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const getMobileKey = (pageIndex: number, previousPageData: any) => {
     if (!isMobile) return null;
-    // ตรวจสอบ .data.data เหมือน ProductsContext
     if (previousPageData && !previousPageData?.data?.data) return null;
     if (previousPageData && previousPageData.data.data.length < perPage) return null;
 
@@ -98,7 +97,7 @@ export const CasheirProvider: FC<{ children: ReactNode }> = ({ children }) => {
     isLoadingMore,
     isReachingEnd,
     loadMore,
-    mutate: menusMutate,
+    menusMutate,
     getMenuById,
   };
 

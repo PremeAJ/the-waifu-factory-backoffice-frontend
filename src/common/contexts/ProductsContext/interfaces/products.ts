@@ -142,7 +142,6 @@ export interface ProductsContextType {
   pageOptions: PageOptions;
 }
 
-// helper generic for API response (optional, use where needed)
 export interface ApiListResponse<T> {
   pageOptions?: PageOptions;
   data: T[];

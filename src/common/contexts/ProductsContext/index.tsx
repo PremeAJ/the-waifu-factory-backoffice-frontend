@@ -1,18 +1,20 @@
 "use client";
+import { createContext, FC, ReactNode, useContext, useMemo, useState } from "react";
 import { CreateProductPayload, ProductType, UpdateProductPayload } from "./interfaces/products";
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
+import { defaultSWROption } from "@/app/api/swrOption";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
 import { parseSearchParamsToFilters } from "./util";
-import { defaultSWROption } from "@/app/api/swrOption";
+import { useCasheir } from "../CasheirContext";
 import { useDialog } from "../DialogContext";
 import { useSearchParams } from "next/navigation";
-import { createContext, FC, ReactNode, useContext, useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 
 export const ProductsContext = createContext<any>({} as any);
 export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const {menusMutate} = useCasheir();
   const isMobile = useIsMobile();
   const { showError } = useDialog();
   const searchParams = useSearchParams();
@@ -67,11 +69,10 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const isLoadingMore = isMobile ? mobileLoading || (isValidating && (mobilePages?.length ?? 0) > 0) : false;
   
-  // ✅ แก้ไข logic isReachingEnd
   const isReachingEnd = useMemo(() => {
-    if (!isMobile) return true; // Desktop ไม่ต้อง infinite scroll
+    if (!isMobile) return true;
     
-    if (!mobilePages || mobilePages.length === 0) return false; // ยังไม่มี data
+    if (!mobilePages || mobilePages.length === 0) return false; 
     
     const lastPage = mobilePages[mobilePages.length - 1]?.data;
     if (!lastPage) return false;
@@ -80,13 +81,12 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const totalLoaded = products.length;
     const grandTotal = lastPage.pageOptions?.total ?? 0;
     
-    // ✅ จบเมื่อ: items ที่ได้น้อยกว่า perPage หรือ loaded ครบทั้งหมด
     return lastPageItems < perPage || totalLoaded >= grandTotal;
   }, [isMobile, mobilePages, products, perPage]);
 
   const loadMore = () => {
     if (isMobile && !isLoadingMore && !isReachingEnd) {
-      setSize(size + 1); // ✅ เพิ่ม page ไป 1
+      setSize(size + 1);
     }
   };
 
@@ -121,6 +121,7 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
         showError({ message: response?.message });
       }
       await productsMutate();
+      await menusMutate();
       return response;
     } catch (error: any) {
       showError({ message: error?.message });
@@ -139,6 +140,7 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
         showError({ message: response?.message });
       }
       await productsMutate();
+      await menusMutate();
       return response;
     } catch (error: any) {
       showError({ message: error?.message });
@@ -153,6 +155,7 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setActionLoading(true);
       const res = await deleteFetcher(`${endpoint}/${id}`, {});
       await productsMutate();
+      await menusMutate();
       return res;
     } catch (err) {
       throw err;
@@ -161,7 +164,6 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
-  // ✅ เพิ่ม activeFilterCount ใน Context
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (filters.status && filters.status !== "all") count++;
@@ -176,7 +178,7 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const value = {
     actionLoading,
-    activeFilterCount,    // ✅ เพิ่มเข้า value
+    activeFilterCount,
     error,
     filters,
     isLoadingMore,
