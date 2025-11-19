@@ -7,7 +7,9 @@ import BaseChip from "@/common/components/base/BaseChip";
 import BaseDropdown from "@/common/components/base/BaseDropdown";
 import BaseNumberField from "@/common/components/base/BaseNumberField";
 import FilterDialog from "@/common/components/dialogs/FilterDialog";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { parseSearchParamsToFilters } from "@/common/contexts/ProductsContext/util";
 
 interface FilterValues {
   status?: "all" | "active" | "inactive" | "deleted";
@@ -24,34 +26,36 @@ interface ProductFilterDialogProps {
   open: boolean;
   onClose: () => void;
   onApply: (filters: FilterValues) => void;
-  currentFilters: FilterValues;
 }
 
 const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({ 
   open, 
   onClose, 
-  onApply, 
-  currentFilters 
+  onApply
 }) => {
-  const [filters, setFilters] = useState<FilterValues>(currentFilters);
+  // ✅ หยิบ searchParams เองจาก URL
+  const searchParams = useSearchParams();
+  const filters = parseSearchParamsToFilters(searchParams);
+  
   const { dropdown: categoryDropdown } = useCategories();
 
-  const handleApply = () => {
-    onApply(filters);
+  // ✅ เปลี่ยน handleApply - ส่ง filters ที่อัพเดทแล้ว
+  const handleApply = (updatedFilters: FilterValues) => {
+    onApply(updatedFilters);
     onClose();
   };
 
   const handleReset = () => {
     const resetFilters: FilterValues = {
-      status: "all",
+      status: undefined,
       categoryId: "",
+      search: "",
       minPrice: undefined,
       maxPrice: undefined,
       stockMin: undefined,
       stockMax: undefined,
-      isLowStock: false,
+      isLowStock: undefined,
     };
-    setFilters(resetFilters);
     onApply(resetFilters);
     onClose();
   };
@@ -86,11 +90,57 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
     return opts;
   }, [categoryDropdown]);
 
+  // ✅ สร้าง wrapper function สำหรับแต่ละ field เพื่อหยิบค่าใหม่
+  const handleStatusChange = (newValue: any) => {
+    handleApply({ ...filters, status: newValue });
+  };
+
+  const handleCategoryChange = (newValue: any) => {
+    handleApply({ ...filters, categoryId: newValue || "" });
+  };
+
+  const handleMinPriceChange = (e: any) => {
+    const val = e.target.value;
+    handleApply({ 
+      ...filters, 
+      minPrice: val === "" || val === null || val === undefined ? undefined : Number(val) 
+    });
+  };
+
+  const handleMaxPriceChange = (e: any) => {
+    const val = e.target.value;
+    handleApply({ 
+      ...filters, 
+      maxPrice: val === "" || val === null || val === undefined ? undefined : Number(val) 
+    });
+  };
+
+  const handleStockMinChange = (e: any) => {
+    const val = e.target.value;
+    handleApply({ 
+      ...filters, 
+      stockMin: val === "" || val === null || val === undefined ? undefined : Number(val) 
+    });
+  };
+
+  const handleStockMaxChange = (e: any) => {
+    const val = e.target.value;
+    handleApply({ 
+      ...filters, 
+      stockMax: val === "" || val === null || val === undefined ? undefined : Number(val) 
+    });
+  };
+
+  const handleIsLowStockChange = (newValue: any) => {
+    handleApply({ ...filters, isLowStock: newValue });
+  };
+
   return (
     <FilterDialog 
       open={open} 
-      onClose={onClose} 
-      onApply={handleApply} 
+      onClose={onClose}
+      // ✅ ไม่มี handleApply ใน onApply แล้ว เพราะเราเรียก onApply ตรงใน handleApply
+      onApply={() => onClose()}
       onReset={handleReset} 
       title="Filter Products"
     >
@@ -101,7 +151,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
             label="สถานะ"
             options={statusOptions}
             value={filters.status || "all"}
-            onChange={(newValue) => setFilters({ ...filters, status: newValue as FilterValues["status"] })}
+            onChange={handleStatusChange}
             renderOption={(option: any) => <BaseChip preset={option.value} />}
             renderValue={(selected: any) => (
               <Box display="flex" alignItems="center" gap={1}>
@@ -117,7 +167,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
             label="หมวดหมู่"
             options={categoryOptions}
             value={filters.categoryId || ""}
-            onChange={(newValue) => setFilters({ ...filters, categoryId: newValue || "" })}
+            onChange={handleCategoryChange}
             placeholder="เลือกหมวดหมู่"
             showEmptyOption={true}
             emptyOptionText="ทั้งหมด"
@@ -131,10 +181,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
             label="ราคาต่ำสุด"
             placeholder="0"
             value={filters.minPrice ?? ""}
-            onChange={(e) => {
-              const val = e.target.value;
-              setFilters({ ...filters, minPrice: val === "" || val === null || val === undefined ? undefined : Number(val) });
-            }}
+            onChange={handleMinPriceChange}
             suffix="฿"
             maximumFractionDigits={2}
             minimumFractionDigits={0}
@@ -149,10 +196,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
             label="ราคาสูงสุด"
             placeholder="9,999,999"
             value={filters.maxPrice ?? ""}
-            onChange={(e) => {
-              const val = e.target.value;
-              setFilters({ ...filters, maxPrice: val === "" || val === null || val === undefined ? undefined : Number(val) });
-            }}
+            onChange={handleMaxPriceChange}
             suffix="฿"
             maximumFractionDigits={2}
             minimumFractionDigits={0}
@@ -167,10 +211,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
             label="สต็อกต่ำสุด"
             placeholder="0"
             value={filters.stockMin ?? ""}
-            onChange={(e) => {
-              const val = e.target.value;
-              setFilters({ ...filters, stockMin: val === "" || val === null || val === undefined ? undefined : Number(val) });
-            }}
+            onChange={handleStockMinChange}
             maximumFractionDigits={0}
             minimumFractionDigits={0}
             allowDecimal={false}
@@ -184,10 +225,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
             label="สต็อกสูงสุด"
             placeholder="9,999,999"
             value={filters.stockMax ?? ""}
-            onChange={(e) => {
-              const val = e.target.value;
-              setFilters({ ...filters, stockMax: val === "" || val === null || val === undefined ? undefined : Number(val) });
-            }}
+            onChange={handleStockMaxChange}
             maximumFractionDigits={0}
             minimumFractionDigits={0}
             allowDecimal={false}
@@ -201,7 +239,7 @@ const ProductFilterDialog: React.FC<ProductFilterDialogProps> = ({
             label="สต็อก"
             options={isLowStockOptions}
             value={filters.isLowStock ?? false}
-            onChange={(newValue) => setFilters({ ...filters, isLowStock: newValue as boolean })}
+            onChange={handleIsLowStockChange}
           />
         </Grid>
       </Grid>

@@ -51,27 +51,15 @@ export const handleApplyFilterUtil = (
   newFilters: any,
   onNavigate: (url: string) => void
 ) => {
-  const cleanFilters = Object.fromEntries(
-    Object.entries(newFilters).filter(
-      ([_, value]) => value !== null && value !== undefined && value !== "" && value !== false
-    )
-  );
-
-  // ✅ ลบ "all" และ default values
-  if (cleanFilters.status === "all") delete cleanFilters.status;
-  if (cleanFilters.isLowStock === false) delete cleanFilters.isLowStock;
-
+  console.log("🚀 ~ handleApplyFilterUtil ~ newFilters:", newFilters)
   const queryString = updateSearchParams(currentSearchParams, {
-    ...cleanFilters,
+    ...newFilters,
     page: 1,
   });
   onNavigate(`/dashboard/pos/products?${queryString}`);
-  // ✅ ลบ onSetFilters ออก
 };
 
-/**
- * จัดการ initialization default params
- */
+
 export const handleInitSearchParamsUtil = (
   currentSearchParams: ReadonlyURLSearchParams,
   config: any,

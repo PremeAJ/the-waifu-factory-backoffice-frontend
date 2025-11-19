@@ -134,6 +134,7 @@ function ProductsList() {
   };
 
   const handleApplyFilter = (newFilters: any) => {
+    console.log("🚀 ~ handleApplyFilter ~ newFilters:", newFilters)
     handleApplyFilterUtil(currentSearchParams, newFilters, router.push);
   };
 
@@ -219,7 +220,7 @@ function ProductsList() {
         isReachingEnd={isReachingEnd}
       />
 
-      <ProductFilterDialog open={openFilterDialog} onClose={() => setOpenFilterDialog(false)} onApply={handleApplyFilter} currentFilters={filters} />
+      <ProductFilterDialog open={openFilterDialog} onClose={() => setOpenFilterDialog(false)} onApply={handleApplyFilter} />
 
       <BaseDialog
         loading={loading}

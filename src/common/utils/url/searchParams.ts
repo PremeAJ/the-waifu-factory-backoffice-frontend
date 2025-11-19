@@ -13,7 +13,7 @@ export const updateSearchParams = (
   const params = new URLSearchParams(currentParams);
 
   Object.entries(updates).forEach(([key, value]) => {
-    if (value === null || value === undefined || value === "") {
+    if (value === null || value === undefined || value === "" || value.toString() === 'false' || value === "all") {
       params.delete(key);
     } else {
       params.set(key, String(value));
