@@ -36,13 +36,12 @@ function ProductsList() {
   const debouncedSearch = useRef(
     debounce((value: string) => {
       handleSearchChangeUtil(currentSearchParams, value, setFilters, filters, router.push);
-    }, 500)
+    }, 1000)
   ).current;
 
-  // ✅ แก้ไข handleSearchChange - อัพเดท input แต่ debounce API call
   const handleSearchChange = (value: string) => {
-    setSearchInput(value); // ✅ อัพเดท UI ทันที
-    debouncedSearch(value); // ✅ เรียก API หลังหยุดพิมพ์ 500ms
+    setSearchInput(value); 
+    debouncedSearch(value);
   };
 
   const activeFilterCount = useMemo(() => {

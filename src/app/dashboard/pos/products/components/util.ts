@@ -45,6 +45,7 @@ export const handleSearchChangeUtil = (
   onSetFilters(updatedFilters);
   
   const queryString = updateSearchParams(currentSearchParams, {
+    ...currentFilters,
     search: searchValue || null, // ลบ search ถ้าว่าง
     page: 1, // รีเซ็ตไปหน้า 1
   });
