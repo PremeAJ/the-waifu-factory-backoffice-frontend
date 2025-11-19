@@ -2,6 +2,7 @@
 import { Badge, Box, Stack } from "@mui/material";
 import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable, BaseTextField } from "@/common/components/base";
 import { ChangeEvent, useEffect, useMemo, useState, useRef } from "react";
+import { debounce } from "@/common/utils/debounce";
 import { getProductHeaders } from "../constants/productHeaders";
 import { handleApplyFilterUtil, handleInitSearchParamsUtil, handlePageChangeUtil, handleRowsPerPageChangeUtil, handleSearchChangeUtil } from "./util";
 import { I18nString } from "@/common/utils/i18n/I18nString";
@@ -16,12 +17,10 @@ import ProductPreviewDialog from "./ProductPreviewDialog";
 import StockEditDialog from "./StockEditDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
-import { debounce } from "@/common/utils/debounce";
 
 function ProductsList() {
   const currentSearchParams = useSearchParams();
   const router = useRouter();
-  // ✅ ลบ setFilters, setPage, setPerPage ออก
   const { loading, products, pageOptions, deleteProduct, filters } = useProducts();
   const [searchInput, setSearchInput] = useState<string>("");
   const [deleteDialogState, setDeleteDialogState] = useState<{ open: boolean; item: any }>({ open: false, item: null });
@@ -33,7 +32,6 @@ function ProductsList() {
   const isLanguage = useProfile().appearance.isLanguage;
   const isMobilePortrait = isMobile && isPortrait;
 
-  // ✅ Debounce search
   const debouncedSearch = useRef(
     debounce((value: string) => {
       handleSearchChangeUtil(currentSearchParams, value, router.push);

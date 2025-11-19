@@ -1,19 +1,18 @@
 "use client";
+import { CreateProductPayload, ProductType, UpdateProductPayload } from "./interfaces/products";
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
+import { parseSearchParamsToFilters } from "./util";
+import { swrOption } from "@/app/api/swrOption";
 import { useDialog } from "../DialogContext";
-import React, { createContext, useContext, useMemo, useState } from "react";
-import type { CreateProductPayload, ProductFilters, ProductType, UpdateProductPayload } from "./interfaces/products";
+import { useSearchParams } from "next/navigation";
+import { createContext, FC, ReactNode, useContext, useMemo, useState } from "react";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
-import { swrOption } from "@/app/api/swrOption";
-import { useSearchParams } from "next/navigation";
-import { parseSearchParamsToFilters } from "./util";
 
 export const ProductsContext = createContext<any>({} as any);
-
-export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const isMobile = useIsMobile();
   const { showError } = useDialog();
   const searchParams = useSearchParams();
@@ -21,7 +20,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const endpoint = "/api/product";
 
-  const page = Number(searchParams.get("page")) || 1;
   const perPage = Number(searchParams.get("perPage")) || 10;
   const filters = parseSearchParamsToFilters(searchParams);
 
@@ -152,9 +150,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     isLoadingMore,
     isReachingEnd,
     loading,
-    page,
     pageOptions,
-    perPage,
     products,
     createProduct,
     deleteProduct,
