@@ -13,6 +13,7 @@ import React, { FC, useRef, useState } from "react";
 import BaseAvatar from "@/common/components/base/BaseAvatar";
 import BaseSwitch from "@/common/components/base/BaseSwitch";
 import SwitchLanguage from "@/components/shared/Language/SwitchLanguage";
+import { usePathname } from "next/navigation";
 
 interface ProfileProps {
   loading?: boolean;
@@ -75,6 +76,13 @@ const Profile: FC<ProfileProps> = () => {
       setOpenSignOut(false);
     }
   };
+
+  const pathname = usePathname();
+
+  // Clear profile menu state when route changes
+  React.useEffect(() => {
+    setAnchorEl2(null);
+  }, [pathname]);
 
   if (!session) return null
 
