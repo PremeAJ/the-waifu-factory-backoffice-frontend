@@ -28,10 +28,8 @@ const ProductPreviewDialog: React.FC<ProductPreviewDialogProps> = ({ open, onClo
 
   if (!item) return null;
 
-  // ✅ แก้ไข: ตรวจสอบว่า item เป็น sub-item หรือไม่
   const isSubItem = !item.subItems || item.subItems.length === 0;
 
-  // ✅ แก้ไข: รวมภาพทั้งหมด - product detail + variant thumbnails
   const allImages: string[] = (() => {
     if (isSubItem) {
       return item.productFiles?.url ? [item.productFiles.url] : [];

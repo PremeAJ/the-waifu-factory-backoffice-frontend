@@ -1,6 +1,6 @@
 "use client";
 import { createContext, FC, ReactNode, useContext, useMemo, useState } from "react";
-import { CreateProductPayload, ProductType, UpdateProductPayload } from "./interfaces/products";
+import { CreateProductPayload, ProductType, UpdateInventoryPayload, UpdateProductPayload } from "./interfaces/products";
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { defaultSWROption } from "@/app/api/swrOption";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
@@ -146,6 +146,24 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
+    const updateInventory = async (id: string, payload: UpdateInventoryPayload) => {
+    try {
+      setActionLoading(true);
+      const cleanedPayload = cleanPayloadForApi(payload);
+      const response = await putFetcher(`${endpoint}/inventory/${id}`, cleanedPayload);
+      if (response.error) {
+        showError({ message: response?.message });
+      }
+      await productsMutate();
+      return response;
+    } catch (error: any) {
+      showError({ message: error?.message });
+      throw error;
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const deleteProduct = async (id: string) => {
     try {
       setActionLoading(true);
@@ -187,6 +205,7 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     loadMore,
     mutate: productsMutate,
     updateProduct,
+    updateInventory,
   };
 
   return <ProductsContext.Provider value={value}>{children}</ProductsContext.Provider>;

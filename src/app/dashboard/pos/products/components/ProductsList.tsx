@@ -57,6 +57,7 @@ function ProductsList() {
           ...prod,
           ...singleOption,
           id: prod.id,
+          productOptionId: singleOption.id,
           lowStockThreshold: singleOption.lowStockThreshold || 3,
           subItems: [],
         };
@@ -69,6 +70,7 @@ function ProductsList() {
           opt.variantOption.nameTh,
           opt.variantOption.nameEn
         )}`,
+        productOptionId: opt.id,
         unit: prod.unit,
         categories: prod.categories,
         lowStockThreshold: opt.lowStockThreshold || 3,

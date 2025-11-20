@@ -105,9 +105,9 @@ export interface CreateProductOptionPayload {
   variantOption?: VariantOptionType;
   inventory: { status: ApiInventoryStatus; stock: number; branchId?: string };
   thumbnailImageId?: string;
-  thumbnailImageUrl?: string; 
+  thumbnailImageUrl?: string;
   thumbnailOriginName?: string;
-  lowStockThreshold?:number;
+  lowStockThreshold?: number;
 }
 
 export interface CreateProductPayload {
@@ -130,11 +130,17 @@ export interface CreateProductPayload {
 
 export interface UpdateProductPayload extends Partial<CreateProductPayload> {}
 
+export interface UpdateInventoryPayload {
+  branchId: string;
+  quantity: number;
+}
+
 export interface ProductsContextType {
   products: ProductType[];
   productsMutate: () => void;
   createProduct: (payload: CreateProductPayload) => Promise<void>;
   updateProduct: (id: string, payload: UpdateProductPayload) => Promise<void>;
+  updateInventory: (id: string, payload: UpdateInventoryPayload) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   getProductById: (id: string) => Promise<ProductType>;
   loading: boolean;

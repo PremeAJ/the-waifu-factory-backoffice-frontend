@@ -1,7 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Box, Typography, Stack } from "@mui/material";
 import { BaseDialog, BaseNumberField } from "@/common/components/base";
+import { useProducts } from "@/common/contexts/ProductsContext"; // added
+import { useDialog } from "@/common/contexts/DialogContext"; // optional for error handling
 
 interface StockEditDialogProps {
   open: boolean;
@@ -12,6 +14,8 @@ interface StockEditDialogProps {
 
 const StockEditDialog: React.FC<StockEditDialogProps> = ({ open, onClose, item, onSave }) => {
   const [stock, setStock] = useState<number>(0);
+  const { updateInventory,actionLoading } = useProducts(); 
+  const { showError } = useDialog();
 
   useEffect(() => {
     if (open && item) {
@@ -19,9 +23,21 @@ const StockEditDialog: React.FC<StockEditDialogProps> = ({ open, onClose, item, 
     }
   }, [open, item]);
 
-  const handleConfirm = () => {
-    onSave(stock);
+  const handleConfirm = async () => {
+    try {
+      await updateInventory(item.productOptionId, { quantity: stock } as any);
+      onSave(stock);
+      onClose();
+    } catch (err: any) {
+      if (showError) {
+        showError({ message: err?.message ?? "Failed to update stock" });
+      }
+    }
   };
+
+  const handleInventoryChange = useCallback((e: any) => {
+  setStock(e.target.value);
+}, []);
 
   if (!item) return null;
 
@@ -30,6 +46,7 @@ const StockEditDialog: React.FC<StockEditDialogProps> = ({ open, onClose, item, 
       open={open}
       onClose={onClose}
       title="แก้ไขจำนวนสต็อก"
+      loading={actionLoading}
       content={
         <Stack spacing={2}>
           <Box>
@@ -61,7 +78,7 @@ const StockEditDialog: React.FC<StockEditDialogProps> = ({ open, onClose, item, 
               allowNegative={false}
               placeholder="0"
               value={stock}
-              onChange={(val) => setStock(Number(val) || 0)}
+              onChange={handleInventoryChange}
             />
           </Box>
         </Stack>
