@@ -77,6 +77,12 @@ const BaseSearchField: React.FC<BaseSearchFieldProps> = ({
 
   return (
     <StyledSearchField
+      // เพิ่ม type และ enterKeyHint
+      type="search"
+      inputProps={{
+        inputMode: "search",
+        enterKeyHint: "search",
+      }}
       expanded={expanded}
       variant="outlined"
       size="small"
