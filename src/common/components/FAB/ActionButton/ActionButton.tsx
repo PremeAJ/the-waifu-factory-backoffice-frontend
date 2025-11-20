@@ -3,7 +3,7 @@ import { AppearanceSettings } from "@/common/contexts/ProfileContext/interfaces/
 import { backButtonRoute } from "./backButton";
 import { hideButtonRoute } from "./hideButton";
 import { homeButtonRoute } from "./homeButton";
-import { IconArrowLeft, IconMenu2, IconHome } from "@tabler/icons-react";
+import { IconArrowLeft, IconMenu2, IconHome, IconLayoutSidebarLeftExpand, IconLayoutSidebarRightExpand } from "@tabler/icons-react";
 import { menuButtonRoute } from "./menuButton";
 import { useCustomize } from "@/common/contexts/setting/customizerContext";
 import { useEffect, useState } from "react";
@@ -13,7 +13,6 @@ import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import BaseFab from "../../base/BaseFab";
 import useIsMobile from "@/common/utils/state/isMobile";
 
-
 type ActionType = "hide" | "back" | "menu" | "home";
 
 export interface PageActionConfig {
@@ -21,12 +20,7 @@ export interface PageActionConfig {
   action: ActionType;
 }
 
-const pageActionConfig: PageActionConfig[] = [
-  ...hideButtonRoute,
-  ...backButtonRoute,
-  ...menuButtonRoute,
-  ...homeButtonRoute,
-];
+const pageActionConfig: PageActionConfig[] = [...hideButtonRoute, ...backButtonRoute, ...menuButtonRoute, ...homeButtonRoute];
 
 const getActionForPath = (pathname: string): ActionType => {
   const exactMatch = pageActionConfig.find((config) => config.pathname === pathname);
@@ -97,6 +91,11 @@ const ActionButton = () => {
       case "back":
         return <IconArrowLeft />;
       case "menu":
+        // Desktop: use sidebar expand/collapse icons based on sidebar state
+        if (!isMobile) {
+          return isChecked ? <IconLayoutSidebarLeftExpand /> : <IconLayoutSidebarRightExpand />;
+        }
+        // Mobile: use menu icon
         return <IconMenu2 />;
       case "home":
         return <IconHome />;
