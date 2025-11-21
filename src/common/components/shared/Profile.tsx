@@ -4,16 +4,16 @@ import { IconMail, IconUser, IconMoon, IconLanguage, IconLogout } from "@tabler/
 import { PageUrl } from "@/common/constants/pageUrl";
 import { signOut, useSession } from "next-auth/react";
 import { useAuth } from "@/common/contexts/AuthContext";
+import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import * as dropdownData from "../../../app/dashboard/layout/header/data";
+import BaseAvatar from "@/common/components/base/BaseAvatar";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
+import BaseSwitch from "@/common/components/base/BaseSwitch";
 import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDialog";
 import Link from "next/link";
-import React, { FC, useRef, useState } from "react";
-import BaseAvatar from "@/common/components/base/BaseAvatar";
-import BaseSwitch from "@/common/components/base/BaseSwitch";
+import React, { FC, useRef, useState ,useEffect} from "react";
 import SwitchLanguage from "@/components/shared/Language/SwitchLanguage";
-import { usePathname } from "next/navigation";
 
 interface ProfileProps {
   loading?: boolean;
@@ -31,14 +31,12 @@ const Profile: FC<ProfileProps> = () => {
   const [openSignOut, setOpenSignOut] = useState(false);
   const [signOutLoading, setSignOutLoading] = useState(false);
 
-  // Anchor & menu state
   const anchorBtnRef = useRef<HTMLButtonElement | null>(null);
   const [anchorEl2, setAnchorEl2] = useState<HTMLElement | null>(null);
   const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl2(event.currentTarget as HTMLElement);
   };
 
-  // User fields
   const userProfile = (session as any)?.profile || {};
   const avatar: string = userProfile?.avatar ?? userProfile?.image ?? session?.user?.image ?? "";
   const firstName: string = userProfile?.firstName ?? (session?.user?.name as string) ?? "";
@@ -46,13 +44,11 @@ const Profile: FC<ProfileProps> = () => {
   const fullName: string = userProfile?.fullName ?? [firstName, lastName].filter(Boolean).join(" ");
   const email: string = userProfile?.email ?? (session?.user?.email as string) ?? "";
 
-  // Toggle dark mode (ไม่พยายามคงเมนูไว้)
   const toggleDarkMode = () => {
     const next = activeMode === "dark" ? "light" : "dark";
     updateAppearance({ activeMode: next });
   };
 
-  // Render icon from dropdown data
   const renderIcon = (IconCmp: any) => {
     if (!IconCmp) return null;
     if (React.isValidElement(IconCmp)) return IconCmp;
@@ -64,7 +60,6 @@ const Profile: FC<ProfileProps> = () => {
     }
   };
 
-  // Logout handlers
   const handleLogout = () => setOpenSignOut(true);
   const handleConfirmSignOut = async () => {
     try {
@@ -79,16 +74,14 @@ const Profile: FC<ProfileProps> = () => {
 
   const pathname = usePathname();
 
-  // Clear profile menu state when route changes
-  React.useEffect(() => {
+  useEffect(() => {
     setAnchorEl2(null);
   }, [pathname]);
 
-  if (!session) return null
+  if (!session) return null;
 
   return (
     <Box>
-      {/* header avatar keeps menu behavior */}
       <IconButton
         ref={anchorBtnRef}
         aria-label="show 11 new notifications"
@@ -249,7 +242,6 @@ const Profile: FC<ProfileProps> = () => {
           </Box>
         ))}
 
-        {/* Preferences */}
         <Box mt={2}>
           <Divider sx={{ my: 2 }} />
           <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>

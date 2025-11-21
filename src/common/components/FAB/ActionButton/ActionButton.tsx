@@ -77,6 +77,9 @@ const ActionButton = () => {
         }
         break;
       case "home":
+        if (isMobile) {
+          setIsMobileSidebar(!isMobileSidebar);
+        }
         router.push("/dashboard");
         break;
       default:
