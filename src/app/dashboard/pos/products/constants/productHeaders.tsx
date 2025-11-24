@@ -144,22 +144,94 @@ export const getProductHeaders = (): any => [
     align: "center",
     width: "15%",
     render: (_val: any, item: any) => {
+      const getDiscountTooltip = (it: any) => {
+        let type = it?.discountType;
+        let rate = it?.discountRate;
+        let base = it?.basePrice;
+        let final = it?.finalPrice;
+
+        // prefer single productOption discount info if present
+        if ((!type || rate === undefined) && Array.isArray(it?.productOptions) && it.productOptions.length === 1) {
+          const po = it.productOptions[0];
+          type = type ?? po?.discountType;
+          rate = rate ?? po?.discountRate;
+          base = base ?? po?.basePrice;
+          final = final ?? po?.finalPrice;
+        }
+
+        if (type === "percentage" && typeof rate === "number") {
+          if (typeof base === "number") {
+            const amount = (base * rate) / 100;
+            return `ลดราคา ${rate}% (${formatCurrency(amount)})`;
+          }
+          return `ลดราคา ${rate}%`;
+        }
+
+        if (type === "fixed" && typeof rate === "number") {
+          return `ลดราคา ${formatCurrency(rate)}`;
+        }
+
+        if (typeof base === "number" && typeof final === "number" && final < base) {
+          const amount = base - final;
+          const pct = Math.round((amount / base) * 100);
+          return `ลดราคา ${pct}% (${formatCurrency(amount)})`;
+        }
+
+        return undefined;
+      };
+
+      const discountTip = getDiscountTooltip(item);
+
+      // display range like before
       if (item?.displayPrice && item.displayPrice !== "-") {
         const m = String(item.displayPrice).trim();
         const rangeMatch = m.match(/^([\d,.\s]+)\s*~\s*([\d,.\s]+)$/);
         if (rangeMatch) {
-          return `${formatCurrency(rangeMatch[1])} ~ ${formatCurrency(rangeMatch[2])}`;
+          const node = (
+            <Box component="span">{`${formatCurrency(rangeMatch[1])} ~ ${formatCurrency(rangeMatch[2])}`}</Box>
+          );
+          return discountTip ? <BaseTooltip title={discountTip} arrow>{node}</BaseTooltip> : node;
         }
+
         const num = Number(m.replace(/[^0-9.-]+/g, ""));
-        if (!Number.isNaN(num)) return formatCurrency(num);
+        const hasDiscount =
+          (item.discountType && item.discountType !== "none") ||
+          (item.productOptions && item.productOptions.length === 1 && item.productOptions[0].discountType && item.productOptions[0].discountType !== "none") ||
+          (typeof item.basePrice === "number" && typeof item.finalPrice === "number" && item.finalPrice < item.basePrice);
+
+        if (!Number.isNaN(num)) {
+          if (hasDiscount && typeof item.basePrice === "number" && typeof item.finalPrice === "number") {
+            const node = (
+              <Box component="span">
+                <Box component="span" sx={{ textDecoration: "line-through", color: "error.main", mr: 1 }}>
+                  {formatCurrency(item.basePrice)}
+                </Box>
+                <Box component="span">{formatCurrency(item.finalPrice)}</Box>
+              </Box>
+            );
+            return discountTip ? <BaseTooltip title={discountTip} arrow>{node}</BaseTooltip> : node;
+          }
+          return formatCurrency(num);
+        }
         return m;
       }
-      if (item?.price && item.price !== "-") {
-        const num = Number(String(item.price).replace(/[^0-9.-]+/g, ""));
-        return !Number.isNaN(num) ? formatCurrency(num) : item.price;
+
+      // fallback: check explicit price / basePrice / finalPrice
+      const fallbackNum = item?.price ?? item?.finalPrice ?? item?.basePrice;
+      if (typeof fallbackNum === "number") {
+        if (typeof item.basePrice === "number" && typeof item.finalPrice === "number" && item.finalPrice < item.basePrice) {
+          const node = (
+            <Box component="span">
+              <Box component="span" sx={{ textDecoration: "line-through", color: "error.main", mr: 1 }}>
+                {formatCurrency(item.basePrice)}
+              </Box>
+              <Box component="span">{formatCurrency(item.finalPrice)}</Box>
+            </Box>
+          );
+          return discountTip ? <BaseTooltip title={discountTip} arrow>{node}</BaseTooltip> : node;
+        }
+        return formatCurrency(fallbackNum);
       }
-      const num = item?.basePrice ?? item?.finalPrice ?? item?.price;
-      if (typeof num === "number") return formatCurrency(num);
       return "-";
     },
   },
