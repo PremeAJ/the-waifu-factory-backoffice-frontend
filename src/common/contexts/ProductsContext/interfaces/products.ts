@@ -131,13 +131,21 @@ export interface CreateProductPayload {
 export interface UpdateProductPayload extends Partial<CreateProductPayload> {}
 
 export interface UpdateInventoryPayload {
-  branchId: string;
+  branchId?: string;
   quantity: number;
+}
+
+export interface ProductsCounts {
+  total: number;
+  active: number;
+  inactive: number;
+  lowStock: number;
 }
 
 export interface ProductsContextType {
   products: ProductType[];
   productsMutate: () => void;
+  counts?: ProductsCounts;
   createProduct: (payload: CreateProductPayload) => Promise<void>;
   updateProduct: (id: string, payload: UpdateProductPayload) => Promise<void>;
   updateInventory: (id: string, payload: UpdateInventoryPayload) => Promise<void>;

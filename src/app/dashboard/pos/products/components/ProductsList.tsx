@@ -4,7 +4,7 @@ import { BaseButton, BaseDialog, BaseFloatingButton, BaseSearchField, BaseTable,
 import { ChangeEvent, useEffect, useMemo, useState, useRef } from "react";
 import { debounce } from "@/common/utils/debounce";
 import { getProductHeaders } from "../constants/productHeaders";
-import { handleApplyFilterUtil, handleInitSearchParamsUtil, handlePageChangeUtil, handleRowsPerPageChangeUtil, handleSearchChangeUtil } from "./util";
+import { handleApplyFilterUtil, handleInitSearchParamsUtil, handlePageChangeUtil, handleRowsPerPageChangeUtil, handleSearchChangeUtil, handleFilterFromCardUtil } from "./util";
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconAdjustmentsAlt } from "@tabler/icons-react";
 import { ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
@@ -16,6 +16,7 @@ import ProductPreviewDialog from "./ProductPreviewDialog";
 import StockEditDialog from "./StockEditDialog";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsPortrait from "@/common/utils/state/useIsPortrait";
+import ProductStatsCards from "./ProductStatsCards";
 
 function ProductsList() {
   const currentSearchParams = useSearchParams();
@@ -168,12 +169,15 @@ function ProductsList() {
     handleCloseStockEdit();
   };
 
+  // removed local handler — use util function below when passing to ProductStatsCards
+
   useEffect(() => {
     handleInitSearchParamsUtil(currentSearchParams, router.push);
   }, []);
 
   return (
     <Box>
+      <ProductStatsCards onFilter={(f) => handleFilterFromCardUtil(currentSearchParams, f, router.push)} />
       <Stack direction="row" spacing={2} mb={2} justifyContent={"space-between"}>
         {isMobile ? (
           // ✅ ใช้ searchInput จาก state

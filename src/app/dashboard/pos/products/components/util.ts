@@ -54,3 +54,27 @@ export const handleInitSearchParamsUtil = (
   });
   onNavigate(`/dashboard/pos/products?${queryString}`);
 };
+
+export const handleFilterFromCardUtil = (
+  currentSearchParams: ReadonlyURLSearchParams,
+  filters: Record<string, any>,
+  onNavigate: (url: string) => void
+) => {
+  const params = new URLSearchParams(currentSearchParams?.toString() ?? "");
+
+  const FILTER_KEYS = ["status", "categoryId", "minPrice", "maxPrice", "stockMin", "stockMax", "isLowStock", "search"];
+  FILTER_KEYS.forEach((k) => params.delete(k));
+
+  // reset to first page
+  params.set("page", "1");
+
+  // apply card filters only
+  Object.keys(filters || {}).forEach((k) => {
+    const v = filters[k];
+    if (v === undefined || v === null || v === "") return;
+    params.set(k, String(v));
+  });
+
+  const query = params.toString();
+  onNavigate(`/dashboard/pos/products${query ? `?${query}` : ""}`);
+};

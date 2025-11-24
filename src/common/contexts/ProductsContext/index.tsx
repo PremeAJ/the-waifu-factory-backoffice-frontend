@@ -1,6 +1,6 @@
 "use client";
 import { createContext, FC, ReactNode, useContext, useMemo, useState } from "react";
-import { CreateProductPayload, ProductType, UpdateInventoryPayload, UpdateProductPayload } from "./interfaces/products";
+import { CreateProductPayload, ProductType, UpdateInventoryPayload, UpdateProductPayload, ProductsCounts } from "./interfaces/products";
 import { defaultPageOptions, PageOptions } from "@/common/interface/paginate";
 import { defaultSWROption } from "@/app/api/swrOption";
 import { getFetcher, postFetcher, putFetcher, deleteFetcher } from "@/app/api/globalFetcher";
@@ -52,6 +52,12 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     if (isMobile) return mobilePages?.flatMap((p: any) => p.data?.data ?? []) ?? [];
     return desktopData?.data?.data ?? [];
   }, [isMobile, mobilePages, desktopData]);
+
+  // counts provided by API (desktop.data.counts or mobilePages[0].data.counts)
+  const counts: ProductsCounts | undefined = useMemo(() => {
+    if (isMobile) return mobilePages?.[0]?.data?.counts;
+    return desktopData?.data?.counts;
+  }, [isMobile, desktopData, mobilePages]);
 
   const pageOptions: PageOptions = useMemo(() => {
     if (isMobile) {
@@ -199,6 +205,7 @@ export const ProductsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     loading,
     pageOptions,
     products,
+    counts,
     createProduct,
     deleteProduct,
     getProductById,
