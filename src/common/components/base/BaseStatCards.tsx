@@ -26,7 +26,7 @@ type Props = {
 const BaseStatCards: React.FC<Props> = ({ items, size = { xs: 12, sm: 6, md: 3 }, containerProps, itemProps, loading = false }) => {
   const isMobile = useIsMobile();
   return (
-    <Grid container spacing={2} mb={2} mx={isMobile ? 0 : 2} {...containerProps}>
+    <Grid container spacing={2} mb={2} mx={isMobile ? 2 : 0} {...containerProps}>
       {items.map((item, idx) => {
         const key = item.id ?? idx;
         const selectedColor = item.iconBg ?? "primary.main";
