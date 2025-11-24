@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import BaseStatCards, { StatItem } from "@/common/components/base/BaseStatCards";
 
 const ProductStatsCards: React.FC<{ onFilter?: (filters: any) => void }> = ({ onFilter }) => {
-  const { counts } = useProducts();
+  const { counts, loading } = useProducts(); // <-- use loading
   const searchParams = useSearchParams();
 
   const total = counts?.total ?? 0;
@@ -64,7 +64,8 @@ const ProductStatsCards: React.FC<{ onFilter?: (filters: any) => void }> = ({ on
     },
   ];
 
-  return <BaseStatCards items={items} />;
+  // pass loading to BaseStatCards so numbers show skeleton while loading
+  return <BaseStatCards items={items} loading={loading} />;
 };
 
 export default ProductStatsCards;

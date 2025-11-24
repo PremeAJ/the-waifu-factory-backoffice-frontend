@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography, Skeleton } from "@mui/material";
 
 export type StatItem = {
   id?: string | number;
@@ -11,6 +11,7 @@ export type StatItem = {
   iconBg?: string; // icon bg or color key
   selected?: boolean;
   onClick?: (item: StatItem) => void;
+  loading?: boolean;
 };
 
 type Props = {
@@ -18,9 +19,10 @@ type Props = {
   size?: { xs?: number; sm?: number; md?: number; lg?: number };
   containerProps?: any;
   itemProps?: any;
+  loading?: boolean; // global loading flag
 };
 
-const BaseStatCards: React.FC<Props> = ({ items, size = { xs: 12, sm: 6, md: 3 }, containerProps, itemProps }) => {
+const BaseStatCards: React.FC<Props> = ({ items, size = { xs: 12, sm: 6, md: 3 }, containerProps, itemProps, loading = false }) => {
   return (
     <Grid container spacing={2} mb={2} {...containerProps}>
       {items.map((item, idx) => {
@@ -60,7 +62,7 @@ const BaseStatCards: React.FC<Props> = ({ items, size = { xs: 12, sm: 6, md: 3 }
                     {item.title}
                   </Typography>
                   <Typography variant="h6" fontWeight={700}>
-                    {item.value}
+                    {(loading || item.loading) ? <Skeleton variant="rectangular" width={25} height={20} /> : item.value}
                   </Typography>
                 </Box>
               </Stack>
