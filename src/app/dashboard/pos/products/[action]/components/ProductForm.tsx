@@ -4,12 +4,13 @@ import { fileTypeGroup } from "@/common/constants/file/fileType";
 import { Grid, Stack } from "@mui/material";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
 import { unitTypeOptions } from "@/common/contexts/ProductsContext/constants/constants";
+import { useCasheir } from "@/common/contexts/CasheirContext";
 import { useFormik } from "formik";
 import { useProducts, useUpload } from "@/common/contexts";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { validationSchema } from "../validation/yup";
-import BaseDebug from "@/common/components/debug/BaseDebug";
+// import BaseDebug from "@/common/components/debug/BaseDebug";
 import BlankCard from "@/components/shared/BlankCard";
 import CategoryAndTags from "./CategoryAndTags";
 import GeneralCard from "./GeneralCard";
@@ -19,8 +20,6 @@ import ProductTemplate from "./ProductTemplate";
 import React, { useMemo, useEffect, useState } from "react";
 import type { CreateProductPayload, CreateProductOptionPayload, ProductType } from "@/common/contexts/ProductsContext/interfaces/products";
 import useIsMobile from "@/common/utils/state/isMobile";
-import { removeSearchParams } from "@/common/utils/url/searchParams";
-import { useCasheir } from "@/common/contexts/CasheirContext";
 
 const mapProductToFormValues = (p?: ProductType | null): CreateProductPayload => {
   if (!p) {
@@ -228,7 +227,7 @@ const ProductForm: React.FC = () => {
 
   return (
     <form noValidate onSubmit={formik.handleSubmit}>
-      <BaseDebug data={{ values: formik.values, errors: formik.errors }} />
+      {/* <BaseDebug data={{ values: formik.values, errors: formik.errors }} /> */}
       <Grid container spacing={3}>
         <Grid size={{ lg: 8 }}>
           <Stack spacing={3}>
