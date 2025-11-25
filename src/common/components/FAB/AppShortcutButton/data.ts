@@ -65,7 +65,7 @@ const profile: ProfileType[] = [
     title: "Settings",
   },
   {
-    href: PageUrl.DASHBOARD,
+    href: PageUrl.HOME,
     icon: IconBuildingStore,
     subtitle: "Dashboard",
     title: "My Store",

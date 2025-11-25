@@ -4,6 +4,7 @@ export enum PageUrl {
   CALLBACK = "/auth/callback",
   DASHBOARD = "/dashboard",
   FORGOT_PASSWORD = "/auth/forgot-password",
+  HOME = "/dashboard/home",
   MAIN = "/",
   PRICING = "/pricing",
   SETTING = "/setting",

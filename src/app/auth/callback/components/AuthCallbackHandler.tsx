@@ -12,7 +12,7 @@ export default function AuthCallbackHandler() {
   useEffect(() => {
     if (status === "loading") return;
     if (session && status === "authenticated") {
-      router.push(PageUrl.DASHBOARD);
+      router.push(PageUrl.HOME);
     } else {
       router.replace(PageUrl.AUTH_SIGN_IN);
     }

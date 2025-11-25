@@ -84,7 +84,7 @@ export const CompanyProvider: React.FC<{ children: React.ReactNode }> = ({ child
         roleNameEn: roleNameEn,
       },
     }, false);
-    showSuccess({ message: "กำลังพาไปหน้า Dashboard...", title: "สำเร็จ", callback: PageUrl.DASHBOARD });
+    showSuccess({ message: "กำลังพาไปหน้า Dashboard...", title: "สำเร็จ", callback: PageUrl.HOME });
     setLoading(false);
     return response;
   };

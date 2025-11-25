@@ -25,7 +25,7 @@ const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose
       router.push("/pricing");
     } else {
       await updateActiveCompany(companyId);
-      router.push(PageUrl.DASHBOARD);
+      router.push(PageUrl.HOME);
     }
     if (onClose) onClose();
   };

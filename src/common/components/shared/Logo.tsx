@@ -22,8 +22,8 @@ const Logo = ({ size = "medium" }: LogoProps) => {
   const {activeMode } = useProfile().appearance;
   const path = usePathname();
   const url =
-    path.includes(PageUrl.DASHBOARD) || path.includes("/setting")
-      ? PageUrl.DASHBOARD
+    path.includes(PageUrl.HOME) || path.includes("/setting")
+      ? PageUrl.HOME
       : "/";
   const { height, width } = sizeMap[size];
   const LinkStyled = styled(Link)(() => ({
