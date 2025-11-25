@@ -66,10 +66,11 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
 
       const constraints: MediaStreamConstraints = {
         video: {
-          facingMode: { exact: "environment" },
-          width: { ideal: 1920, min: 640 },
-          height: { ideal: 1080, min: 480 },
-          aspectRatio: 16 / 9,
+          // use ideal instead of exact (more forgiving)
+          facingMode: { ideal: "environment" },
+          width: { ideal: 1280, min: 640 },
+          height: { ideal: 1280, min: 640 },
+          aspectRatio: 1, // square stream target
         },
       };
 
@@ -194,57 +195,54 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
       )}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Box sx={{ position: "relative", textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <video
-            ref={videoRef}
-            style={{
-              width: "100%",
-              maxWidth: 500,
-              height: "auto",
-              backgroundColor: "#000",
-              display: isScanning ? "block" : "none",
-              border: "2px solid #ccc",
-            }}
-            playsInline
-            muted
-            autoPlay
-            controls={false}
-          />
-          {isScanning && (
+          {/* Square video container fills available width up to maxWidth */}
+          <Box sx={{ width: "100%", maxWidth: 640, aspectRatio: "1 / 1", borderRadius: 2, overflow: "hidden", backgroundColor: "#000" }}>
+            <video
+              ref={videoRef}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+              playsInline
+              muted
+              autoPlay
+              controls={false}
+            />
+            {/* central square overlay frame */}
             <Box
               sx={{
                 position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: 200,
-                height: 200,
-                border: "2px solid #ff0000",
-                borderRadius: 2,
+                inset: 0,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 pointerEvents: "none",
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  top: -1,
-                  left: -1,
-                  right: -1,
-                  bottom: -1,
-                  border: "2px solid rgba(255,255,255,0.5)",
-                  borderRadius: 2,
-                  animation: "pulse 2s infinite",
-                },
               }}
-            />
-          )}
+            >
+              <Box
+                sx={{
+                  width: "72%",
+                  height: "72%",
+                  border: "3px solid",
+                  borderColor: "error.main",
+                  borderRadius: 3,
+                  boxShadow: "0 0 0 6px rgba(255,255,255,0.04) inset",
+                  animation: isScanning ? "pulse 2s infinite" : "none",
+                }}
+              />
+            </Box>
+          </Box>
         </Box>
+        {/* status / permission / error message under camera */}
         <Box sx={{ textAlign: "center", mt: 2 }}>
-          {!isScanning ? (
-            <Button variant="contained" size="large" startIcon={<IconCamera />} onClick={startScanning} disabled={hasPermission === false}>
-              เริ่มสแกน Barcode
-            </Button>
+          {error ? (
+            <Typography color="error" variant="body2">{error}</Typography>
+          ) : isScanning ? (
+            <Typography variant="body2" color="text.secondary">กำลังสแกน — วางบาร์โค้ดไว้ในกรอบ</Typography>
           ) : (
-            <Button variant="outlined" size="large" startIcon={<IconCameraOff />} onClick={stopScanning}>
-              หยุดสแกน
-            </Button>
+            <Typography variant="body2" color="text.secondary">เชื่อมต่อกล้อง …</Typography>
           )}
         </Box>
       </Paper>
@@ -287,18 +285,18 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
         </Paper>
       )}
       <style jsx>{`
-        @keyframes pulse {
-          0% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
-          100% {
-            opacity: 1;
-          }
-        }
-      `}</style>
+         @keyframes pulse {
+           0% {
+             opacity: 1;
+           }
+           50% {
+             opacity: 0.5;
+           }
+           100% {
+             opacity: 1;
+           }
+         }
+       `}</style>
     </Box>
   );
 };
