@@ -10,7 +10,7 @@ import {
   Button,
   Chip,
 } from '@mui/material';
-import * as dropdownData from './data';
+import * as dropdownData from '../../../../common/components/FAB/AppShortcutButton/data';
 import Scrollbar from '@/components/custom-scroll/Scrollbar';
 
 import { IconBellRinging } from '@tabler/icons-react';

@@ -1,15 +1,15 @@
 import { Avatar, Box, Typography, Paper } from "@mui/material";
-import * as dropdownData from "./data";
+import { shortcutList } from "@/common/components/FAB/AppShortcutButton/shortcutList";
+import Grid from "@mui/system/Grid";
 import Link from "next/link";
 import React from "react";
-import Grid from "@mui/system/Grid";
 
 interface AppLinksProps {
   searchApp?: string;
 }
 
 const AppLinks: React.FC<AppLinksProps> = ({ searchApp = "" }) => {
-  const filteredApps = dropdownData.appsLink.filter(
+  const filteredApps = shortcutList.filter(
     (app) =>
       app.title.toLowerCase().includes(searchApp.toLowerCase()) ||
       app.subtext?.toLowerCase().includes(searchApp.toLowerCase())

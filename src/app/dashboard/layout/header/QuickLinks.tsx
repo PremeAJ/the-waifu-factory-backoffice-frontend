@@ -1,5 +1,5 @@
 import { Typography, Stack } from '@mui/material';
-import * as dropdownData from './data';
+import * as dropdownData from '../../../../common/components/FAB/AppShortcutButton/data';
 import Link from 'next/link';
 
 const QuickLinks = () => {

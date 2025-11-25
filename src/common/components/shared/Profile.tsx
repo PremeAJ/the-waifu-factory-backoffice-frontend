@@ -6,7 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useAuth } from "@/common/contexts/AuthContext";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import * as dropdownData from "../../../app/dashboard/layout/header/data";
+import * as dropdownData from "../FAB/AppShortcutButton/data";
 import BaseAvatar from "@/common/components/base/BaseAvatar";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import BaseSwitch from "@/common/components/base/BaseSwitch";

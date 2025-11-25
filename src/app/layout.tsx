@@ -9,7 +9,7 @@ import Head from "./head";
 import MyApp from "./app";
 import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 import React from "react";
-import ScrollToTopButton from "../common/components/FAB/ScrollToTopButton";
+import ScrollToTopButton from "../common/components/FAB/scrollToTopButton/ScrollToTopButton";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 import ActionButton from "@/common/components/FAB/ActionButton/ActionButton";
 

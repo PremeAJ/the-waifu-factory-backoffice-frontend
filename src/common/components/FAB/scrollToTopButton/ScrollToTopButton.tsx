@@ -1,10 +1,25 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { hideButtonRoute } from "./hideButton";
 import { IconArrowUp } from "@tabler/icons-react";
-import BaseFab from "../base/BaseFab";
+import { usePathname } from "next/navigation";
+import BaseFab from "../../base/BaseFab";
+import React, { useEffect, useState, useMemo } from "react";
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
+
+  const pathname = usePathname();
+  const isHiddenByRoute = useMemo(() => {
+    if (!pathname) return false;
+    return hideButtonRoute.some((cfg) => {
+      const p = cfg.pathname;
+      if (p.endsWith("/*")) {
+        const prefix = p.slice(0, -2);
+        return pathname === prefix || pathname.startsWith(prefix + "/");
+      }
+      return pathname === p;
+    });
+  }, [pathname]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -38,7 +53,8 @@ const ScrollToTopButton = () => {
 
   return (
     <>
-      {show && (
+      {/* hide by route config */}
+      {show && !isHiddenByRoute && (
         <BaseFab
           fadeDirection="up"
           color="primary"
