@@ -1,13 +1,15 @@
 "use client";
 
-import { FC, useEffect, useState, useMemo } from "react";
-import { getIn } from "formik";
-import { Box, Grid, Typography } from "@mui/material";
 import { BaseChip, BaseDropdown, BaseFileInput, BaseLabel, BaseNumberField, BaseRadio, BaseSlider, BaseTextField } from "@/common/components/base";
+import { Box, Grid, Typography, IconButton } from "@mui/material";
 import { discountTypeOptions, inventoryStatusOptions } from "@/common/contexts/ProductsContext/constants/constants";
-import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
+import { FC, useEffect, useState, useMemo } from "react";
 import { fileTypeGroup } from "@/common/constants/file/fileType";
+import { getIn } from "formik";
+import { IconScan } from "@tabler/icons-react";
 import { StorageBucket } from "@/common/contexts/UploadContext/interfaces/upload";
+import { UnitTypeEnum } from "@/common/contexts/ProductsContext/interfaces/products";
+import BarcodeDialog from "@/common/components/dialogs/BarcodeDialog";
 
 type Props = {
   formik: any;
@@ -16,6 +18,7 @@ type Props = {
 
 const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
   const [lastEdited, setLastEdited] = useState<"base" | "final">("base");
+  const [openScan, setOpenScan] = useState(false);
 
   const priceBase = Number(getIn(formik.values, `${optionPath}.basePrice`) ?? 0);
   const priceFinal = Number(getIn(formik.values, `${optionPath}.finalPrice`) ?? 0);
@@ -173,10 +176,33 @@ const ProductOptionFields: FC<Props> = ({ formik, optionPath }) => {
     );
   };
 
+  const closeScan = () => setOpenScan(false);
+  const handleScan = (result: any) => {
+    // try common fields for ZXing / custom result shapes
+    const value = result?.text ?? result?.code ?? result?.value ?? result?.codeResult?.code ?? result?.codeResult?.text;
+    if (value) {
+      formik.setFieldValue(`${optionPath}.upc`, String(value));
+    }
+    closeScan();
+  };
+
   return (
     <Grid container spacing={2} alignItems="flex-end">
       <Grid size={{ xs: 12, md: 6 }}>
-        <BaseTextField formik={formik} name={`${optionPath}.upc`} label="UPC" placeholder="UPC" tooltip="รหัสบาร์โค้ด (UPC/EAN)" fullWidth />
+        <BaseTextField
+          formik={formik}
+          name={`${optionPath}.upc`}
+          label="UPC"
+          placeholder="UPC"
+          tooltip="รหัสบาร์โค้ด (UPC/EAN)"
+          fullWidth
+          endAdornment={
+            <IconButton aria-label="scan upc" size="small" onClick={() => setOpenScan(true)}>
+              <IconScan />
+            </IconButton>
+          }
+        />
+        <BarcodeDialog open={openScan} onClose={closeScan} onScan={handleScan} showResult={false} />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <BaseTextField formik={formik} name={`${optionPath}.sku`} label="SKU" placeholder="SKU" tooltip="รหัสสินค้าที่ใช้ภายในระบบ (SKU)" fullWidth />

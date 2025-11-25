@@ -33,7 +33,7 @@ const BarcodeDialog: React.FC<BarcodeDialogProps> = ({ open, onClose, onScan, sh
       content={content}
       noAction={true}
       showCloseButton={true}
-      fullScreen={false}
+      fullScreen={true}
     />
   );
 };
