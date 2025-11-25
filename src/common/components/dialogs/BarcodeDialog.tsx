@@ -1,0 +1,44 @@
+"use client";
+
+import React, { useState } from "react";
+import { Box, Typography } from "@mui/material";
+import BaseDialog from "@/common/components/base/BaseDialog";
+import BarcodeScanner, { ScanResult } from "@/common/components/barcode/BarcodeScanner";
+
+interface BarcodeDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onScan?: (result: ScanResult) => void;
+  showResult?: boolean;
+}
+
+const BarcodeDialog: React.FC<BarcodeDialogProps> = ({ open, onClose, onScan, showResult = true }) => {
+  const [latest, setLatest] = useState<ScanResult | null>(null);
+  const handleScan = (r: ScanResult) => {
+    setLatest(r);
+    onScan?.(r);
+  };
+
+  const content = (
+    <Box>
+      <Typography variant="subtitle1" color="textSecondary" mb={2}>
+        เปิดกล้องแล้วสแกนบาร์โค้ด — ผลลัพธ์จะแสดงด้านล่าง
+      </Typography>
+      <BarcodeScanner onScan={handleScan} onError={(e) => console.error("Barcode error:", e)} showResult={showResult} />
+    </Box>
+  );
+
+  return (
+    <BaseDialog
+      open={open}
+      onClose={onClose}
+      title="สแกนบาร์โค้ด"
+      content={content}
+      noAction={true}
+      showCloseButton={true}
+      fullScreen={false}
+    />
+  );
+};
+
+export default BarcodeDialog;
