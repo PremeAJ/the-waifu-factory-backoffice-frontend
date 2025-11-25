@@ -13,9 +13,11 @@ interface BarcodeScannerProps {
   onScan?: (result: ScanResult) => void;
   onError?: (error: string) => void;
   showResult?: boolean;
+  // when `active` is true start scanning automatically, when false stop
+  active?: boolean;
 }
 
-const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showResult = true }) => {
+const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showResult = true, active }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<ScanResult[]>([]);
@@ -39,7 +41,21 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, showRe
     if (!isScanning) stopScanning();
   }, [isScanning]);
 
+  // start/stop automatically when `active` prop changes
+  useEffect(() => {
+    if (typeof active !== "boolean") return;
+    if (active) {
+      // avoid double-start
+      if (!isScanning) startScanning();
+    } else {
+      stopScanning();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active]);
+
   const startScanning = async () => {
+    // already scanning -> noop
+    if (isScanning) return;
     try {
       setError("");
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {

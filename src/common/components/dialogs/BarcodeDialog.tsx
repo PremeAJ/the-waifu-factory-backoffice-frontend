@@ -21,10 +21,10 @@ const BarcodeDialog: React.FC<BarcodeDialogProps> = ({ open, onClose, onScan, sh
 
   const content = (
     <Box>
-      <Typography variant="subtitle1" color="textSecondary" mb={2}>
+      {/* <Typography variant="subtitle1" color="textSecondary" mb={2}>
         เปิดกล้องแล้วสแกนบาร์โค้ด — ผลลัพธ์จะแสดงด้านล่าง
-      </Typography>
-      <BarcodeScanner onScan={handleScan} onError={(e) => console.error("Barcode error:", e)} showResult={showResult} />
+      </Typography> */}
+      <BarcodeScanner active={open} onScan={handleScan} onError={(e) => console.error("Barcode error:", e)} showResult={showResult} />
     </Box>
   );
 
