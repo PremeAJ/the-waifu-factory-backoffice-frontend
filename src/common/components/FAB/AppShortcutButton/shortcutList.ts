@@ -30,9 +30,9 @@ export const shortcutList: appsLinkType[] = [
   },
   {
     href: "/dashboard/pos/cashier",
-    title: "Order",
-    subtext: "Creat Order",
-    avatar: "/images/svgs/icon-dd-cart.svg",
+    title: "Casheir",
+    subtext: "Create Order",
+    avatar: "/images/svgs/icon-casheir.svg",
     color: "#FF9800",
   },
   // {
