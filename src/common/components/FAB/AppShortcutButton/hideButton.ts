@@ -8,7 +8,8 @@ const path = [
   PageUrl.FORGOT_PASSWORD,
   PageUrl.MAIN,
   PageUrl.PRICING,
-  '/dashboard/pos/products/*'
+  "/dashboard/pos/products/create/*",
+  "/dashboard/pos/products/edit/*",
 ];
 
 export const hideButtonRoute: PageActionConfig[] = path.map((pathname) => ({

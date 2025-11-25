@@ -3,22 +3,22 @@ import { shortcutList } from "@/common/components/FAB/AppShortcutButton/shortcut
 import Grid from "@mui/system/Grid";
 import Link from "next/link";
 import React from "react";
+import { useSidebarState } from "@/common/contexts";
 
 interface AppLinksProps {
   searchApp?: string;
 }
 
 const AppLinks: React.FC<AppLinksProps> = ({ searchApp = "" }) => {
+  const { closeAppShortcut } = useSidebarState();
   const filteredApps = shortcutList.filter(
-    (app) =>
-      app.title.toLowerCase().includes(searchApp.toLowerCase()) ||
-      app.subtext?.toLowerCase().includes(searchApp.toLowerCase())
+    (app) => app.title.toLowerCase().includes(searchApp.toLowerCase()) || app.subtext?.toLowerCase().includes(searchApp.toLowerCase())
   );
 
   return (
     <Grid container spacing={2}>
       {filteredApps.map((app, index) => (
-        <Grid size={{ xs: 3 }} key={index}>
+        <Grid size={{ xs: 3 }} key={index} onClick={closeAppShortcut}>
           <Link
             href={app.href}
             style={{

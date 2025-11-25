@@ -1,14 +1,12 @@
-import React, { useState } from "react";
 import { Box, Divider, Drawer, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
 import { IconSearch, IconX } from "@tabler/icons-react";
-import useIsMobile from "@/common/utils/state/isMobile";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
-import { useProfile } from "@/common/contexts";
+import React, { useState } from "react";
+import useIsMobile from "@/common/utils/state/isMobile";
 
 const AppShortcutDrawer = () => {
   const { appShortcutisOpen, closeAppShortcut } = useSidebarState();
-  const { isBorderRadius } = useProfile().appearance;
   const [searchApp, setSearchApp] = useState("");
   const isMobile = useIsMobile();
 
@@ -78,9 +76,6 @@ const AppShortcutDrawer = () => {
         <Typography variant="h5" fontWeight={600}>
           Apps
         </Typography>
-        {/* <IconButton onClick={closeAppShortcut}>
-          <IconX size={18} />
-        </IconButton> */}
       </Box>
       {appContent}
     </Drawer>
