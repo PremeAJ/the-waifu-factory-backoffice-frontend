@@ -10,6 +10,9 @@ interface SidebarStateContextProps {
   setIsMobileSidebar: (v: boolean) => void;
   openSwitchCompany: boolean;
   setOpenSwitchCompany: (v: boolean) => void;
+  // global barcode dialog state
+  openBarcodeDialog: boolean;
+  setOpenBarcodeDialog: (v: boolean) => void;
 
   // Cashier categories sidebar
   isCashierCategoriesSidebar: boolean;
@@ -27,12 +30,15 @@ const SidebarStateContext = createContext<SidebarStateContextProps>({
   setIsMobileSidebar: () => {},
   setOpenSwitchCompany: () => {},
   setIsCashierCategoriesSidebar: () => {},
+  openBarcodeDialog: false,
+  setOpenBarcodeDialog: () => {},
 });
 
 export const SidebarStateProvider = ({ children }: { children: ReactNode }) => {
   const [appShortcutisOpen, setAppShortcutIsOpen] = useState<boolean>(false);
   const [isMobileSidebar, setIsMobileSidebar] = useState<boolean>(false);
   const [openSwitchCompany, setOpenSwitchCompany] = useState<boolean>(false);
+  const [openBarcodeDialog, setOpenBarcodeDialog] = useState<boolean>(false);
   const [isCashierCategoriesSidebar, setIsCashierCategoriesSidebar] = useState<boolean>(false);
 
   const openAppShortcut = () => setAppShortcutIsOpen(true);
@@ -50,6 +56,8 @@ export const SidebarStateProvider = ({ children }: { children: ReactNode }) => {
         setIsMobileSidebar,
         openSwitchCompany,
         setOpenSwitchCompany,
+        openBarcodeDialog,
+        setOpenBarcodeDialog,
         isCashierCategoriesSidebar,
         setIsCashierCategoriesSidebar,
       }}

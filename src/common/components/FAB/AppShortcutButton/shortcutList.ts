@@ -4,6 +4,7 @@ interface appsLinkType {
   subtext: string;
   avatar: string;
   color?: string;
+  action?: string;
 }
 
 export const shortcutList: appsLinkType[] = [
@@ -14,7 +15,7 @@ export const shortcutList: appsLinkType[] = [
   //   avatar: "/images/svgs/icon-dd-chat.svg",
   //   color: "#4CAF50",
   // },
-    {
+  {
     href: "/dashboard/home",
     title: "หน้าหลัก",
     subtext: "หน้าหลัก home",
@@ -27,6 +28,7 @@ export const shortcutList: appsLinkType[] = [
     subtext: "scan สแกน barcode barcode สินค้า",
     avatar: "/images/svgs/icon-scan-barcode.svg",
     color: "#2196F3",
+    action: "barcode",
   },
   {
     href: "/dashboard/pos/cashier",

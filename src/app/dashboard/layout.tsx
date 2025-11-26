@@ -17,6 +17,7 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import useIsSubMenu from "@/common/utils/state/isSubMenu";
 import BaseSidebar from "@/common/components/base/BaseSidebar/BaseSidebar";
 import dashboardSidebarItem from "@/common/components/base/BaseSidebar/item/dashboardSidebarItem";
+import BarcodeDialog from "@/common/components/dialogs/BarcodeDialog";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
@@ -44,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const path = usePathname();
   const isMobile = useIsMobile();
   const isSubMenu = useIsSubMenu();
-  const { openSwitchCompany, setOpenSwitchCompany, isMobileSidebar,setIsMobileSidebar } = useSidebarState();
+  const { openSwitchCompany, setOpenSwitchCompany, isMobileSidebar, setIsMobileSidebar, openBarcodeDialog, setOpenBarcodeDialog } = useSidebarState();
 
   if (ignoreLayout.includes(path)) return <>{children}</>;
 
@@ -68,6 +69,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <AppShortcutButton />
               <AppShortcutDrawer />
               <SelectCompanyDialog open={openSwitchCompany} onClose={() => setOpenSwitchCompany(false)} />
+              {/* global Barcode dialog mounted at root layout so it's available anywhere */}
+              <BarcodeDialog
+                open={openBarcodeDialog}
+                onClose={() => setOpenBarcodeDialog(false)}
+                onScan={(result) => {
+                  // TODO: handle global scan results centrally (currently just log)
+                  console.log("global barcode scan result", result);
+                  setOpenBarcodeDialog(false);
+                  alert(`global barcode scan ${result}`)
+                }}
+                showResult={false}
+              />
               <Container
                 sx={{
                   pt: "30px",
