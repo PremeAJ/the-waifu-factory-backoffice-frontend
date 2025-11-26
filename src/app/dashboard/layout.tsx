@@ -71,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <SelectCompanyDialog open={openSwitchCompany} onClose={() => setOpenSwitchCompany(false)} />
               {/* global Barcode dialog mounted at root layout so it's available anywhere */}
               <BarcodeDialog
+                fullscreen={true}
                 open={openBarcodeDialog}
                 onClose={() => setOpenBarcodeDialog(false)}
                 onScan={(result) => {

@@ -10,9 +10,10 @@ interface BarcodeDialogProps {
   onClose: () => void;
   onScan?: (result: ScanResult) => void;
   showResult?: boolean;
+  fullscreen?: boolean;
 }
 
-const BarcodeDialog: React.FC<BarcodeDialogProps> = ({ open, onClose, onScan, showResult = true }) => {
+const BarcodeDialog: React.FC<BarcodeDialogProps> = ({ open, onClose, onScan, showResult = true, fullscreen = true }) => {
   const [latest, setLatest] = useState<ScanResult | null>(null);
   const handleScan = (r: ScanResult) => {
     setLatest(r);
@@ -33,7 +34,7 @@ const BarcodeDialog: React.FC<BarcodeDialogProps> = ({ open, onClose, onScan, sh
       content={content}
       noAction={true}
       showCloseButton={true}
-      fullScreen={true}
+      fullScreen={fullscreen}
     />
   );
 };
