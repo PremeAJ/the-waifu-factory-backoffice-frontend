@@ -77,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   // TODO: handle global scan results centrally (currently just log)
                   console.log("global barcode scan result", result);
                   setOpenBarcodeDialog(false);
-                  alert(`global barcode scan ${result}`)
+                  alert(`global barcode scan ${JSON.stringify(result)}`)
                 }}
                 showResult={false}
               />
