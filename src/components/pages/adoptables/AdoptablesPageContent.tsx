@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -8,6 +9,8 @@ import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import InputAdornment from "@mui/material/InputAdornment";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -15,8 +18,9 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { alpha, useTheme } from "@mui/material/styles";
-import { IconExternalLink, IconSearch, IconX } from "@tabler/icons-react";
+import { IconArrowsSort, IconExternalLink, IconSearch, IconX } from "@tabler/icons-react";
 import Image from "next/image";
+import { useMasterData, ArtistMaster } from "@/common/contexts/MasterDataContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -27,6 +31,8 @@ interface AdoptableUser {
   displayName: string;
   profilePictureUrl: string | null;
 }
+
+type ArtistOption = ArtistMaster;
 
 interface AdoptableTag {
   name: string;
@@ -240,6 +246,7 @@ const AdoptableCard = ({ item, showNsfw }: { item: AdoptableListItem; showNsfw: 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 const AdoptablesPageContent = () => {
+  const { artists } = useMasterData();
   const [items, setItems] = useState<AdoptableListItem[]>(MOCK_ITEMS);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -249,6 +256,8 @@ const AdoptablesPageContent = () => {
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const [tagFilter, setTagFilter] = useState<string[]>([]);
   const [nsfwFilter, setNsfwFilter] = useState<"sfw" | "nsfw" | "all">("sfw");
+  const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "price_asc" | "price_desc">("newest");
 
   useEffect(() => {
     const fetchAdoptables = async () => {
@@ -272,6 +281,14 @@ const AdoptablesPageContent = () => {
     fetchAdoptables().finally(() => setIsLoading(false));
   }, []);
 
+  // Derive unique artists from items (fallback when context returns nothing)
+  const allArtists = useMemo(() => {
+    if (artists.length > 0) return artists;
+    const map = new Map<string, ArtistMaster>();
+    items.forEach((i) => map.set(i.artist.username, { id: i.artist.username, ...i.artist }));
+    return Array.from(map.values()).sort((a, b) => a.displayName.localeCompare(b.displayName));
+  }, [items, artists]);
+
   // Derive unique categories & tags from items
   const allCategories = useMemo(() => {
     const s = new Set<string>();
@@ -292,18 +309,26 @@ const AdoptablesPageContent = () => {
   }, [allTags, categoryFilter]);
 
   const filtered = useMemo(() => {
-    return items.filter((item) => {
+    const result = items.filter((item) => {
       if (search && !`#${item.number} ${item.artist.displayName} ${item.tags.map((t) => t.name).join(" ")}`.toLowerCase().includes(search.toLowerCase())) return false;
       if (statusFilter.length > 0 && !statusFilter.includes(item.status)) return false;
       if (categoryFilter.length > 0 && !item.tags.some((t) => categoryFilter.includes(t.category.name))) return false;
       if (tagFilter.length > 0 && !item.tags.some((t) => tagFilter.includes(t.name))) return false;
       if (nsfwFilter === "sfw" && item.isNsfw) return false;
       if (nsfwFilter === "nsfw" && !item.isNsfw) return false;
+      if (artistFilter && item.artist.username !== artistFilter.username) return false;
       return true;
     });
-  }, [items, search, statusFilter, categoryFilter, tagFilter, nsfwFilter]);
+    return result.sort((a, b) => {
+      if (sortBy === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      if (sortBy === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      if (sortBy === "price_asc") return (a.price ?? 0) - (b.price ?? 0);
+      if (sortBy === "price_desc") return (b.price ?? 0) - (a.price ?? 0);
+      return 0;
+    });
+  }, [items, search, statusFilter, categoryFilter, tagFilter, nsfwFilter, artistFilter, sortBy]);
 
-  const activeFilterCount = statusFilter.length + categoryFilter.length + tagFilter.length + (nsfwFilter !== "sfw" ? 1 : 0);
+  const activeFilterCount = statusFilter.length + categoryFilter.length + tagFilter.length + (nsfwFilter !== "sfw" ? 1 : 0) + (artistFilter ? 1 : 0);
 
   const clearAll = () => {
     setSearch("");
@@ -311,6 +336,7 @@ const AdoptablesPageContent = () => {
     setCategoryFilter([]);
     setTagFilter([]);
     setNsfwFilter("sfw");
+    setArtistFilter(null);
   };
 
   const toggleChip = (arr: string[], setArr: (v: string[]) => void, val: string) => {
@@ -377,6 +403,38 @@ const AdoptablesPageContent = () => {
                 },
               }}
               sx={{ mb: 3, "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+            />
+
+            {/* Artist autocomplete */}
+            <Typography variant="subtitle2" fontWeight={700} mb={1}>
+              Artist
+            </Typography>
+            <Autocomplete
+              options={allArtists}
+              value={artistFilter}
+              onChange={(_, v) => setArtistFilter(v)}
+              getOptionLabel={(o) => o.displayName}
+              isOptionEqualToValue={(a, b) => a.username === b.username}
+              size="small"
+              renderOption={({ key, ...props }, option) => (
+                <Box key={key} component="li" {...props} sx={{ gap: 1 }}>
+                  <Avatar
+                    src={option.profilePictureUrl ?? undefined}
+                    sx={{ width: 24, height: 24, fontSize: 11, flexShrink: 0 }}
+                  >
+                    {option.displayName[0]}
+                  </Avatar>
+                  <Typography variant="body2" noWrap>{option.displayName}</Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="เลือก artist..."
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                />
+              )}
+              sx={{ mb: 3 }}
             />
 
             {/* Status */}
@@ -472,9 +530,10 @@ const AdoptablesPageContent = () => {
                           sx={{
                             cursor: "pointer",
                             fontWeight: 600,
-                            bgcolor: active ? tag.color : tag.color + "33",
+                            bgcolor: active ? tag.color : "transparent",
                             color: "text.primary",
-                            border: active ? `2px solid ${tag.color}` : "none",
+                            border: `1.5px solid ${tag.color}`,
+                            "&:hover": { bgcolor: tag.color, color: "#fff" },
                           }}
                         />
                       </Tooltip>
@@ -488,6 +547,22 @@ const AdoptablesPageContent = () => {
 
         {/* ── Card Grid ── */}
         <Grid size={{ xs: 12, md: 9 }}>
+          {/* Sort bar */}
+          <Stack direction="row" alignItems="center" justifyContent="flex-end" mb={2.5} gap={1}>
+            <IconArrowsSort size={16} />
+            <Typography variant="body2" color="text.secondary">Sort by</Typography>
+            <Select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              size="small"
+              sx={{ minWidth: 160, borderRadius: 2, "& .MuiOutlinedInput-notchedOutline": { borderRadius: 2 } }}
+            >
+              <MenuItem value="newest">Newest first</MenuItem>
+              <MenuItem value="oldest">Oldest first</MenuItem>
+              <MenuItem value="price_asc">Price: Low → High</MenuItem>
+              <MenuItem value="price_desc">Price: High → Low</MenuItem>
+            </Select>
+          </Stack>
           {filtered.length === 0 ? (
             <Box
               sx={{

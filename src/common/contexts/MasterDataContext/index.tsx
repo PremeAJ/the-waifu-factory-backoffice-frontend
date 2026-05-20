@@ -30,12 +30,20 @@ export interface AdoptableTagCategory {
   tags: AdoptableTagItem[];
 }
 
+export interface ArtistMaster {
+  id: string;
+  username: string;
+  displayName: string;
+  profilePictureUrl: string | null;
+}
+
 // ── Context type ──────────────────────────────────────────────────────────────
 
 export interface MasterDataContextType {
   socialMedias: SocialMediaMaster[];
   paymentMethods: PaymentMethodMaster[];
   adoptableTags: AdoptableTagCategory[];
+  artists: ArtistMaster[];
   isLoading: boolean;
 }
 
@@ -45,6 +53,7 @@ export const MasterDataContext = createContext<MasterDataContextType>({
   socialMedias: [],
   paymentMethods: [],
   adoptableTags: [],
+  artists: [],
   isLoading: false,
 });
 
@@ -54,6 +63,7 @@ export const MasterDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [socialMedias, setSocialMedias] = useState<SocialMediaMaster[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodMaster[]>([]);
   const [adoptableTags, setAdoptableTags] = useState<AdoptableTagCategory[]>([]);
+  const [artists, setArtists] = useState<ArtistMaster[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -61,14 +71,16 @@ export const MasterDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setIsLoading(true);
       try {
         const ngrokHeaders = { "ngrok-skip-browser-warning": "true" };
-        const [smRes, pmRes, tagRes] = await Promise.all([
+        const [smRes, pmRes, tagRes, artistRes] = await Promise.all([
           fetch(`${API_URL}/master/social-media`, { headers: ngrokHeaders }),
           fetch(`${API_URL}/master/payment-method`, { headers: ngrokHeaders }),
           fetch(`${API_URL}/master/adoptable-tags`, { headers: ngrokHeaders }),
+          fetch(`${API_URL}/master/artist-list`, { headers: ngrokHeaders }),
         ]);
         if (smRes.ok) { const j = await smRes.json(); setSocialMedias(j?.data ?? j); }
         if (pmRes.ok) { const j = await pmRes.json(); setPaymentMethods(j?.data ?? j); }
         if (tagRes.ok) { const j = await tagRes.json(); setAdoptableTags(j?.data ?? j); }
+        if (artistRes.ok) { const j = await artistRes.json(); setArtists(j?.data ?? j); }
       } catch {
         // master data is optional — silently fail
       } finally {
@@ -79,7 +91,7 @@ export const MasterDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, []);
 
   return (
-    <MasterDataContext.Provider value={{ socialMedias, paymentMethods, adoptableTags, isLoading }}>
+    <MasterDataContext.Provider value={{ socialMedias, paymentMethods, adoptableTags, artists, isLoading }}>
       {children}
     </MasterDataContext.Provider>
   );
