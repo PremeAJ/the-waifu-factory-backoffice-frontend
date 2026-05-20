@@ -3,7 +3,7 @@ import { I18nString } from "@/common/utils/i18n/I18nString";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import { styled } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import { useSession } from "next-auth/react";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import AppShortcut from "./AppShortcu";
 import Language from "@/common/components/shared/Language";
 import Notifications from "./Notification";
@@ -14,8 +14,8 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import BaseAppBar from "@/common/components/base/BaseAppBar";
 
 const Header = () => {
-  const { firstName } = useSession().data?.profile || {};
-  const { roleNameTh, roleNameEn } = useProfile().activeCompany || {};
+  const { user } = useWaifuUser();
+  const firstName = user?.displayName ?? "";
   const { isLanguage } = useProfile().appearance || {};
   const isMobile = useIsMobile();
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
@@ -39,13 +39,7 @@ const Header = () => {
               ) : (
                 <Skeleton variant="text" width={100} />
               )}
-              {roleNameTh || roleNameEn ? (
-                <Typography variant="caption" color="text.secondary" noWrap>
-                  {I18nString(isLanguage, roleNameTh, roleNameEn)}
-                </Typography>
-              ) : (
-                <Skeleton variant="text" width={100} />
-              )}
+
             </Box>
             <Profile />
           </Stack>

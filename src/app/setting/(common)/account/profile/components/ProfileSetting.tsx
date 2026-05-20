@@ -11,7 +11,7 @@ import { Stack } from "@mui/system";
 import { useDialog } from "@/common/contexts/DialogContext";
 import { useFormik } from "formik";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import { useSession } from "next-auth/react";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import Avatar from "@mui/material/Avatar";
@@ -35,9 +35,14 @@ const validationSchema = yup.object({
 const AccountTab = () => {
   const { t } = useTranslation();
   const { showError } = useDialog();
-  const { data: session, status } = useSession();
+  const { user } = useWaifuUser();
   const { updateProfile, uploadAvatar, loading: profileLoading } = useProfile();
-  const { firstName, lastName, nickName, avatar, email, phone } = session?.profile || {};
+  const firstName = user?.displayName ?? "";
+  const lastName = "";
+  const nickName = user?.username ?? "";
+  const avatar = user?.profilePictureUrl ?? "";
+  const email = "";
+  const phone = "";
   const [changeEmailDialog, setChangeEmailDialog] = useState<ChangeEmailState>("");
   const [filename, setFilename] = useState<string>("");
   const [hover, setHover] = useState(false);
@@ -45,7 +50,7 @@ const AccountTab = () => {
   const [openCrop, setOpenCrop] = useState(false);
   const [preview, setPreview] = useState<string | undefined>(avatar);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const loading = status === "loading" || profileLoading;
+  const loading = profileLoading;
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();

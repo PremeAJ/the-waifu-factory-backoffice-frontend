@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,7 +15,7 @@ import CustomSelect from "../../forms/theme-elements/CustomSelect";
 
 // images
 import { Stack } from "@mui/system";
-import { UserContext } from "@/common/contexts/UserContext";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 
 // locations
 const locations = [
@@ -58,9 +58,11 @@ const currencies = [
 ];
 
 const AccountTab = () => {
-  const { user } = useContext(UserContext);
-  const { firstName, lastName, avatarUrl, users } = user || {};
-  const { email } = users || {};
+  const { user } = useWaifuUser();
+  const firstName = user?.displayName ?? "";
+  const lastName = "";
+  const avatarUrl = user?.profilePictureUrl ?? "";
+  const email = "";
   const [location, setLocation] = React.useState("india");
 
   const handleChange1 = (event: {

@@ -2,7 +2,6 @@
 import { Grid } from "@mui/material";
 import { IconChevronDown } from "@tabler/icons-react";
 import { styled } from "@mui/material/styles";
-import { UserContext } from "@/common/contexts/UserContext";
 import { useTranslation } from "react-i18next";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
@@ -12,16 +11,13 @@ import DemosDD from "../../../components/landingpage/header/DemosDD";
 import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
-import React, { useContext, useState } from "react";
-import { useSession } from "next-auth/react";
+import React, { useState } from "react";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import { PageUrl } from "@/common/constants/pageUrl";
 
 const Navigations = () => {
   const { t } = useTranslation();
-  const { user, loading } = useContext(UserContext);
-  const { data: session, status } = useSession();
-  const { profile } = session || {};
-  // If you need profile, access it like: session?.profile
+  const { user: waifuUser } = useWaifuUser();
   const StyledButton = styled(Button)(({ theme }) => ({
     fontSize: "16px",
     color: theme.palette.text.secondary,
@@ -138,7 +134,7 @@ const Navigations = () => {
       <StyledButton color="inherit" variant="text" href="/">
         รู้จักเรา
       </StyledButton>
-      {!session && (
+      {!waifuUser && (
         <>
           <BaseButton label={"เข้าสู่ระบบ"} href={PageUrl.AUTH_SIGN_IN} fullWidth={false} variant="outlined" size="small" />
           <BaseButton label={"เริ่มต้นใช้งาน"} href={PageUrl.AUTH_SIGN_UP} fullWidth={false} size="small" />

@@ -1,5 +1,5 @@
 // import "./global.css";
-import { AuthProvider } from "@/common/contexts/AuthContext";
+import { WaifuUserProvider } from "@/common/contexts/WaifuUserContext";
 import { CustomizerContextProvider } from "../common/contexts/setting/customizerContext";
 import { EncryptProvider } from "@/common/contexts/EncryptContext";
 import { Metadata, Viewport } from "next";
@@ -11,7 +11,7 @@ import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 import React from "react";
 import ScrollToTopButton from "../common/components/FAB/scrollToTopButton/ScrollToTopButton";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
-import ActionButton from "@/common/components/FAB/ActionButton/ActionButton";
+// import ActionButton from "@/common/components/FAB/ActionButton/ActionButton";
 
 export const metadata: Metadata = {
   keywords: "The Waifu Factory, Art Commission, Adoptable, Digital Art",
@@ -29,25 +29,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <EncryptProvider>
       <SidebarStateProvider>
-        <NextAuthProvider>
-          <ProfileProvider>
-              <AuthProvider>
-                <CustomizerContextProvider>
-                  <html lang="en" suppressHydrationWarning>
-                    <Head />
-                    <body>
-                      <MyApp>
-                        {children}
-                        <ThemeAwareTopLoader />
-                        <ActionButton />
-                        <ScrollToTopButton />
-                      </MyApp>
-                    </body>
-                  </html>
-                </CustomizerContextProvider>
-              </AuthProvider>
-          </ProfileProvider>
-        </NextAuthProvider>
+        <ProfileProvider>
+          <WaifuUserProvider>
+            <CustomizerContextProvider>
+              <html lang="en" suppressHydrationWarning>
+                <Head />
+                <body>
+                  <MyApp>
+                    {children}
+                    <ThemeAwareTopLoader />
+                    {/* <ActionButton /> */}
+                    <ScrollToTopButton />
+                  </MyApp>
+                </body>
+              </html>
+            </CustomizerContextProvider>
+          </WaifuUserProvider>
+        </ProfileProvider>
       </SidebarStateProvider>
     </EncryptProvider>
   );

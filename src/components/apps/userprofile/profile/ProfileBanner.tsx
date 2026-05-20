@@ -20,7 +20,7 @@ import {
 import ProfileTab from "./ProfileTab";
 import BlankCard from "../../../shared/BlankCard";
 import { useContext } from "react";
-import { UserContext } from "@/common/contexts/UserContext";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 
 const ProfileBanner = () => {
   const ProfileImage = styled(Box)(() => ({
@@ -33,8 +33,10 @@ const ProfileBanner = () => {
     justifyContent: "center",
     margin: "0 auto",
   }));
-  const { user } = useContext(UserContext);
-  const { firstName, lastName, avatarUrl } = user || {};
+  const { user } = useWaifuUser();
+  const firstName = user?.displayName ?? user?.username ?? "";
+  const lastName = "";
+  const avatarUrl = user?.profilePictureUrl ?? "";
 
   return (
     <>

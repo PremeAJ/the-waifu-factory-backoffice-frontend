@@ -1,7 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { IconAlertTriangle, IconInfoCircle, IconMail } from "@tabler/icons-react";
-import { UserContext } from "@/common/contexts/UserContext";
 import { emailRegex } from "@/common/utils/validator/regex";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseDialog from "@/common/components/base/BaseDialog";
@@ -16,7 +15,8 @@ const EmailChangeFlow: React.FC<EmailChangeFlowProps> = ({ open, onClose, curren
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const { checkExistEmail, updateUserEmail } = useContext(UserContext);
+  const checkExistEmail = async (_email: string) => ({ data: null, error: "Not implemented" });
+  const updateUserEmail = async (_email: string) => ({ data: null, error: "Not implemented" });
 
   // Local states
   const [step, setStep] = useState<"input" | "sent">("input");

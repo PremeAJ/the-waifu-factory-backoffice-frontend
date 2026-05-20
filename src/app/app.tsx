@@ -4,13 +4,14 @@ import { Analytics } from "@vercel/analytics/next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { CookiesKey, setCookiesOption1H, setCookiesOption1Y } from "@/common/constants/cookies";
 import { DialogProvider } from "@/common/contexts/DialogContext";
+import { MasterDataProvider } from "@/common/contexts/MasterDataContext";
+import { AdoptableProvider } from "@/common/contexts/AdoptableContext";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@mui/material/styles";
 import { ThemeSettings } from "@/common/utils/theme/Theme";
 import { UploadProvider } from "@/common/contexts/UploadContext";
 import { ReactNode, useEffect } from "react";
 import { useEncrypt } from "@/common/contexts/EncryptContext";
-import { UserProvider } from "../common/contexts/UserContext";
 import { v4 as uuidv4 } from "uuid";
 import Cookies from "js-cookie";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -59,12 +60,14 @@ const MyApp = ({ children }: { children: ReactNode }) => {
       <ThemeProvider theme={theme}>
         <DialogProvider>
           <UploadProvider>
-            <CssBaseline />
-            <UserProvider>
-              <Analytics />
-              <SpeedInsights />
-              {children}
-            </UserProvider>
+            <MasterDataProvider>
+              <AdoptableProvider>
+                <CssBaseline />
+                <Analytics />
+                <SpeedInsights />
+                {children}
+              </AdoptableProvider>
+            </MasterDataProvider>
           </UploadProvider>
         </DialogProvider>
       </ThemeProvider>

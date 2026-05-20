@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useContext } from "react";
+import React, { use } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -8,7 +8,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
-import { UserContext } from "@/common/contexts/UserContext";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 
 const StyledButton = styled(Button)(({ theme }) => ({
   padding: "13px 34px",
@@ -31,7 +31,7 @@ const StyledButton2 = styled(Button)(({ theme }) => ({
 }));
 
 const C2a2 = () => {
-  const { user, loading } = useContext(UserContext);
+  const { user, isLoading: loading } = useWaifuUser();
 
   if (loading || user) return null;
   return (

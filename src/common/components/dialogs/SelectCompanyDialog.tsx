@@ -3,7 +3,6 @@ import { List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Chip, Skele
 import { PageUrl } from "@/common/constants/pageUrl";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import BaseDialog from "../base/BaseDialog";
 import CompanyAvatar from "@/common/components/avatar/CompanyAvatar";
 import React from "react";
@@ -16,8 +15,7 @@ interface SelectCompanyDialogProps {
 
 const SelectCompanyDialog: React.FC<SelectCompanyDialogProps> = ({ open, onClose, disableBackdropClose = false }) => {
   const { companyList, updateActiveCompany, loading } = useProfile();
-  const { data: session } = useSession();
-  const { activeCompany } = session?.profile || {};
+  const activeCompany: string | null = null;
   const router = useRouter();
 
   const handleSelect = async (companyId: string) => {

@@ -3,7 +3,7 @@ import { IconRocket } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { Theme } from "@mui/material/styles";
-import { useSession } from "next-auth/react";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Box from "@mui/material/Box";
 import React from "react";
@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const BannerContent = () => {
-  const sesson = useSession().data;
+  const { user } = useWaifuUser();
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
   return (
@@ -79,7 +79,7 @@ const BannerContent = () => {
         }}
       >
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mt={3}>
-          {!sesson && <BaseButton label="Login" href={PageUrl.AUTH_SIGN_IN} fullWidth={false} sx={{ padding: "13px 48px" }} />}
+          {!user && <BaseButton label="Login" href={PageUrl.AUTH_SIGN_IN} fullWidth={false} sx={{ padding: "13px 48px" }} />}
           <BaseButton variant="outlined" label="Live Preview" href="#demos" fullWidth={false} sx={{ padding: "13px 48px" }} />
         </Stack>
       </motion.div>

@@ -1,8 +1,7 @@
 // src/components/settings/account-setting/PhoneChangeFlow.tsx
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Box, InputAdornment, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { IconAlertTriangle, IconInfoCircle, IconDeviceMobile, IconCheck } from "@tabler/icons-react";
-import { UserContext } from "@/common/contexts/UserContext";
 import { phoneRegex } from "@/common/utils/validator/regex";
 import BaseTextField from "@/common/components/base/BaseTextField";
 import BaseDialog from "@/common/components/base/BaseDialog";
@@ -17,7 +16,8 @@ const PhoneChangeFlow: React.FC<PhoneChangeFlowProps> = ({ open, onClose, curren
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const { updateUserPhone, verifyPhoneOtp } = useContext(UserContext);
+  const updateUserPhone = async (_phone: string) => ({ data: null, error: "Not implemented" });
+  const verifyPhoneOtp = async (_phone: string, _otp: string) => ({ data: null, error: "Not implemented" });
 
   const [step, setStep] = useState<"input" | "verify">("input");
   const [newPhone, setNewPhone] = useState("");

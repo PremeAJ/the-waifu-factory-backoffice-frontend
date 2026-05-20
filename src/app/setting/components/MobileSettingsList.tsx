@@ -2,7 +2,7 @@
 import { Box, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { IconChevronRight, IconChevronDown } from "@tabler/icons-react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import { useTheme } from "@mui/material/styles";
 import React, { Fragment, useState } from "react";
 import BaseAvatar from "@/common/components/base/BaseAvatar"; 
@@ -10,8 +10,10 @@ import { settingSidebarItem } from "@/common/components/base/BaseSidebar/item/se
 
 const MobileSettingsList = () => {
   const theme = useTheme();
-  const { data: session } = useSession();
-  const { fullName, email, avatar } = session?.profile || {};
+  const { user } = useWaifuUser();
+  const fullName = user?.displayName ?? "";
+  const email = "";
+  const avatar = user?.profilePictureUrl ?? "";
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
   const handleMenuToggle = (menuId: string) => {

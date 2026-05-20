@@ -1,20 +1,19 @@
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { PageUrl } from "../constants/pageUrl";
 import PageLoader from "../components/loaders/PageLoader";
-import { useProfile } from "../contexts/ProfileContext";
+import { useWaifuUser } from "../contexts/WaifuUserContext";
 
 export default function SessionGuard({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
-  const { profileLoading } = useProfile();
+  const { user, isLoading } = useWaifuUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (status !== "loading" && !session?.profile) {
+    if (!isLoading && !user) {
       router.push(PageUrl.AUTH_SIGN_IN);
     }
-  }, [status, session, router]);
+  }, [isLoading, user, router]);
 
-  return <>{status === "authenticated" && session?.profile && children && !profileLoading ? children : <PageLoader />}</>;
+  if (isLoading || !user) return <PageLoader />;
+  return <>{children}</>;
 }

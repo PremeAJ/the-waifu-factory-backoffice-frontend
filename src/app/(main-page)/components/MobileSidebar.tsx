@@ -1,9 +1,7 @@
 "use client";
 import { IconChevronDown } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
-import { stat } from "fs";
-import { UserContext } from "@/common/contexts/UserContext";
-import { useSession } from "next-auth/react";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Box from "@mui/material/Box";
@@ -12,14 +10,13 @@ import Collapse from "@mui/material/Collapse";
 import DemosDD from "../../../components/landingpage/header/DemosDD";
 import Logo from "@/common/components/shared/Logo";
 import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Stack from "@mui/material/Stack";
 
 const MobileSidebar = () => {
   const [toggle, setToggle] = useState(false);
   const [toggle2, setToggle2] = useState(false);
-  const { user, loading } = useContext(UserContext);
-  const { data: session, status } = useSession();
+  const { user: waifuUser } = useWaifuUser();
 
   return (
     <>
@@ -85,7 +82,7 @@ const MobileSidebar = () => {
               justifyContent: "start",
             }}
           />
-          {!session && <BaseButton variant="contained" label="Login" href={PageUrl.AUTH_SIGN_IN} />}
+          {!waifuUser && <BaseButton variant="contained" label="Login" href={PageUrl.AUTH_SIGN_IN} />}
         </Stack>
       </Box>
     </>

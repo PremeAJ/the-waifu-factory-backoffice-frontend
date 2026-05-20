@@ -1,7 +1,7 @@
 "use client";
 import { IconMenu2 } from "@tabler/icons-react";
 import { styled } from "@mui/material/styles";
-import { useSession } from "next-auth/react";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -18,7 +18,7 @@ import Toolbar from "@mui/material/Toolbar";
 import useIsMobile from "@/common/utils/state/isMobile";
 
 const Header = () => {
-  const { data: session, status } = useSession();
+  const { user } = useWaifuUser();
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     justifyContent: "center",
     [theme.breakpoints.up("lg")]: {
@@ -66,7 +66,7 @@ const Header = () => {
           )}
           <Box ml={2} display="flex" alignItems="center">
             <Profile />
-            {session ? null : <Language />}
+            {user ? null : <Language />}
           </Box>
         </ToolbarStyled>
       </Container>

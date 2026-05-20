@@ -2,8 +2,7 @@ import { Avatar, Box, Divider, IconButton, Menu, Skeleton, Stack, Typography, us
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconMail, IconUser, IconMoon, IconLanguage, IconLogout } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
-import { signOut, useSession } from "next-auth/react";
-import { useAuth } from "@/common/contexts/AuthContext";
+import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import * as dropdownData from "../FAB/AppShortcutButton/data";
@@ -25,9 +24,8 @@ const Profile: FC<ProfileProps> = () => {
   const { isLanguage } = appearance || {};
   const { activeMode } = appearance || {};
   const { roleNameTh, roleNameEn } = activeCompany || {};
-  const { data: session, status } = useSession();
-  const { signOut: apiSignOut } = useAuth();
-  const loading = status === "loading";
+  const { user, isLoading, signOut: waifuSignOut } = useWaifuUser();
+  const loading = isLoading;
   const [openSignOut, setOpenSignOut] = useState(false);
   const [signOutLoading, setSignOutLoading] = useState(false);
 
@@ -37,12 +35,10 @@ const Profile: FC<ProfileProps> = () => {
     setAnchorEl2(event.currentTarget as HTMLElement);
   };
 
-  const userProfile = (session as any)?.profile || {};
-  const avatar: string = userProfile?.avatar ?? userProfile?.image ?? session?.user?.image ?? "";
-  const firstName: string = userProfile?.firstName ?? (session?.user?.name as string) ?? "";
-  const lastName: string = userProfile?.lastName ?? "";
-  const fullName: string = userProfile?.fullName ?? [firstName, lastName].filter(Boolean).join(" ");
-  const email: string = userProfile?.email ?? (session?.user?.email as string) ?? "";
+  const avatar: string = user?.profilePictureUrl ?? "";
+  const firstName: string = user?.displayName ?? user?.username ?? "";
+  const fullName: string = user?.displayName ?? "";
+  const email: string = "";
 
   const toggleDarkMode = () => {
     const next = activeMode === "dark" ? "light" : "dark";
@@ -64,8 +60,7 @@ const Profile: FC<ProfileProps> = () => {
   const handleConfirmSignOut = async () => {
     try {
       setSignOutLoading(true);
-      await apiSignOut();
-      await signOut({ callbackUrl: PageUrl.AUTH_SIGN_IN });
+      await waifuSignOut();
     } finally {
       setSignOutLoading(false);
       setOpenSignOut(false);
@@ -78,7 +73,7 @@ const Profile: FC<ProfileProps> = () => {
     setAnchorEl2(null);
   }, [pathname]);
 
-  if (!session) return null;
+  if (!user) return null;
 
   return (
     <Box>
@@ -130,7 +125,7 @@ const Profile: FC<ProfileProps> = () => {
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
               {fullName}
             </Typography>
-            {session?.profile?.activeCompany && (
+            {false && (
               <Typography variant="subtitle2" color="textSecondary" display="flex" alignItems="center" gap={1}>
                 <IconUser size={15} stroke={1.5} color={theme.palette.text.secondary} />
                 <Box sx={{ maxWidth: 160, overflow: "hidden" }}>

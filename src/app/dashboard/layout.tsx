@@ -1,5 +1,4 @@
 "use client";
-import { CompanyProvider } from "@/common/contexts/CompanyContext";
 import { styled, useTheme } from "@mui/material/styles";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
@@ -11,7 +10,6 @@ import Container from "@mui/material/Container";
 import DashboardGuard from "@/common/guards/dashboardGuard";
 import Header from "./layout/header/Header";
 import React from "react";
-import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
 import SessionGuard from "@/common/guards/sessionGuard";
 import useIsMobile from "@/common/utils/state/isMobile";
 import useIsSubMenu from "@/common/utils/state/isSubMenu";
@@ -52,8 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <SessionGuard>
       <DashboardGuard>
-        <CompanyProvider>
-          <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
+        <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
             <BaseSidebar menuItems={dashboardSidebarItem} open={isMobileSidebar}/>
             <PageWrapper
               className="page-wrapper"
@@ -68,7 +65,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {isMobile && isSubMenu ? null : <Header />}
               <AppShortcutButton />
               <AppShortcutDrawer />
-              <SelectCompanyDialog open={openSwitchCompany} onClose={() => setOpenSwitchCompany(false)} />
               {/* global Barcode dialog mounted at root layout so it's available anywhere */}
               <BarcodeDialog
                 fullscreen={false}
@@ -93,8 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Container>
             </PageWrapper>
           </MainWrapper>
-        </CompanyProvider>
-      </DashboardGuard>
-    </SessionGuard>
+        </DashboardGuard>
+      </SessionGuard>
   );
 }

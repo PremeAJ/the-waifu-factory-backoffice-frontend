@@ -1,34 +1,19 @@
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import SelectCompanyDialog from "@/common/components/dialogs/SelectCompanyDialog";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { PageUrl } from "../constants/pageUrl";
 import PageLoader from "../components/loaders/PageLoader";
+import { useWaifuUser } from "../contexts/WaifuUserContext";
 
 export default function DashboardGuard({ children }: { children: React.ReactNode }) {
-  //#region Context
-  const { data: session, status } = useSession();
-  const { profile } = session || {};
-  const { activeCompany } = profile || {};
-  const [showCompanyDialog, setShowCompanyDialog] = useState(false);
-  //#endregion
+  const { user, isLoading } = useWaifuUser();
+  const router = useRouter();
 
-  //#region Check active company
   useEffect(() => {
-    if (status === "authenticated" && !activeCompany) {
-      setShowCompanyDialog(true);
-    } else {
-      setShowCompanyDialog(false);
+    if (!isLoading && !user) {
+      router.replace(PageUrl.AUTH_SIGN_IN);
     }
-  }, [session, status, activeCompany]);
-  //#endregion
+  }, [user, isLoading, router]);
 
-  //#region loading
-  if (status === "loading") return <PageLoader />;
-  //#endregion
-
-  return (
-    <>
-      {activeCompany && children}
-      <SelectCompanyDialog open={showCompanyDialog} onClose={() => setShowCompanyDialog(false)} disableBackdropClose={true} />
-    </>
-  );
+  if (isLoading || !user) return <PageLoader />;
+  return <>{children}</>;
 }
