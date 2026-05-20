@@ -21,6 +21,8 @@ import { useMasterData, ArtistMaster } from "@/common/contexts/MasterDataContext
 import { BaseCard, BaseChip } from "@/common/components/base";
 import AdoptableCard, { AdoptableListItem, AdoptableTag } from "./AdoptableCard";
 import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
+import Cookies from "js-cookie";
+import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -58,7 +60,10 @@ const AdoptablesPageContent = () => {
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const [tagFilter, setTagFilter] = useState<string[]>([]);
   const [nsfwFilter, setNsfwFilter] = useState<"sfw" | "nsfw" | "all">("all");
-  const [showNsfw, setShowNsfw] = useState<boolean>(typeof window !== "undefined" ? (document?.cookie.match(/see_nsfw_content=(true|false)/)?.[1] === "true") : false);
+  // Dummy state to force re-render on NSFW toggle
+  const [dummy, setDummy] = useState(0);
+  // Read NSFW blur preference from cookie (default true = blur)
+  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.SFW_MODE) !== "false" : true;
   const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "price_asc" | "price_desc">("newest");
 
@@ -71,10 +76,7 @@ const AdoptablesPageContent = () => {
         });
         if (res.ok) {
           const json = await res.json();
-          const data: AdoptableListItem[] = (json?.data ?? json)?.map?.((item: any) => ({
-            ...item,
-            isNsfw: typeof item.isNSFW !== "undefined" ? item.isNSFW : item.isNsfw,
-          }));
+          const data: AdoptableListItem[] = json?.data ?? json;
           if (Array.isArray(data) && data.length > 0) {
             setItems([...data, ...MOCK_ITEMS]);
             return;
@@ -134,7 +136,7 @@ const AdoptablesPageContent = () => {
     });
   }, [items, search, statusFilter, categoryFilter, tagFilter, nsfwFilter, artistFilter, sortBy]);
 
-  const activeFilterCount = statusFilter.length + categoryFilter.length + tagFilter.length + (nsfwFilter !== "sfw" ? 1 : 0) + (artistFilter ? 1 : 0);
+  const activeFilterCount = statusFilter.length + categoryFilter.length + tagFilter.length + (["sfw", "nsfw"].includes(nsfwFilter) ? 1 : 0) + (artistFilter ? 1 : 0);
 
   const clearAll = () => {
     setSearch("");
@@ -175,32 +177,7 @@ const AdoptablesPageContent = () => {
               top: 80,
             }}
           >
-            {/* Content filter (SFW/ALL/NSFW) */}
-            <Typography variant="subtitle2" fontWeight={700} mb={1}>
-              Content
-            </Typography>
-            <ToggleButtonGroup
-              value={nsfwFilter}
-              exclusive
-              onChange={(_, v) => v && setNsfwFilter(v)}
-              size="small"
-              fullWidth
-              sx={{ mb: 2 }}
-            >
-              <ToggleButton value="sfw" sx={{ textTransform: "none", fontWeight: 600 }}>
-                SFW
-              </ToggleButton>
-              <ToggleButton value="all" sx={{ textTransform: "none", fontWeight: 600 }}>
-                All
-              </ToggleButton>
-              <ToggleButton value="nsfw" sx={{ textTransform: "none", fontWeight: 600 }}>
-                🔞NSFW
-              </ToggleButton>
-            </ToggleButtonGroup>
-            {/* See NSFW content toggle */}
-            <Box mb={3}>
-              <SeeNSFWContentToggle value={showNsfw} onChange={setShowNsfw} />
-            </Box>
+          
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
               <Typography variant="h6" fontWeight={700}>
                 Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
@@ -267,6 +244,39 @@ const AdoptablesPageContent = () => {
               )}
               sx={{ mb: 3 }}
             />
+
+              {/* Content filter (SFW/ALL/NSFW) */}
+            <Typography variant="subtitle2" fontWeight={700} mb={1}>
+              Content
+            </Typography>
+            <ToggleButtonGroup
+              value={nsfwFilter}
+              exclusive
+              onChange={(_, v) => v && setNsfwFilter(v)}
+              size="small"
+              fullWidth
+              sx={{ mb: 2 }}
+            >
+              <ToggleButton value="sfw" sx={{ textTransform: "none", fontWeight: 600 }}>
+                SFW
+              </ToggleButton>
+              <ToggleButton value="all" sx={{ textTransform: "none", fontWeight: 600 }}>
+                All
+              </ToggleButton>
+              <ToggleButton value="nsfw" sx={{ textTransform: "none", fontWeight: 600 }}>
+                🔞NSFW
+              </ToggleButton>
+            </ToggleButtonGroup>
+            {/* See NSFW content toggle */}
+            <Box mb={3}>
+              <SeeNSFWContentToggle
+                value={showNsfw}
+                onChange={(checked) => {
+                  Cookies.set(CookiesKey.SFW_MODE, String(checked), setCookiesOption1Y);
+                  setDummy((d) => d + 1); // force re-render
+                }}
+              />
+            </Box>
 
             {/* Status */}
             <Typography variant="subtitle2" fontWeight={700} mb={1}>
