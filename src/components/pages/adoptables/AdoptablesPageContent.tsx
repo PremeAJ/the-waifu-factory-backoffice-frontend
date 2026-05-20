@@ -51,7 +51,7 @@ const MOCK_ITEMS: AdoptableListItem[] = [
 
 const AdoptablesPageContent = () => {
   const { artists } = useMasterData();
-  const [items, setItems] = useState<AdoptableListItem[]>(MOCK_ITEMS);
+  const [items, setItems] = useState<AdoptableListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Filters
@@ -78,12 +78,11 @@ const AdoptablesPageContent = () => {
           const json = await res.json();
           const data: AdoptableListItem[] = json?.data ?? json;
           if (Array.isArray(data) && data.length > 0) {
-            setItems([...data, ...MOCK_ITEMS]);
+            setItems(data);
             return;
           }
         }
-      } catch { /* use mock */ }
-      setItems(MOCK_ITEMS);
+      } catch { /* API error */ }
       setIsLoading(false);
     };
     fetchAdoptables().finally(() => setIsLoading(false));

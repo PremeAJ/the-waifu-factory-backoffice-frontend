@@ -87,20 +87,25 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
     >
       {/* ── Image ── */}
       <Box sx={{ position: "relative", width: "100%", paddingTop: "120%", flexShrink: 0 }}>
-        {/* NSFW blur overlay */}
+        {/* NSFW blur — applied directly on image (cheaper than backdropFilter) */}
+        <Image
+          src={item.imageUrl}
+          alt={`Adoptable #${item.number}`}
+          fill
+          style={{ objectFit: "cover", filter: blurred ? "blur(18px)" : undefined, transform: blurred ? "scale(1.05)" : undefined }}
+          unoptimized
+        />
 
         {blurred && (
           <Box
             sx={{
               position: "absolute",
               inset: 0,
-              backdropFilter: "blur(18px)",
-              WebkitBackdropFilter: "blur(18px)",
               zIndex: 2,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              bgcolor: alpha("#000", 0.35),
+              bgcolor: alpha("#000", 0.25),
             }}
           >
             <Typography variant="caption" fontWeight={700} sx={{ color: "#fff", bgcolor: alpha("#000", 0.45), px: 1.5, py: 0.5, borderRadius: 2 }}>
@@ -108,8 +113,6 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
             </Typography>
           </Box>
         )}
-
-        <Image src={item.imageUrl} alt={`Adoptable #${item.number}`} fill style={{ objectFit: "cover" }} unoptimized />
 
         {/* Status badge */}
         <BaseChip preset={item.status} size="small" sx={{ position: "absolute", top: 8, left: 8, fontWeight: 700, textTransform: "capitalize" }} />
