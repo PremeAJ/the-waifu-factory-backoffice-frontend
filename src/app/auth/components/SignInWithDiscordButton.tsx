@@ -1,13 +1,13 @@
 "use client";
 import { Stack } from "@mui/system";
-import { signIn } from "next-auth/react";
-import { PageUrl } from "@/common/constants/pageUrl";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import { IconBrandDiscord } from "@tabler/icons-react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+
 const SignInWithDiscordButton = () => {
-  const onClick = async () => {
-    await signIn("discord", { callbackUrl: PageUrl.CALLBACK });
+  const onClick = () => {
+    window.location.href = `${API_URL}/auth/discord`;
   };
   return (
     <Stack direction="row" justifyContent="center" mt={3}>
