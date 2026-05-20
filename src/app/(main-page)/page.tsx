@@ -2,6 +2,7 @@ import React from 'react';
 import PageContainer from '@/components/container/PageContainer';
 
 // components
+import AdoptableShowcase from '@/components/landingpage/adoptable-showcase/AdoptableShowcase';
 import Banner from '@/components/landingpage/banner/Banner';
 import C2a from '@/components/landingpage/c2a/C2a';
 import C2a2 from '@/components/landingpage/c2a/C2a2';
@@ -17,6 +18,7 @@ export default function Landingpage() {
   return (
     <PageContainer title="Home" description="Meow Som Home">
       <Header />
+      <AdoptableShowcase />
       <Banner />
       <DemoSlider />
       <Frameworks />
