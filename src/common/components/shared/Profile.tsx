@@ -1,6 +1,6 @@
-import { Avatar, Box, Divider, IconButton, Menu, Skeleton, Stack, Typography, useTheme, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Avatar, Box, Divider, IconButton, Menu, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { I18nString } from "@/common/utils/i18n/I18nString";
-import { IconMail, IconUser, IconMoon, IconLanguage, IconLogout } from "@tabler/icons-react";
+import { IconMail, IconUser, IconLogout } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import { usePathname } from "next/navigation";
@@ -8,11 +8,9 @@ import { useProfile } from "@/common/contexts/ProfileContext";
 import * as dropdownData from "../FAB/AppShortcutButton/data";
 import BaseAvatar from "@/common/components/base/BaseAvatar";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
-import BaseSwitch from "@/common/components/base/BaseSwitch";
 import ConfirmSignOutDialog from "@/common/components/dialogs/ConfirmSignOutDialog";
 import Link from "next/link";
 import React, { FC, useRef, useState ,useEffect} from "react";
-import SwitchLanguage from "@/components/shared/Language/SwitchLanguage";
 
 interface ProfileProps {
   loading?: boolean;
@@ -20,9 +18,8 @@ interface ProfileProps {
 
 const Profile: FC<ProfileProps> = () => {
   const theme = useTheme();
-  const { activeCompany, appearance, updateAppearance } = useProfile();
+  const { activeCompany, appearance } = useProfile();
   const { isLanguage } = appearance || {};
-  const { activeMode } = appearance || {};
   const { roleNameTh, roleNameEn } = activeCompany || {};
   const { user, isLoading, signOut: waifuSignOut } = useWaifuUser();
   const loading = isLoading;
@@ -39,11 +36,6 @@ const Profile: FC<ProfileProps> = () => {
   const firstName: string = user?.displayName ?? user?.username ?? "";
   const fullName: string = user?.displayName ?? "";
   const email: string = "";
-
-  const toggleDarkMode = () => {
-    const next = activeMode === "dark" ? "light" : "dark";
-    updateAppearance({ activeMode: next });
-  };
 
   const renderIcon = (IconCmp: any) => {
     if (!IconCmp) return null;
@@ -255,33 +247,6 @@ const Profile: FC<ProfileProps> = () => {
             </Box>
           </Box>
         ))}
-
-        <Box mt={2}>
-          <Divider sx={{ my: 2 }} />
-          <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>
-            Preferences
-          </Typography>
-          <List dense disablePadding>
-            <ListItem sx={{ py: 1, minHeight: 44, px: 0 }}>
-              <ListItemIcon sx={{ minWidth: 36 }}>
-                <IconMoon width={20} style={{ color: activeMode === "dark" ? theme.palette.primary.main : "inherit" }} />
-              </ListItemIcon>
-              <ListItemText primary="Dark Mode" />
-              <BaseSwitch
-                checked={activeMode === "dark"}
-                onChange={toggleDarkMode}
-              />
-            </ListItem>
-
-            <ListItem sx={{ py: 1, minHeight: 44, px: 0 }}>
-              <ListItemIcon sx={{ minWidth: 36 }}>
-                <IconLanguage width={20} />
-              </ListItemIcon>
-              <ListItemText primary="Language" />
-              <SwitchLanguage />
-            </ListItem>
-          </List>
-        </Box>
 
         <Box mt={2}>
           <BaseButton

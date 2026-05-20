@@ -1,5 +1,5 @@
 "use client";
-import { IconMenu2 } from "@tabler/icons-react";
+import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
 import { styled } from "@mui/material/styles";
 import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import AppBar from "@mui/material/AppBar";
@@ -9,6 +9,8 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import Language from "@/common/components/shared/Language";
 import Logo from "@/common/components/shared/Logo";
+import Tooltip from "@mui/material/Tooltip";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import MobileSidebar from "./MobileSidebar";
 import Navigations from "./Navigations";
 import Profile from "@/common/components/shared/Profile";
@@ -19,6 +21,9 @@ import useIsMobile from "@/common/utils/state/isMobile";
 
 const Header = () => {
   const { user } = useWaifuUser();
+  const { appearance, updateAppearance } = useProfile();
+  const isDark = appearance?.activeMode === "dark";
+  const toggleDarkMode = () => updateAppearance({ activeMode: isDark ? "light" : "dark" });
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     justifyContent: "center",
     [theme.breakpoints.up("lg")]: {
@@ -64,9 +69,14 @@ const Header = () => {
               <Navigations />
             </Stack>
           )}
-          <Box ml={2} display="flex" alignItems="center">
+          <Box ml={1} display="flex" alignItems="center" gap={0.5}>
+            <Tooltip title={isDark ? "Light Mode" : "Dark Mode"}>
+              <IconButton onClick={toggleDarkMode} size="small">
+                {isDark ? <IconSun size={20} /> : <IconMoon size={20} />}
+              </IconButton>
+            </Tooltip>
+            <Language />
             <Profile />
-            {user ? null : <Language />}
           </Box>
         </ToolbarStyled>
       </Container>
