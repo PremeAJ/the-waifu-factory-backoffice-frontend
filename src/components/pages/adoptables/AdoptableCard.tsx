@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { alpha } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { IconExternalLink } from "@tabler/icons-react";
 import Image from "next/image";
 import { BaseCard, BaseChip } from "@/common/components/base";
@@ -61,6 +61,8 @@ export interface AdoptableCardProps {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, showViewPost = true }) => {
+  const theme = useTheme();
+  const tagTextColor = theme.palette.mode === "dark" ? "#fff" : "#555";
   // Read NSFW blur preference from cookie (default true = blur)
   let showNsfw = true;
   if (typeof window !== "undefined") {
@@ -157,7 +159,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         {item.tags.length > 0 && (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
             {item.tags.map((tag: AdoptableTag) => (
-              <BaseChip key={tag.name} label={tag.name} customBgColor={tag.color + "33"} customColor="#555" size="small" sx={{ fontSize: 10 }} />
+              <BaseChip key={tag.name} label={tag.name} customBgColor={tag.color + "33"} customColor={tagTextColor} size="small" sx={{ fontSize: 10 }} />
             ))}
           </Box>
         )}
