@@ -14,7 +14,7 @@ import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
 import ActionButton from "@/common/components/FAB/ActionButton/ActionButton";
 
 export const metadata: Metadata = {
-  keywords: "MeowSom, POS, Back Office, SaaS, CRM, ERP, HRM",
+  keywords: "The Waifu Factory, Art Commission, Adoptable, Digital Art",
 };
 
 export const viewport: Viewport = {

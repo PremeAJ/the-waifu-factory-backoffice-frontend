@@ -2,8 +2,7 @@ import { AuthOptions } from "next-auth";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { headers as nextHeaders } from "next/headers";
 import { HeadersKey } from "../constants/header";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+import DiscordProvider from "next-auth/providers/discord";
 async function header(accessToken?: string) {
   const reqHeaders = await nextHeaders();
   const ua = reqHeaders.get("user-agent") || "";
@@ -27,37 +26,9 @@ function isExpired(token: string): boolean {
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
 const authOptions: AuthOptions = {
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
-        captchaToken: { label: "CaptchaToken", type: "text" },
-        rememberMe: { label: "rememberMe", type: "boolean" },
-      },
-      async authorize(credentials) {
-        const { email, password, rememberMe } = credentials || {};
-        const login = await postFetcher(
-          `${baseUrl}/api/v1/auth/login`,
-          { email, password, rememberMe: rememberMe === "true" },
-          { ...(await header()) }
-        );
-        if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-        const { accessToken } = login.data;
-        const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
-        console.log("🚀 ~ authorize ~ profile:", profile)
-        if (profile.statusCode !== 200) throw new Error(profile.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-        return { ...login.data, profile: profile.data };
-      },
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      authorization: {
-        params: {
-          prompt: "select_account",
-        },
-      },
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID || "",
+      clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
     }),
   ],
   session: {
@@ -65,8 +36,8 @@ const authOptions: AuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, session, account }) {
-      if (account?.provider === "google" && user) {
-        const login = await postFetcher(`${baseUrl}/api/v1/auth/login-google`, { id_token: account.id_token }, { ...(await header()) });
+      if (account?.provider === "discord" && user) {
+        const login = await postFetcher(`${baseUrl}/api/v1/auth/login-discord`, { access_token: account.access_token }, { ...(await header()) });
         if (login.statusCode !== 200) throw new Error(login.message || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
         const { accessToken } = login.data;
         const profile = await getFetcher(`${baseUrl}/api/v1/profile`, { ...(await header(accessToken)) });
