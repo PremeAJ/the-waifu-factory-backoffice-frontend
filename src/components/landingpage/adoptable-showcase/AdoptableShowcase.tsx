@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { styled, keyframes } from "@mui/material/styles";
 import { IconArrowRight, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { BaseButton } from "@/common/components/base";
+import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
 import Cookies from "js-cookie";
 import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
 import AdoptableCard, { AdoptableListItem } from "@/components/pages/adoptables/AdoptableCard";
@@ -178,51 +179,7 @@ const TrackRight = styled(Box)({
   "&:hover": { animationPlayState: "paused" },
 });
 
-// ── SFW Switch ────────────────────────────────────────────────────────────────
 
-const SwitchBox = styled(Box)(({ theme }) => ({
-  width: 72,
-  height: 26,
-  borderRadius: 8,
-  background: theme.palette.grey[200],
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "0 5px",
-  position: "relative",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-  cursor: "pointer",
-  userSelect: "none",
-}));
-
-const SwitchThumb = styled(Box, {
-  shouldForwardProp: (prop) => prop !== "nsfw",
-})<{ nsfw: boolean }>(({ nsfw, theme }) => ({
-  position: "absolute",
-  top: 2,
-  left: nsfw ? 36 : 2,
-  width: 30,
-  height: 22,
-  borderRadius: 6,
-  background: nsfw ? theme.palette.error.main : theme.palette.success.main,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-  transition: "left 0.2s, background 0.2s",
-  zIndex: 2,
-  color: "#fff",
-}));
-
-const SfwSwitch = ({ sfw, onChange }: { sfw: boolean; onChange: () => void }) => (
-  <SwitchBox onClick={onChange}>
-    <Typography variant="caption" sx={{ fontWeight: 700, zIndex: 1, ml: 0.5, fontSize: 10, color: !sfw ? "text.secondary" : "text.primary", transition: "color 0.2s" }}>SFW</Typography>
-    <Typography variant="caption" sx={{ fontWeight: 700, zIndex: 1, mr: 0.5, fontSize: 10, color: !sfw ? "text.primary" : "text.secondary", transition: "color 0.2s" }}>18+</Typography>
-    <SwitchThumb nsfw={!sfw}>
-      {sfw ? <IconEye size={13} /> : <IconEyeOff size={13} />}
-    </SwitchThumb>
-  </SwitchBox>
-);
 
 // ── Row ───────────────────────────────────────────────────────────────────────
 
@@ -237,7 +194,6 @@ const Row = ({ items, direction, sfw }: { items: AdoptableListItem[]; direction:
           <AdoptableCard
             key={`${item.id}-${i}`}
             item={item}
-            sfw={sfw}
             showViewPost={false}
             sx={{ width: 260, mx: 1, my: 4, flexShrink: 0, "&:hover": { transform: "scale(1.04)" } }}
           />
@@ -251,12 +207,12 @@ const Row = ({ items, direction, sfw }: { items: AdoptableListItem[]; direction:
 
 const AdoptableShowcase = () => {
   const [items, setItems] = useState<AdoptableListItem[]>(MOCK_ITEMS);
-  const [sfw, setSfw] = useState(() => Cookies.get(CookiesKey.SFW_MODE) !== "false");
+  const [showNsfw, setShowNsfw] = useState(() => Cookies.get(CookiesKey.SFW_MODE) !== "false");
 
-  const toggleSfw = () => {
-    const n = !sfw;
-    setSfw(n);
-    Cookies.set(CookiesKey.SFW_MODE, String(n), setCookiesOption1Y);
+  // Sync cookie on toggle
+  const toggleShowNsfw = (checked: boolean) => {
+    setShowNsfw(checked);
+    Cookies.set(CookiesKey.SFW_MODE, String(checked), setCookiesOption1Y);
   };
 
   useEffect(() => {
@@ -267,10 +223,16 @@ const AdoptableShowcase = () => {
         });
         if (res.ok) {
           const json = await res.json();
-          const data: AdoptableListItem[] = json?.data ?? json;
-          if (Array.isArray(data) && data.length > 0) {
-            // Merge with mock to get enough items for a full 3-row display
-            setItems([...data, ...MOCK_ITEMS]);
+          let data: AdoptableListItem[] = json?.data ?? json;
+          // Map API field isNSFW to isNsfw for compatibility
+          if (Array.isArray(data)) {
+            data = data.map((item) => ({
+              ...item,
+              isNsfw: typeof item.isNSFW !== "undefined" ? item.isNSFW : item.isNSFW,
+            }));
+            if (data.length > 0) {
+              setItems([...data, ...MOCK_ITEMS]);
+            }
           }
         }
       } catch {
@@ -299,7 +261,7 @@ const AdoptableShowcase = () => {
             </Typography>
           </Box>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <SfwSwitch sfw={sfw} onChange={toggleSfw} />
+            <SeeNSFWContentToggle value={showNsfw} onChange={toggleShowNsfw} />
             <BaseButton
               href="/adoptables"
               variant="outlined"
@@ -310,9 +272,9 @@ const AdoptableShowcase = () => {
           </Stack>
         </Stack>
       </Container>
-      <Row items={row1.length ? row1 : MOCK_ITEMS} direction="left" sfw={sfw} />
-      <Row items={row2.length ? row2 : MOCK_ITEMS} direction="right" sfw={sfw} />
-      <Row items={row3.length ? row3 : MOCK_ITEMS} direction="left" sfw={sfw} />
+      <Row items={row1.length ? row1 : MOCK_ITEMS} direction="left" sfw={showNsfw} />
+      <Row items={row2.length ? row2 : MOCK_ITEMS} direction="right" sfw={showNsfw} />
+      <Row items={row3.length ? row3 : MOCK_ITEMS} direction="left" sfw={showNsfw} />
     </Box>
   );
 };

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Cookies from "js-cookie";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -38,12 +39,12 @@ export interface AdoptableListItem {
   createdAt: string;
   tags: AdoptableTag[];
   /** Explicit NSFW flag from API — also auto-detected from tags named "nsfw" */
-  isNsfw?: boolean;
+  isNSFW?: boolean;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-export const isAdoptableNsfw = (item: AdoptableListItem): boolean => !!item.isNsfw || item.tags.some((t) => t.name.toLowerCase() === "nsfw");
+export const isAdoptableNsfw = (item: AdoptableListItem): boolean => !!item.isNSFW || item.tags.some((t) => t.name.toLowerCase() === "nsfw");
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -60,7 +61,14 @@ export interface AdoptableCardProps {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, showViewPost = true }) => {
-  const blurred = sfw && isAdoptableNsfw(item);
+  // Read NSFW blur preference from cookie (default true = blur)
+  let showNsfw = true;
+  if (typeof window !== "undefined") {
+    const cookie = Cookies.get("_sfw");
+    showNsfw = cookie !== "false";
+  }
+  // Only blur if showNsfw is false and item is NSFW
+  const blurred = !showNsfw && isAdoptableNsfw(item);
 
   return (
     <BaseCard
@@ -71,6 +79,8 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         display: "flex",
         flexDirection: "column",
         cursor: item.externalUrl ? "pointer" : "default",
+        transition: "transform 0.22s, box-shadow 0.22s",
+        "&:hover": { transform: "translateY(-6px)", boxShadow: "0px 0px 20px 6px rgba(0,0,0,0.15), 0px 8px 16px 0px rgba(0,0,0,0.14)" },
         ...sx,
       }}
       onClick={() => item.externalUrl && window.open(item.externalUrl, "_blank")}
@@ -78,6 +88,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
       {/* ── Image ── */}
       <Box sx={{ position: "relative", width: "100%", paddingTop: "120%", flexShrink: 0 }}>
         {/* NSFW blur overlay */}
+
         {blurred && (
           <Box
             sx={{
@@ -93,7 +104,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
             }}
           >
             <Typography variant="caption" fontWeight={700} sx={{ color: "#fff", bgcolor: alpha("#000", 0.45), px: 1.5, py: 0.5, borderRadius: 2 }}>
-              NSFW 🔞
+              🔞NSFW
             </Typography>
           </Box>
         )}
@@ -142,7 +153,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         {/* Tags */}
         {item.tags.length > 0 && (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-            {item.tags.map((tag) => (
+            {item.tags.map((tag: AdoptableTag) => (
               <BaseChip key={tag.name} label={tag.name} customBgColor={tag.color + "33"} customColor="#555" size="small" sx={{ fontSize: 10 }} />
             ))}
           </Box>
@@ -151,7 +162,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         {/* Payment method icons */}
         {item.artist.paymentMethods && item.artist.paymentMethods.length > 0 && (
           <Stack direction="row" spacing={0.5} flexWrap="wrap">
-            {item.artist.paymentMethods.map((pm) => (
+            {item.artist.paymentMethods.map((pm: { name: string; iconUrl: string }) => (
               <Box
                 key={pm.name}
                 component="img"

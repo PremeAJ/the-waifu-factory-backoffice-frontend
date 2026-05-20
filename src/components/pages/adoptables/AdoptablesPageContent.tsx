@@ -20,6 +20,7 @@ import { IconArrowsSort, IconSearch, IconX } from "@tabler/icons-react";
 import { useMasterData, ArtistMaster } from "@/common/contexts/MasterDataContext";
 import { BaseCard, BaseChip } from "@/common/components/base";
 import AdoptableCard, { AdoptableListItem, AdoptableTag } from "./AdoptableCard";
+import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -34,11 +35,11 @@ const MOCK_ITEMS: AdoptableListItem[] = [
   { id: "mock-5", number: 5, imageUrl: "https://picsum.photos/seed/wf5/400/500", artist: { username: "rayne_draws", displayName: "Rayne ðŸŒ§ï¸", profilePictureUrl: null }, owner: { username: "rayne_draws", displayName: "Rayne ðŸŒ§ï¸", profilePictureUrl: null }, status: "open", price: 500, createdAt: "2026-04-05T00:00:00.000Z", tags: [{ name: "Wolf", color: "#A0C4FF", category: { name: "Species", color: "#FF6B6B" } }, { name: "Dark", color: "#555", category: { name: "Trait", color: "#9B59B6" } }] },
   { id: "mock-6", number: 6, imageUrl: "https://picsum.photos/seed/wf6/400/500", artist: { username: "tora_studio", displayName: "Tiger Studio ðŸ¯", profilePictureUrl: null }, owner: { username: "tora_studio", displayName: "Tiger Studio ðŸ¯", profilePictureUrl: null }, status: "open", price: 280, createdAt: "2026-04-06T00:00:00.000Z", tags: [{ name: "Tiger", color: "#FFB347", category: { name: "Species", color: "#FF6B6B" } }] },
   { id: "mock-7", number: 7, imageUrl: "https://picsum.photos/seed/wf7/400/500", artist: { username: "niji_colors", displayName: "ã«ã˜ ðŸŒˆ", profilePictureUrl: null }, owner: { username: "niji_colors", displayName: "ã«ã˜ ðŸŒˆ", profilePictureUrl: null }, status: "close", price: 420, createdAt: "2026-04-07T00:00:00.000Z", tags: [{ name: "Fairy", color: "#FF9ECD", category: { name: "Species", color: "#FF6B6B" } }, { name: "Glitter", color: "#FFFACD", category: { name: "Trait", color: "#9B59B6" } }] },
-  { id: "mock-8", number: 8, imageUrl: "https://picsum.photos/seed/wf8/400/500", artist: { username: "stellar_art", displayName: "Stellar âœ¨", profilePictureUrl: null }, owner: { username: "stellar_art", displayName: "Stellar âœ¨", profilePictureUrl: null }, status: "open", price: 200, createdAt: "2026-04-08T00:00:00.000Z", tags: [{ name: "Demon", color: "#FF6060", category: { name: "Species", color: "#FF6B6B" } }], isNsfw: true },
+  { id: "mock-8", number: 8, imageUrl: "https://picsum.photos/seed/wf8/400/500", artist: { username: "stellar_art", displayName: "Stellar âœ¨", profilePictureUrl: null }, owner: { username: "stellar_art", displayName: "Stellar âœ¨", profilePictureUrl: null }, status: "open", price: 200, createdAt: "2026-04-08T00:00:00.000Z", tags: [{ name: "Demon", color: "#FF6060", category: { name: "Species", color: "#FF6B6B" } }], isNSFW: true },
   { id: "mock-9", number: 9, imageUrl: "https://picsum.photos/seed/wf9/400/500", artist: { username: "aqua_sketch", displayName: "Aqua ðŸ’§", profilePictureUrl: null }, owner: { username: "aqua_sketch", displayName: "Aqua ðŸ’§", profilePictureUrl: null }, status: "resell", price: 360, createdAt: "2026-04-09T00:00:00.000Z", tags: [{ name: "Merfolk", color: "#40E0D0", category: { name: "Species", color: "#FF6B6B" } }] },
   { id: "mock-10", number: 10, imageUrl: "https://picsum.photos/seed/wf10/400/500", artist: { username: "ember_arts", displayName: "Ember ðŸ”¥", profilePictureUrl: null }, owner: { username: "ember_arts", displayName: "Ember ðŸ”¥", profilePictureUrl: null }, status: "open", price: 600, createdAt: "2026-04-10T00:00:00.000Z", tags: [{ name: "Phoenix", color: "#FF8C00", category: { name: "Species", color: "#FF6B6B" } }] },
   { id: "mock-11", number: 11, imageUrl: "https://picsum.photos/seed/wf11/400/500", artist: { username: "crystal_draw", displayName: "Crystal ðŸ’Ž", profilePictureUrl: null }, owner: { username: "crystal_draw", displayName: "Crystal ðŸ’Ž", profilePictureUrl: null }, status: "open", price: 380, createdAt: "2026-04-11T00:00:00.000Z", tags: [{ name: "Elf", color: "#B0FFB0", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-12", number: 12, imageUrl: "https://picsum.photos/seed/wf12/400/500", artist: { username: "vivi_lineart", displayName: "Vivi ðŸŒ¸", profilePictureUrl: null }, owner: { username: "vivi_lineart", displayName: "Vivi ðŸŒ¸", profilePictureUrl: null }, status: "close", price: 240, createdAt: "2026-04-12T00:00:00.000Z", tags: [{ name: "Angel", color: "#FFFACD", category: { name: "Species", color: "#FF6B6B" } }], isNsfw: true },
+  { id: "mock-12", number: 12, imageUrl: "https://picsum.photos/seed/wf12/400/500", artist: { username: "vivi_lineart", displayName: "Vivi ðŸŒ¸", profilePictureUrl: null }, owner: { username: "vivi_lineart", displayName: "Vivi ðŸŒ¸", profilePictureUrl: null }, status: "close", price: 240, createdAt: "2026-04-12T00:00:00.000Z", tags: [{ name: "Angel", color: "#FFFACD", category: { name: "Species", color: "#FF6B6B" } }], isNSFW: true },
   { id: "mock-13", number: 13, imageUrl: "https://picsum.photos/seed/wf13/400/500", artist: { username: "parareem_preme", displayName: "à¸žà¸£à¸µà¸¡ â˜†å½¡", profilePictureUrl: "https://cdn.discordapp.com/avatars/272227350895394816/6f8335e9940c524a316357f2d73d119f.png" }, owner: { username: "parareem_preme", displayName: "à¸žà¸£à¸µà¸¡ â˜†å½¡", profilePictureUrl: null }, status: "open", price: 450, createdAt: "2026-04-13T00:00:00.000Z", tags: [{ name: "Kitsune", color: "#40F0E8", category: { name: "Species", color: "#FF6B6B" } }] },
   { id: "mock-14", number: 14, imageUrl: "https://picsum.photos/seed/wf14/400/500", artist: { username: "haruki_sketch", displayName: "Haruki ðŸƒ", profilePictureUrl: null }, owner: { username: "haruki_sketch", displayName: "Haruki ðŸƒ", profilePictureUrl: null }, status: "resell", price: 120, createdAt: "2026-04-14T00:00:00.000Z", tags: [{ name: "Plant", color: "#90EE90", category: { name: "Species", color: "#FF6B6B" } }] },
   { id: "mock-15", number: 15, imageUrl: "https://picsum.photos/seed/wf15/400/500", artist: { username: "nova_arts", displayName: "Nova ðŸŒŸ", profilePictureUrl: null }, owner: { username: "nova_arts", displayName: "Nova ðŸŒŸ", profilePictureUrl: null }, status: "open", price: 750, createdAt: "2026-04-15T00:00:00.000Z", tags: [{ name: "Cosmic", color: "#7B68EE", category: { name: "Species", color: "#FF6B6B" } }, { name: "Rare", color: "#FFD700", category: { name: "Trait", color: "#9B59B6" } }] },
@@ -56,7 +57,8 @@ const AdoptablesPageContent = () => {
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const [tagFilter, setTagFilter] = useState<string[]>([]);
-  const [nsfwFilter, setNsfwFilter] = useState<"sfw" | "nsfw" | "all">("sfw");
+  const [nsfwFilter, setNsfwFilter] = useState<"sfw" | "nsfw" | "all">("all");
+  const [showNsfw, setShowNsfw] = useState<boolean>(typeof window !== "undefined" ? (document?.cookie.match(/see_nsfw_content=(true|false)/)?.[1] === "true") : false);
   const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "price_asc" | "price_desc">("newest");
 
@@ -118,8 +120,8 @@ const AdoptablesPageContent = () => {
       if (statusFilter.length > 0 && !statusFilter.includes(item.status)) return false;
       if (categoryFilter.length > 0 && !item.tags.some((t) => categoryFilter.includes(t.category.name))) return false;
       if (tagFilter.length > 0 && !item.tags.some((t) => tagFilter.includes(t.name))) return false;
-      if (nsfwFilter === "sfw" && item.isNsfw) return false;
-      if (nsfwFilter === "nsfw" && !item.isNsfw) return false;
+      if (nsfwFilter === "sfw" && item.isNSFW) return false;
+      if (nsfwFilter === "nsfw" && !item.isNSFW) return false;
       if (artistFilter && item.artist.username !== artistFilter.username) return false;
       return true;
     });
@@ -162,7 +164,7 @@ const AdoptablesPageContent = () => {
       </Stack>
 
       <Grid container spacing={3}>
-        {/* â”€â”€ Filter Panel â”€â”€ */}
+        {/* ── Filter Panel ── */}
         <Grid size={{ xs: 12, md: 3 }}>
           <BaseCard
             sx={{
@@ -173,6 +175,32 @@ const AdoptablesPageContent = () => {
               top: 80,
             }}
           >
+            {/* Content filter (SFW/ALL/NSFW) */}
+            <Typography variant="subtitle2" fontWeight={700} mb={1}>
+              Content
+            </Typography>
+            <ToggleButtonGroup
+              value={nsfwFilter}
+              exclusive
+              onChange={(_, v) => v && setNsfwFilter(v)}
+              size="small"
+              fullWidth
+              sx={{ mb: 2 }}
+            >
+              <ToggleButton value="sfw" sx={{ textTransform: "none", fontWeight: 600 }}>
+                SFW
+              </ToggleButton>
+              <ToggleButton value="all" sx={{ textTransform: "none", fontWeight: 600 }}>
+                All
+              </ToggleButton>
+              <ToggleButton value="nsfw" sx={{ textTransform: "none", fontWeight: 600 }}>
+                🔞NSFW
+              </ToggleButton>
+            </ToggleButtonGroup>
+            {/* See NSFW content toggle */}
+            <Box mb={3}>
+              <SeeNSFWContentToggle value={showNsfw} onChange={setShowNsfw} />
+            </Box>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
               <Typography variant="h6" fontWeight={700}>
                 Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
@@ -256,28 +284,6 @@ const AdoptablesPageContent = () => {
               ))}
             </Box>
 
-            {/* SFW/NSFW */}
-            <Typography variant="subtitle2" fontWeight={700} mb={1}>
-              Content
-            </Typography>
-            <ToggleButtonGroup
-              value={nsfwFilter}
-              exclusive
-              onChange={(_, v) => v && setNsfwFilter(v)}
-              size="small"
-              fullWidth
-              sx={{ mb: 3 }}
-            >
-              <ToggleButton value="sfw" sx={{ textTransform: "none", fontWeight: 600 }}>
-                SFW
-              </ToggleButton>
-              <ToggleButton value="all" sx={{ textTransform: "none", fontWeight: 600 }}>
-                All
-              </ToggleButton>
-              <ToggleButton value="nsfw" sx={{ textTransform: "none", fontWeight: 600 }}>
-                NSFW
-              </ToggleButton>
-            </ToggleButtonGroup>
 
             {/* Categories */}
             {allCategories.length > 0 && (
@@ -375,7 +381,10 @@ const AdoptablesPageContent = () => {
             <Grid container spacing={2.5}>
               {filtered.map((item) => (
                 <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                  <AdoptableCard item={item} sfw={nsfwFilter === "sfw"} sx={{ height: "100%" }} />
+                  <AdoptableCard
+                    item={item}
+                    sx={{ height: "100%" }}
+                  />
                 </Grid>
               ))}
             </Grid>
