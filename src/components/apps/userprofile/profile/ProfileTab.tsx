@@ -7,7 +7,7 @@ import { IconHeart, IconPhoto, IconUserCircle } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-const ProfileTab = () => {
+const ProfileTab = ({ username }: { username: string }) => {
   const location = usePathname();
   const [value, setValue] = React.useState(location);
   const handleChange = (event: React.SyntheticEvent, newValue: React.SetStateAction<string>) => {
@@ -17,22 +17,22 @@ const ProfileTab = () => {
     {
       label: "Profile",
       icon: <IconUserCircle size="20" />,
-      to: "/dashboard/apps/user-profile/profile",
+      to: `/profile/${username}`,
     },
     {
       label: "Followers",
       icon: <IconHeart size="20" />,
-      to: "/dashboard/apps/user-profile/followers",
+      to: `/profile/${username}/followers`,
     },
     {
       label: "Friends",
       icon: <IconUserCircle size="20" />,
-      to: "/dashboard/apps/user-profile/friends",
+      to: `/profile/${username}/friends`,
     },
     {
       label: "Gallery",
       icon: <IconPhoto size="20" />,
-      to: "/dashboard/apps/user-profile/gallery",
+      to: `/profile/${username}/gallery`,
     },
   ];
 

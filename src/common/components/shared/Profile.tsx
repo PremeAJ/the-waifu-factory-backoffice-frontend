@@ -77,26 +77,45 @@ const Profile: FC<ProfileProps> = () => {
 
   return (
     <Box>
-      <IconButton
+      <Box
         ref={anchorBtnRef}
-        aria-label="show 11 new notifications"
-        color="inherit"
-        aria-controls="msgs-menu"
-        aria-haspopup="true"
+        onClick={handleClick2}
         sx={{
-          ...(typeof anchorEl2 === "object" && {
-            color: "primary.main",
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          px: 1.2,
+          py: 0.5,
+          borderRadius: "999px",
+          border: "1.5px solid",
+          borderColor: "divider",
+          cursor: "pointer",
+          transition: "box-shadow 0.2s, border-color 0.2s",
+          "&:hover": {
+            borderColor: "primary.main",
+            boxShadow: "0 0 5 0px",
+            boxShadowColor: "primary.light",
+          },
+          ...(Boolean(anchorEl2) && {
+            borderColor: "primary.main",
           }),
         }}
-        onClick={handleClick2}
       >
         <BaseAvatar
           src={avatar || "/images/profile/user-1.jpg"}
           alt={firstName}
-          size={35}
+          size={32}
           lightbox={false}
         />
-      </IconButton>
+        <Typography
+          variant="body2"
+          fontWeight={600}
+          noWrap
+          sx={{ maxWidth: 120, color: "text.primary" }}
+        >
+          {firstName}
+        </Typography>
+      </Box>
 
       <Menu
         id="msgs-menu"

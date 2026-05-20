@@ -1,5 +1,5 @@
 import { PageUrl } from "@/common/constants/pageUrl";
-import { IconSettings,  IconBuildingCommunity, IconBuildingStore } from "@tabler/icons-react";
+import { IconSettings, IconBuildingCommunity, IconBuildingStore, IconUserCircle } from "@tabler/icons-react";
 import { ElementType } from "react";
 
 interface notificationType {
@@ -58,6 +58,12 @@ interface ProfileType {
   icon: string | ElementType; 
 }
 const profile: ProfileType[] = [
+  {
+    href: PageUrl.PROFILE,
+    icon: IconUserCircle,
+    subtitle: "View your profile",
+    title: "My Profile",
+  },
   {
     href: PageUrl.SETTING,
     icon: IconSettings,

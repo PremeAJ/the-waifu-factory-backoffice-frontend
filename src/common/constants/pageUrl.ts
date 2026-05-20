@@ -3,6 +3,6 @@ export enum PageUrl {
   CALLBACK = "/auth/callback",
   DASHBOARD = "/dashboard",
   HOME = "/",
-  // MAIN = "/",
+  PROFILE = "/profile",
   SETTING = "/setting",
 }

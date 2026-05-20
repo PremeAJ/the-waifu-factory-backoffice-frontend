@@ -19,10 +19,16 @@ import {
 } from "@tabler/icons-react";
 import ProfileTab from "./ProfileTab";
 import BlankCard from "../../../shared/BlankCard";
-import { useContext } from "react";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 
-const ProfileBanner = () => {
+export interface ProfileUserProps {
+  username: string;
+  displayName?: string;
+  profilePictureUrl?: string | null;
+  bannerUrl?: string | null;
+  accentColor?: string | null;
+}
+
+const ProfileBanner = ({ profileUser }: { profileUser: ProfileUserProps }) => {
   const ProfileImage = styled(Box)(() => ({
     backgroundImage: "linear-gradient(#50b2fc,#f44c66)",
     borderRadius: "50%",
@@ -33,22 +39,34 @@ const ProfileBanner = () => {
     justifyContent: "center",
     margin: "0 auto",
   }));
-  const { user } = useWaifuUser();
-  const firstName = user?.displayName ?? user?.username ?? "";
-  const lastName = "";
-  const avatarUrl = user?.profilePictureUrl ?? "";
+  const displayName = profileUser.displayName ?? profileUser.username;
+  const avatarUrl = profileUser.profilePictureUrl ?? "";
+  const bannerUrl = profileUser.bannerUrl;
+  const accentColor = profileUser.accentColor;
 
   return (
     <>
       <BlankCard>
-        {/* {JSON.stringify(user)} */}
-        <CardMedia
-          component="img"
-          image={"/images/backgrounds/profilebg.jpg"}
-          alt={"profilecover"}
-          width="100%"
-          height="330px"
-        />
+        {bannerUrl ? (
+          <CardMedia
+            component="img"
+            image={bannerUrl}
+            alt={"profilecover"}
+            width="100%"
+            height="330px"
+            sx={{ objectFit: "cover" }}
+          />
+        ) : (
+          <Box
+            sx={{
+              width: "100%",
+              height: 330,
+              background: accentColor
+                ? `linear-gradient(135deg, ${accentColor}cc 0%, ${accentColor}44 100%)`
+                : "linear-gradient(135deg, #50b2fc 0%, #f44c66 100%)",
+            }}
+          />
+        )}
         <Grid container spacing={0} justifyContent="center" alignItems="center">
           {/* Post | Followers | Following */}
           <Grid
@@ -147,7 +165,7 @@ const ProfileBanner = () => {
                 </ProfileImage>
                 <Box mt={1}>
                   <Typography fontWeight={600} variant="h5">
-                    {firstName} {lastName}
+                    {displayName}
                   </Typography>
                   <Typography
                     color="textSecondary"
@@ -217,7 +235,7 @@ const ProfileBanner = () => {
           </Grid>
         </Grid>
         {/**TabbingPart**/}
-        <ProfileTab />
+        <ProfileTab username={profileUser.username} />
       </BlankCard>
     </>
   );

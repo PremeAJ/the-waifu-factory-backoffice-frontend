@@ -23,6 +23,8 @@ export interface WaifuUser {
   username: string;
   displayName: string;
   profilePictureUrl: string | null;
+  bannerUrl: string | null;
+  accentColor: string | null;
   createdAt: string;
   paymentMethods: UserPaymentMethod[];
   socialMedias: UserSocialMedia[];
