@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
-import { Box, FormControl, FormLabel, alpha, useTheme } from "@mui/material";
+import { Box, FormControl, alpha, useTheme } from "@mui/material";
 import { FormikProps } from "formik";
+import BaseLabel from "./BaseLabel";
 
 interface BaseColorPickerProps {
   formik?: FormikProps<any>;
@@ -48,23 +49,9 @@ const BaseColorPicker: React.FC<BaseColorPickerProps> = ({
   return (
     <FormControl fullWidth error={!!error}>
       {label && (
-        <FormLabel
-          sx={{
-            mb: 1,
-            fontSize: "0.875rem",
-            color: error ? "error.main" : "text.primary",
-            "&.Mui-focused": {
-              color: error ? "error.main" : "primary.main",
-            },
-          }}
-        >
+        <BaseLabel required={required} htmlFor={name}>
           {label}
-          {required && (
-            <Box component="span" sx={{ color: "error.main", ml: 0.5 }}>
-              *
-            </Box>
-          )}
-        </FormLabel>
+        </BaseLabel>
       )}
 
       <Box

@@ -4,7 +4,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
@@ -17,233 +16,35 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { alpha, useTheme } from "@mui/material/styles";
-import { IconArrowsSort, IconExternalLink, IconSearch, IconX } from "@tabler/icons-react";
-import Image from "next/image";
+import { IconArrowsSort, IconSearch, IconX } from "@tabler/icons-react";
 import { useMasterData, ArtistMaster } from "@/common/contexts/MasterDataContext";
+import { BaseCard, BaseChip } from "@/common/components/base";
+import AdoptableCard, { AdoptableListItem, AdoptableTag } from "./AdoptableCard";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-interface AdoptableUser {
-  username: string;
-  displayName: string;
-  profilePictureUrl: string | null;
-}
-
 type ArtistOption = ArtistMaster;
 
-interface AdoptableTag {
-  name: string;
-  color: string;
-  category: { name: string; color: string };
-}
-
-export interface AdoptableListItem {
-  id: string;
-  number: number;
-  imageUrl: string;
-  externalUrl?: string;
-  artist: AdoptableUser;
-  owner: AdoptableUser;
-  status: "open" | "close" | "resell";
-  price?: number;
-  createdAt: string;
-  tags: AdoptableTag[];
-  isNsfw?: boolean;
-}
-
-// ── Mock data ─────────────────────────────────────────────────────────────────
 
 const MOCK_ITEMS: AdoptableListItem[] = [
-  { id: "mock-1", number: 1, imageUrl: "https://picsum.photos/seed/wf1/400/500", artist: { username: "sakura_draw", displayName: "さくら ✿", profilePictureUrl: null }, owner: { username: "sakura_draw", displayName: "さくら ✿", profilePictureUrl: null }, status: "open", price: 250, createdAt: "2026-04-01T00:00:00.000Z", tags: [{ name: "Neko", color: "#FFB3C1", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-2", number: 2, imageUrl: "https://picsum.photos/seed/wf2/400/500", artist: { username: "moonlight_art", displayName: "Moonlight 🌙", profilePictureUrl: null }, owner: { username: "moonlight_art", displayName: "Moonlight 🌙", profilePictureUrl: null }, status: "close", price: 180, createdAt: "2026-04-02T00:00:00.000Z", tags: [{ name: "Fox", color: "#FFD580", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-3", number: 3, imageUrl: "https://picsum.photos/seed/wf3/400/500", artist: { username: "yuki_creates", displayName: "Yuki ❄️", profilePictureUrl: null }, owner: { username: "yuki_creates", displayName: "Yuki ❄️", profilePictureUrl: null }, status: "open", price: 320, createdAt: "2026-04-03T00:00:00.000Z", tags: [{ name: "Dragon", color: "#80D4FF", category: { name: "Species", color: "#FF6B6B" } }, { name: "Magic", color: "#D4A0FF", category: { name: "Trait", color: "#9B59B6" } }] },
-  { id: "mock-4", number: 4, imageUrl: "https://picsum.photos/seed/wf4/400/500", artist: { username: "hoshi_art", displayName: "ほし ★", profilePictureUrl: null }, owner: { username: "hoshi_art", displayName: "ほし ★", profilePictureUrl: null }, status: "resell", price: 150, createdAt: "2026-04-04T00:00:00.000Z", tags: [{ name: "Bunny", color: "#D4A0FF", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-5", number: 5, imageUrl: "https://picsum.photos/seed/wf5/400/500", artist: { username: "rayne_draws", displayName: "Rayne 🌧️", profilePictureUrl: null }, owner: { username: "rayne_draws", displayName: "Rayne 🌧️", profilePictureUrl: null }, status: "open", price: 500, createdAt: "2026-04-05T00:00:00.000Z", tags: [{ name: "Wolf", color: "#A0C4FF", category: { name: "Species", color: "#FF6B6B" } }, { name: "Dark", color: "#555", category: { name: "Trait", color: "#9B59B6" } }] },
-  { id: "mock-6", number: 6, imageUrl: "https://picsum.photos/seed/wf6/400/500", artist: { username: "tora_studio", displayName: "Tiger Studio 🐯", profilePictureUrl: null }, owner: { username: "tora_studio", displayName: "Tiger Studio 🐯", profilePictureUrl: null }, status: "open", price: 280, createdAt: "2026-04-06T00:00:00.000Z", tags: [{ name: "Tiger", color: "#FFB347", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-7", number: 7, imageUrl: "https://picsum.photos/seed/wf7/400/500", artist: { username: "niji_colors", displayName: "にじ 🌈", profilePictureUrl: null }, owner: { username: "niji_colors", displayName: "にじ 🌈", profilePictureUrl: null }, status: "close", price: 420, createdAt: "2026-04-07T00:00:00.000Z", tags: [{ name: "Fairy", color: "#FF9ECD", category: { name: "Species", color: "#FF6B6B" } }, { name: "Glitter", color: "#FFFACD", category: { name: "Trait", color: "#9B59B6" } }] },
-  { id: "mock-8", number: 8, imageUrl: "https://picsum.photos/seed/wf8/400/500", artist: { username: "stellar_art", displayName: "Stellar ✨", profilePictureUrl: null }, owner: { username: "stellar_art", displayName: "Stellar ✨", profilePictureUrl: null }, status: "open", price: 200, createdAt: "2026-04-08T00:00:00.000Z", tags: [{ name: "Demon", color: "#FF6060", category: { name: "Species", color: "#FF6B6B" } }], isNsfw: true },
-  { id: "mock-9", number: 9, imageUrl: "https://picsum.photos/seed/wf9/400/500", artist: { username: "aqua_sketch", displayName: "Aqua 💧", profilePictureUrl: null }, owner: { username: "aqua_sketch", displayName: "Aqua 💧", profilePictureUrl: null }, status: "resell", price: 360, createdAt: "2026-04-09T00:00:00.000Z", tags: [{ name: "Merfolk", color: "#40E0D0", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-10", number: 10, imageUrl: "https://picsum.photos/seed/wf10/400/500", artist: { username: "ember_arts", displayName: "Ember 🔥", profilePictureUrl: null }, owner: { username: "ember_arts", displayName: "Ember 🔥", profilePictureUrl: null }, status: "open", price: 600, createdAt: "2026-04-10T00:00:00.000Z", tags: [{ name: "Phoenix", color: "#FF8C00", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-11", number: 11, imageUrl: "https://picsum.photos/seed/wf11/400/500", artist: { username: "crystal_draw", displayName: "Crystal 💎", profilePictureUrl: null }, owner: { username: "crystal_draw", displayName: "Crystal 💎", profilePictureUrl: null }, status: "open", price: 380, createdAt: "2026-04-11T00:00:00.000Z", tags: [{ name: "Elf", color: "#B0FFB0", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-12", number: 12, imageUrl: "https://picsum.photos/seed/wf12/400/500", artist: { username: "vivi_lineart", displayName: "Vivi 🌸", profilePictureUrl: null }, owner: { username: "vivi_lineart", displayName: "Vivi 🌸", profilePictureUrl: null }, status: "close", price: 240, createdAt: "2026-04-12T00:00:00.000Z", tags: [{ name: "Angel", color: "#FFFACD", category: { name: "Species", color: "#FF6B6B" } }], isNsfw: true },
-  { id: "mock-13", number: 13, imageUrl: "https://picsum.photos/seed/wf13/400/500", artist: { username: "parareem_preme", displayName: "พรีม ☆彡", profilePictureUrl: "https://cdn.discordapp.com/avatars/272227350895394816/6f8335e9940c524a316357f2d73d119f.png" }, owner: { username: "parareem_preme", displayName: "พรีม ☆彡", profilePictureUrl: null }, status: "open", price: 450, createdAt: "2026-04-13T00:00:00.000Z", tags: [{ name: "Kitsune", color: "#40F0E8", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-14", number: 14, imageUrl: "https://picsum.photos/seed/wf14/400/500", artist: { username: "haruki_sketch", displayName: "Haruki 🍃", profilePictureUrl: null }, owner: { username: "haruki_sketch", displayName: "Haruki 🍃", profilePictureUrl: null }, status: "resell", price: 120, createdAt: "2026-04-14T00:00:00.000Z", tags: [{ name: "Plant", color: "#90EE90", category: { name: "Species", color: "#FF6B6B" } }] },
-  { id: "mock-15", number: 15, imageUrl: "https://picsum.photos/seed/wf15/400/500", artist: { username: "nova_arts", displayName: "Nova 🌟", profilePictureUrl: null }, owner: { username: "nova_arts", displayName: "Nova 🌟", profilePictureUrl: null }, status: "open", price: 750, createdAt: "2026-04-15T00:00:00.000Z", tags: [{ name: "Cosmic", color: "#7B68EE", category: { name: "Species", color: "#FF6B6B" } }, { name: "Rare", color: "#FFD700", category: { name: "Trait", color: "#9B59B6" } }] },
+  { id: "mock-1", number: 1, imageUrl: "https://picsum.photos/seed/wf1/400/500", artist: { username: "sakura_draw", displayName: "ã•ãã‚‰ âœ¿", profilePictureUrl: null }, owner: { username: "sakura_draw", displayName: "ã•ãã‚‰ âœ¿", profilePictureUrl: null }, status: "open", price: 250, createdAt: "2026-04-01T00:00:00.000Z", tags: [{ name: "Neko", color: "#FFB3C1", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-2", number: 2, imageUrl: "https://picsum.photos/seed/wf2/400/500", artist: { username: "moonlight_art", displayName: "Moonlight ðŸŒ™", profilePictureUrl: null }, owner: { username: "moonlight_art", displayName: "Moonlight ðŸŒ™", profilePictureUrl: null }, status: "close", price: 180, createdAt: "2026-04-02T00:00:00.000Z", tags: [{ name: "Fox", color: "#FFD580", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-3", number: 3, imageUrl: "https://picsum.photos/seed/wf3/400/500", artist: { username: "yuki_creates", displayName: "Yuki â„ï¸", profilePictureUrl: null }, owner: { username: "yuki_creates", displayName: "Yuki â„ï¸", profilePictureUrl: null }, status: "open", price: 320, createdAt: "2026-04-03T00:00:00.000Z", tags: [{ name: "Dragon", color: "#80D4FF", category: { name: "Species", color: "#FF6B6B" } }, { name: "Magic", color: "#D4A0FF", category: { name: "Trait", color: "#9B59B6" } }] },
+  { id: "mock-4", number: 4, imageUrl: "https://picsum.photos/seed/wf4/400/500", artist: { username: "hoshi_art", displayName: "ã»ã— â˜…", profilePictureUrl: null }, owner: { username: "hoshi_art", displayName: "ã»ã— â˜…", profilePictureUrl: null }, status: "resell", price: 150, createdAt: "2026-04-04T00:00:00.000Z", tags: [{ name: "Bunny", color: "#D4A0FF", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-5", number: 5, imageUrl: "https://picsum.photos/seed/wf5/400/500", artist: { username: "rayne_draws", displayName: "Rayne ðŸŒ§ï¸", profilePictureUrl: null }, owner: { username: "rayne_draws", displayName: "Rayne ðŸŒ§ï¸", profilePictureUrl: null }, status: "open", price: 500, createdAt: "2026-04-05T00:00:00.000Z", tags: [{ name: "Wolf", color: "#A0C4FF", category: { name: "Species", color: "#FF6B6B" } }, { name: "Dark", color: "#555", category: { name: "Trait", color: "#9B59B6" } }] },
+  { id: "mock-6", number: 6, imageUrl: "https://picsum.photos/seed/wf6/400/500", artist: { username: "tora_studio", displayName: "Tiger Studio ðŸ¯", profilePictureUrl: null }, owner: { username: "tora_studio", displayName: "Tiger Studio ðŸ¯", profilePictureUrl: null }, status: "open", price: 280, createdAt: "2026-04-06T00:00:00.000Z", tags: [{ name: "Tiger", color: "#FFB347", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-7", number: 7, imageUrl: "https://picsum.photos/seed/wf7/400/500", artist: { username: "niji_colors", displayName: "ã«ã˜ ðŸŒˆ", profilePictureUrl: null }, owner: { username: "niji_colors", displayName: "ã«ã˜ ðŸŒˆ", profilePictureUrl: null }, status: "close", price: 420, createdAt: "2026-04-07T00:00:00.000Z", tags: [{ name: "Fairy", color: "#FF9ECD", category: { name: "Species", color: "#FF6B6B" } }, { name: "Glitter", color: "#FFFACD", category: { name: "Trait", color: "#9B59B6" } }] },
+  { id: "mock-8", number: 8, imageUrl: "https://picsum.photos/seed/wf8/400/500", artist: { username: "stellar_art", displayName: "Stellar âœ¨", profilePictureUrl: null }, owner: { username: "stellar_art", displayName: "Stellar âœ¨", profilePictureUrl: null }, status: "open", price: 200, createdAt: "2026-04-08T00:00:00.000Z", tags: [{ name: "Demon", color: "#FF6060", category: { name: "Species", color: "#FF6B6B" } }], isNsfw: true },
+  { id: "mock-9", number: 9, imageUrl: "https://picsum.photos/seed/wf9/400/500", artist: { username: "aqua_sketch", displayName: "Aqua ðŸ’§", profilePictureUrl: null }, owner: { username: "aqua_sketch", displayName: "Aqua ðŸ’§", profilePictureUrl: null }, status: "resell", price: 360, createdAt: "2026-04-09T00:00:00.000Z", tags: [{ name: "Merfolk", color: "#40E0D0", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-10", number: 10, imageUrl: "https://picsum.photos/seed/wf10/400/500", artist: { username: "ember_arts", displayName: "Ember ðŸ”¥", profilePictureUrl: null }, owner: { username: "ember_arts", displayName: "Ember ðŸ”¥", profilePictureUrl: null }, status: "open", price: 600, createdAt: "2026-04-10T00:00:00.000Z", tags: [{ name: "Phoenix", color: "#FF8C00", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-11", number: 11, imageUrl: "https://picsum.photos/seed/wf11/400/500", artist: { username: "crystal_draw", displayName: "Crystal ðŸ’Ž", profilePictureUrl: null }, owner: { username: "crystal_draw", displayName: "Crystal ðŸ’Ž", profilePictureUrl: null }, status: "open", price: 380, createdAt: "2026-04-11T00:00:00.000Z", tags: [{ name: "Elf", color: "#B0FFB0", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-12", number: 12, imageUrl: "https://picsum.photos/seed/wf12/400/500", artist: { username: "vivi_lineart", displayName: "Vivi ðŸŒ¸", profilePictureUrl: null }, owner: { username: "vivi_lineart", displayName: "Vivi ðŸŒ¸", profilePictureUrl: null }, status: "close", price: 240, createdAt: "2026-04-12T00:00:00.000Z", tags: [{ name: "Angel", color: "#FFFACD", category: { name: "Species", color: "#FF6B6B" } }], isNsfw: true },
+  { id: "mock-13", number: 13, imageUrl: "https://picsum.photos/seed/wf13/400/500", artist: { username: "parareem_preme", displayName: "à¸žà¸£à¸µà¸¡ â˜†å½¡", profilePictureUrl: "https://cdn.discordapp.com/avatars/272227350895394816/6f8335e9940c524a316357f2d73d119f.png" }, owner: { username: "parareem_preme", displayName: "à¸žà¸£à¸µà¸¡ â˜†å½¡", profilePictureUrl: null }, status: "open", price: 450, createdAt: "2026-04-13T00:00:00.000Z", tags: [{ name: "Kitsune", color: "#40F0E8", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-14", number: 14, imageUrl: "https://picsum.photos/seed/wf14/400/500", artist: { username: "haruki_sketch", displayName: "Haruki ðŸƒ", profilePictureUrl: null }, owner: { username: "haruki_sketch", displayName: "Haruki ðŸƒ", profilePictureUrl: null }, status: "resell", price: 120, createdAt: "2026-04-14T00:00:00.000Z", tags: [{ name: "Plant", color: "#90EE90", category: { name: "Species", color: "#FF6B6B" } }] },
+  { id: "mock-15", number: 15, imageUrl: "https://picsum.photos/seed/wf15/400/500", artist: { username: "nova_arts", displayName: "Nova ðŸŒŸ", profilePictureUrl: null }, owner: { username: "nova_arts", displayName: "Nova ðŸŒŸ", profilePictureUrl: null }, status: "open", price: 750, createdAt: "2026-04-15T00:00:00.000Z", tags: [{ name: "Cosmic", color: "#7B68EE", category: { name: "Species", color: "#FF6B6B" } }, { name: "Rare", color: "#FFD700", category: { name: "Trait", color: "#9B59B6" } }] },
 ];
 
-// ── Status config ─────────────────────────────────────────────────────────────
 
-const STATUS_CONFIG = {
-  open:   { label: "Open",   color: "#22c55e", bg: "#dcfce7" },
-  resell: { label: "Resell", color: "#f59e0b", bg: "#fef3c7" },
-  close:  { label: "Closed", color: "#6b7280", bg: "#f3f4f6" },
-} as const;
-
-// ── Card ──────────────────────────────────────────────────────────────────────
-
-const AdoptableCard = ({ item, showNsfw }: { item: AdoptableListItem; showNsfw: boolean }) => {
-  const theme = useTheme();
-  const blurred = item.isNsfw && !showNsfw;
-  const cfg = STATUS_CONFIG[item.status];
-
-  return (
-    <Box
-      sx={{
-        borderRadius: 4,
-        overflow: "hidden",
-        bgcolor: "background.paper",
-        boxShadow: theme.shadows[2],
-        transition: "transform 0.22s, box-shadow 0.22s",
-        "&:hover": { transform: "translateY(-6px)", boxShadow: theme.shadows[8] },
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-      }}
-    >
-      {/* Image */}
-      <Box sx={{ position: "relative", width: "100%", paddingTop: "120%", overflow: "hidden" }}>
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            filter: blurred ? "blur(18px)" : "none",
-            transform: blurred ? "scale(1.1)" : "scale(1)",
-            transition: "filter 0.3s",
-          }}
-        >
-          <Image
-            src={item.imageUrl}
-            alt={`Adoptable #${item.number}`}
-            fill
-            style={{ objectFit: "cover" }}
-            unoptimized
-          />
-        </Box>
-        {blurred && (
-          <Box
-            sx={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              bgcolor: alpha("#000", 0.35),
-            }}
-          >
-            <Typography variant="h6" color="white" fontWeight={700}>
-              NSFW
-            </Typography>
-          </Box>
-        )}
-        {/* Status badge */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: 10,
-            left: 10,
-            bgcolor: cfg.bg,
-            color: cfg.color,
-            px: 1.2,
-            py: 0.3,
-            borderRadius: 2,
-            fontWeight: 700,
-            fontSize: 11,
-          }}
-        >
-          {cfg.label}
-        </Box>
-        {/* Number badge */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: 10,
-            right: 10,
-            bgcolor: alpha("#000", 0.55),
-            color: "#fff",
-            px: 1,
-            py: 0.2,
-            borderRadius: 2,
-            fontSize: 11,
-            fontWeight: 700,
-          }}
-        >
-          #{item.number}
-        </Box>
-      </Box>
-
-      {/* Body */}
-      <Box sx={{ p: 2, flexGrow: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-        {/* Artist row */}
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Avatar
-            src={item.artist.profilePictureUrl ?? undefined}
-            sx={{ width: 28, height: 28, fontSize: 12 }}
-          >
-            {item.artist.displayName[0]}
-          </Avatar>
-          <Box sx={{ minWidth: 0 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-              Artist
-            </Typography>
-            <Typography variant="body2" fontWeight={600} noWrap>
-              {item.artist.displayName}
-            </Typography>
-          </Box>
-          {item.price != null && (
-            <Box ml="auto" flexShrink={0}>
-              <Typography variant="body2" fontWeight={800} color="primary.main">
-                ฿{item.price.toLocaleString()}
-              </Typography>
-            </Box>
-          )}
-        </Stack>
-
-        {/* Tags */}
-        {item.tags.length > 0 && (
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-            {item.tags.map((tag) => (
-              <Chip
-                key={tag.name}
-                label={tag.name}
-                size="small"
-                sx={{
-                  bgcolor: tag.color + "33",
-                  color: "text.primary",
-                  fontSize: 10,
-                  height: 20,
-                  "& .MuiChip-label": { px: 1 },
-                }}
-              />
-            ))}
-          </Box>
-        )}
-
-        {/* Action */}
-        {item.externalUrl && (
-          <Box mt="auto" pt={1}>
-            <Button
-              fullWidth
-              variant="outlined"
-              size="small"
-              endIcon={<IconExternalLink size={14} />}
-              href={item.externalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ borderRadius: 2, textTransform: "none", fontSize: 12 }}
-            >
-              View post
-            </Button>
-          </Box>
-        )}
-      </Box>
-    </Box>
-  );
-};
-
-// ── Main ──────────────────────────────────────────────────────────────────────
 
 const AdoptablesPageContent = () => {
   const { artists } = useMasterData();
@@ -268,7 +69,10 @@ const AdoptablesPageContent = () => {
         });
         if (res.ok) {
           const json = await res.json();
-          const data: AdoptableListItem[] = json?.data ?? json;
+          const data: AdoptableListItem[] = (json?.data ?? json)?.map?.((item: any) => ({
+            ...item,
+            isNsfw: typeof item.isNSFW !== "undefined" ? item.isNSFW : item.isNsfw,
+          }));
           if (Array.isArray(data) && data.length > 0) {
             setItems([...data, ...MOCK_ITEMS]);
             return;
@@ -352,19 +156,18 @@ const AdoptablesPageContent = () => {
             Adoptables
           </Typography>
           <Typography color="text.secondary" mt={0.5}>
-            {isLoading ? "Loading..." : `${filtered.length} ตัวละคร`}
+            {isLoading ? "Loading..." : `${filtered.length} adoptable${filtered.length !== 1 ? "s" : ""} found`}
           </Typography>
         </Box>
       </Stack>
 
       <Grid container spacing={3}>
-        {/* ── Filter Panel ── */}
+        {/* â”€â”€ Filter Panel â”€â”€ */}
         <Grid size={{ xs: 12, md: 3 }}>
-          <Box
+          <BaseCard
             sx={{
               p: 3,
               borderRadius: 4,
-              bgcolor: "background.paper",
               boxShadow: 1,
               position: { md: "sticky" },
               top: 80,
@@ -430,7 +233,7 @@ const AdoptablesPageContent = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  placeholder="เลือก artist..."
+                  placeholder="Search artist..."
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
                 />
               )}
@@ -442,25 +245,15 @@ const AdoptablesPageContent = () => {
               Status
             </Typography>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8, mb: 3 }}>
-              {(["open", "resell", "close"] as const).map((s) => {
-                const cfg = STATUS_CONFIG[s];
-                const active = statusFilter.includes(s);
-                return (
-                  <Chip
-                    key={s}
-                    label={cfg.label}
-                    onClick={() => toggleChip(statusFilter, setStatusFilter, s)}
-                    sx={{
-                      cursor: "pointer",
-                      fontWeight: 600,
-                      bgcolor: active ? cfg.color : cfg.bg,
-                      color: active ? "#fff" : cfg.color,
-                      border: `1.5px solid ${cfg.color}`,
-                      "&:hover": { bgcolor: cfg.color, color: "#fff" },
-                    }}
-                  />
-                );
-              })}
+              {(["open", "resell", "close"] as const).map((s) => (
+                <BaseChip
+                  key={s}
+                  preset={s}
+                  variant={statusFilter.includes(s) ? "filled" : "outlined"}
+                  onClick={() => toggleChip(statusFilter, setStatusFilter, s)}
+                  sx={{ cursor: "pointer" }}
+                />
+              ))}
             </Box>
 
             {/* SFW/NSFW */}
@@ -497,13 +290,12 @@ const AdoptablesPageContent = () => {
                   {allCategories.map((cat) => {
                     const active = categoryFilter.includes(cat);
                     return (
-                      <Chip
+                      <BaseChip
                         key={cat}
                         label={cat}
                         onClick={() => toggleChip(categoryFilter, setCategoryFilter, cat)}
                         variant={active ? "filled" : "outlined"}
-                        color={active ? "primary" : "default"}
-                        sx={{ cursor: "pointer", fontWeight: 600 }}
+                        sx={{ cursor: "pointer", fontWeight: 600, ...(active && { bgcolor: "primary.main", color: "primary.contrastText" }) }}
                       />
                     );
                   })}
@@ -523,15 +315,13 @@ const AdoptablesPageContent = () => {
                     const active = tagFilter.includes(tag.name);
                     return (
                       <Tooltip key={tag.name} title={tag.category.name}>
-                        <Chip
+                        <BaseChip
                           label={tag.name}
                           onClick={() => toggleChip(tagFilter, setTagFilter, tag.name)}
-                          size="small"
                           sx={{
                             cursor: "pointer",
-                            fontWeight: 600,
                             bgcolor: active ? tag.color : "transparent",
-                            color: "text.primary",
+                            color: active ? "#fff" : "text.primary",
                             border: `1.5px solid ${tag.color}`,
                             "&:hover": { bgcolor: tag.color, color: "#fff" },
                           }}
@@ -542,10 +332,10 @@ const AdoptablesPageContent = () => {
                 </Box>
               </>
             )}
-          </Box>
+          </BaseCard>
         </Grid>
 
-        {/* ── Card Grid ── */}
+        {/* â”€â”€ Card Grid â”€â”€ */}
         <Grid size={{ xs: 12, md: 9 }}>
           {/* Sort bar */}
           <Stack direction="row" alignItems="center" justifyContent="flex-end" mb={2.5} gap={1}>
@@ -559,8 +349,8 @@ const AdoptablesPageContent = () => {
             >
               <MenuItem value="newest">Newest first</MenuItem>
               <MenuItem value="oldest">Oldest first</MenuItem>
-              <MenuItem value="price_asc">Price: Low → High</MenuItem>
-              <MenuItem value="price_desc">Price: High → Low</MenuItem>
+              <MenuItem value="price_asc">Price: Low to High</MenuItem>
+              <MenuItem value="price_desc">Price: High to Low</MenuItem>
             </Select>
           </Stack>
           {filtered.length === 0 ? (
@@ -575,7 +365,7 @@ const AdoptablesPageContent = () => {
               }}
             >
               <Typography variant="h5" fontWeight={600} mb={1}>
-                ไม่พบ adoptable ที่ตรงกับ filter
+                 filter
               </Typography>
               <Button onClick={clearAll} variant="outlined" sx={{ mt: 2, borderRadius: 3, textTransform: "none" }}>
                 Clear filters
@@ -585,7 +375,7 @@ const AdoptablesPageContent = () => {
             <Grid container spacing={2.5}>
               {filtered.map((item) => (
                 <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                  <AdoptableCard item={item} showNsfw={nsfwFilter !== "sfw"} />
+                  <AdoptableCard item={item} sfw={nsfwFilter === "sfw"} sx={{ height: "100%" }} />
                 </Grid>
               ))}
             </Grid>

@@ -1,44 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled, keyframes } from "@mui/material/styles";
-import { IconArrowRight } from "@tabler/icons-react";
-import Image from "next/image";
-import Link from "next/link";
+import { IconArrowRight, IconEye, IconEyeOff } from "@tabler/icons-react";
+import { BaseButton } from "@/common/components/base";
+import Cookies from "js-cookie";
+import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
+import AdoptableCard, { AdoptableListItem } from "@/components/pages/adoptables/AdoptableCard";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-interface AdoptableUser {
-  username: string;
-  displayName: string;
-  profilePictureUrl: string | null;
-}
-
-interface AdoptableTag {
-  name: string;
-  color: string;
-  category: { name: string; color: string };
-}
-
-interface AdoptableListItem {
-  id: string;
-  number: number;
-  imageUrl: string;
-  externalUrl?: string;
-  artist: AdoptableUser;
-  owner: AdoptableUser;
-  status: "open" | "close" | "resell";
-  price?: number;
-  createdAt: string;
-  tags: AdoptableTag[];
-}
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 
@@ -107,7 +80,7 @@ const MOCK_ITEMS: AdoptableListItem[] = [
     status: "open",
     price: 280,
     createdAt: "2026-04-06T00:00:00.000Z",
-    tags: [{ name: "Tiger", color: "#FFB347", category: { name: "Species", color: "#FF6B6B" } }],
+    tags: [{ name: "nsfw", color: "#FFB347", category: { name: "Species", color: "#FF6B6B" } }],
   },
   {
     id: "mock-7",
@@ -205,83 +178,69 @@ const TrackRight = styled(Box)({
   "&:hover": { animationPlayState: "paused" },
 });
 
-// ── Status chip helper ────────────────────────────────────────────────────────
+// ── SFW Switch ────────────────────────────────────────────────────────────────
 
-const STATUS_COLOR: Record<string, "success" | "default" | "warning"> = {
-  open: "success",
-  close: "default",
-  resell: "warning",
-};
+const SwitchBox = styled(Box)(({ theme }) => ({
+  width: 72,
+  height: 26,
+  borderRadius: 8,
+  background: theme.palette.grey[200],
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "0 5px",
+  position: "relative",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+  cursor: "pointer",
+  userSelect: "none",
+}));
 
-// ── Card ──────────────────────────────────────────────────────────────────────
+const SwitchThumb = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "nsfw",
+})<{ nsfw: boolean }>(({ nsfw, theme }) => ({
+  position: "absolute",
+  top: 2,
+  left: nsfw ? 36 : 2,
+  width: 30,
+  height: 22,
+  borderRadius: 6,
+  background: nsfw ? theme.palette.error.main : theme.palette.success.main,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+  transition: "left 0.2s, background 0.2s",
+  zIndex: 2,
+  color: "#fff",
+}));
 
-const AdoptableCard = ({ item }: { item: AdoptableListItem }) => (
-  <Box
-    sx={{
-      width: 180,
-      mx: 1,
-      borderRadius: 3,
-      overflow: "hidden",
-      flexShrink: 0,
-      cursor: "pointer",
-      boxShadow: 2,
-      bgcolor: "background.paper",
-      transition: "transform 0.2s, box-shadow 0.2s",
-      "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
-    }}
-    onClick={() => item.externalUrl && window.open(item.externalUrl, "_blank")}
-  >
-    <Box sx={{ position: "relative", width: 180, height: 220 }}>
-      <Image
-        src={item.imageUrl}
-        alt={`Adoptable #${item.number}`}
-        fill
-        style={{ objectFit: "cover" }}
-        unoptimized
-      />
-      <Chip
-        label={item.status}
-        color={STATUS_COLOR[item.status] ?? "default"}
-        size="small"
-        sx={{ position: "absolute", top: 8, right: 8, fontWeight: 700, textTransform: "capitalize" }}
-      />
-    </Box>
-    <Box sx={{ p: 1.2 }}>
-      <Typography variant="caption" fontWeight={700} color="text.secondary">
-        #{item.number}
-      </Typography>
-      <Typography variant="body2" fontWeight={600} noWrap>
-        {item.artist.displayName}
-      </Typography>
-      {item.price != null && (
-        <Typography variant="caption" color="primary.main" fontWeight={700}>
-          ฿{item.price.toLocaleString()}
-        </Typography>
-      )}
-      {item.tags[0] && (
-        <Box mt={0.5}>
-          <Chip
-            label={item.tags[0].name}
-            size="small"
-            sx={{ bgcolor: item.tags[0].color + "33", color: "text.primary", fontSize: 10 }}
-          />
-        </Box>
-      )}
-    </Box>
-  </Box>
+const SfwSwitch = ({ sfw, onChange }: { sfw: boolean; onChange: () => void }) => (
+  <SwitchBox onClick={onChange}>
+    <Typography variant="caption" sx={{ fontWeight: 700, zIndex: 1, ml: 0.5, fontSize: 10, color: !sfw ? "text.secondary" : "text.primary", transition: "color 0.2s" }}>SFW</Typography>
+    <Typography variant="caption" sx={{ fontWeight: 700, zIndex: 1, mr: 0.5, fontSize: 10, color: !sfw ? "text.primary" : "text.secondary", transition: "color 0.2s" }}>18+</Typography>
+    <SwitchThumb nsfw={!sfw}>
+      {sfw ? <IconEye size={13} /> : <IconEyeOff size={13} />}
+    </SwitchThumb>
+  </SwitchBox>
 );
 
 // ── Row ───────────────────────────────────────────────────────────────────────
 
-const Row = ({ items, direction }: { items: AdoptableListItem[]; direction: "left" | "right" }) => {
+const Row = ({ items, direction, sfw }: { items: AdoptableListItem[]; direction: "left" | "right"; sfw: boolean }) => {
   // Duplicate for seamless loop
   const doubled = [...items, ...items];
   const Track = direction === "left" ? TrackLeft : TrackRight;
   return (
-    <Box sx={{ overflow: "hidden", width: "100%", my: 1 }}>
+    <Box sx={{ overflow: "hidden", width: "100%" }}>
       <Track>
         {doubled.map((item, i) => (
-          <AdoptableCard key={`${item.id}-${i}`} item={item} />
+          <AdoptableCard
+            key={`${item.id}-${i}`}
+            item={item}
+            sfw={sfw}
+            showViewPost={false}
+            sx={{ width: 260, mx: 1, my: 4, flexShrink: 0, "&:hover": { transform: "scale(1.04)" } }}
+          />
         ))}
       </Track>
     </Box>
@@ -292,6 +251,13 @@ const Row = ({ items, direction }: { items: AdoptableListItem[]; direction: "lef
 
 const AdoptableShowcase = () => {
   const [items, setItems] = useState<AdoptableListItem[]>(MOCK_ITEMS);
+  const [sfw, setSfw] = useState(() => Cookies.get(CookiesKey.SFW_MODE) !== "false");
+
+  const toggleSfw = () => {
+    const n = !sfw;
+    setSfw(n);
+    Cookies.set(CookiesKey.SFW_MODE, String(n), setCookiesOption1Y);
+  };
 
   useEffect(() => {
     const fetchAdoptables = async () => {
@@ -332,20 +298,21 @@ const AdoptableShowcase = () => {
               ตัวละครรับเลี้ยงจากศิลปินในชุมชน
             </Typography>
           </Box>
-          <Button
-            component={Link}
-            href="/adoptables"
-            variant="outlined"
-            endIcon={<IconArrowRight size={18} />}
-            sx={{ borderRadius: 3, textTransform: "none", fontWeight: 600 }}
-          >
-            View all
-          </Button>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <SfwSwitch sfw={sfw} onChange={toggleSfw} />
+            <BaseButton
+              href="/adoptables"
+              variant="outlined"
+              label="View all"
+              fullWidth={false}
+              endIcon={<IconArrowRight size={18} />}
+            />
+          </Stack>
         </Stack>
       </Container>
-      <Row items={row1.length ? row1 : MOCK_ITEMS} direction="left" />
-      <Row items={row2.length ? row2 : MOCK_ITEMS} direction="right" />
-      <Row items={row3.length ? row3 : MOCK_ITEMS} direction="left" />
+      <Row items={row1.length ? row1 : MOCK_ITEMS} direction="left" sfw={sfw} />
+      <Row items={row2.length ? row2 : MOCK_ITEMS} direction="right" sfw={sfw} />
+      <Row items={row3.length ? row3 : MOCK_ITEMS} direction="left" sfw={sfw} />
     </Box>
   );
 };

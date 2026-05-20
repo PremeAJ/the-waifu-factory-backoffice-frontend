@@ -7,6 +7,7 @@ export enum CookiesKey {
   LAT = "_lat",
   LNG = "_lng",
   APP_VERSION = "_av",
+  SFW_MODE = "_sfw",
 }
 
 export const setCookiesOption1Y:CookieAttributes = {

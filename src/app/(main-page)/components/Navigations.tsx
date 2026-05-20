@@ -1,17 +1,10 @@
 "use client";
-import { Grid } from "@mui/material";
-import { IconChevronDown } from "@tabler/icons-react";
+import { IconBrandDiscord } from "@tabler/icons-react";
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-import AppLinks from "@/app/dashboard/layout/header/AppLinks";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import DemosDD from "../../../components/landingpage/header/DemosDD";
-import Divider from "@mui/material/Divider";
-import Paper from "@mui/material/Paper";
-import QuickLinks from "@/app/dashboard/layout/header/QuickLinks";
-import React, { useState } from "react";
+import React from "react";
 import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import { PageUrl } from "@/common/constants/pageUrl";
 
@@ -23,122 +16,32 @@ const Navigations = () => {
     color: theme.palette.text.secondary,
   }));
 
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const [open2, setOpen2] = useState(false);
-
-  const handleOpen2 = () => {
-    setOpen2(true);
-  };
-
-  const handleClose2 = () => {
-    setOpen2(false);
-  };
-
   return (
     <>
       <StyledButton color="inherit" variant="text" href="/">
-        หน้าแรก
+        Home
       </StyledButton>
-      <Box>
-        <StyledButton
-          color="inherit"
-          variant="text"
-          onMouseEnter={handleOpen2}
-          onMouseLeave={handleClose2}
-          sx={{
-            color: open2 ? "primary.main" : (theme) => theme.palette.text.secondary,
-          }}
-          endIcon={<IconChevronDown size="15" style={{ marginLeft: "-5px", marginTop: "2px" }} />}
-        >
-          ผลิตภัณฑ์ของเรา
-        </StyledButton>
-        {open2 && (
-          <Paper
-            onMouseEnter={handleOpen2}
-            onMouseLeave={handleClose2}
-            sx={{
-              position: "absolute",
-              left: "0",
-              right: "0",
-              top: "55px",
-              width: "850px",
-              margin: "0 auto",
-            }}
-          >
-            <Grid container>
-              <Grid
-                display="flex"
-                size={{
-                  sm: 8,
-                }}
-              >
-                <Box p={4} pr={0} pb={3}>
-                  <AppLinks />
-                </Box>
-                <Divider orientation="vertical" />
-              </Grid>
-              <Grid
-                size={{
-                  sm: 4,
-                }}
-              >
-                <Box p={4}>
-                  <QuickLinks />
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
-        )}
-      </Box>
-      <StyledButton
-        color="inherit"
-        variant="text"
-        aria-expanded={open ? "true" : undefined}
-        sx={{
-          color: open ? "primary.main" : (theme) => theme.palette.text.secondary,
-        }}
-        onMouseEnter={handleOpen}
-        onMouseLeave={handleClose}
-        endIcon={<IconChevronDown size="15" style={{ marginLeft: "-5px", marginTop: "2px" }} />}
-      >
-        Demos
+      <StyledButton color="inherit" variant="text" href="/adoptables">
+        Adoptable
       </StyledButton>
-      {open && (
-        <Paper
-          onMouseEnter={handleOpen}
-          onMouseLeave={handleClose}
-          sx={{
-            position: "absolute",
-            left: "0",
-            right: "0",
-            top: "55px",
-            maxWidth: "1200px",
-            width: "100%",
-          }}
-        >
-          <DemosDD />
-        </Paper>
-      )}
-      <StyledButton color="inherit" variant="text" href="/pricing">
-        ราคา
+      <StyledButton color="inherit" variant="text" href="/auction">
+        Auction
       </StyledButton>
-      <StyledButton color="inherit" variant="text" href="/">
-        รู้จักเรา
+      <StyledButton color="inherit" variant="text" href="/commission">
+        Commission
       </StyledButton>
       {!waifuUser && (
-        <>
-          <BaseButton label={"เข้าสู่ระบบ"} href={PageUrl.AUTH_SIGN_IN} fullWidth={false} variant="outlined" size="small" />
-          <BaseButton label={"เริ่มต้นใช้งาน"} href={PageUrl.AUTH_SIGN_UP} fullWidth={false} size="small" />
-        </>
+        <BaseButton
+          label="Login"
+          href={PageUrl.AUTH_SIGN_IN}
+          fullWidth={false}
+          size="small"
+          startIcon={<IconBrandDiscord size={18} />}
+          sx={{
+            bgcolor: "#5865F2",
+            color: "#fff",
+          }}
+        />
       )}
     </>
   );

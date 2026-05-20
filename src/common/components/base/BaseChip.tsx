@@ -4,7 +4,7 @@ import { Chip, ChipProps, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 interface BaseChipProps extends Omit<ChipProps, "color"> {
-  preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary" | "deleted" | "all";
+  preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary" | "deleted" | "all" | "open" | "close" | "resell";
   customColor?: string;
   customBgColor?: string;
 }
@@ -85,6 +85,21 @@ const BaseChip: React.FC<BaseChipProps> = ({
       case "secondary":
         return {
           color: "secondary" as const,
+        };
+      case "open":
+        return {
+          color: "success" as const,
+          label: label || "Open",
+        };
+      case "close":
+        return {
+          color: "error" as const,
+          label: label || "Close",
+        };
+      case "resell":
+        return {
+          color: "warning" as const,
+          label: label || "Resell",
         };
       default:
         return {};
