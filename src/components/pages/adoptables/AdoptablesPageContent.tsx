@@ -34,7 +34,7 @@ const AdoptablesPageContent = () => {
   );
   const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
   const [sortBy, setSortBy] = useState<SortByOption>(
-    () => (searchParams.get("sort") as SortByOption) ?? "newest"
+    () => (searchParams.get("sort") as SortByOption) ?? "createdAt_desc"
   );
 
   // Resolve artist from URL once master data loads
@@ -63,7 +63,7 @@ const AdoptablesPageContent = () => {
     statusFilter.forEach((s) => params.append("status", s));
     categoryFilter.forEach((c) => params.append("category", c));
     tagFilter.forEach((t) => params.append("tags", t));
-    if (sortBy !== "newest") params.set("sort", sortBy);
+    if (sortBy !== "createdAt_desc") params.set("sort", sortBy);
     const qs = params.toString();
     router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   }, [debouncedSearch, artistFilter, nsfwFilter, statusFilter, categoryFilter, tagFilter, sortBy]);
