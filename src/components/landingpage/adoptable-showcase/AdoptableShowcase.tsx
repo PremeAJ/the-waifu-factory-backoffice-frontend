@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
 import Box from "@mui/material/Box";
@@ -82,8 +82,11 @@ const Row = ({ items, direction, offset = 0, sfw }: { items: AdoptableListItem[]
 // ── Main component ────────────────────────────────────────────────────────────
 
 const AdoptableShowcase = () => {
-  const [dummy, setDummy] = useState(0);
-  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.NSFW_MODE) === "true" : false;
+  const [showNsfw, setShowNsfw] = useState(false);
+
+  useEffect(() => {
+    setShowNsfw(Cookies.get(CookiesKey.NSFW_MODE) === "true");
+  }, []);
 
   const { data: showcaseData } = useSWR("/api/adoptable/showcase", getFetcher, {
     refreshInterval: 35000,
@@ -94,7 +97,7 @@ const AdoptableShowcase = () => {
 
   const toggleShowNsfw = (checked: boolean) => {
     Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
-    setDummy((d) => d + 1);
+    setShowNsfw(checked);
   };
 
   if (items.length === 0) return null;

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -58,8 +58,11 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
   adoptableTags,
   visibleTagCategories,
 }) => {
-  const [dummy, setDummy] = useState(0);
-  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.NSFW_MODE) === "true" : false;
+  const [showNsfw, setShowNsfw] = useState(false);
+
+  useEffect(() => {
+    setShowNsfw(Cookies.get(CookiesKey.NSFW_MODE) === "true");
+  }, []);
 
   const toggleChip = (arr: string[], setArr: (v: string[]) => void, val: string) => {
     setArr(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
@@ -171,7 +174,7 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
           value={showNsfw}
           onChange={(checked) => {
             Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
-            setDummy((d) => d + 1);
+            setShowNsfw(checked);
           }}
         />
       </Box>

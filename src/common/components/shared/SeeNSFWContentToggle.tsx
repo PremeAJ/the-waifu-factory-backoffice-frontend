@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
@@ -14,15 +15,21 @@ interface SeeNSFWContentToggleProps {
 const COOKIE_KEY = CookiesKey.NSFW_MODE;
 
 const SeeNSFWContentToggle: React.FC<SeeNSFWContentToggleProps> = ({ value, onChange, label = "See NSFW content" }) => {
-  const [checked, setChecked] = useState<boolean>(
-    typeof value === "boolean"
-      ? value
-      : Cookies.get(COOKIE_KEY) === "true"
-  );
+  const [checked, setChecked] = useState<boolean>(typeof value === "boolean" ? value : false);
 
   useEffect(() => {
-    Cookies.set(COOKIE_KEY, String(checked), setCookiesOption1Y);
-  }, [checked]);
+    if (typeof value === "boolean") {
+      setChecked(value);
+    } else {
+      setChecked(Cookies.get(COOKIE_KEY) === "true");
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (typeof value !== "boolean") {
+      Cookies.set(COOKIE_KEY, String(checked), setCookiesOption1Y);
+    }
+  }, [checked, value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(e.target.checked);
