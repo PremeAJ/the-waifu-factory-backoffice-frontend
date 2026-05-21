@@ -65,7 +65,7 @@ const profile: ProfileType[] = [
     title: "My Profile",
   },
   {
-    href: PageUrl.SETTING,
+    href: "",
     icon: IconSettings,
     subtitle: "Account Settings",
     title: "Settings",

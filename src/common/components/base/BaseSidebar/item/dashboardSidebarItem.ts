@@ -39,7 +39,7 @@ const dashboardSidebarItem: NavGroupType[] = [
     id: uniqueId(),
     title: "แดชบอร์ดบริษัท",
     icon: IconAperture,
-    href: PageUrl.DASHBOARD,
+    href: "",
   },
   {
     id: uniqueId(),

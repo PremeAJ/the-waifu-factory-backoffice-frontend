@@ -12,7 +12,7 @@ export default function SettingPage() {
 
   const isMobile = useIsMobile();
   if (!isMobile) {
-    redirect(`${PageUrl.SETTING}/account/profile`);
+    // redirect(`${PageUrl.SETTING}/account/profile`);
   }
 
   return (
