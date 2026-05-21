@@ -5,6 +5,16 @@ const isDev = process.env.NODE_ENV === "development";
 const nextConfig = {
   reactStrictMode: false, // ปิดใน dev เพื่อความเร็ว (render 1 ครั้ง แทน 2 ครั้ง)
 
+  async rewrites() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${apiUrl}/api/:path*`,
+      },
+    ];
+  },
+
   images: {
     unoptimized: true, // ไม่ optimize รูปเลยใน dev
     remotePatterns: [

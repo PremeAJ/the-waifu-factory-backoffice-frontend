@@ -1,18 +1,5 @@
 import { Method } from "@/common/constants/method";
 import { getHeaders } from "@/common/utils/getHeaders";
-import { getSession, signOut } from "next-auth/react";
-let isRefreshing = false;
-let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void }[] = [];
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-  failedQueue = [];
-};
 async function handleResponse(
   res: Response,
   method: string,
@@ -40,32 +27,9 @@ async function handleResponse(
     window.location.href = "/auth/error/403";
     return Promise.reject(new Error("Forbidden - Access Denied"));
   }
-  if (isRefreshing) {
-    return new Promise((resolve, reject) => {
-      failedQueue.push({ resolve, reject });
-    })
-      .then(() => {
-        return baseFetcher(method, url, body, headers);
-      })
-      .catch((err) => {
-        return Promise.reject(err);
-      });
-  }
-  isRefreshing = true;
-  try {
-    const session = await getSession();
-    if (!session) {
-      throw new Error("No session");
-    }
-    processQueue(null, session.accessToken);
-    return baseFetcher(method, url, body, headers);
-  } catch (error) {
-    processQueue(error, null);
-    await signOut();
-    return Promise.reject(error);
-  } finally {
-    isRefreshing = false;
-  }
+  // 401 — cookie expired/invalid, redirect to sign-in
+  window.location.href = "/auth/sign-in";
+  return Promise.reject(new Error("Unauthorized"));
 }
 const baseFetcher = async (
   method: string,
@@ -89,9 +53,7 @@ const baseFetcher = async (
     if (typeof window !== "undefined") {
       fullUrl = window.location.origin + fullUrl;
     } else {
-      fullUrl =
-        (process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_DOMAIN || `http://localhost:${process.env.PORT}`) +
-        fullUrl;
+      fullUrl = (process.env.NEXT_PUBLIC_DOMAIN || `http://localhost:${process.env.PORT || 3000}`) + fullUrl;
     }
   }
   const computedHeaders = await getHeaders(headers);
