@@ -118,7 +118,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         )}
 
         {/* Status badge */}
-        <BaseChip preset={item.status} size="small" sx={{ position: "absolute", top: 8, left: 8, fontWeight: 700, textTransform: "capitalize" }} />
+        <BaseChip preset={item.status} size="small" sx={{ zIndex: 999, position: "absolute", top: 8, left: 8, fontWeight: 700, textTransform: "capitalize" }} />
 
         {/* Number badge */}
         <Box

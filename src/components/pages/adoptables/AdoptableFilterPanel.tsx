@@ -30,6 +30,8 @@ export interface AdoptableFilterPanelProps {
   onTagFilterChange: (v: string[]) => void;
   nsfwFilter: "sfw" | "nsfw" | "all";
   onNsfwFilterChange: (v: "sfw" | "nsfw" | "all") => void;
+  showNsfw: boolean;
+  onShowNsfwChange: (checked: boolean) => void;
   artistFilter: ArtistMaster | null;
   onArtistFilterChange: (v: ArtistMaster | null) => void;
   activeFilterCount: number;
@@ -50,6 +52,8 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
   onTagFilterChange,
   nsfwFilter,
   onNsfwFilterChange,
+  showNsfw,
+  onShowNsfwChange,
   artistFilter,
   onArtistFilterChange,
   activeFilterCount,
@@ -58,11 +62,6 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
   adoptableTags,
   visibleTagCategories,
 }) => {
-  const [showNsfw, setShowNsfw] = useState(false);
-
-  useEffect(() => {
-    setShowNsfw(Cookies.get(CookiesKey.NSFW_MODE) === "true");
-  }, []);
 
   const toggleChip = (arr: string[], setArr: (v: string[]) => void, val: string) => {
     setArr(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
@@ -174,7 +173,7 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
           value={showNsfw}
           onChange={(checked) => {
             Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
-            setShowNsfw(checked);
+            onShowNsfwChange(checked);
           }}
         />
       </Box>
