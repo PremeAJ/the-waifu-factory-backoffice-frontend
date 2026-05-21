@@ -20,15 +20,11 @@ const Error403 = () => (
       <Typography align="center" variant="h4" mb={4}>
         You do not have permission to access this page.
       </Typography>
-      <Button
-        color="primary"
-        variant="contained"
-        component={Link}
-        href="/"
-        disableElevation
-      >
-        Go Back to Home
-      </Button>
+      <Link href="/" style={{ textDecoration: "none" }}>
+        <Button color="primary" variant="contained" disableElevation>
+          Go Back to Home
+        </Button>
+      </Link>
     </Container>
   </Box>
 );

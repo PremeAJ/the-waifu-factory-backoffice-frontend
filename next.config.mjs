@@ -6,7 +6,7 @@ const nextConfig = {
   reactStrictMode: false, // ปิดใน dev เพื่อความเร็ว (render 1 ครั้ง แทน 2 ครั้ง)
 
   async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
     return [
       {
         source: "/api/:path*",
@@ -30,35 +30,19 @@ const nextConfig = {
     removeConsole: !isDev, // เอา console.log ออกใน production
   },
 
-  // ปรับแต่ง Turbopack
+  // Turbopack config (Next.js 16 default bundler)
+  turbopack: {
+    resolveAlias: {
+      "@": "./src",
+    },
+  },
+
   experimental: {
-    ...(isDev && {
-      turbo: {
-        resolveAlias: {
-          "@": "./src",
-        },
-      },
-    }),
-    // เพิ่ม optimizePackageImports สำหรับ MUI
     optimizePackageImports: [
       "@mui/material",
       "@mui/icons-material",
       "@tabler/icons-react",
     ],
-  },
-
-  // ลด webpack build time
-  webpack: (config, { dev, isServer }) => {
-    if (dev && !isServer) {
-      // ลด bundle size ใน dev
-      config.optimization = {
-        ...config.optimization,
-        removeAvailableModules: false,
-        removeEmptyChunks: false,
-        splitChunks: false,
-      };
-    }
-    return config;
   },
 };
 

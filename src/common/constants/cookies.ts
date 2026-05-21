@@ -1,4 +1,10 @@
-import { CookieAttributes } from "js-cookie";
+interface CookieAttributes {
+  expires?: number | Date;
+  path?: string;
+  domain?: string;
+  secure?: boolean;
+  sameSite?: "Strict" | "Lax" | "None" | "strict" | "lax" | "none";
+}
 
 export enum CookiesKey {
   DEVICE_ID = "_did",

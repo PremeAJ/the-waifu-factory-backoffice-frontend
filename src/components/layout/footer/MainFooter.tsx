@@ -4,7 +4,6 @@ import Container from '@mui/material/Container';
 import { Grid } from '@mui/material';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import logoIcon from '/public/images/logos/logoIcon.svg';
 import Image from 'next/image';
 
 const Footer = () => {
@@ -18,7 +17,7 @@ const Footer = () => {
             sm: 5,
             lg: 4
           }}>
-          <Image src={logoIcon} alt="icon" />
+          <Image src="/images/logos/logoIcon.svg" alt="icon" width={40} height={40} />
           <Typography fontSize="16" color="textSecondary" mt={1} mb={4}>
             All rights reserved by Modernize. Designed & Developed by
             <Link target="_blank" href="https://adminmart.com/">
