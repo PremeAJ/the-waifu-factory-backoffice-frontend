@@ -11,13 +11,13 @@ interface SeeNSFWContentToggleProps {
   label?: string;
 }
 
-const COOKIE_KEY = CookiesKey.SFW_MODE;
+const COOKIE_KEY = CookiesKey.NSFW_MODE;
 
 const SeeNSFWContentToggle: React.FC<SeeNSFWContentToggleProps> = ({ value, onChange, label = "See NSFW content" }) => {
   const [checked, setChecked] = useState<boolean>(
     typeof value === "boolean"
       ? value
-      : Cookies.get(COOKIE_KEY) !== "false"
+      : Cookies.get(COOKIE_KEY) === "true"
   );
 
   useEffect(() => {

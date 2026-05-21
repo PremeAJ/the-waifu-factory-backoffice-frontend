@@ -1,5 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import useSWR from "swr";
+import { getFetcher } from "@/app/api/globalFetcher";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
@@ -11,8 +13,6 @@ import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggl
 import Cookies from "js-cookie";
 import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
 import AdoptableCard, { AdoptableListItem } from "@/components/pages/adoptables/AdoptableCard";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 
 
@@ -82,34 +82,20 @@ const Row = ({ items, direction, offset = 0, sfw }: { items: AdoptableListItem[]
 // ── Main component ────────────────────────────────────────────────────────────
 
 const AdoptableShowcase = () => {
-  const [items, setItems] = useState<AdoptableListItem[]>([]);
   const [dummy, setDummy] = useState(0);
-  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.SFW_MODE) !== "false" : true;
+  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.NSFW_MODE) === "true" : false;
+
+  const { data: showcaseData } = useSWR("/api/adoptable/showcase", getFetcher, {
+    refreshInterval: 35000,
+    revalidateOnFocus: false,
+  });
+
+  const items: AdoptableListItem[] = showcaseData?.data ?? [];
 
   const toggleShowNsfw = (checked: boolean) => {
-    Cookies.set(CookiesKey.SFW_MODE, String(checked), setCookiesOption1Y);
+    Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
     setDummy((d) => d + 1);
   };
-
-  useEffect(() => {
-    const fetchAdoptables = async () => {
-      try {
-        const res = await fetch(`${API_URL}/adoptable`, {
-          headers: { "ngrok-skip-browser-warning": "true" },
-        });
-        if (res.ok) {
-          const json = await res.json();
-          const data: AdoptableListItem[] = json?.data ?? json;
-          if (Array.isArray(data) && data.length > 0) {
-            setItems(data);
-          }
-        }
-      } catch {
-        // API error — show nothing
-      }
-    };
-    fetchAdoptables();
-  }, []);
 
   if (items.length === 0) return null;
 
@@ -126,7 +112,7 @@ const AdoptableShowcase = () => {
               Adoptables
             </Typography>
             <Typography variant="body1" color="text.secondary" mt={0.5}>
-              ตัวละครรับเลี้ยงจากศิลปินในชุมชน
+              All adoptables are hand-drawn by our artists. Click on any card to learn more about the adoptable
             </Typography>
           </Box>
           <Stack direction="row" alignItems="center" spacing={2}>

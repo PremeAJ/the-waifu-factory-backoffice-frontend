@@ -11,6 +11,7 @@ import { IconExternalLink } from "@tabler/icons-react";
 import Image from "next/image";
 import { BaseCard, BaseChip } from "@/common/components/base";
 import type { SxProps, Theme } from "@mui/material/styles";
+import { CookiesKey } from "@/common/constants/cookies";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -66,8 +67,8 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
   // Read NSFW blur preference from cookie (default true = blur)
   let showNsfw = true;
   if (typeof window !== "undefined") {
-    const cookie = Cookies.get("_sfw");
-    showNsfw = cookie !== "false";
+    const cookie = Cookies.get(CookiesKey.NSFW_MODE);
+    showNsfw = cookie === "true";
   }
   // Only blur if showNsfw is false and item is NSFW
   const blurred = !showNsfw && isAdoptableNsfw(item);
@@ -158,8 +159,15 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         {/* Tags */}
         {item.tags.length > 0 && (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-            {item.tags.map((tag: AdoptableTag) => (
-              <BaseChip key={tag.name} label={tag.name} customBgColor={tag.color + "33"} customColor={tagTextColor} size="small" sx={{ fontSize: 10 }} />
+            {item.tags.map((tag: AdoptableTag, index: number) => (
+              <BaseChip
+                key={`${tag.name || "tag"}-${index}`}
+                label={tag.name}
+                customBgColor={tag.color + "33"}
+                customColor={tagTextColor}
+                size="small"
+                sx={{ fontSize: 10 }}
+              />
             ))}
           </Box>
         )}
@@ -167,13 +175,13 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         {/* Payment method icons */}
         {item.artist.paymentMethods && item.artist.paymentMethods.length > 0 && (
           <Stack direction="row" spacing={0.5} flexWrap="wrap">
-            {item.artist.paymentMethods.map((pm: { name: string; iconUrl: string }) => (
+            {item.artist.paymentMethods.map((pm: { name: string; iconUrl: string }, index: number) => (
               <Box
-                key={pm.name}
+                key={pm.iconUrl || index}
                 component="img"
                 src={pm.iconUrl}
-                alt={pm.name}
-                title={pm.name}
+                alt={pm.name || "payment-method"}
+                title={pm.name || "Payment method"}
                 sx={{ height: 16, width: "auto", objectFit: "contain" }}
               />
             ))}

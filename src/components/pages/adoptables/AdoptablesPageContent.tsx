@@ -41,7 +41,7 @@ const AdoptablesPageContent = () => {
   // Dummy state to force re-render on NSFW toggle
   const [dummy, setDummy] = useState(0);
   // Read NSFW blur preference from cookie (default true = blur)
-  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.SFW_MODE) !== "false" : true;
+  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.NSFW_MODE) === "true" : false;
   const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "price_asc" | "price_desc">("newest");
 
@@ -249,7 +249,7 @@ const AdoptablesPageContent = () => {
               <SeeNSFWContentToggle
                 value={showNsfw}
                 onChange={(checked) => {
-                  Cookies.set(CookiesKey.SFW_MODE, String(checked), setCookiesOption1Y);
+                  Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
                   setDummy((d) => d + 1); // force re-render
                 }}
               />
