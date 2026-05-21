@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -10,7 +10,6 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import Cookies from "js-cookie";
 import { IconSearch, IconX } from "@tabler/icons-react";
@@ -30,6 +29,8 @@ export interface AdoptableFilterPanelProps {
   onTagFilterChange: (v: string[]) => void;
   nsfwFilter: "sfw" | "nsfw" | "all";
   onNsfwFilterChange: (v: "sfw" | "nsfw" | "all") => void;
+  showNsfw: boolean;
+  onShowNsfwChange: (checked: boolean) => void;
   artistFilter: ArtistMaster | null;
   onArtistFilterChange: (v: ArtistMaster | null) => void;
   activeFilterCount: number;
@@ -50,6 +51,8 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
   onTagFilterChange,
   nsfwFilter,
   onNsfwFilterChange,
+  showNsfw,
+  onShowNsfwChange,
   artistFilter,
   onArtistFilterChange,
   activeFilterCount,
@@ -58,8 +61,6 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
   adoptableTags,
   visibleTagCategories,
 }) => {
-  const [dummy, setDummy] = useState(0);
-  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.NSFW_MODE) === "true" : false;
 
   const toggleChip = (arr: string[], setArr: (v: string[]) => void, val: string) => {
     setArr(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
@@ -171,7 +172,7 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
           value={showNsfw}
           onChange={(checked) => {
             Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
-            setDummy((d) => d + 1);
+            onShowNsfwChange(checked);
           }}
         />
       </Box>
@@ -233,19 +234,29 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
                 const active = tagFilter.includes(tag.name);
                 const color = tag.color ?? cat.color ?? "#888";
                 return (
-                  <Tooltip key={tag.id} title={cat.name}>
-                    <BaseChip
-                      label={tag.name}
-                      onClick={() => toggleChip(tagFilter, onTagFilterChange, tag.name)}
-                      sx={{
-                        cursor: "pointer",
-                        bgcolor: active ? color : "transparent",
-                        color: active ? "#fff" : "text.primary",
-                        border: `1.5px solid ${color}`,
-                        "&:hover": { bgcolor: color, color: "#fff" },
-                      }}
-                    />
-                  </Tooltip>
+                  <BaseChip
+                    key={tag.id}
+                    label={tag.name}
+                    title={cat.name}
+                    onClick={(event) => {
+                      event.currentTarget.blur();
+                      toggleChip(tagFilter, onTagFilterChange, tag.name);
+                    }}
+                    disableRipple
+                    variant={active ? "filled" : "outlined"}
+                    sx={{
+                      cursor: "pointer",
+                      touchAction: "manipulation",
+                      WebkitTapHighlightColor: "transparent",
+                      bgcolor: active ? color : "transparent",
+                      color: active ? "#fff" : "text.primary",
+                      border: `1.5px solid ${color}`,
+                      transition: "background-color 120ms ease, color 120ms ease",
+                      "&:hover": { bgcolor: color, color: "#fff" },
+                      "&:focus": { boxShadow: "none", bgcolor: active ? color : "transparent" },
+                      "&.Mui-focusVisible": { boxShadow: "none", bgcolor: active ? color : "transparent" },
+                    }}
+                  />
                 );
               })
             )}

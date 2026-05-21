@@ -3,7 +3,11 @@ import { PageActionConfig } from "../ActionButton/ActionButton";
 
 const path = [
   PageUrl.AUTH_SIGN_IN,
+  // PageUrl.AUTH_SIGN_UP,
   PageUrl.CALLBACK,
+  // PageUrl.FORGOT_PASSWORD,
+  // PageUrl.MAIN,
+  // PageUrl.PRICING,
   "/dashboard/pos/products/create/*",
   "/dashboard/pos/products/edit/*",
 ];

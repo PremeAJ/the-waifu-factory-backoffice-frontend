@@ -7,6 +7,7 @@ interface BaseChipProps extends Omit<ChipProps, "color"> {
   preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary" | "deleted" | "all" | "open" | "close" | "resell";
   customColor?: string;
   customBgColor?: string;
+  disableRipple?: boolean;
 }
 
 const StyledChip = styled(Chip, {

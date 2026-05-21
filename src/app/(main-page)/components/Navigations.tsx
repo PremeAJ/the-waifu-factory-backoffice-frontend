@@ -22,10 +22,10 @@ const Navigations = () => {
         Home
       </StyledButton>
       <StyledButton color="inherit" variant="text" href="/adoptables">
-        Adoptable
+        Adoptables
       </StyledButton>
-      <StyledButton color="inherit" variant="text" href="/auction">
-        Auction
+      <StyledButton color="inherit" variant="text" href="/auctions">
+        Auctions
       </StyledButton>
       <StyledButton color="inherit" variant="text" href="/commission">
         Commission
