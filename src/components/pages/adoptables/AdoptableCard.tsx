@@ -150,8 +150,8 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
             {item.artist.displayName}
           </Typography>
           {item.price != null && (
-            <Typography variant="caption" fontWeight={800} color="primary.main" flexShrink={0}>
-              ฿{item.price.toLocaleString()}
+            <Typography variant="caption" fontSize={18} fontWeight={800} color="primary.main" flexShrink={0}>
+              {item.price.toLocaleString()} $ {/* use dollar */}
             </Typography>
           )}
         </Stack>
