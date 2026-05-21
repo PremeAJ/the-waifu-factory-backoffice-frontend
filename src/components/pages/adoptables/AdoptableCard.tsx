@@ -82,6 +82,8 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         display: "flex",
         flexDirection: "column",
         cursor: item.externalUrl ? "pointer" : "default",
+        touchAction: "pan-y",
+        WebkitTapHighlightColor: "transparent",
         transition: "transform 0.22s, box-shadow 0.22s",
         "&:hover": { transform: "translateY(-6px)", boxShadow: "0px 0px 20px 6px rgba(0,0,0,0.15), 0px 8px 16px 0px rgba(0,0,0,0.14)" },
         ...sx,
