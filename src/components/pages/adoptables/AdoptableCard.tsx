@@ -85,7 +85,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         touchAction: "none",
         WebkitTapHighlightColor: "transparent",
         transition: "transform 0.22s, box-shadow 0.22s",
-        "&:hover": { transform: "translateY(-6px)", boxShadow: "0px 0px 20px 6px rgba(0,0,0,0.15), 0px 8px 16px 0px rgba(0,0,0,0.14)" },
+        "@media (hover: hover)": { "&:hover": { transform: "translateY(-6px)", boxShadow: "0px 0px 20px 6px rgba(0,0,0,0.15), 0px 8px 16px 0px rgba(0,0,0,0.14)" } },
         ...sx,
       }}
       onClick={() => item.externalUrl && window.open(item.externalUrl, "_blank")}
