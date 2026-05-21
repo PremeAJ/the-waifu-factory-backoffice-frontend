@@ -10,7 +10,6 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import Cookies from "js-cookie";
 import { IconSearch, IconX } from "@tabler/icons-react";
@@ -235,19 +234,29 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
                 const active = tagFilter.includes(tag.name);
                 const color = tag.color ?? cat.color ?? "#888";
                 return (
-                  <Tooltip key={tag.id} title={cat.name}>
-                    <BaseChip
-                      label={tag.name}
-                      onClick={() => toggleChip(tagFilter, onTagFilterChange, tag.name)}
-                      sx={{
-                        cursor: "pointer",
-                        bgcolor: active ? color : "transparent",
-                        color: active ? "#fff" : "text.primary",
-                        border: `1.5px solid ${color}`,
-                        "&:hover": { bgcolor: color, color: "#fff" },
-                      }}
-                    />
-                  </Tooltip>
+                  <BaseChip
+                    key={tag.id}
+                    label={tag.name}
+                    title={cat.name}
+                    onClick={(event) => {
+                      event.currentTarget.blur();
+                      toggleChip(tagFilter, onTagFilterChange, tag.name);
+                    }}
+                    disableRipple
+                    variant={active ? "filled" : "outlined"}
+                    sx={{
+                      cursor: "pointer",
+                      touchAction: "manipulation",
+                      WebkitTapHighlightColor: "transparent",
+                      bgcolor: active ? color : "transparent",
+                      color: active ? "#fff" : "text.primary",
+                      border: `1.5px solid ${color}`,
+                      transition: "background-color 120ms ease, color 120ms ease",
+                      "&:hover": { bgcolor: color, color: "#fff" },
+                      "&:focus": { boxShadow: "none", bgcolor: active ? color : "transparent" },
+                      "&.Mui-focusVisible": { boxShadow: "none", bgcolor: active ? color : "transparent" },
+                    }}
+                  />
                 );
               })
             )}
