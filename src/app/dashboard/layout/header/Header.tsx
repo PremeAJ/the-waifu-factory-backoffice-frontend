@@ -3,7 +3,7 @@ import { I18nString } from "@/common/utils/i18n/I18nString";
 import { ProductProvider } from "@/context/Ecommercecontext/index";
 import { styled } from "@mui/material/styles";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import AppShortcut from "./AppShortcu";
 import Language from "@/common/components/shared/Language";
 import Notifications from "./Notification";
@@ -14,7 +14,7 @@ import useIsMobile from "@/common/utils/state/isMobile";
 import BaseAppBar from "@/common/components/base/BaseAppBar";
 
 const Header = () => {
-  const { user } = useWaifuUser();
+  const { user } = useCurrentUser();
   const firstName = user?.displayName ?? "";
   const { isLanguage } = useProfile().appearance || {};
   const isMobile = useIsMobile();

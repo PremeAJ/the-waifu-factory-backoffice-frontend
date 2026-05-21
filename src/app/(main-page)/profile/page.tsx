@@ -1,13 +1,13 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { PageUrl } from "@/common/constants/pageUrl";
 
 export default function ProfileRedirectPage() {
-  const { user, isLoading } = useWaifuUser();
+  const { user, isLoading } = useCurrentUser();
   const router = useRouter();
 
   useEffect(() => {

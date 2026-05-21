@@ -11,7 +11,7 @@ import { Stack } from "@mui/system";
 import { useDialog } from "@/common/contexts/DialogContext";
 import { useFormik } from "formik";
 import { useProfile } from "@/common/contexts/ProfileContext";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import Avatar from "@mui/material/Avatar";
@@ -35,7 +35,7 @@ const validationSchema = yup.object({
 const AccountTab = () => {
   const { t } = useTranslation();
   const { showError } = useDialog();
-  const { user } = useWaifuUser();
+  const { user } = useCurrentUser();
   const { updateProfile, uploadAvatar, loading: profileLoading } = useProfile();
   const firstName = user?.displayName ?? "";
   const lastName = "";

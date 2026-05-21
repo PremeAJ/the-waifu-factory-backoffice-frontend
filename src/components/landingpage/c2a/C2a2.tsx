@@ -8,7 +8,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 
 const StyledButton = styled(Button)(({ theme }) => ({
   padding: "13px 34px",
@@ -31,7 +31,7 @@ const StyledButton2 = styled(Button)(({ theme }) => ({
 }));
 
 const C2a2 = () => {
-  const { user, isLoading: loading } = useWaifuUser();
+  const { user, isLoading: loading } = useCurrentUser();
 
   if (loading || user) return null;
   return (

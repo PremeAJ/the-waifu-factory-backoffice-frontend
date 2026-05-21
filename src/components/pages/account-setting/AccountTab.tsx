@@ -15,7 +15,7 @@ import CustomSelect from "../../forms/theme-elements/CustomSelect";
 
 // images
 import { Stack } from "@mui/system";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 
 // locations
 const locations = [
@@ -58,7 +58,7 @@ const currencies = [
 ];
 
 const AccountTab = () => {
-  const { user } = useWaifuUser();
+  const { user } = useCurrentUser();
   const firstName = user?.displayName ?? "";
   const lastName = "";
   const avatarUrl = user?.profilePictureUrl ?? "";

@@ -1,5 +1,4 @@
 // import "./global.css";
-import { WaifuUserProvider } from "@/common/contexts/WaifuUserContext";
 import { CustomizerContextProvider } from "../common/contexts/setting/customizerContext";
 import { EncryptProvider } from "@/common/contexts/EncryptContext";
 import { Metadata, Viewport } from "next";
@@ -30,7 +29,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <EncryptProvider>
       <SidebarStateProvider>
         <ProfileProvider>
-          <WaifuUserProvider>
             <CustomizerContextProvider>
               <html lang="en" suppressHydrationWarning>
                 <Head />
@@ -44,7 +42,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </body>
               </html>
             </CustomizerContextProvider>
-          </WaifuUserProvider>
         </ProfileProvider>
       </SidebarStateProvider>
     </EncryptProvider>

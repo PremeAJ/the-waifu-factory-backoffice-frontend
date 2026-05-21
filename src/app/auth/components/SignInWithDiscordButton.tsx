@@ -3,11 +3,9 @@ import { Stack } from "@mui/system";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import { IconBrandDiscord } from "@tabler/icons-react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
-
 const SignInWithDiscordButton = () => {
   const onClick = () => {
-    window.location.href = `${API_URL}/auth/discord`;
+    window.location.href = "/api/auth/discord";
   };
   return (
     <Stack direction="row" justifyContent="center" mt={3}>

@@ -1,7 +1,6 @@
 "use client";
 import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
 import { styled } from "@mui/material/styles";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -20,7 +19,6 @@ import Toolbar from "@mui/material/Toolbar";
 import useIsMobile from "@/common/utils/state/isMobile";
 
 const Header = () => {
-  const { user } = useWaifuUser();
   const { appearance, updateAppearance } = useProfile();
   const isDark = appearance?.activeMode === "dark";
   const toggleDarkMode = () => updateAppearance({ activeMode: isDark ? "light" : "dark" });

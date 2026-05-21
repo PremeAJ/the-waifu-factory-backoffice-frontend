@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PageUrl } from "../constants/pageUrl";
 import PageLoader from "../components/loaders/PageLoader";
-import { useWaifuUser } from "../contexts/WaifuUserContext";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 export default function DashboardGuard({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useWaifuUser();
+  const { user, isLoading } = useCurrentUser();
   const router = useRouter();
 
   useEffect(() => {

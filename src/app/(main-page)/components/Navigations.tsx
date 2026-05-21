@@ -5,12 +5,12 @@ import { useTranslation } from "react-i18next";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Button from "@mui/material/Button";
 import React from "react";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import { PageUrl } from "@/common/constants/pageUrl";
 
 const Navigations = () => {
   const { t } = useTranslation();
-  const { user: waifuUser } = useWaifuUser();
+  const { user: waifuUser } = useCurrentUser();
   const StyledButton = styled(Button)(({ theme }) => ({
     fontSize: "16px",
     color: theme.palette.text.secondary,

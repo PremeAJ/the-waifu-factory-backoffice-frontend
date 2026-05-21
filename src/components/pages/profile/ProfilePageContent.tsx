@@ -13,7 +13,7 @@ import ChildCard from "@/components/shared/ChildCard";
 import ProfileBanner from "@/components/apps/userprofile/profile/ProfileBanner";
 import IntroCard from "@/components/apps/userprofile/profile/IntroCard";
 import PhotosCard from "@/components/apps/userprofile/profile/PhotosCard";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import {
   IconBrandDiscord,
@@ -53,7 +53,7 @@ interface PublicProfile {
 }
 
 const ProfilePageContent = ({ username }: { username: string }) => {
-  const { user: currentUser } = useWaifuUser();
+  const { user: currentUser } = useCurrentUser();
   const router = useRouter();
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [notFound, setNotFound] = useState(false);

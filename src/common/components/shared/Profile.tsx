@@ -2,7 +2,7 @@ import { Avatar, Box, Divider, IconButton, Menu, Skeleton, Stack, Typography, us
 import { I18nString } from "@/common/utils/i18n/I18nString";
 import { IconMail, IconUser, IconLogout } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import * as dropdownData from "../FAB/AppShortcutButton/data";
@@ -21,7 +21,7 @@ const Profile: FC<ProfileProps> = () => {
   const { activeCompany, appearance } = useProfile();
   const { isLanguage } = appearance || {};
   const { roleNameTh, roleNameEn } = activeCompany || {};
-  const { user, isLoading, signOut: waifuSignOut } = useWaifuUser();
+  const { user, isLoading, signOut: waifuSignOut } = useCurrentUser();
   const loading = isLoading;
   const [openSignOut, setOpenSignOut] = useState(false);
   const [signOutLoading, setSignOutLoading] = useState(false);

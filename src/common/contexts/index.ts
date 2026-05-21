@@ -8,6 +8,5 @@ export * from './ProfileContext/interfaces/interface';
 export * from './SidebarStateContext/index';
 export * from './UploadContext/index';
 export * from './UploadContext/interfaces/upload';
-export * from './WaifuUserContext/index';
 export * from './setting/config';
 export * from './setting/customizerContext';

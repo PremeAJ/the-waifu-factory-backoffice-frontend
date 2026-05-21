@@ -3,7 +3,7 @@ import { IconRocket } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { Theme } from "@mui/material/styles";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Box from "@mui/material/Box";
 import React from "react";
@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const BannerContent = () => {
-  const { user } = useWaifuUser();
+  const { user } = useCurrentUser();
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
 
   return (

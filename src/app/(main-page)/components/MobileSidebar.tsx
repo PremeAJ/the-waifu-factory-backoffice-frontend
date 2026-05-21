@@ -1,7 +1,7 @@
 "use client";
 import { IconChevronDown } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import AppLinks from "@/app/dashboard/layout/header/AppLinks";
 import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Box from "@mui/material/Box";
@@ -16,7 +16,7 @@ import Stack from "@mui/material/Stack";
 const MobileSidebar = () => {
   const [toggle, setToggle] = useState(false);
   const [toggle2, setToggle2] = useState(false);
-  const { user: waifuUser } = useWaifuUser();
+  const { user: waifuUser } = useCurrentUser();
 
   return (
     <>

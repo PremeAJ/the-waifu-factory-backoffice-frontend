@@ -2,7 +2,7 @@
 import { Box, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { IconChevronRight, IconChevronDown } from "@tabler/icons-react";
 import Link from "next/link";
-import { useWaifuUser } from "@/common/contexts/WaifuUserContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import { useTheme } from "@mui/material/styles";
 import React, { Fragment, useState } from "react";
 import BaseAvatar from "@/common/components/base/BaseAvatar"; 
@@ -10,7 +10,7 @@ import { settingSidebarItem } from "@/common/components/base/BaseSidebar/item/se
 
 const MobileSettingsList = () => {
   const theme = useTheme();
-  const { user } = useWaifuUser();
+  const { user } = useCurrentUser();
   const fullName = user?.displayName ?? "";
   const email = "";
   const avatar = user?.profilePictureUrl ?? "";
