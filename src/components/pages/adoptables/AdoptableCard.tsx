@@ -95,6 +95,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
           src={item.imageUrl}
           alt={`Adoptable #${item.number}`}
           fill
+          loading="eager"
           style={{ objectFit: "cover", filter: blurred ? "blur(18px)" : undefined, transform: blurred ? "scale(1.05)" : undefined }}
           unoptimized
         />
