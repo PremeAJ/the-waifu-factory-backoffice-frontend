@@ -246,7 +246,7 @@ const AdoptablesPageContent = () => {
                   </Grid>
                 ))}
               </Grid>
-              <Box ref={loadMoreRef} sx={{ height: 1, width: "100%" }} />
+              {hasMore && <Box ref={loadMoreRef} sx={{ height: 1, width: "100%" }} />}
               {hasMore && (
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                   <Button
