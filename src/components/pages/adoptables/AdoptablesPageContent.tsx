@@ -1,7 +1,11 @@
 "use client";
+
 import { getFetcher } from "@/app/api/globalFetcher";
 import { useArtists, useAdoptableTags, ArtistMaster } from "@/common/hooks/useMasterData";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import AdoptableCard, { AdoptableListItem } from "./AdoptableCard";
+import AdoptableFilterPanel from "./AdoptableFilterPanel";
+import AdoptableSortBar, { SortByOption } from "./AdoptableSortBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -11,10 +15,6 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import useSWR from "swr";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import AdoptableFilterPanel from "./AdoptableFilterPanel";
-import AdoptableSortBar, { SortByOption } from "./AdoptableSortBar";
-
 
 const AdoptablesPageContent = () => {
   const { artists } = useArtists();
