@@ -1,16 +1,22 @@
 "use client";
-import React, { useMemo, useState } from "react";
-import useSWR from "swr";
+import { BaseCard, BaseChip } from "@/common/components/base";
+import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
 import { getFetcher } from "@/app/api/globalFetcher";
+import { IconArrowsSort, IconSearch, IconX } from "@tabler/icons-react";
+import { useArtists, useAdoptableTags, ArtistMaster } from "@/common/hooks/useMasterData";
+import AdoptableCard, { AdoptableListItem, AdoptableTag } from "./AdoptableCard";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import Cookies from "js-cookie";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import InputAdornment from "@mui/material/InputAdornment";
 import MenuItem from "@mui/material/MenuItem";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -18,81 +24,99 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { IconArrowsSort, IconSearch, IconX } from "@tabler/icons-react";
-import { useArtists, ArtistMaster } from "@/common/hooks/useMasterData";
-import { BaseCard, BaseChip } from "@/common/components/base";
-import AdoptableCard, { AdoptableListItem, AdoptableTag } from "./AdoptableCard";
-import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
-import Cookies from "js-cookie";
-import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
+import useSWR from "swr";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 
 const AdoptablesPageContent = () => {
   const { artists } = useArtists();
-  const { data, isLoading } = useSWR("/api/adoptable", getFetcher);
+  const { adoptableTags } = useAdoptableTags();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // ── Filter state (initialized from URL) ──
+  const [search, setSearch] = useState(() => searchParams.get("search") ?? "");
+  const [debouncedSearch, setDebouncedSearch] = useState(() => searchParams.get("search") ?? "");
+  const [statusFilter, setStatusFilter] = useState<string[]>(() => searchParams.getAll("status"));
+  const [categoryFilter, setCategoryFilter] = useState<string[]>(() => searchParams.getAll("category"));
+  const [tagFilter, setTagFilter] = useState<string[]>(() => searchParams.getAll("tags"));
+  const [nsfwFilter, setNsfwFilter] = useState<"sfw" | "nsfw" | "all">(
+    () => (searchParams.get("content") as "sfw" | "nsfw" | "all") ?? "all"
+  );
+  const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "price_asc" | "price_desc">(
+    () => (searchParams.get("sort") as "newest" | "oldest" | "price_asc" | "price_desc") ?? "newest"
+  );
+  // Dummy state to force re-render on NSFW blur toggle
+  const [dummy, setDummy] = useState(0);
+  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.NSFW_MODE) === "true" : false;
+
+  // Resolve artist from URL once master data loads
+  const artistInitialized = useRef(false);
+  useEffect(() => {
+    const username = searchParams.get("artist");
+    if (!artistInitialized.current && username && artists.length > 0) {
+      artistInitialized.current = true;
+      const found = artists.find((a) => a.username === username);
+      if (found) setArtistFilter(found);
+    }
+  }, [artists]);
+
+  // Debounce search input
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 400);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  // Sync filter state → URL (shareable link)
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (debouncedSearch) params.set("search", debouncedSearch);
+    if (artistFilter) params.set("artist", artistFilter.username);
+    if (nsfwFilter !== "all") params.set("content", nsfwFilter);
+    statusFilter.forEach((s) => params.append("status", s));
+    categoryFilter.forEach((c) => params.append("category", c));
+    tagFilter.forEach((t) => params.append("tags", t));
+    if (sortBy !== "newest") params.set("sort", sortBy);
+    const qs = params.toString();
+    router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+  }, [debouncedSearch, artistFilter, nsfwFilter, statusFilter, categoryFilter, tagFilter, sortBy]);
+
+  // Build query params → SWR key
+  const swrKey = useMemo(() => {
+    const params = new URLSearchParams();
+    if (debouncedSearch) params.set("search", debouncedSearch);
+    if (artistFilter) params.set("artist", artistFilter.username);
+    if (nsfwFilter !== "all") params.set("content", nsfwFilter);
+    statusFilter.forEach((s) => params.append("status", s));
+    categoryFilter.forEach((c) => params.append("category", c));
+    tagFilter.forEach((t) => params.append("tags", t));
+    params.set("sort", sortBy);
+    const qs = params.toString();
+    return `/api/adoptable${qs ? `?${qs}` : ""}`;
+  }, [debouncedSearch, artistFilter, nsfwFilter, statusFilter, categoryFilter, tagFilter, sortBy]);
+
+  const { data, isLoading } = useSWR(swrKey, getFetcher);
   const items: AdoptableListItem[] = data?.data ?? [];
 
-  // Filters
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
-  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
-  const [tagFilter, setTagFilter] = useState<string[]>([]);
-  const [nsfwFilter, setNsfwFilter] = useState<"sfw" | "nsfw" | "all">("all");
-  // Dummy state to force re-render on NSFW toggle
-  const [dummy, setDummy] = useState(0);
-  // Read NSFW blur preference from cookie (default true = blur)
-  const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.NSFW_MODE) === "true" : false;
-  const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
-  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "price_asc" | "price_desc">("newest");
+  const allArtists = useMemo(
+    () => [...artists].sort((a, b) => a.displayName.localeCompare(b.displayName)),
+    [artists]
+  );
 
-  // Derive unique artists from items (fallback when context returns nothing)
-  const allArtists = useMemo(() => {
-    if (artists.length > 0) return artists;
-    const map = new Map<string, ArtistMaster>();
-    items.forEach((i) => map.set(i.artist.username, { id: i.artist.username, ...i.artist }));
-    return Array.from(map.values()).sort((a, b) => a.displayName.localeCompare(b.displayName));
-  }, [items, artists]);
+  // Tags visible in panel: all categories, or only those matching categoryFilter
+  const visibleTagCategories = useMemo(() => {
+    if (categoryFilter.length === 0) return adoptableTags;
+    return adoptableTags.filter((cat) => categoryFilter.includes(cat.name));
+  }, [adoptableTags, categoryFilter]);
 
-  // Derive unique categories & tags from items
-  const allCategories = useMemo(() => {
-    const s = new Set<string>();
-    items.forEach((i) => i.tags.forEach((t) => s.add(t.category.name)));
-    return Array.from(s).sort();
-  }, [items]);
-
-  const allTags = useMemo(() => {
-    const map = new Map<string, AdoptableTag>();
-    items.forEach((i) => i.tags.forEach((t) => map.set(t.name, t)));
-    return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
-  }, [items]);
-
-  // Filter tags shown in panel based on selected categories
-  const visibleTags = useMemo(() => {
-    if (categoryFilter.length === 0) return allTags;
-    return allTags.filter((t) => categoryFilter.includes(t.category.name));
-  }, [allTags, categoryFilter]);
-
-  const filtered = useMemo(() => {
-    const result = items.filter((item) => {
-      if (search && !`#${item.number} ${item.artist.displayName} ${item.tags.map((t) => t.name).join(" ")}`.toLowerCase().includes(search.toLowerCase())) return false;
-      if (statusFilter.length > 0 && !statusFilter.includes(item.status)) return false;
-      if (categoryFilter.length > 0 && !item.tags.some((t) => categoryFilter.includes(t.category.name))) return false;
-      if (tagFilter.length > 0 && !item.tags.some((t) => tagFilter.includes(t.name))) return false;
-      if (nsfwFilter === "sfw" && item.isNSFW) return false;
-      if (nsfwFilter === "nsfw" && !item.isNSFW) return false;
-      if (artistFilter && item.artist.username !== artistFilter.username) return false;
-      return true;
-    });
-    return result.sort((a, b) => {
-      if (sortBy === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      if (sortBy === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      if (sortBy === "price_asc") return (a.price ?? 0) - (b.price ?? 0);
-      if (sortBy === "price_desc") return (b.price ?? 0) - (a.price ?? 0);
-      return 0;
-    });
-  }, [items, search, statusFilter, categoryFilter, tagFilter, nsfwFilter, artistFilter, sortBy]);
-
-  const activeFilterCount = statusFilter.length + categoryFilter.length + tagFilter.length + (["sfw", "nsfw"].includes(nsfwFilter) ? 1 : 0) + (artistFilter ? 1 : 0);
+  const activeFilterCount =
+    statusFilter.length +
+    categoryFilter.length +
+    tagFilter.length +
+    (["sfw", "nsfw"].includes(nsfwFilter) ? 1 : 0) +
+    (artistFilter ? 1 : 0);
 
   const clearAll = () => {
     setSearch("");
@@ -116,7 +140,7 @@ const AdoptablesPageContent = () => {
             Adoptables
           </Typography>
           <Typography color="text.secondary" mt={0.5}>
-            {isLoading ? "Loading..." : `${filtered.length} adoptable${filtered.length !== 1 ? "s" : ""} found`}
+            {isLoading ? "Loading..." : `${items.length} adoptable${items.length !== 1 ? "s" : ""} found`}
           </Typography>
         </Box>
       </Stack>
@@ -252,20 +276,20 @@ const AdoptablesPageContent = () => {
 
 
             {/* Categories */}
-            {allCategories.length > 0 && (
+            {adoptableTags.length > 0 && (
               <>
                 <Divider sx={{ mb: 2 }} />
                 <Typography variant="subtitle2" fontWeight={700} mb={1}>
                   Category
                 </Typography>
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8, mb: 3 }}>
-                  {allCategories.map((cat) => {
-                    const active = categoryFilter.includes(cat);
+                  {adoptableTags.map((cat) => {
+                    const active = categoryFilter.includes(cat.name);
                     return (
                       <BaseChip
-                        key={cat}
-                        label={cat}
-                        onClick={() => toggleChip(categoryFilter, setCategoryFilter, cat)}
+                        key={cat.id}
+                        label={cat.name}
+                        onClick={() => toggleChip(categoryFilter, setCategoryFilter, cat.name)}
                         variant={active ? "filled" : "outlined"}
                         sx={{ cursor: "pointer", fontWeight: 600, ...(active && { bgcolor: "primary.main", color: "primary.contrastText" }) }}
                       />
@@ -276,31 +300,34 @@ const AdoptablesPageContent = () => {
             )}
 
             {/* Tags */}
-            {visibleTags.length > 0 && (
+            {visibleTagCategories.some((c) => c.tags.length > 0) && (
               <>
                 <Divider sx={{ mb: 2 }} />
                 <Typography variant="subtitle2" fontWeight={700} mb={1}>
                   Tags
                 </Typography>
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8 }}>
-                  {visibleTags.map((tag) => {
-                    const active = tagFilter.includes(tag.name);
-                    return (
-                      <Tooltip key={tag.name} title={tag.category.name}>
-                        <BaseChip
-                          label={tag.name}
-                          onClick={() => toggleChip(tagFilter, setTagFilter, tag.name)}
-                          sx={{
-                            cursor: "pointer",
-                            bgcolor: active ? tag.color : "transparent",
-                            color: active ? "#fff" : "text.primary",
-                            border: `1.5px solid ${tag.color}`,
-                            "&:hover": { bgcolor: tag.color, color: "#fff" },
-                          }}
-                        />
-                      </Tooltip>
-                    );
-                  })}
+                  {visibleTagCategories.flatMap((cat) =>
+                    cat.tags.map((tag) => {
+                      const active = tagFilter.includes(tag.name);
+                      const color = tag.color ?? cat.color ?? "#888";
+                      return (
+                        <Tooltip key={tag.id} title={cat.name}>
+                          <BaseChip
+                            label={tag.name}
+                            onClick={() => toggleChip(tagFilter, setTagFilter, tag.name)}
+                            sx={{
+                              cursor: "pointer",
+                              bgcolor: active ? color : "transparent",
+                              color: active ? "#fff" : "text.primary",
+                              border: `1.5px solid ${color}`,
+                              "&:hover": { bgcolor: color, color: "#fff" },
+                            }}
+                          />
+                        </Tooltip>
+                      );
+                    })
+                  )}
                 </Box>
               </>
             )}
@@ -325,7 +352,7 @@ const AdoptablesPageContent = () => {
               <MenuItem value="price_desc">Price: High to Low</MenuItem>
             </Select>
           </Stack>
-          {filtered.length === 0 ? (
+          {items.length === 0 ? (
             <Box
               sx={{
                 display: "flex",
@@ -345,7 +372,7 @@ const AdoptablesPageContent = () => {
             </Box>
           ) : (
             <Grid container spacing={2.5}>
-              {filtered.map((item) => (
+              {items.map((item) => (
                 <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
                   <AdoptableCard
                     item={item}
