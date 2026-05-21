@@ -1,5 +1,7 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
+import useSWR from "swr";
+import { getFetcher } from "@/app/api/globalFetcher";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -17,20 +19,18 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { IconArrowsSort, IconSearch, IconX } from "@tabler/icons-react";
-import { useMasterData, ArtistMaster } from "@/common/contexts/MasterDataContext";
+import { useArtists, ArtistMaster } from "@/common/hooks/useMasterData";
 import { BaseCard, BaseChip } from "@/common/components/base";
 import AdoptableCard, { AdoptableListItem, AdoptableTag } from "./AdoptableCard";
 import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
 import Cookies from "js-cookie";
 import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
-
 
 const AdoptablesPageContent = () => {
-  const { artists } = useMasterData();
-  const [items, setItems] = useState<AdoptableListItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { artists } = useArtists();
+  const { data, isLoading } = useSWR("/api/adoptable", getFetcher);
+  const items: AdoptableListItem[] = data?.data ?? [];
 
   // Filters
   const [search, setSearch] = useState("");
@@ -44,27 +44,6 @@ const AdoptablesPageContent = () => {
   const showNsfw = typeof window !== "undefined" ? Cookies.get(CookiesKey.NSFW_MODE) === "true" : false;
   const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "price_asc" | "price_desc">("newest");
-
-  useEffect(() => {
-    const fetchAdoptables = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch(`${API_URL}/adoptable`, {
-          headers: { "ngrok-skip-browser-warning": "true" },
-        });
-        if (res.ok) {
-          const json = await res.json();
-          const data: AdoptableListItem[] = json?.data ?? json;
-          if (Array.isArray(data) && data.length > 0) {
-            setItems(data);
-            return;
-          }
-        }
-      } catch { /* API error */ }
-      setIsLoading(false);
-    };
-    fetchAdoptables().finally(() => setIsLoading(false));
-  }, []);
 
   // Derive unique artists from items (fallback when context returns nothing)
   const allArtists = useMemo(() => {

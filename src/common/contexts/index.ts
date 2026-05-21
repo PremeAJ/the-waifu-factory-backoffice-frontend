@@ -1,7 +1,6 @@
 export * from './AdoptableContext/index';
 export * from './DialogContext/index';
 export * from './EncryptContext/index';
-export * from './MasterDataContext/index';
 export * from './OtpContext/index';
 export * from './ProfileContext/constants/defaultAppearance';
 export * from './ProfileContext/index';

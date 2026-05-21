@@ -1,11 +1,9 @@
 "use client";
 import "@/common/utils/i18n/i18n";
-import { AdoptableProvider } from "@/common/contexts/AdoptableContext";
 import { Analytics } from "@vercel/analytics/next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { CookiesKey, setCookiesOption1H, setCookiesOption1Y } from "@/common/constants/cookies";
 import { DialogProvider } from "@/common/contexts/DialogContext";
-import { MasterDataProvider } from "@/common/contexts/MasterDataContext";
 import { ReactNode, useEffect } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@mui/material/styles";
@@ -29,14 +27,10 @@ const MyApp = ({ children }: { children: ReactNode }) => {
       <ThemeProvider theme={theme}>
         <DialogProvider>
           <UploadProvider>
-            <MasterDataProvider>
-              <AdoptableProvider>
-                <CssBaseline />
-                <Analytics />
-                <SpeedInsights />
-                {children}
-              </AdoptableProvider>
-            </MasterDataProvider>
+              <CssBaseline />
+              <Analytics />
+              <SpeedInsights />
+              {children}
           </UploadProvider>
         </DialogProvider>
       </ThemeProvider>
