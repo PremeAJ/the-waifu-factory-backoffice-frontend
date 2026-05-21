@@ -18,6 +18,7 @@ import MenuItem from "@mui/material/MenuItem";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
 import Select from "@mui/material/Select";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -352,7 +353,27 @@ const AdoptablesPageContent = () => {
               <MenuItem value="price_desc">Price: High to Low</MenuItem>
             </Select>
           </Stack>
-          {items.length === 0 ? (
+          {isLoading ? (
+            <Grid container spacing={2.5}>
+              {Array.from({ length: 12 }).map((_, i) => (
+                <Grid key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                  <Box sx={{ borderRadius: 3, overflow: "hidden" }}>
+                    <Skeleton variant="rectangular" width="100%" sx={{ paddingTop: "120%" }} />
+                    <Box sx={{ p: 1.5 }}>
+                      <Stack direction="row" alignItems="center" spacing={0.8} mb={0.8}>
+                        <Skeleton variant="circular" width={24} height={24} />
+                        <Skeleton variant="text" width="60%" height={16} />
+                      </Stack>
+                      <Stack direction="row" spacing={0.5}>
+                        <Skeleton variant="rounded" width={48} height={20} />
+                        <Skeleton variant="rounded" width={48} height={20} />
+                      </Stack>
+                    </Box>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          ) : items.length === 0 ? (
             <Box
               sx={{
                 display: "flex",
@@ -364,7 +385,7 @@ const AdoptablesPageContent = () => {
               }}
             >
               <Typography variant="h5" fontWeight={600} mb={1}>
-                 filter
+                ไม่พบ adoptable ที่ตรงกับ filter
               </Typography>
               <Button onClick={clearAll} variant="outlined" sx={{ mt: 2, borderRadius: 3, textTransform: "none" }}>
                 Clear filters
