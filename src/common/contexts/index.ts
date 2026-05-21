@@ -1,4 +1,3 @@
-export * from './AdoptableContext/index';
 export * from './DialogContext/index';
 export * from './EncryptContext/index';
 export * from './OtpContext/index';
