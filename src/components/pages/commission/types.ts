@@ -23,7 +23,8 @@ export interface CommissionPost {
   price?: number;
   createdAt: string;
   artist: CommissionArtist;
-  tags: CommissionTag[];
+  owner?: CommissionArtist;
+  tags?: CommissionTag[];
 }
 
 export interface CommissionOpenSlot {

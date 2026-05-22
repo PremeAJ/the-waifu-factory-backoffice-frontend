@@ -1,54 +1,97 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { postFetcher } from "@/app/api/globalFetcher";
+import useSWR from "swr";
+import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
+import Autocomplete from "@mui/material/Autocomplete";
+import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import InputAdornment from "@mui/material/InputAdornment";
+import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { IconArrowLeft, IconPhoto } from "@tabler/icons-react";
-import { BaseFileInput } from "@/common/components/base";
+import { alpha, useTheme } from "@mui/material/styles";
+import { IconArrowLeft, IconPhoto, IconX } from "@tabler/icons-react";
+
+interface MasterUser {
+  id: string;
+  username: string;
+  displayName: string;
+  profilePictureUrl: string | null;
+}
 
 const CommissionCreatePageContent = () => {
   const router = useRouter();
-  const [form, setForm] = useState({
-    imageUrl: "",
-    title: "",
-    description: "",
-    postUrl: "",
-    price: "",
-    isNSFW: false,
-  });
+  const theme  = useTheme();
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const [file,     setFile]     = useState<File | null>(null);
+  const [preview,  setPreview]  = useState<string | null>(null);
+  const [form,     setForm]     = useState({ title: "", description: "", postUrl: "", price: "", isNSFW: false });
+  const [artist,   setArtist]   = useState<MasterUser | null>(null);
+  const [owner,    setOwner]    = useState<MasterUser | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState<string | null>(null);
+  const [error,   setError]   = useState<string | null>(null);
+
+  const { data: artistData } = useSWR("/api/master/artist-list", getFetcher, { revalidateOnFocus: false });
+  const { data: userData }   = useSWR("/api/master/user-list",   getFetcher, { revalidateOnFocus: false });
+  const artistOptions: MasterUser[] = artistData?.data ?? [];
+  const userOptions:   MasterUser[] = userData?.data   ?? [];
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [field]: e.target.value }));
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files?.[0];
+    if (!f || !f.type.startsWith("image/")) return;
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+  };
+
+  const clearFile = () => {
+    setFile(null);
+    setPreview(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.imageUrl || !form.title) return;
+    if (!file || !form.title) return;
     setLoading(true);
     setError(null);
-    try {
-      const body: Record<string, any> = {
-        imageUrl: form.imageUrl,
-        title: form.title,
-        isNSFW: form.isNSFW,
-      };
-      if (form.description) body.description = form.description;
-      if (form.postUrl)     body.postUrl     = form.postUrl;
-      if (form.price)       body.price       = Number(form.price);
 
-      const res = await postFetcher("/api/commission", body);
-      if (res?.data?.id) router.push(`/commission/${res.data.id}`);
-      else setError(res?.message ?? "Failed to create commission");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("title", form.title);
+      fd.append("isNSFW", String(form.isNSFW));
+      if (form.description) fd.append("description", form.description);
+      if (form.postUrl)     fd.append("postUrl",     form.postUrl);
+      if (form.price)       fd.append("price",       form.price);
+      if (artist)           fd.append("artistId",    artist.id);
+      if (owner)            fd.append("ownerId",     owner.id);
+
+      const res = await postFetcher("/api/commission", fd);
+      if (!res?.data?.id) {
+        setError(res?.message ?? "Failed to create commission");
+        return;
+      }
+
+      router.push(`/commission/${res.data.id}`);
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -68,37 +111,134 @@ const CommissionCreatePageContent = () => {
 
       <Typography variant="h5" fontWeight={800} mb={3}>Post Commission</Typography>
 
-      <Card elevation={0} sx={{ p: 3, borderRadius: 3, border: (t) => `1px solid ${t.palette.divider}` }}>
+      <Card elevation={0} sx={{ p: 3, borderRadius: 3, border: `1px solid ${theme.palette.divider}` }}>
         <Box component="form" onSubmit={handleSubmit}>
           <Stack spacing={2.5}>
 
-            {/* Image URL */}
-            <TextField
-              label="Image URL"
-              value={form.imageUrl}
-              onChange={set("imageUrl")}
-              required
-              fullWidth
-              placeholder="https://..."
-              slotProps={{ input: { startAdornment: <InputAdornment position="start"><IconPhoto size={18} /></InputAdornment> } }}
-            />
+            {/* Image upload */}
+            <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleFileChange} />
 
-            {/* Preview */}
-            {form.imageUrl && (
-              <Box sx={{ borderRadius: 2, overflow: "hidden", maxHeight: 300 }}>
-                <Box component="img" src={form.imageUrl} alt="preview" sx={{ width: "100%", height: "auto", objectFit: "cover" }} />
+            {preview ? (
+              <Box sx={{ position: "relative", borderRadius: 2, overflow: "hidden" }}>
+                <Box component="img" src={preview} alt="preview" sx={{ width: "100%", maxHeight: 320, objectFit: "contain", bgcolor: alpha("#000", 0.04) }} />
+                <Button
+                  size="small"
+                  onClick={clearFile}
+                  sx={{ position: "absolute", top: 8, right: 8, minWidth: 0, p: 0.5, bgcolor: alpha("#000", 0.55), color: "#fff", borderRadius: 1, "&:hover": { bgcolor: alpha("#000", 0.75) } }}
+                >
+                  <IconX size={16} />
+                </Button>
+              </Box>
+            ) : (
+              <Box
+                onClick={() => fileRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}
+                sx={{
+                  border: `2px dashed ${theme.palette.divider}`,
+                  borderRadius: 2,
+                  p: 4,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  transition: "border-color 0.2s, background 0.2s",
+                  "&:hover": { borderColor: "primary.main", bgcolor: alpha(theme.palette.primary.main, 0.04) },
+                }}
+              >
+                <IconPhoto size={40} style={{ opacity: 0.3, marginBottom: 8 }} />
+                <Typography variant="body2" fontWeight={600}>Click or drag image here</Typography>
+                <Typography variant="caption" color="text.secondary">PNG, JPG, WEBP</Typography>
               </Box>
             )}
 
             <TextField label="Title" value={form.title} onChange={set("title")} required fullWidth />
 
+            <Autocomplete
+              options={artistOptions}
+              value={artist}
+              onChange={(_, v) => setArtist(v)}
+              getOptionLabel={(o) => o.displayName}
+              isOptionEqualToValue={(a, b) => a.id === b.id}
+              renderOption={(props, o) => (
+                <Box component="li" {...props} key={o.id}>
+                  <Stack direction="row" alignItems="center" spacing={1.2}>
+                    <Avatar src={o.profilePictureUrl ?? undefined} sx={{ width: 28, height: 28, fontSize: 13 }}>
+                      {o.displayName[0]}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="body2" fontWeight={600} lineHeight={1.2}>{o.displayName}</Typography>
+                      <Typography variant="caption" color="text.secondary">@{o.username}</Typography>
+                    </Box>
+                  </Stack>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Artist"
+                  placeholder="Search artist..."
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      startAdornment: artist ? (
+                        <>
+                          <Avatar src={artist.profilePictureUrl ?? undefined} sx={{ width: 24, height: 24, fontSize: 11, ml: 0.5, mr: -0.5 }}>
+                            {artist.displayName[0]}
+                          </Avatar>
+                          {params.InputProps.startAdornment}
+                        </>
+                      ) : params.InputProps.startAdornment,
+                    },
+                  }}
+                />
+              )}
+            />
+
+            <Autocomplete
+              options={userOptions}
+              value={owner}
+              onChange={(_, v) => setOwner(v)}
+              getOptionLabel={(o) => o.displayName}
+              isOptionEqualToValue={(a, b) => a.id === b.id}
+              renderOption={(props, o) => (
+                <Box component="li" {...props} key={o.id}>
+                  <Stack direction="row" alignItems="center" spacing={1.2}>
+                    <Avatar src={o.profilePictureUrl ?? undefined} sx={{ width: 28, height: 28, fontSize: 13 }}>
+                      {o.displayName[0]}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="body2" fontWeight={600} lineHeight={1.2}>{o.displayName}</Typography>
+                      <Typography variant="caption" color="text.secondary">@{o.username}</Typography>
+                    </Box>
+                  </Stack>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Owner"
+                  placeholder="Search owner..."
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      startAdornment: owner ? (
+                        <>
+                          <Avatar src={owner.profilePictureUrl ?? undefined} sx={{ width: 24, height: 24, fontSize: 11, ml: 0.5, mr: -0.5 }}>
+                            {owner.displayName[0]}
+                          </Avatar>
+                          {params.InputProps.startAdornment}
+                        </>
+                      ) : params.InputProps.startAdornment,
+                    },
+                  }}
+                />
+              )}
+            />
+
             <TextField
               label="Description"
               value={form.description}
               onChange={set("description")}
-              fullWidth
-              multiline
-              rows={3}
+              fullWidth multiline rows={3}
               placeholder="Tell us about this commission..."
             />
 
@@ -108,15 +248,14 @@ const CommissionCreatePageContent = () => {
               onChange={set("postUrl")}
               fullWidth
               placeholder="https://twitter.com/..."
-              helperText="Optional link to the original post"
+              helperText="Optional"
             />
 
             <TextField
               label="Price (USD)"
               value={form.price}
               onChange={set("price")}
-              fullWidth
-              type="number"
+              fullWidth type="number"
               slotProps={{ input: { startAdornment: <InputAdornment position="start">$</InputAdornment> } }}
               helperText="Optional"
             />
@@ -126,6 +265,15 @@ const CommissionCreatePageContent = () => {
               label={<Typography variant="body2" fontWeight={600}>Mark as NSFW</Typography>}
             />
 
+            {loading && (
+              <Box>
+                <Typography variant="caption" color="text.secondary" mb={0.5} display="block">
+                  Uploading...
+                </Typography>
+                <LinearProgress sx={{ borderRadius: 2 }} />
+              </Box>
+            )}
+
             {error && <Typography variant="body2" color="error">{error}</Typography>}
 
             <Button
@@ -133,10 +281,10 @@ const CommissionCreatePageContent = () => {
               variant="contained"
               size="large"
               fullWidth
-              disabled={loading || !form.imageUrl || !form.title}
+              disabled={loading || !file || !form.title}
               sx={{ textTransform: "none", fontWeight: 700, borderRadius: 2, py: 1.4 }}
             >
-              {loading ? "Posting..." : "Post Commission"}
+              {loading ? "Uploading..." : "Post Commission"}
             </Button>
           </Stack>
         </Box>

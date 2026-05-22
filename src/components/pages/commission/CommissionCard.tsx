@@ -108,9 +108,9 @@ const CommissionCard: React.FC<CommissionCardProps> = ({ item, sx }) => {
           avatarSize={20}
         />
 
-        {item.tags.length > 0 && (
+        {(item.tags ?? []).length > 0 && (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-            {item.tags.map((tag, i) => (
+            {(item.tags ?? []).map((tag, i) => (
               <BaseChip key={i} label={tag.name} customBgColor={tag.color + "33"} customColor={tagTextColor} size="small" sx={{ fontSize: 10 }} />
             ))}
           </Box>

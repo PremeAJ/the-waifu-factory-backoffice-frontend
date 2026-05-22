@@ -175,13 +175,29 @@ const CommissionDetailPageContent = ({ id }: { id: string }) => {
                   }
                 />
 
+                {/* Owner */}
+                {item.owner && (
+                  <>
+                    <Divider sx={{ my: 3 }} />
+                    <Typography variant="overline" color="text.secondary" fontWeight={700} letterSpacing={1.5}>Owner</Typography>
+                    <ArtistLink
+                      username={item.owner.username}
+                      displayName={item.owner.displayName}
+                      profilePictureUrl={item.owner.profilePictureUrl}
+                      avatarSize={44}
+                      showUsername
+                      sx={{ mt: 1.25 }}
+                    />
+                  </>
+                )}
+
                 {/* Tags */}
-                {item.tags.length > 0 && (
+                {(item.tags ?? []).length > 0 && (
                   <>
                     <Divider sx={{ my: 3 }} />
                     <Typography variant="overline" color="text.secondary" fontWeight={700} letterSpacing={1.5} display="block" mb={1.25}>Tags</Typography>
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8 }}>
-                      {item.tags.map((tag, i) => (
+                      {(item.tags ?? []).map((tag, i) => (
                         <BaseChip key={i} label={tag.name} customBgColor={tag.color + "33"} customColor={tagTextColor} size="small" />
                       ))}
                     </Box>
