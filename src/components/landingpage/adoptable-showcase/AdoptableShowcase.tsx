@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { IconArrowRight } from "@tabler/icons-react";
@@ -263,17 +264,31 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
   );
 });
 
+const SkeletonRow = () => (
+  <Box sx={{ display: "flex", gap: 2, px: 1, overflow: "hidden", my: 1 }}>
+    {Array.from({ length: 6 }).map((_, i) => (
+      <Box key={i} sx={{ flexShrink: 0, width: 260, mx: 1, my: 3 }}>
+        <Skeleton variant="rectangular" width={260} height={260} sx={{ borderRadius: 3 }} />
+        <Box sx={{ pt: 1.5, px: 0.5 }}>
+          <Skeleton variant="text" width="70%" height={18} />
+          <Skeleton variant="text" width="45%" height={14} sx={{ mt: 0.5 }} />
+        </Box>
+      </Box>
+    ))}
+  </Box>
+);
+
 const AdoptableShowcase = () => {
   const { showNsfw } = useNsfw();
 
-  const { data: showcaseData } = useSWR("/api/adoptable/showcase", getFetcher, {
+  const { data: showcaseData, isLoading } = useSWR("/api/adoptable/showcase", getFetcher, {
     refreshInterval: 35000,
     revalidateOnFocus: false,
   });
 
   const items: AdoptableListItem[] = showcaseData?.data ?? [];
 
-  if (items.length === 0) return null;
+  if (!isLoading && items.length === 0) return null;
 
   const offset2 = Math.floor(items.length / 3);
   const offset3 = Math.floor((items.length * 2) / 3);
@@ -302,9 +317,19 @@ const AdoptableShowcase = () => {
           />
         </Stack>
       </Container>
-      <Row items={items} direction="left"  offset={0}       sfw={showNsfw} />
-      <Row items={items} direction="right" offset={offset2} sfw={showNsfw} />
-      <Row items={items} direction="left"  offset={offset3} sfw={showNsfw} />
+      {isLoading ? (
+        <>
+          <SkeletonRow />
+          <SkeletonRow />
+          <SkeletonRow />
+        </>
+      ) : (
+        <>
+          <Row items={items} direction="left"  offset={0}       sfw={showNsfw} />
+          <Row items={items} direction="right" offset={offset2} sfw={showNsfw} />
+          <Row items={items} direction="left"  offset={offset3} sfw={showNsfw} />
+        </>
+      )}
     </Box>
   );
 };
