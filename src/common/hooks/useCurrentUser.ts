@@ -46,7 +46,7 @@ export const useCurrentUser = () => {
 
   const signOut = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
-    await mutate(undefined, { revalidate: false });
+    await mutate(null);
   };
 
   return {

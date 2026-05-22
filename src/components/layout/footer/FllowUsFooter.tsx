@@ -231,22 +231,15 @@ const Footer = () => {
         >
           <Stack direction="row" gap={1} alignItems="center">
             <Image
-              src="/images/logos/logoIcon.svg"
+              src="/images/logos/the-waifu-factory-icon.png"
               width={20}
               height={20}
               alt="logo"
             />
             <Typography variant="body1" fontSize="15px">
-              All rights reserved by Modernize.{" "}
+              All rights reserved by The Waifu Factory.
             </Typography>
           </Stack>
-          <Typography variant="body1" fontSize="15px">
-            Produced by{" "}
-            <Typography component={Link} color="primary.main" href="https://adminmart.com/">
-              AdminMart
-            </Typography>
-            .
-          </Typography>
         </Box>
       </Container>
     </>

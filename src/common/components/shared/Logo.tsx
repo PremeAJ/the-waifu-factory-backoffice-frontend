@@ -37,7 +37,7 @@ const Logo = ({ size = "medium" }: LogoProps) => {
     <LinkStyled href={url}>
       {activeMode === "dark" ? (
         <Image
-          src="/images/logos/logo.png"
+          src="/images/logos/the-waifu-factory-icon.png"
           alt="logo"
           height={height}
           width={width === 70 ? 174 : width}
@@ -45,7 +45,7 @@ const Logo = ({ size = "medium" }: LogoProps) => {
         />
       ) : (
         <Image
-          src={"/images/logos/logo.png"}
+          src={"/images/logos/the-waifu-factory-icon.png"}
           alt="logo"
           height={height}
           width={width}

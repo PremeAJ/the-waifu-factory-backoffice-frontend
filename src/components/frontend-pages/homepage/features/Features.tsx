@@ -55,7 +55,7 @@ const Features = () => {
                         }}>
                         <Box textAlign="center" mb={3} bgcolor="primary.light" borderRadius="24px">
                             <Box pt="65px" pb="40px" px={5}>
-                                <Image src="/images/logos/logoIcon.svg" alt="logo" height="50" width="50" />
+                                <Image src="/images/logos/the-waifu-factory-icon.png" alt="logo" height="50" width="50" />
                                 <Typography variant="h2" fontWeight="700" mt={4} sx={{
                                     fontSize: {
                                         lg: '40px',

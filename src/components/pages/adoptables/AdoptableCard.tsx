@@ -32,7 +32,7 @@ export interface AdoptableListItem {
   id: string;
   number: number;
   imageUrl: string;
-  externalUrl?: string;
+  postUrl?: string;
   artist: AdoptableUser;
   owner: AdoptableUser;
   status: "open" | "close" | "resell";
@@ -81,14 +81,14 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        cursor: item.externalUrl ? "pointer" : "default",
+        cursor: item.postUrl ? "pointer" : "default",
         touchAction: "none",
         WebkitTapHighlightColor: "transparent",
         transition: "transform 0.22s, box-shadow 0.22s",
         "@media (hover: hover)": { "&:hover": { transform: "translateY(-6px)", boxShadow: "0px 0px 20px 6px rgba(0,0,0,0.15), 0px 8px 16px 0px rgba(0,0,0,0.14)" } },
         ...sx,
       }}
-      onClick={() => item.externalUrl && window.open(item.externalUrl, "_blank")}
+      onClick={() => item.postUrl && window.open(item.postUrl, "_blank")}
     >
       {/* ── Image ── */}
       <Box sx={{ position: "relative", width: "100%", paddingTop: "120%", flexShrink: 0 }}>
@@ -192,14 +192,14 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         )}
 
         {/* View post button */}
-        {showViewPost && item.externalUrl && (
+        {showViewPost && item.postUrl && (
           <Box mt="auto" pt={0.5}>
             <Button
               fullWidth
               variant="outlined"
               size="small"
               endIcon={<IconExternalLink size={14} />}
-              href={item.externalUrl}
+              href={item.postUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
