@@ -179,16 +179,6 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
         </ToggleButton>
       </ToggleButtonGroup>
 
-      {/* See NSFW content toggle */}
-      <Box mb={3}>
-        <SeeNSFWContentToggle
-          value={showNsfw}
-          onChange={(checked) => {
-            Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
-            onShowNsfwChange(checked);
-          }}
-        />
-      </Box>
 
       {/* Status */}
       <Typography variant="subtitle2" fontWeight={700} mb={1}>

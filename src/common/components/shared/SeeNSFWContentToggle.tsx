@@ -1,53 +1,48 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
+import React from "react";
+import { useNsfw } from "@/common/contexts/NsfwContext";
+import ButtonBase from "@mui/material/ButtonBase";
 import Stack from "@mui/material/Stack";
-import Switch from "@mui/material/Switch";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 interface SeeNSFWContentToggleProps {
   value?: boolean;
   onChange?: (checked: boolean) => void;
-  label?: string;
 }
 
-const COOKIE_KEY = CookiesKey.NSFW_MODE;
+const SeeNSFWContentToggle: React.FC<SeeNSFWContentToggleProps> = ({ value, onChange }) => {
+  const { showNsfw, setShowNsfw } = useNsfw();
+  const checked = typeof value === "boolean" ? value : showNsfw;
 
-const SeeNSFWContentToggle: React.FC<SeeNSFWContentToggleProps> = ({ value, onChange, label = "See NSFW content" }) => {
-  const [checked, setChecked] = useState<boolean>(typeof value === "boolean" ? value : false);
-
-  useEffect(() => {
-    if (typeof value === "boolean") {
-      setChecked(value);
-    } else {
-      setChecked(Cookies.get(COOKIE_KEY) === "true");
-    }
-  }, [value]);
-
-  useEffect(() => {
-    if (typeof value !== "boolean") {
-      Cookies.set(COOKIE_KEY, String(checked), setCookiesOption1Y);
-    }
-  }, [checked, value]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(e.target.checked);
-    onChange?.(e.target.checked);
+  const handleClick = () => {
+    const next = !checked;
+    setShowNsfw(next);
+    onChange?.(next);
   };
 
   return (
-    <Stack direction="row" alignItems="center" gap={1}>
-      <Switch
-        checked={checked}
-        onChange={handleChange}
-        color="error"
-        inputProps={{ "aria-label": label }}
-      />
-      <Typography fontWeight={500} component="label" sx={{ cursor: "pointer", userSelect: "none" }}>
-        {label}
-      </Typography>
-    </Stack>
+    <Tooltip title={checked ? "Switch to SFW mode" : "Switch to NSFW mode"}>
+      <ButtonBase
+        onClick={handleClick}
+        sx={{
+          borderRadius: 1.5,
+          px: 1,
+          py: 0.5,
+          color: checked ? "error.main" : "text.secondary",
+          transition: "color 0.2s",
+          "&:hover": { opacity: 0.75 },
+        }}
+      >
+        <Stack direction="row" alignItems="center" spacing={0.5}>
+          {checked ? <IconEye size={16} /> : <IconEyeOff size={16} />}
+          <Typography variant="caption" fontWeight={700} lineHeight={1} sx={{ fontSize: 12 }}>
+            {checked ? "NSFW" : "SFW"}
+          </Typography>
+        </Stack>
+      </ButtonBase>
+    </Tooltip>
   );
 };
 

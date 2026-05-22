@@ -1,6 +1,6 @@
 "use client";
 
-import { CookiesKey } from "@/common/constants/cookies";
+import { useNsfw } from "@/common/contexts/NsfwContext";
 import { getFetcher } from "@/app/api/globalFetcher";
 import { useArtists, useAdoptableTags, usePaymentMethods, ArtistMaster } from "@/common/hooks/useMasterData";
 import { useInfiniteScroll } from "@/common/components/base/BaseTable/hooks";
@@ -11,7 +11,6 @@ import AdoptableSortBar, { SortByOption } from "./AdoptableSortBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import Cookies from "js-cookie";
 import Grid from "@mui/material/Grid";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
@@ -38,14 +37,10 @@ const AdoptablesPageContent = () => {
   );
   const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
   const [paymentMethodFilter, setPaymentMethodFilter] = useState<string[]>(() => searchParams.getAll("paymentMethod"));
-  const [showNsfw, setShowNsfw] = useState(false);
+  const { showNsfw, setShowNsfw } = useNsfw();
   const [sortBy, setSortBy] = useState<SortByOption>(
     () => (searchParams.get("sort") as SortByOption) ?? "createdAt_desc"
   );
-
-  useEffect(() => {
-    setShowNsfw(Cookies.get(CookiesKey.NSFW_MODE) === "true");
-  }, []);
 
   // Resolve artist from URL once master data loads
   const artistInitialized = useRef(false);

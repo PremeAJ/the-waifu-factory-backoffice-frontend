@@ -11,8 +11,7 @@ import { alpha } from "@mui/material/styles";
 import { BaseLightBox } from "@/common/components/base";
 import type { LightboxItem } from "@/common/components/base/BaseLightBox";
 import { IconEye, IconHeart, IconPhoto } from "@tabler/icons-react";
-import Cookies from "js-cookie";
-import { CookiesKey } from "@/common/constants/cookies";
+import { useNsfw } from "@/common/contexts/NsfwContext";
 
 interface GalleryItem {
   id: string;
@@ -23,7 +22,7 @@ interface GalleryItem {
 }
 
 const GalleryTab = ({ username }: { username: string }) => {
-  const showNsfw = typeof window !== "undefined" && Cookies.get(CookiesKey.NSFW_MODE) === "true";
+  const { showNsfw } = useNsfw();
 
   const { data, isLoading } = useSWR(`/api/user/${username}/gallery`, getFetcher, {
     revalidateOnFocus: false,

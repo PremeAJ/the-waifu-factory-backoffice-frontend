@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState, useMemo, useCallback, memo } from "react";
+import React, { useEffect, useRef, useMemo, useCallback, memo } from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
 import Box from "@mui/material/Box";
@@ -8,9 +8,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { IconArrowRight } from "@tabler/icons-react";
 import { BaseButton } from "@/common/components/base";
-import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
-import Cookies from "js-cookie";
-import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
+import { useNsfw } from "@/common/contexts/NsfwContext";
 import AdoptableCard, { AdoptableListItem } from "@/components/pages/adoptables/AdoptableCard";
 
 function fillItems(items: AdoptableListItem[], min = 12): AdoptableListItem[] {
@@ -266,11 +264,7 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
 });
 
 const AdoptableShowcase = () => {
-  const [showNsfw, setShowNsfw] = useState(false);
-
-  useEffect(() => {
-    setShowNsfw(Cookies.get(CookiesKey.NSFW_MODE) === "true");
-  }, []);
+  const { showNsfw } = useNsfw();
 
   const { data: showcaseData } = useSWR("/api/adoptable/showcase", getFetcher, {
     refreshInterval: 35000,
@@ -278,11 +272,6 @@ const AdoptableShowcase = () => {
   });
 
   const items: AdoptableListItem[] = showcaseData?.data ?? [];
-
-  const toggleShowNsfw = useCallback((checked: boolean) => {
-    Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
-    setShowNsfw(checked);
-  }, []);
 
   if (items.length === 0) return null;
 
@@ -304,16 +293,13 @@ const AdoptableShowcase = () => {
               (in this demo i showing closed adoptables too because i don't have many open adoptables in demo data, but in real app you will only see open adoptables here)
             </Typography>
           </Box>
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <SeeNSFWContentToggle value={showNsfw} onChange={toggleShowNsfw} />
-            <BaseButton
-              href="/adoptables"
-              variant="outlined"
-              label="View all"
-              fullWidth={false}
-              endIcon={<IconArrowRight size={18} />}
-            />
-          </Stack>
+          <BaseButton
+            href="/adoptables"
+            variant="outlined"
+            label="View all"
+            fullWidth={false}
+            endIcon={<IconArrowRight size={18} />}
+          />
         </Stack>
       </Container>
       <Row items={items} direction="left"  offset={0}       sfw={showNsfw} />

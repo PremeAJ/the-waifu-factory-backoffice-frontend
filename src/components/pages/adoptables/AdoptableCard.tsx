@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import { useNsfw } from "@/common/contexts/NsfwContext";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -14,7 +14,6 @@ import { BaseCard, BaseChip } from "@/common/components/base";
 import ArtistLink from "@/common/components/shared/ArtistLink";
 import { deleteFetcher, postFetcher } from "@/app/api/globalFetcher";
 import type { SxProps, Theme } from "@mui/material/styles";
-import { CookiesKey } from "@/common/constants/cookies";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -71,13 +70,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
   const router = useRouter();
   const theme = useTheme();
   const tagTextColor = theme.palette.mode === "dark" ? "#fff" : "#555";
-  // Read NSFW blur preference from cookie (default true = blur)
-  let showNsfw = true;
-  if (typeof window !== "undefined") {
-    const cookie = Cookies.get(CookiesKey.NSFW_MODE);
-    showNsfw = cookie === "true";
-  }
-  // Only blur if showNsfw is false and item is NSFW
+  const { showNsfw } = useNsfw();
   const blurred = !showNsfw && isAdoptableNsfw(item);
 
   const [liked, setLiked] = useState(item.isLiked ?? false);

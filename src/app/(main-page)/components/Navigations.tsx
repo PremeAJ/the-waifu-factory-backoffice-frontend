@@ -1,17 +1,12 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { styled, useTheme } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import { IconBrandDiscord } from "@tabler/icons-react";
-
-import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import { useCurrentUser } from "@/common/hooks/useCurrentUser";
-import { PageUrl } from "@/common/constants/pageUrl";
+import { usePathname } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import Button from "@mui/material/Button";
+import Link from "next/link";
 
 // 1. ปลอกหุ้มสไตล์เพื่อควบคุมสีตัวหนังสือตามสถานะ Active ของหน้าเว็บ
 const NavItemContainer = styled("div", {
@@ -121,21 +116,6 @@ const Navigations = () => {
           </NavItemContainer>
         );
       })}
-
-      {!waifuUser && (
-        <BaseButton
-          label="Login"
-          href={PageUrl.AUTH_SIGN_IN}
-          fullWidth={false}
-          size="small"
-          startIcon={<IconBrandDiscord size={18} />}
-          sx={{
-            bgcolor: "#5865F2",
-            color: "#fff",
-            ml: 2,
-          }}
-        />
-      )}
     </>
   );
 };

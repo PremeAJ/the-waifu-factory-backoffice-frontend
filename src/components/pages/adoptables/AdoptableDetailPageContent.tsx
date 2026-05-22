@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import useSWR from "swr";
 import { deleteFetcher, getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import Avatar from "@mui/material/Avatar";
@@ -17,8 +17,7 @@ import { alpha, useTheme } from "@mui/material/styles";
 import { IconExternalLink, IconEye, IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import Image from "next/image";
 import { BaseChip } from "@/common/components/base";
-import Cookies from "js-cookie";
-import { CookiesKey } from "@/common/constants/cookies";
+import { useNsfw } from "@/common/contexts/NsfwContext";
 import { AdoptableListItem, AdoptableTag, isAdoptableNsfw } from "./AdoptableCard";
 import ArtistLink from "@/common/components/shared/ArtistLink";
 
@@ -30,10 +29,7 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
   const isDark = theme.palette.mode === "dark";
   const tagTextColor = isDark ? "#fff" : "#555";
 
-  const [showNsfw, setShowNsfw] = useState(false);
-  useEffect(() => {
-    setShowNsfw(Cookies.get(CookiesKey.NSFW_MODE) === "true");
-  }, []);
+  const { showNsfw } = useNsfw();
 
   const { data, isLoading } = useSWR(`/api/adoptable/${id}`, getFetcher, {
     revalidateOnFocus: false,

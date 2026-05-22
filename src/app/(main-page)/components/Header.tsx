@@ -1,24 +1,29 @@
 "use client";
-import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
+import { IconBrandDiscord, IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
+import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
+import { PageUrl } from "@/common/constants/pageUrl";
 import { styled } from "@mui/material/styles";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
+import { useProfile } from "@/common/contexts/ProfileContext";
 import AppBar from "@mui/material/AppBar";
+import BaseButton from "@/common/components/base/BaseButton/BaseButton";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import Language from "@/common/components/shared/Language";
 import Logo from "@/common/components/shared/Logo";
-import Tooltip from "@mui/material/Tooltip";
-import { useProfile } from "@/common/contexts/ProfileContext";
 import MobileSidebar from "./MobileSidebar";
 import Navigations from "./Navigations";
 import Profile from "@/common/components/shared/Profile";
 import React from "react";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
 import useIsMobile from "@/common/utils/state/isMobile";
 
 const Header = () => {
+  const { user: waifuUser } = useCurrentUser();
   const { appearance, updateAppearance } = useProfile();
   const isDark = appearance?.activeMode === "dark";
   const toggleDarkMode = () => updateAppearance({ activeMode: isDark ? "light" : "dark" });
@@ -37,7 +42,7 @@ const Header = () => {
     color: theme.palette.text.secondary,
   }));
 
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -50,54 +55,65 @@ const Header = () => {
 
   return (
     <>
-    <AppBarStyled position="fixed" elevation={8} sx={{ zIndex: 1200 }}>
-      <Container maxWidth="lg">
-        <ToolbarStyled>
-          <Logo size="small"/>
-          <Box flexGrow={1} />
-          {isMobile ? (
-            <IconButton
-              color="inherit"
-              aria-label="menu"
-              onClick={handleDrawerOpen}
-            >
-              <IconMenu2 size="20" />
-            </IconButton>
-          ) : (
-            <Stack spacing={1} direction="row" alignItems="center">
-              <Navigations />
-            </Stack>
-          )}
-          <Box ml={1} display="flex" alignItems="center" gap={0.5}>
-            <Tooltip title={isDark ? "Light Mode" : "Dark Mode"}>
-              <IconButton onClick={toggleDarkMode} size="small">
-                {isDark ? <IconSun size={20} /> : <IconMoon size={20} />}
+      <AppBarStyled position="fixed" elevation={8} sx={{ zIndex: 1200 }}>
+        <Container maxWidth="lg">
+          <ToolbarStyled>
+            <Logo size="small" />
+            <Box flexGrow={1} />
+            {isMobile ? (
+              <IconButton color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
+                <IconMenu2 size="20" />
               </IconButton>
-            </Tooltip>
-            <Language />
-            <Profile />
-          </Box>
-        </ToolbarStyled>
-      </Container>
-      <Drawer
-        anchor="left"
-        open={open}
-        variant="temporary"
-        onClose={toggleDrawer(false)}
-        slotProps={{
-          paper: {
-            sx: {
-              width: 270,
-              border: "0 !important",
-              boxShadow: (theme) => theme.shadows[8],
+            ) : (
+              <Stack spacing={1} direction="row" alignItems="center">
+                <Navigations />
+              </Stack>
+            )}
+            <Box ml={1} display="flex" alignItems="center" gap={0.5}>
+              <Tooltip title={isDark ? "Light Mode" : "Dark Mode"}>
+                <IconButton onClick={toggleDarkMode} size="small">
+                  {isDark ? <IconSun size={20} /> : <IconMoon size={20} />}
+                </IconButton>
+              </Tooltip>
+              <SeeNSFWContentToggle />
+              <Language />
+              <Profile />
+              {!waifuUser && (
+                <BaseButton
+                  label="Login"
+                  href={PageUrl.AUTH_SIGN_IN}
+                  fullWidth={false}
+                  size="small"
+                  startIcon={<IconBrandDiscord size={18} />}
+                  sx={{
+                    bgcolor: "#5865F2",
+                    color: "#fff",
+                    ml: 2,
+                  }}
+                />
+              )}
+            </Box>
+          </ToolbarStyled>
+        </Container>
+        <Drawer
+          anchor="left"
+          open={open}
+          variant="temporary"
+          onClose={toggleDrawer(false)}
+          slotProps={{
+            paper: {
+              sx: {
+                width: 270,
+                border: "0 !important",
+                boxShadow: (theme) => theme.shadows[8],
+              },
             },
-          },
-        }}
-      >
-        <MobileSidebar />
-      </Drawer>
-    </AppBarStyled>
-    <Box sx={{ height: { xs: 64, lg: 80 } }} />
+          }}
+        >
+          <MobileSidebar />
+        </Drawer>
+      </AppBarStyled>
+      <Box sx={{ height: { xs: 64, lg: 80 } }} />
     </>
   );
 };

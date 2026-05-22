@@ -3,6 +3,7 @@ import { CustomizerContextProvider } from "../common/contexts/setting/customizer
 import { EncryptProvider } from "@/common/contexts/EncryptContext";
 import { Metadata, Viewport } from "next";
 import { ProfileProvider } from "@/common/contexts/ProfileContext";
+import { NsfwProvider } from "@/common/contexts/NsfwContext";
 import { ThemeAwareTopLoader } from "@/common/components/main/ThemeAwareComponents";
 import Head from "./head";
 import MyApp from "./app";
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <EncryptProvider>
       <SidebarStateProvider>
+        <NsfwProvider>
         <ProfileProvider>
             <CustomizerContextProvider>
               <html lang="en" suppressHydrationWarning>
@@ -43,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </html>
             </CustomizerContextProvider>
         </ProfileProvider>
+        </NsfwProvider>
       </SidebarStateProvider>
     </EncryptProvider>
   );
