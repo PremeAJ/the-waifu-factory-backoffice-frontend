@@ -253,8 +253,6 @@ const ProfilePageContent = ({ username }: { username: string }) => {
 
             {/* Stats */}
             <Stack direction="row" spacing={4} pb={0.5} flexShrink={0}>
-              <Stat value={0} label="Artworks" />
-              <Stat value={0} label="Adoptables" />
               <Stat value={followerCount} label="Followers" onClick={() => setActiveTab("Followers")} />
               <Stat value={profile.followingCount ?? 0} label="Following" onClick={() => setActiveTab("Following")} />
             </Stack>
