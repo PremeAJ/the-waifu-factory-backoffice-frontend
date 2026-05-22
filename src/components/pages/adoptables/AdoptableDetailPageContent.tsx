@@ -19,8 +19,9 @@ import { BaseChip } from "@/common/components/base";
 import Cookies from "js-cookie";
 import { CookiesKey } from "@/common/constants/cookies";
 import { AdoptableListItem, AdoptableTag, isAdoptableNsfw } from "./AdoptableCard";
+import ArtistLink from "@/common/components/shared/ArtistLink";
 
-const GLASS = 160; // magnifier diameter px
+const GLASS = 260; // magnifier diameter px
 const ZOOM  = 2.5; // zoom level
 
 const AdoptableDetailPageContent = ({ id }: { id: string }) => {
@@ -223,43 +224,43 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
                 <Typography variant="overline" color="text.secondary" fontWeight={700} letterSpacing={1.5}>
                   Artist
                 </Typography>
-                <Stack direction="row" alignItems="center" spacing={1.5} mt={1.25} mb={3}>
-                  <Avatar src={item.artist.profilePictureUrl ?? undefined} sx={{ width: 44, height: 44, fontSize: 17 }}>
-                    {item.artist.displayName[0]}
-                  </Avatar>
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography fontWeight={700} noWrap>{item.artist.displayName}</Typography>
-                    <Typography variant="caption" color="text.secondary">@{item.artist.username}</Typography>
-                  </Box>
-                  {item.artist.paymentMethods && item.artist.paymentMethods.length > 0 && (
-                    <Stack direction="row" spacing={0.75} flexShrink={0}>
-                      {item.artist.paymentMethods.slice(0, 4).map((pm, i) => (
-                        <Box
-                          key={i}
-                          component="img"
-                          src={pm.iconUrl}
-                          alt={pm.name}
-                          title={`${pm.name}: ${pm.accountValue}`}
-                          sx={{ height: 20, width: "auto", objectFit: "contain" }}
-                        />
-                      ))}
-                    </Stack>
-                  )}
-                </Stack>
+                <ArtistLink
+                  username={item.artist.username}
+                  displayName={item.artist.displayName}
+                  profilePictureUrl={item.artist.profilePictureUrl}
+                  avatarSize={44}
+                  showUsername
+                  sx={{ mt: 1.25, mb: 3 }}
+                  endSlot={
+                    item.artist.paymentMethods && item.artist.paymentMethods.length > 0 ? (
+                      <Stack direction="row" spacing={0.75} flexShrink={0}>
+                        {item.artist.paymentMethods.slice(0, 4).map((pm, i) => (
+                          <Box
+                            key={i}
+                            component="img"
+                            src={pm.iconUrl}
+                            alt={pm.name}
+                            title={`${pm.name}: ${pm.accountValue}`}
+                            sx={{ height: 20, width: "auto", objectFit: "contain" }}
+                          />
+                        ))}
+                      </Stack>
+                    ) : undefined
+                  }
+                />
 
                 {/* Owner */}
                 <Typography variant="overline" color="text.secondary" fontWeight={700} letterSpacing={1.5}>
                   Owner
                 </Typography>
-                <Stack direction="row" alignItems="center" spacing={1.5} mt={1.25}>
-                  <Avatar src={item.owner.profilePictureUrl ?? undefined} sx={{ width: 44, height: 44, fontSize: 17 }}>
-                    {item.owner.displayName[0]}
-                  </Avatar>
-                  <Box>
-                    <Typography fontWeight={700}>{item.owner.displayName}</Typography>
-                    <Typography variant="caption" color="text.secondary">@{item.owner.username}</Typography>
-                  </Box>
-                </Stack>
+                <ArtistLink
+                  username={item.owner.username}
+                  displayName={item.owner.displayName}
+                  profilePictureUrl={item.owner.profilePictureUrl}
+                  avatarSize={44}
+                  showUsername
+                  sx={{ mt: 1.25 }}
+                />
 
                 {/* Tags */}
                 {item.tags.length > 0 && (

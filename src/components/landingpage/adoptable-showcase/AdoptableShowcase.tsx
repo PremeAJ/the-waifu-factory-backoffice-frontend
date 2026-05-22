@@ -183,17 +183,17 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
     };
   }, []);
 
-  // Mouse/pointer drag
+  // Mouse/pointer drag — no setPointerCapture so click events reach cards naturally
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "touch") return; // handled by native touch listeners
     isDragging.current = true;
     dragStartX.current = e.clientX;
     dragScroll.current = posRef.current;
     momentum.current   = 0;
-    try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
   }, []);
 
   const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging.current) return;
+    if (e.pointerType === "touch" || !isDragging.current) return;
     const inner = innerRef.current;
     if (!inner) return;
     const dx   = e.clientX - dragStartX.current;
@@ -204,7 +204,21 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
     inner.style.transform = `translateX(${-posRef.current}px)`;
   }, []);
 
-  const onPointerUp = useCallback(() => { isDragging.current = false; }, []);
+  const onPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "touch") return;
+    isDragging.current = false;
+  }, []);
+
+  // End drag when mouse leaves or releases anywhere on the window
+  useEffect(() => {
+    const end = () => { isDragging.current = false; };
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+    return () => {
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+    };
+  }, []);
 
   if (doubled.length === 0) return null;
 

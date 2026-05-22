@@ -64,18 +64,12 @@ const profile: ProfileType[] = [
     subtitle: "View your profile",
     title: "My Profile",
   },
-  {
-    href: "",
-    icon: IconSettings,
-    subtitle: "Account Settings",
-    title: "Settings",
-  },
-  {
-    href: PageUrl.HOME,
-    icon: IconBuildingStore,
-    subtitle: "Dashboard",
-    title: "My Store",
-  },
+  // {
+  //   href: "",
+  //   icon: IconSettings,
+  //   subtitle: "Account Settings",
+  //   title: "Settings",
+  // }
 ];
 
 

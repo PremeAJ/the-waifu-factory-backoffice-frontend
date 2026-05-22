@@ -11,6 +11,7 @@ import { alpha, useTheme } from "@mui/material/styles";
 import { IconExternalLink } from "@tabler/icons-react";
 import Image from "next/image";
 import { BaseCard, BaseChip } from "@/common/components/base";
+import ArtistLink from "@/common/components/shared/ArtistLink";
 import type { SxProps, Theme } from "@mui/material/styles";
 import { CookiesKey } from "@/common/constants/cookies";
 
@@ -147,19 +148,19 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
       {/* ── Body ── */}
       <Box sx={{ p: 1.5, flexGrow: 1, display: "flex", flexDirection: "column", gap: 0.8 }}>
         {/* Artist row */}
-        <Stack direction="row" alignItems="center" spacing={0.8}>
-          <Avatar src={item.artist.profilePictureUrl ?? undefined} sx={{ width: 24, height: 24, fontSize: 11, flexShrink: 0 }}>
-            {item.artist.displayName[0]}
-          </Avatar>
-          <Typography variant="body2" fontWeight={600} noWrap sx={{ flex: 1, minWidth: 0, fontSize: 11 }}>
-            {item.artist.displayName}
-          </Typography>
-          {item.price != null && (
-            <Typography variant="caption" fontSize={18} fontWeight={800} color="primary.main" flexShrink={0}>
-              {item.price.toLocaleString()} $ {/* use dollar */}
-            </Typography>
-          )}
-        </Stack>
+        <ArtistLink
+          username={item.artist.username}
+          displayName={item.artist.displayName}
+          profilePictureUrl={item.artist.profilePictureUrl}
+          avatarSize={24}
+          endSlot={
+            item.price != null ? (
+              <Typography variant="caption" fontSize={18} fontWeight={800} color="primary.main" flexShrink={0}>
+                {item.price.toLocaleString()} $
+              </Typography>
+            ) : undefined
+          }
+        />
 
         {/* Tags */}
         {item.tags.length > 0 && (
