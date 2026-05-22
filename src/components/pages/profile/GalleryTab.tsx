@@ -5,20 +5,37 @@ import { getFetcher } from "@/app/api/globalFetcher";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { alpha } from "@mui/material/styles";
 import { BaseLightBox } from "@/common/components/base";
 import type { LightboxItem } from "@/common/components/base/BaseLightBox";
-import { IconPhoto } from "@tabler/icons-react";
+import { IconEye, IconHeart, IconPhoto } from "@tabler/icons-react";
+import Cookies from "js-cookie";
+import { CookiesKey } from "@/common/constants/cookies";
+
+interface GalleryItem {
+  id: string;
+  imageUrl: string;
+  isNSFW: boolean;
+  viewCount: number;
+  likeCount: number;
+}
 
 const GalleryTab = ({ username }: { username: string }) => {
+  const showNsfw = typeof window !== "undefined" && Cookies.get(CookiesKey.NSFW_MODE) === "true";
+
   const { data, isLoading } = useSWR(`/api/user/${username}/gallery`, getFetcher, {
     revalidateOnFocus: false,
   });
 
-  const images: string[] = data?.data ?? [];
-  const lightboxItems: LightboxItem[] = images.map((src, i) => ({ src, alt: `Gallery ${i + 1}` }));
+  const items: GalleryItem[] = data?.data ?? [];
+  const lightboxItems: LightboxItem[] = items.map((item, i) => ({
+    src: item.imageUrl,
+    alt: `Gallery ${i + 1}`,
+  }));
 
-  const [lbOpen, setLbOpen]   = useState(false);
+  const [lbOpen,  setLbOpen]  = useState(false);
   const [lbIndex, setLbIndex] = useState(0);
 
   const openLightbox = (index: number) => {
@@ -38,7 +55,7 @@ const GalleryTab = ({ username }: { username: string }) => {
     );
   }
 
-  if (images.length === 0) {
+  if (items.length === 0) {
     return (
       <Box sx={{ textAlign: "center", py: 12, color: "text.secondary" }}>
         <Box sx={{ opacity: 0.35 }}><IconPhoto size={56} stroke={1.2} /></Box>
@@ -51,52 +68,92 @@ const GalleryTab = ({ username }: { username: string }) => {
   return (
     <>
       <Grid container spacing={1.5}>
-        {images.map((src, i) => (
-          <Grid key={i} size={{ xs: 6, sm: 3, md: 2 }}>
-            <Box
-              onClick={() => openLightbox(i)}
-              sx={{
-                position: "relative",
-                width: "100%",
-                paddingTop: "100%",
-                borderRadius: 2,
-                overflow: "hidden",
-                cursor: "pointer",
-                "&:hover img": { transform: "scale(1.07)" },
-                "&:hover .overlay": { opacity: 1 },
-              }}
-            >
+        {items.map((item, i) => {
+          const blurred = item.isNSFW && !showNsfw;
+          return (
+            <Grid key={item.id} size={{ xs: 6, sm: 3, md: 2 }}>
               <Box
-                component="img"
-                src={src}
-                alt={`Gallery ${i + 1}`}
+                onClick={() => openLightbox(i)}
                 sx={{
-                  position: "absolute",
-                  inset: 0,
+                  position: "relative",
                   width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  transition: "transform 0.25s ease",
-                }}
-              />
-              <Box
-                className="overlay"
-                sx={{
-                  position: "absolute",
-                  inset: 0,
-                  bgcolor: "rgba(0,0,0,0.28)",
-                  opacity: 0,
-                  transition: "opacity 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  paddingTop: "100%",
+                  borderRadius: 2,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  "&:hover img": { transform: "scale(1.07)" },
+                  "&:hover .overlay": { opacity: 1 },
                 }}
               >
-                <IconPhoto size={28} color="#fff" />
+                <Box
+                  component="img"
+                  src={item.imageUrl}
+                  alt={`Gallery ${i + 1}`}
+                  sx={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    transition: "transform 0.25s ease",
+                    filter: blurred ? "blur(14px)" : undefined,
+                    transform: blurred ? "scale(1.06)" : undefined,
+                  }}
+                />
+
+                {/* NSFW label */}
+                {blurred && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      bgcolor: alpha("#000", 0.3),
+                      zIndex: 2,
+                    }}
+                  >
+                    <Typography variant="caption" fontWeight={700} sx={{ color: "#fff", bgcolor: alpha("#000", 0.5), px: 1, py: 0.4, borderRadius: 1.5 }}>
+                      🔞 NSFW
+                    </Typography>
+                  </Box>
+                )}
+
+                {/* Hover overlay with stats */}
+                <Box
+                  className="overlay"
+                  sx={{
+                    position: "absolute",
+                    inset: 0,
+                    bgcolor: alpha("#000", 0.45),
+                    opacity: 0,
+                    transition: "opacity 0.2s ease",
+                    display: "flex",
+                    alignItems: "flex-end",
+                    p: 1,
+                    zIndex: 3,
+                  }}
+                >
+                  <Stack direction="row" spacing={1}>
+                    <Stack direction="row" alignItems="center" spacing={0.4}>
+                      <IconEye size={12} color="#fff" />
+                      <Typography variant="caption" sx={{ color: "#fff", lineHeight: 1, fontSize: 11 }}>
+                        {item.viewCount}
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" alignItems="center" spacing={0.4}>
+                      <IconHeart size={12} color="#fff" />
+                      <Typography variant="caption" sx={{ color: "#fff", lineHeight: 1, fontSize: 11 }}>
+                        {item.likeCount}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Box>
               </Box>
-            </Box>
-          </Grid>
-        ))}
+            </Grid>
+          );
+        })}
       </Grid>
 
       <BaseLightBox

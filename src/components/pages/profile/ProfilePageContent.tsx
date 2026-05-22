@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
-import { getFetcher } from "@/app/api/globalFetcher";
+import { deleteFetcher, getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
@@ -26,6 +26,8 @@ import {
   IconBrandTwitch,
   IconLink,
   IconPencil,
+  IconUserCheck,
+  IconUserMinus,
   IconUserPlus,
 } from "@tabler/icons-react";
 import GalleryTab from "./GalleryTab";
@@ -43,6 +45,9 @@ interface PublicProfile {
   bannerUrl: string | null;
   accentColor: string | null;
   createdAt: string;
+  followerCount:  number;
+  followingCount: number;
+  isFollowing:    boolean;
   paymentMethods: { name: string; iconUrl: string; accountValue: string }[];
   socialMedias:   { name: string; iconUrl: string; url: string }[];
 }
@@ -113,6 +118,34 @@ const ProfilePageContent = ({ username }: { username: string }) => {
 
   const profile = data?.data as PublicProfile | undefined;
   const notFound = !isLoading && data && (data.statusCode === 404 || !data.data);
+
+  const [following,      setFollowing]      = useState(false);
+  const [followerCount,  setFollowerCount]  = useState(0);
+  const [followLoading,  setFollowLoading]  = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      setFollowing(profile.isFollowing ?? false);
+      setFollowerCount(profile.followerCount ?? 0);
+    }
+  }, [profile?.id]);
+
+  const handleFollow = async () => {
+    if (followLoading) return;
+    setFollowLoading(true);
+    const next = !following;
+    setFollowing(next);
+    setFollowerCount((c) => c + (next ? 1 : -1));
+    try {
+      if (next) await postFetcher(`/api/user/${username}/follow`, {});
+      else      await deleteFetcher(`/api/user/${username}/follow`, {});
+    } catch {
+      setFollowing(!next);
+      setFollowerCount((c) => c + (next ? -1 : 1));
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   // ── Derived values ────────────────────────────────────────────────────────
 
@@ -222,8 +255,8 @@ const ProfilePageContent = ({ username }: { username: string }) => {
             <Stack direction="row" spacing={4} pb={0.5} flexShrink={0}>
               <Stat value={0} label="Artworks" />
               <Stat value={0} label="Adoptables" />
-              <Stat value={0} label="Followers" onClick={() => setActiveTab("Followers")} />
-              <Stat value={0} label="Following" onClick={() => setActiveTab("Following")} />
+              <Stat value={followerCount} label="Followers" onClick={() => setActiveTab("Followers")} />
+              <Stat value={profile.followingCount ?? 0} label="Following" onClick={() => setActiveTab("Following")} />
             </Stack>
           </Stack>
 
@@ -284,12 +317,15 @@ const ProfilePageContent = ({ username }: { username: string }) => {
             {/* Follow button (non-own profiles) */}
             {!isOwnProfile && (
               <Button
-                variant="contained"
+                variant={following ? "outlined" : "contained"}
+                color={following ? "error" : "primary"}
                 size="small"
-                startIcon={<IconUserPlus size={15} />}
-                sx={{ ml: "auto", textTransform: "none", fontWeight: 700, borderRadius: 2 }}
+                startIcon={following ? <IconUserMinus size={15} /> : <IconUserPlus size={15} />}
+                onClick={handleFollow}
+                disabled={followLoading}
+                sx={{ ml: "auto", textTransform: "none", fontWeight: 700, borderRadius: 2, minWidth: 110 }}
               >
-                Follow
+                {following ? "Unfollow" : "Follow"}
               </Button>
             )}
           </Stack>
@@ -320,7 +356,8 @@ const ProfilePageContent = ({ username }: { username: string }) => {
           {activeTab === "Gallery"    && <GalleryTab username={username} />}
           {activeTab === "Adoptable"  && <AdoptableTab username={username} />}
           {activeTab === "Commission" && <CommissionTab />}
-          {(activeTab === "Followers" || activeTab === "Following") && <UserListTab />}
+          {activeTab === "Followers" && <UserListTab username={username} type="followers" />}
+          {activeTab === "Following" && <UserListTab username={username} type="following" />}
         </Box>
       </Container>
     </Box>
