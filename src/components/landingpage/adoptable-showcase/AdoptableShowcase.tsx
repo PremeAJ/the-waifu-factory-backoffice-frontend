@@ -292,7 +292,7 @@ const AdoptableShowcase = () => {
             <Typography variant="body1" color="text.secondary" mt={0.5}>
               All adoptables are hand-drawn by our artists. Click on any card to learn more about the adoptable
             </Typography>
-            <Typography fontSize={10} color="text.secondary" mt={0.5}>
+            <Typography fontSize={10} color="info" mt={0.5}>
               (in this demo i showing closed adoptables too because i don't have many open adoptables in demo data, but in real app you will only see open adoptables here)
             </Typography>
           </Box>
