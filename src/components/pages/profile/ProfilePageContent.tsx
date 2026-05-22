@@ -45,6 +45,7 @@ interface PublicProfile {
   bannerUrl: string | null;
   accentColor: string | null;
   createdAt: string;
+  joinedAt: string;
   followerCount:  number;
   followingCount: number;
   isFollowing:    boolean;
@@ -178,7 +179,7 @@ const ProfilePageContent = ({ username }: { username: string }) => {
     );
   }
 
-  const memberSince = new Date(profile.createdAt).toLocaleDateString(undefined, {
+  const memberSince = new Date(profile.joinedAt ?? profile.createdAt).toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
   });
