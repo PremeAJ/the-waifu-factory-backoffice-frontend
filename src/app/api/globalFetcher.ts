@@ -46,8 +46,15 @@ const baseFetcher = async (
     fullUrl = url;
   }
   if (method === Method.GET && params && Object.keys(params).length > 0) {
-    const search = new URLSearchParams(params).toString();
-    fullUrl += (fullUrl.includes("?") ? "&" : "?") + search;
+    const search = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => search.append(key, String(v)));
+      } else if (value !== null && value !== undefined) {
+        search.set(key, String(value));
+      }
+    });
+    fullUrl += (fullUrl.includes("?") ? "&" : "?") + search.toString();
   }
   if (typeof fullUrl === "string" && fullUrl.startsWith("/")) {
     if (typeof window !== "undefined") {

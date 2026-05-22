@@ -30,27 +30,7 @@ const AuctionsPageContent = () => {
   return (
     <Container maxWidth="xl" sx={{ py: 5 }}>
       {/* ── Page header ── */}
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        alignItems={{ sm: "flex-end" }}
-        justifyContent="space-between"
-        gap={2}
-        mb={6}
-      >
-        <Box>
-          <Stack direction="row" alignItems="center" spacing={1.5} mb={0.5}>
-            <IconGavel size={32} />
-            <Typography variant="h2" fontWeight={800} lineHeight={1}>
-              Auctions
-            </Typography>
-          </Stack>
-          <Typography color="text.secondary">
-            {totalOpen} active auction{totalOpen !== 1 ? "s" : ""} — bid on unique hand-drawn characters
-          </Typography>
-        </Box>
-        <SeeNSFWContentToggle value={showNsfw} onChange={handleToggleNsfw} />
-      </Stack>
-
+    
       {/* ── Category sections ── */}
       <Stack spacing={8}>
         {MOCK_AUCTION_SERIES.map((group) => (

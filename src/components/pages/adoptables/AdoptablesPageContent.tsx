@@ -2,7 +2,7 @@
 
 import { CookiesKey } from "@/common/constants/cookies";
 import { getFetcher } from "@/app/api/globalFetcher";
-import { useArtists, useAdoptableTags, ArtistMaster } from "@/common/hooks/useMasterData";
+import { useArtists, useAdoptableTags, usePaymentMethods, ArtistMaster } from "@/common/hooks/useMasterData";
 import { useInfiniteScroll } from "@/common/components/base/BaseTable/hooks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import AdoptableCard, { AdoptableListItem } from "./AdoptableCard";
@@ -22,6 +22,7 @@ import useSWRInfinite from "swr/infinite";
 const AdoptablesPageContent = () => {
   const { artists } = useArtists();
   const { adoptableTags } = useAdoptableTags();
+  const { paymentMethods } = usePaymentMethods();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -36,6 +37,7 @@ const AdoptablesPageContent = () => {
     () => (searchParams.get("content") as "sfw" | "nsfw" | "all") ?? "all"
   );
   const [artistFilter, setArtistFilter] = useState<ArtistMaster | null>(null);
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<string[]>(() => searchParams.getAll("paymentMethod"));
   const [showNsfw, setShowNsfw] = useState(false);
   const [sortBy, setSortBy] = useState<SortByOption>(
     () => (searchParams.get("sort") as SortByOption) ?? "createdAt_desc"
@@ -71,10 +73,11 @@ const AdoptablesPageContent = () => {
     statusFilter.forEach((s) => params.append("status", s));
     categoryFilter.forEach((c) => params.append("categories", c));
     tagFilter.forEach((t) => params.append("tags", t));
+    paymentMethodFilter.forEach((p) => params.append("paymentMethod", p));
     if (sortBy !== "createdAt_desc") params.set("sort", sortBy);
     const qs = params.toString();
     router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
-  }, [debouncedSearch, artistFilter, nsfwFilter, statusFilter, categoryFilter, tagFilter, sortBy]);
+  }, [debouncedSearch, artistFilter, nsfwFilter, statusFilter, categoryFilter, tagFilter, paymentMethodFilter, sortBy]);
 
   const queryParams = useMemo(() => {
     const params: Record<string, any> = {};
@@ -84,9 +87,10 @@ const AdoptablesPageContent = () => {
     if (statusFilter.length > 0) params.status = statusFilter;
     if (categoryFilter.length > 0) params.categories = categoryFilter;
     if (tagFilter.length > 0) params.tags = tagFilter;
+    if (paymentMethodFilter.length > 0) params.paymentMethod = paymentMethodFilter;
     if (sortBy !== "createdAt_desc") params.sort = sortBy;
     return params;
-  }, [debouncedSearch, artistFilter, nsfwFilter, statusFilter, categoryFilter, tagFilter, sortBy]);
+  }, [debouncedSearch, artistFilter, nsfwFilter, statusFilter, categoryFilter, tagFilter, paymentMethodFilter, sortBy]);
 
   const getKey = (pageIndex: number, previousPageData: any) => {
     if (pageIndex > 0 && !previousPageData) return null;
@@ -139,6 +143,7 @@ const AdoptablesPageContent = () => {
     statusFilter.length +
     categoryFilter.length +
     tagFilter.length +
+    paymentMethodFilter.length +
     (["sfw", "nsfw"].includes(nsfwFilter) ? 1 : 0) +
     (artistFilter ? 1 : 0);
 
@@ -149,22 +154,11 @@ const AdoptablesPageContent = () => {
     setSearch("");
     setStatusFilter([]);
     setTagFilter([]);
+    setPaymentMethodFilter([]);
   };
 
   return (
     <Container maxWidth="xl" sx={{ py: 5 }}>
-      {/* Header */}
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={4}>
-        <Box>
-          <Typography variant="h2" fontWeight={800}>
-            Adoptables
-          </Typography>
-          <Typography color="text.secondary" mt={0.5}>
-            {isLoading ? "Loading..." : `${items.length} adoptable${items.length !== 1 ? "s" : ""} found`}
-          </Typography>
-        </Box>
-      </Stack>
-
       <Grid container spacing={3}>
         {/* ── Filter Panel ── */}
         <Grid size={{ xs: 12, md: 3 }}>
@@ -183,6 +177,9 @@ const AdoptablesPageContent = () => {
             onShowNsfwChange={setShowNsfw}
             onStatusFilterChange={setStatusFilter}
             onTagFilterChange={setTagFilter}
+            paymentMethodFilter={paymentMethodFilter}
+            onPaymentMethodFilterChange={setPaymentMethodFilter}
+            allPaymentMethods={paymentMethods}
             search={search}
             showNsfw={showNsfw}
             statusFilter={statusFilter}

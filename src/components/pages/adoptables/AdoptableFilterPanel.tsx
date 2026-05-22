@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -10,13 +10,15 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import { alpha, useTheme } from "@mui/material/styles";
 import Cookies from "js-cookie";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { BaseCard, BaseChip } from "@/common/components/base";
 import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
 import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
-import type { ArtistMaster, AdoptableTagCategory } from "@/common/hooks/useMasterData";
+import type { ArtistMaster, AdoptableTagCategory, PaymentMethodMaster } from "@/common/hooks/useMasterData";
 
 export interface AdoptableFilterPanelProps {
   search: string;
@@ -33,6 +35,9 @@ export interface AdoptableFilterPanelProps {
   onShowNsfwChange: (checked: boolean) => void;
   artistFilter: ArtistMaster | null;
   onArtistFilterChange: (v: ArtistMaster | null) => void;
+  paymentMethodFilter: string[];
+  onPaymentMethodFilterChange: (v: string[]) => void;
+  allPaymentMethods: PaymentMethodMaster[];
   activeFilterCount: number;
   onClearAll: () => void;
   allArtists: ArtistMaster[];
@@ -55,12 +60,16 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
   onShowNsfwChange,
   artistFilter,
   onArtistFilterChange,
+  paymentMethodFilter,
+  onPaymentMethodFilterChange,
+  allPaymentMethods,
   activeFilterCount,
   onClearAll,
   allArtists,
   adoptableTags,
   visibleTagCategories,
 }) => {
+  const theme = useTheme();
 
   const toggleChip = (arr: string[], setArr: (v: string[]) => void, val: string) => {
     setArr(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
@@ -69,13 +78,17 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
   return (
     <BaseCard
       sx={{
-        p: 3,
         borderRadius: 4,
         boxShadow: 1,
         position: { md: "sticky" },
         top: 80,
+        maxHeight: { md: "calc(100vh - 100px)" },
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
       }}
     >
+      <Box sx={{ p: 3, overflowY: "auto", flex: 1, "&::-webkit-scrollbar": { width: 4 }, "&::-webkit-scrollbar-thumb": { borderRadius: 2, bgcolor: "divider" } }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
         <Typography variant="h6" fontWeight={700}>
           Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
@@ -193,6 +206,60 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
         ))}
       </Box>
 
+      {/* Payment Method */}
+      {allPaymentMethods.length > 0 && (
+        <>
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="subtitle2" fontWeight={700} mb={1.25}>
+            Payment Method
+          </Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8, mb: 3 }}>
+            {allPaymentMethods.map((pm) => {
+              const active = paymentMethodFilter.includes(pm.name);
+              return (
+                <Tooltip key={pm.id} title={pm.name} placement="top" arrow>
+                  <Box
+                    onClick={() => toggleChip(paymentMethodFilter, onPaymentMethodFilterChange, pm.name)}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.75,
+                      px: 1.25,
+                      py: 0.6,
+                      borderRadius: 2,
+                      border: `1.5px solid ${active ? theme.palette.primary.main : theme.palette.divider}`,
+                      bgcolor: active ? alpha(theme.palette.primary.main, 0.1) : "transparent",
+                      cursor: "pointer",
+                      transition: "border-color 120ms, background-color 120ms",
+                      userSelect: "none",
+                      "&:hover": {
+                        borderColor: theme.palette.primary.main,
+                        bgcolor: alpha(theme.palette.primary.main, 0.06),
+                      },
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={pm.iconUrl}
+                      alt={pm.name}
+                      sx={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
+                    />
+                    <Typography
+                      variant="caption"
+                      fontWeight={600}
+                      noWrap
+                      sx={{ color: active ? "primary.main" : "text.primary", maxWidth: 80 }}
+                    >
+                      {pm.name}
+                    </Typography>
+                  </Box>
+                </Tooltip>
+              );
+            })}
+          </Box>
+        </>
+      )}
+
       {/* Categories */}
       {adoptableTags.length > 0 && (
         <>
@@ -263,6 +330,7 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
           </Box>
         </>
       )}
+      </Box>
     </BaseCard>
   );
 };

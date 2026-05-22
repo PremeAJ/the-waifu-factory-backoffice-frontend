@@ -49,7 +49,8 @@ const Header = () => {
   };
 
   return (
-    <AppBarStyled position="sticky" elevation={8}>
+    <>
+    <AppBarStyled position="fixed" elevation={8} sx={{ zIndex: 1200 }}>
       <Container maxWidth="lg">
         <ToolbarStyled>
           <Logo size="small"/>
@@ -96,6 +97,8 @@ const Header = () => {
         <MobileSidebar />
       </Drawer>
     </AppBarStyled>
+    <Box sx={{ height: { xs: 64, lg: 80 } }} />
+    </>
   );
 };
 

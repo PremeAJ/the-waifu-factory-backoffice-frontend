@@ -287,10 +287,13 @@ const AdoptableShowcase = () => {
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Box>
             <Typography variant="h3" fontWeight={700}>
-              Adoptables
+              Adoptables 
             </Typography>
             <Typography variant="body1" color="text.secondary" mt={0.5}>
               All adoptables are hand-drawn by our artists. Click on any card to learn more about the adoptable
+            </Typography>
+            <Typography fontSize={10} color="text.secondary" mt={0.5}>
+              (in this demo i showing closed adoptables too because i don't have many open adoptables in demo data, but in real app you will only see open adoptables here)
             </Typography>
           </Box>
           <Stack direction="row" alignItems="center" spacing={2}>
