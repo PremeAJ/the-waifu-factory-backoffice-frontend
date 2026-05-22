@@ -62,11 +62,12 @@ const Navigations = () => {
   const theme = useTheme(); // เรียกใช้งาน Material UI Theme Object
 
   const menuItems = [
-    { label: "Home", href: "/" },
-    { label: "Adoptables", href: "/adoptables" },
-    { label: "Auctions", href: "/auctions" },
-    { label: "Commission", href: "/commission" },
-  ];
+    { label: "Home",       href: "/",           authOnly: false },
+    { label: "Adoptables", href: "/adoptables", authOnly: false },
+    { label: "Auctions",   href: "/auctions",   authOnly: false },
+    { label: "Commission", href: "/commission", authOnly: false },
+    { label: "Member",     href: "/member",     authOnly: true  },
+  ].filter((item) => !item.authOnly || !!waifuUser);
 
   return (
     <>
