@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { getFetcher, postFetcher } from "@/app/api/globalFetcher";
@@ -34,13 +34,32 @@ const CommissionCreatePageContent = () => {
   const [file,     setFile]     = useState<File | null>(null);
   const [preview,  setPreview]  = useState<string | null>(null);
   const [form,     setForm]     = useState({ title: "", description: "", postUrl: "", price: "", isNSFW: false });
-  const [artist,   setArtist]   = useState<MasterUser | null>(null);
-  const [owner,    setOwner]    = useState<MasterUser | null>(null);
+  const [artist,      setArtist]      = useState<MasterUser | null>(null);
+  const [owner,       setOwner]       = useState<MasterUser | null>(null);
+  const [artistInput, setArtistInput] = useState("");
+  const [ownerInput,  setOwnerInput]  = useState("");
+  const [artistQuery, setArtistQuery] = useState("");
+  const [ownerQuery,  setOwnerQuery]  = useState("");
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState<string | null>(null);
 
-  const { data: artistData } = useSWR("/api/master/artist-list", getFetcher, { revalidateOnFocus: false });
-  const { data: userData }   = useSWR("/api/master/user-list",   getFetcher, { revalidateOnFocus: false });
+  useEffect(() => {
+    const t = setTimeout(() => setArtistQuery(artistInput), 300);
+    return () => clearTimeout(t);
+  }, [artistInput]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setOwnerQuery(ownerInput), 300);
+    return () => clearTimeout(t);
+  }, [ownerInput]);
+
+  const artistParams: Record<string, any> = { limit: 20 };
+  if (artistQuery) artistParams.search = artistQuery;
+  const ownerParams: Record<string, any> = { limit: 20 };
+  if (ownerQuery) ownerParams.search = ownerQuery;
+
+  const { data: artistData } = useSWR(["/api/master/artist-list", artistParams], getFetcher, { revalidateOnFocus: false });
+  const { data: userData }   = useSWR(["/api/master/user-list",   ownerParams],  getFetcher, { revalidateOnFocus: false });
   const artistOptions: MasterUser[] = artistData?.data ?? [];
   const userOptions:   MasterUser[] = userData?.data   ?? [];
 
@@ -156,8 +175,11 @@ const CommissionCreatePageContent = () => {
               options={artistOptions}
               value={artist}
               onChange={(_, v) => setArtist(v)}
+              inputValue={artistInput}
+              onInputChange={(_, v, reason) => { if (reason !== "reset") setArtistInput(v); }}
               getOptionLabel={(o) => o.displayName}
               isOptionEqualToValue={(a, b) => a.id === b.id}
+              filterOptions={(x) => x}
               renderOption={(props, o) => (
                 <Box component="li" {...props} key={o.id}>
                   <Stack direction="row" alignItems="center" spacing={1.2}>
@@ -197,8 +219,11 @@ const CommissionCreatePageContent = () => {
               options={userOptions}
               value={owner}
               onChange={(_, v) => setOwner(v)}
+              inputValue={ownerInput}
+              onInputChange={(_, v, reason) => { if (reason !== "reset") setOwnerInput(v); }}
               getOptionLabel={(o) => o.displayName}
               isOptionEqualToValue={(a, b) => a.id === b.id}
+              filterOptions={(x) => x}
               renderOption={(props, o) => (
                 <Box component="li" {...props} key={o.id}>
                   <Stack direction="row" alignItems="center" spacing={1.2}>
