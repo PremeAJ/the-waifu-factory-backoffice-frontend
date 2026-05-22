@@ -7,7 +7,7 @@ import Header from './components/Header';
 
 export default function Landingpage() {
   return (
-    <PageContainer title="Home" description="Meow Som Home">
+    <PageContainer title="Home" description="The Waifu Factory Home">
       <Header />
       <AdoptableShowcase />
       <Footer />

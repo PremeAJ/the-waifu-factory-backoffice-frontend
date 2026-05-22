@@ -145,7 +145,8 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
       if (swipeDir.current === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
         swipeDir.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v";
       }
-      if (swipeDir.current === "v") return; // let browser handle vertical page scroll
+      // Only intercept confirmed horizontal swipes — null/vertical let through so tap still fires click
+      if (swipeDir.current !== "h") return;
 
       e.preventDefault(); // block page scroll for horizontal carousel swipe
 

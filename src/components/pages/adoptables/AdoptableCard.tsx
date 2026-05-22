@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -62,6 +63,7 @@ export interface AdoptableCardProps {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, showViewPost = true }) => {
+  const router = useRouter();
   const theme = useTheme();
   const tagTextColor = theme.palette.mode === "dark" ? "#fff" : "#555";
   // Read NSFW blur preference from cookie (default true = blur)
@@ -81,14 +83,14 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        cursor: item.postUrl ? "pointer" : "default",
+        cursor: "pointer",
         touchAction: "pan-y",
         WebkitTapHighlightColor: "transparent",
         transition: "transform 0.22s, box-shadow 0.22s",
         "@media (hover: hover)": { "&:hover": { transform: "translateY(-6px)", boxShadow: "0px 0px 20px 6px rgba(0,0,0,0.15), 0px 8px 16px 0px rgba(0,0,0,0.14)" } },
         ...sx,
       }}
-      onClick={() => item.postUrl && window.open(item.postUrl, "_blank")}
+      onClick={() => router.push(`/adoptables/${item.id}`)}
     >
       {/* ── Image ── */}
       <Box sx={{ position: "relative", width: "100%", paddingTop: "120%", flexShrink: 0 }}>
