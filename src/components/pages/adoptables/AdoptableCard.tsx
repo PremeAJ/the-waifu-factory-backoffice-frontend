@@ -1,17 +1,18 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { alpha, useTheme } from "@mui/material/styles";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink, IconEye, IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import Image from "next/image";
 import { BaseCard, BaseChip } from "@/common/components/base";
 import ArtistLink from "@/common/components/shared/ArtistLink";
+import { deleteFetcher, postFetcher } from "@/app/api/globalFetcher";
 import type { SxProps, Theme } from "@mui/material/styles";
 import { CookiesKey } from "@/common/constants/cookies";
 
@@ -43,6 +44,9 @@ export interface AdoptableListItem {
   tags: AdoptableTag[];
   /** Explicit NSFW flag from API — also auto-detected from tags named "nsfw" */
   isNSFW?: boolean;
+  viewCount?: number;
+  likeCount?: number;
+  isLiked?: boolean;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -75,6 +79,31 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
   }
   // Only blur if showNsfw is false and item is NSFW
   const blurred = !showNsfw && isAdoptableNsfw(item);
+
+  const [liked, setLiked] = useState(item.isLiked ?? false);
+  const [likeCount, setLikeCount] = useState(item.likeCount ?? 0);
+  const [liking, setLiking] = useState(false);
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (liking) return;
+    setLiking(true);
+    const next = !liked;
+    setLiked(next);
+    setLikeCount((c) => c + (next ? 1 : -1));
+    try {
+      if (next) {
+        await postFetcher(`/api/adoptable/${item.id}/like`, {});
+      } else {
+        await deleteFetcher(`/api/adoptable/${item.id}/like`, {});
+      }
+    } catch {
+      setLiked(!next);
+      setLikeCount((c) => c + (next ? -1 : 1));
+    } finally {
+      setLiking(false);
+    }
+  };
 
   return (
     <BaseCard
@@ -194,9 +223,32 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
           </Stack>
         )}
 
+        {/* Like & View row */}
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mt="auto">
+          <Stack direction="row" alignItems="center" spacing={0.3}>
+            <IconEye size={13} style={{ opacity: 0.5 }} />
+            <Typography variant="caption" color="text.secondary" lineHeight={1}>
+              {(item.viewCount ?? 0).toLocaleString()}
+            </Typography>
+          </Stack>
+          <Stack direction="row" alignItems="center" spacing={0.3}>
+            <Typography variant="caption" color={liked ? "error.main" : "text.secondary"} lineHeight={1}>
+              {likeCount.toLocaleString()}
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={handleLike}
+              disableRipple
+              sx={{ p: 0.25, color: liked ? "error.main" : "text.secondary", "&:hover": { color: "error.main" } }}
+            >
+              {liked ? <IconHeartFilled size={14} /> : <IconHeart size={14} />}
+            </IconButton>
+          </Stack>
+        </Stack>
+
         {/* View post button */}
         {showViewPost && item.postUrl && (
-          <Box mt="auto" pt={0.5}>
+          <Box pt={0.5}>
             <Button
               fullWidth
               variant="outlined"
