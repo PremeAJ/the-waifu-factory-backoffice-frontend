@@ -317,7 +317,7 @@ const ProfilePageContent = ({ username }: { username: string }) => {
 
         {/* ── Tab content ── */}
         <Box sx={{ mt: 4 }}>
-          {activeTab === "Gallery"    && <GalleryTab />}
+          {activeTab === "Gallery"    && <GalleryTab username={username} />}
           {activeTab === "Adoptable"  && <AdoptableTab username={username} />}
           {activeTab === "Commission" && <CommissionTab />}
           {(activeTab === "Followers" || activeTab === "Following") && <UserListTab />}
