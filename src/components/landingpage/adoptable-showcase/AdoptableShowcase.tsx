@@ -1,50 +1,18 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo, useCallback, memo } from "react";
 import useSWR from "swr";
 import { getFetcher } from "@/app/api/globalFetcher";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { styled, keyframes } from "@mui/material/styles";
-import { IconArrowRight, IconEye, IconEyeOff } from "@tabler/icons-react";
+import { IconArrowRight } from "@tabler/icons-react";
 import { BaseButton } from "@/common/components/base";
 import SeeNSFWContentToggle from "@/common/components/shared/SeeNSFWContentToggle";
 import Cookies from "js-cookie";
 import { CookiesKey, setCookiesOption1Y } from "@/common/constants/cookies";
 import AdoptableCard, { AdoptableListItem } from "@/components/pages/adoptables/AdoptableCard";
 
-
-
-// ── Keyframes ─────────────────────────────────────────────────────────────────
-
-const scrollLeft = keyframes`
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-`;
-
-const scrollRight = keyframes`
-  0%   { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-`;
-
-// ── Styled ────────────────────────────────────────────────────────────────────
-
-const TrackLeft = styled(Box)({
-  display: "flex",
-  width: "max-content",
-});
-
-const TrackRight = styled(Box)({
-  display: "flex",
-  width: "max-content",
-});
-
-
-
-// ── Row ───────────────────────────────────────────────────────────────────────
-
-// Repeat items array until we have at least `min` entries for seamless scroll
 function fillItems(items: AdoptableListItem[], min = 12): AdoptableListItem[] {
   if (items.length === 0) return [];
   const result: AdoptableListItem[] = [];
@@ -52,159 +20,195 @@ function fillItems(items: AdoptableListItem[], min = 12): AdoptableListItem[] {
   return result;
 }
 
-const Row = ({ items, direction, offset = 0, sfw }: { items: AdoptableListItem[]; direction: "left" | "right"; offset?: number; sfw: boolean }) => {
-  // Fill to at least 12 items then double for seamless loop
-  const filled = fillItems(items);
-  // Apply offset so each row shows different cards first
-  const shifted = [...filled.slice(offset % filled.length), ...filled.slice(0, offset % filled.length)];
-  const doubled = [...shifted, ...shifted];
+interface RowProps {
+  items: AdoptableListItem[];
+  direction: "left" | "right";
+  offset?: number;
+  sfw: boolean;
+}
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const isDragging = useRef(false);
-  const dragStartX = useRef(0);
-  const dragStartScroll = useRef(0);
-  const rafRef = useRef<number | null>(null);
-  const lastTime = useRef<number | null>(null);
-  const innerRef = useRef<HTMLDivElement | null>(null);
-  const posRef = useRef(0); // current translate position in px (0..half)
+const SPEED    = 0.04;  // px/ms (~40px/s)
+const FRICTION = 0.92;  // momentum decay per frame
 
-  const directionFactor = direction === "left" ? 1 : -1;
-  const speedPxPerMs = 0.04; // auto-scroll speed in px per ms (~40px/s) — reduced for smoothness
+const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
+  const doubled = useMemo(() => {
+    const filled = fillItems(items);
+    if (filled.length === 0) return [];
+    const off     = offset % filled.length;
+    const shifted = off === 0 ? filled : [...filled.slice(off), ...filled.slice(0, off)];
+    return [...shifted, ...shifted];
+  }, [items, offset]);
 
-  // Measure sizes and set initial position according to offset
+  const containerRef = useRef<HTMLDivElement>(null);
+  const innerRef     = useRef<HTMLDivElement>(null);
+  const halfRef      = useRef(0);
+  const posRef       = useRef(0);
+  const isDragging   = useRef(false);
+  const dragStartX   = useRef(0);
+  const dragStartY   = useRef(0);
+  const dragScroll   = useRef(0);
+  const swipeDir     = useRef<"h" | "v" | null>(null);
+  const momentum     = useRef(0); // px/ms — positive = moving right (decreases posRef)
+  const lastTouchX   = useRef(0);
+  const lastTouchT   = useRef(0);
+  const rafRef       = useRef<number | null>(null);
+  const lastTime     = useRef<number | null>(null);
+
+  const dirFactor = direction === "left" ? 1 : -1;
+
+  // Measure track half-width and set initial scroll position; keep it fresh on resize
   useEffect(() => {
-    const container = containerRef.current;
     const inner = innerRef.current;
-    if (!container || !inner) return;
-    const first = inner.querySelector("[data-item]") as HTMLElement | null;
-    if (!first) return;
-    const style = getComputedStyle(first);
-    const itemWidth = first.offsetWidth + parseFloat(style.marginLeft || "0") + parseFloat(style.marginRight || "0");
-    const total = inner.scrollWidth;
-    const half = total / 2 || 0;
-    const start = ((offset % filled.length) * itemWidth) % half;
-    posRef.current = start;
-    inner.style.transform = `translateX(${-posRef.current}px)`;
-    inner.style.willChange = "transform";
-  }, [offset, filled.length]);
+    if (!inner || doubled.length === 0) return;
 
-  // Auto-scroll loop using requestAnimationFrame
+    const init = () => {
+      halfRef.current = inner.scrollWidth / 2;
+      if (halfRef.current === 0) return;
+      const first = inner.querySelector("[data-item]") as HTMLElement | null;
+      if (!first) return;
+      const cs    = getComputedStyle(first);
+      const itemW = first.offsetWidth + parseFloat(cs.marginLeft || "0") + parseFloat(cs.marginRight || "0");
+      const filledLen = doubled.length / 2;
+      const start = ((offset % Math.max(filledLen, 1)) * itemW) % halfRef.current;
+      posRef.current = start;
+      inner.style.transform = `translateX(${-start}px)`;
+    };
+
+    init();
+    const ro = new ResizeObserver(() => { halfRef.current = inner.scrollWidth / 2; });
+    ro.observe(inner);
+    return () => ro.disconnect();
+  }, [doubled, offset]);
+
+  // RAF auto-scroll + momentum decay
   useEffect(() => {
-    let started = false;
-    let pollId: number | null = null;
+    if (doubled.length === 0) return;
+    const inner = innerRef.current;
+    if (!inner) return;
 
-    const startLoop = (container: HTMLDivElement) => {
-      if (started) return;
-      started = true;
-      const inner = innerRef.current;
-      if (!inner) return;
-      const total = inner.scrollWidth;
-      const half = total / 2 || 0;
+    const step = (t: number) => {
+      if (lastTime.current == null) lastTime.current = t;
+      const dt = Math.min(t - lastTime.current, 50); // cap to avoid jump after tab switch
+      lastTime.current = t;
 
-      const step = (t: number) => {
-        if (lastTime.current == null) lastTime.current = t;
-        const dt = t - lastTime.current;
-        lastTime.current = t;
-
-        if (!isDragging.current && inner) {
-          let next = posRef.current + directionFactor * speedPxPerMs * dt;
-          if (half > 0) {
-            if (next >= half) next -= half;
-            if (next < 0) next += half;
+      if (!isDragging.current) {
+        const half = halfRef.current;
+        if (half > 0) {
+          if (Math.abs(momentum.current) > 0.0005) {
+            momentum.current *= FRICTION;
+          } else {
+            momentum.current = 0;
           }
+          let next = posRef.current + dirFactor * SPEED * dt - momentum.current * dt;
+          if (next >= half) next -= half;
+          if (next < 0)    next += half;
           posRef.current = next;
           inner.style.transform = `translateX(${-posRef.current}px)`;
         }
-
-        rafRef.current = requestAnimationFrame(step);
-      };
-
+      }
       rafRef.current = requestAnimationFrame(step);
     };
 
-    const tryStart = () => {
-      const container = containerRef.current;
-      if (container && container.children.length > 0) {
-        if (pollId) { cancelAnimationFrame(pollId); pollId = null; }
-        startLoop(container);
-      } else {
-        pollId = requestAnimationFrame(tryStart);
-      }
-    };
-
-    tryStart();
-
+    rafRef.current = requestAnimationFrame(step);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (pollId) cancelAnimationFrame(pollId);
       rafRef.current = null;
       lastTime.current = null;
     };
-  }, [doubled.length, direction]);
+  }, [doubled.length, dirFactor]);
 
-  // Pointer handlers for dragging (translate-based)
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    const container = containerRef.current;
-    if (!container) return;
+  // Non-passive native touch listeners — required to call preventDefault() for horizontal swipes
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      isDragging.current = true;
+      swipeDir.current   = null;
+      momentum.current   = 0;
+      dragStartX.current = t.clientX;
+      dragStartY.current = t.clientY;
+      dragScroll.current = posRef.current;
+      lastTouchX.current = t.clientX;
+      lastTouchT.current = performance.now();
+    };
+
+    const onMove = (e: TouchEvent) => {
+      if (!isDragging.current || e.touches.length !== 1) return;
+      const t  = e.touches[0];
+      const dx = t.clientX - dragStartX.current;
+      const dy = t.clientY - dragStartY.current;
+
+      // Determine swipe axis on first significant movement
+      if (swipeDir.current === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+        swipeDir.current = Math.abs(dx) >= Math.abs(dy) ? "h" : "v";
+      }
+      if (swipeDir.current === "v") return; // let browser handle vertical page scroll
+
+      e.preventDefault(); // block page scroll for horizontal carousel swipe
+
+      const now = performance.now();
+      const dt  = now - lastTouchT.current;
+      if (dt > 0) momentum.current = (t.clientX - lastTouchX.current) / dt;
+      lastTouchX.current = t.clientX;
+      lastTouchT.current = now;
+
+      const inner = innerRef.current;
+      if (!inner) return;
+      const half = halfRef.current;
+      let next = dragScroll.current - dx;
+      if (half > 0) next = ((next % half) + half) % half;
+      posRef.current = next;
+      inner.style.transform = `translateX(${-posRef.current}px)`;
+    };
+
+    const onEnd = () => {
+      isDragging.current = false;
+      swipeDir.current   = null;
+      // momentum.current keeps last velocity → RAF loop decays it with FRICTION
+    };
+
+    el.addEventListener("touchstart",  onStart, { passive: true });
+    el.addEventListener("touchmove",   onMove,  { passive: false });
+    el.addEventListener("touchend",    onEnd,   { passive: true });
+    el.addEventListener("touchcancel", onEnd,   { passive: true });
+    return () => {
+      el.removeEventListener("touchstart",  onStart);
+      el.removeEventListener("touchmove",   onMove);
+      el.removeEventListener("touchend",    onEnd);
+      el.removeEventListener("touchcancel", onEnd);
+    };
+  }, []);
+
+  // Mouse/pointer drag
+  const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     isDragging.current = true;
     dragStartX.current = e.clientX;
-    dragStartScroll.current = posRef.current;
+    dragScroll.current = posRef.current;
+    momentum.current   = 0;
     try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
-    container.style.scrollBehavior = "auto";
-  };
+  }, []);
 
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const container = containerRef.current;
-    if (!container || !isDragging.current) return;
-    const dx = e.clientX - dragStartX.current;
+  const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging.current) return;
     const inner = innerRef.current;
     if (!inner) return;
-    const total = inner.scrollWidth;
-    const half = total / 2 || 0;
-    let next = dragStartScroll.current - dx;
-    if (half > 0) {
-      next = ((next % half) + half) % half;
-    }
+    const dx   = e.clientX - dragStartX.current;
+    const half = halfRef.current;
+    let next   = dragScroll.current - dx;
+    if (half > 0) next = ((next % half) + half) % half;
     posRef.current = next;
     inner.style.transform = `translateX(${-posRef.current}px)`;
-  };
+  }, []);
 
-  const onPointerUp = () => {
-    const container = containerRef.current;
-    isDragging.current = false;
-    if (container) container.style.scrollBehavior = "smooth";
-  };
+  const onPointerUp = useCallback(() => { isDragging.current = false; }, []);
 
-  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length !== 1) return;
-    const touch = e.touches[0];
-    isDragging.current = true;
-    dragStartX.current = touch.clientX;
-    dragStartScroll.current = posRef.current;
-  };
-
-  const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!isDragging.current || e.touches.length !== 1) return;
-    const touch = e.touches[0];
-    const dx = touch.clientX - dragStartX.current;
-    const inner = innerRef.current;
-    if (!inner) return;
-    const total = inner.scrollWidth;
-    const half = total / 2 || 0;
-    let next = dragStartScroll.current - dx;
-    if (half > 0) {
-      next = ((next % half) + half) % half;
-    }
-    posRef.current = next;
-    inner.style.transform = `translateX(${-posRef.current}px)`;
-  };
-
-  const onTouchEnd = () => {
-    isDragging.current = false;
-  };
+  if (doubled.length === 0) return null;
 
   return (
-    <Box component="div" sx={{ overflow: "hidden", width: "100%" }}>
+    <Box sx={{ overflow: "hidden", width: "100%" }}>
       <Box
         component="div"
         ref={containerRef}
@@ -213,16 +217,12 @@ const Row = ({ items, direction, offset = 0, sfw }: { items: AdoptableListItem[]
         onPointerUp={onPointerUp}
         onPointerLeave={onPointerUp}
         onPointerCancel={onPointerUp}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
         sx={{
           overflow: "hidden",
           cursor: "grab",
           touchAction: "pan-y",
           userSelect: "none",
           WebkitUserSelect: "none",
-          px: 0,
           mx: -1,
         }}
       >
@@ -232,7 +232,7 @@ const Row = ({ items, direction, offset = 0, sfw }: { items: AdoptableListItem[]
               <AdoptableCard
                 item={item}
                 showViewPost={false}
-                sx={{ width: 260, mx: 1, my: 4, flexShrink: 0, "&:hover": { transform: "scale(1.04)" } }}
+                sx={{ width: 260, mx: 1, my: 4, flexShrink: 0 }}
               />
             </div>
           ))}
@@ -240,9 +240,7 @@ const Row = ({ items, direction, offset = 0, sfw }: { items: AdoptableListItem[]
       </Box>
     </Box>
   );
-};
-
-// ── Main component ────────────────────────────────────────────────────────────
+});
 
 const AdoptableShowcase = () => {
   const [showNsfw, setShowNsfw] = useState(false);
@@ -258,14 +256,13 @@ const AdoptableShowcase = () => {
 
   const items: AdoptableListItem[] = showcaseData?.data ?? [];
 
-  const toggleShowNsfw = (checked: boolean) => {
+  const toggleShowNsfw = useCallback((checked: boolean) => {
     Cookies.set(CookiesKey.NSFW_MODE, String(checked), setCookiesOption1Y);
     setShowNsfw(checked);
-  };
+  }, []);
 
   if (items.length === 0) return null;
 
-  // All rows use the same items but with different starting offsets
   const offset2 = Math.floor(items.length / 3);
   const offset3 = Math.floor((items.length * 2) / 3);
 
@@ -293,9 +290,9 @@ const AdoptableShowcase = () => {
           </Stack>
         </Stack>
       </Container>
-      <Row items={items} direction="left" offset={0} sfw={showNsfw} />
+      <Row items={items} direction="left"  offset={0}       sfw={showNsfw} />
       <Row items={items} direction="right" offset={offset2} sfw={showNsfw} />
-      <Row items={items} direction="left" offset={offset3} sfw={showNsfw} />
+      <Row items={items} direction="left"  offset={offset3} sfw={showNsfw} />
     </Box>
   );
 };
