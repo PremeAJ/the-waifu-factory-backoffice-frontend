@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import useSWR from "swr";
-import { getFetcher } from "@/app/api/globalFetcher";
+import { deleteFetcher, getFetcher, postFetcher } from "@/app/api/globalFetcher";
 import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -13,7 +14,7 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { alpha, useTheme } from "@mui/material/styles";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink, IconEye, IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import Image from "next/image";
 import { BaseChip } from "@/common/components/base";
 import Cookies from "js-cookie";
@@ -40,6 +41,37 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
 
   const item: AdoptableListItem | undefined = data?.data;
   const blurred = item ? !showNsfw && isAdoptableNsfw(item) : false;
+
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [liking, setLiking] = useState(false);
+
+  useEffect(() => {
+    if (item) {
+      setLiked(item.isLiked ?? false);
+      setLikeCount(item.likeCount ?? 0);
+    }
+  }, [item?.id]);
+
+  const handleLike = async () => {
+    if (liking) return;
+    setLiking(true);
+    const next = !liked;
+    setLiked(next);
+    setLikeCount((c) => c + (next ? 1 : -1));
+    try {
+      if (next) {
+        await postFetcher(`/api/adoptable/${id}/like`, {});
+      } else {
+        await deleteFetcher(`/api/adoptable/${id}/like`, {});
+      }
+    } catch {
+      setLiked(!next);
+      setLikeCount((c) => c + (next ? -1 : 1));
+    } finally {
+      setLiking(false);
+    }
+  };
 
   // Magnifier — DOM-direct updates to avoid re-renders on every mousemove
   const imgContainerRef = useRef<HTMLDivElement>(null);
@@ -201,9 +233,26 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
                 }}
               >
                 <BaseChip preset={item.status} sx={{ fontWeight: 700, textTransform: "capitalize" }} />
-                <Typography variant="body2" color="text.secondary" fontWeight={600}>
-                  #{item.number}
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={1.5}>
+                  <Stack direction="row" alignItems="center" spacing={0.5}>
+                    <IconEye size={15} style={{ opacity: 0.5 }} />
+                    <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                      {(item.viewCount ?? 0).toLocaleString()}
+                    </Typography>
+                  </Stack>
+                  <Stack direction="row" alignItems="center" spacing={0.25}>
+                    <Typography variant="body2" color={liked ? "error.main" : "text.secondary"} fontWeight={600}>
+                      {likeCount.toLocaleString()}
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={handleLike}
+                      sx={{ p: 0.5, color: liked ? "error.main" : "text.secondary", "&:hover": { color: "error.main" } }}
+                    >
+                      {liked ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
+                    </IconButton>
+                  </Stack>
+                </Stack>
               </Box>
 
               <Box sx={{ p: 3 }}>

@@ -241,7 +241,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
               disableRipple
               sx={{ p: 0.25, color: liked ? "error.main" : "text.secondary", "&:hover": { color: "error.main" } }}
             >
-              {liked ? <IconHeartFilled size={14} /> : <IconHeart size={14} />}
+              {liked ? <IconHeartFilled size={18} /> : <IconHeart size={18} />}
             </IconButton>
           </Stack>
         </Stack>

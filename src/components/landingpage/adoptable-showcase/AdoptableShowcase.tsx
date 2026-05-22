@@ -53,6 +53,7 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
   const lastTouchT   = useRef(0);
   const rafRef       = useRef<number | null>(null);
   const lastTime     = useRef<number | null>(null);
+  const isHovered    = useRef(false);
 
   const dirFactor = direction === "left" ? 1 : -1;
 
@@ -99,11 +100,14 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
           } else {
             momentum.current = 0;
           }
-          let next = posRef.current + dirFactor * SPEED * dt - momentum.current * dt;
-          if (next >= half) next -= half;
-          if (next < 0)    next += half;
-          posRef.current = next;
-          inner.style.transform = `translateX(${-posRef.current}px)`;
+          if (!isHovered.current || Math.abs(momentum.current) > 0.0005) {
+            const autoScroll = isHovered.current ? 0 : dirFactor * SPEED * dt;
+            let next = posRef.current + autoScroll - momentum.current * dt;
+            if (next >= half) next -= half;
+            if (next < 0)    next += half;
+            posRef.current = next;
+            inner.style.transform = `translateX(${-posRef.current}px)`;
+          }
         }
       }
       rafRef.current = requestAnimationFrame(step);
@@ -223,7 +227,11 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
   if (doubled.length === 0) return null;
 
   return (
-    <Box sx={{ overflow: "hidden", width: "100%" }}>
+    <Box
+      sx={{ overflow: "hidden", width: "100%" }}
+      onMouseEnter={() => { isHovered.current = true; }}
+      onMouseLeave={() => { isHovered.current = false; }}
+    >
       <Box
         component="div"
         ref={containerRef}
