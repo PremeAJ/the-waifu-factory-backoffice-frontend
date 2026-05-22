@@ -1,7 +1,6 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
-import useSWRInfinite from "swr/infinite";
 import { getFetcher } from "@/app/api/globalFetcher";
 import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
@@ -11,21 +10,13 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { alpha, useTheme } from "@mui/material/styles";
-import BaseLightBox, { LightboxItem } from "@/common/components/base/BaseLightBox";
-import { BaseChip } from "@/common/components/base";
-import { useInfiniteScroll } from "@/common/components/base/BaseTable/hooks";
-import { AdoptableListItem, isAdoptableNsfw } from "@/components/pages/adoptables/AdoptableCard";
-import Cookies from "js-cookie";
-import { CookiesKey } from "@/common/constants/cookies";
 import {
   IconBrandDiscord,
   IconBrandTwitter,
@@ -35,12 +26,12 @@ import {
   IconBrandTwitch,
   IconLink,
   IconPencil,
-  IconPhoto,
-  IconHeart,
-  IconBrush,
-  IconUsers,
   IconUserPlus,
 } from "@tabler/icons-react";
+import GalleryTab from "./GalleryTab";
+import CommissionTab from "./CommissionTab";
+import UserListTab from "./UserListTab";
+import AdoptableTab from "./AdoptableTab";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -80,12 +71,6 @@ const SocialIcon = ({ sm }: { sm: { name: string; iconUrl: string } }) => {
 const TABS = ["Gallery", "Adoptable", "Commission", "Followers", "Following"] as const;
 type TabKey = (typeof TABS)[number];
 
-const MOCK_USERS = [
-  { username: "artist_one",  displayName: "Artist One" },
-  { username: "artist_two",  displayName: "Artist Two" },
-  { username: "collector_3", displayName: "Collector Three" },
-];
-
 // ── Stat chip ─────────────────────────────────────────────────────────────────
 
 const Stat = ({
@@ -110,173 +95,6 @@ const Stat = ({
     </Typography>
   </Box>
 );
-
-// ── Empty state ───────────────────────────────────────────────────────────────
-
-const EmptyState = ({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle?: string }) => (
-  <Box sx={{ textAlign: "center", py: 12, color: "text.secondary" }}>
-    <Box sx={{ opacity: 0.35 }}>{icon}</Box>
-    <Typography variant="h6" mt={1.5} fontWeight={600}>{title}</Typography>
-    {subtitle && <Typography variant="body2" mt={0.5}>{subtitle}</Typography>}
-  </Box>
-);
-
-// ── Adoptable grid tab ────────────────────────────────────────────────────────
-
-const AdoptableTab = ({ username }: { username: string }) => {
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [showNsfw, setShowNsfw] = useState(false);
-
-  useEffect(() => {
-    setShowNsfw(Cookies.get(CookiesKey.NSFW_MODE) === "true");
-  }, []);
-
-  const getKey = (pageIndex: number, previousPageData: any) => {
-    if (pageIndex > 0 && !previousPageData) return null;
-    if (previousPageData && !previousPageData.meta?.hasMore) return null;
-    const params: Record<string, any> = { limit: 20 };
-    if (pageIndex > 0 && previousPageData?.meta?.nextCursor) {
-      params.cursor = previousPageData.meta.nextCursor;
-    }
-    return [`/api/user/${username}/adoptable`, params];
-  };
-
-  const { data, size, setSize, isValidating } = useSWRInfinite(getKey, getFetcher, {
-    revalidateOnFocus: false,
-  });
-
-  const pages = data ?? [];
-  const items: AdoptableListItem[] = pages.flatMap((p) => p?.data ?? []);
-  const meta = pages[pages.length - 1]?.meta;
-  const isLoading = !data && isValidating;
-  const hasMore = meta?.hasMore ?? false;
-
-  const handleLoadMore = useCallback(() => {
-    if (hasMore && !isValidating) setSize((s) => s + 1);
-  }, [hasMore, isValidating, setSize]);
-
-  const { ref: loadMoreRef } = useInfiniteScroll(handleLoadMore);
-
-  const lightboxItems: LightboxItem[] = items.map((item) => ({
-    src: item.imageUrl,
-    alt: `Adoptable #${item.number}`,
-    caption: [
-      `#${item.number}`,
-      item.price != null ? `$${item.price}` : null,
-      item.status,
-      item.tags.map((t) => t.name).join(", "),
-    ]
-      .filter(Boolean)
-      .join(" · "),
-  }));
-
-  if (isLoading) {
-    return (
-      <Grid container spacing={1.5}>
-        {Array.from({ length: 12 }).map((_, i) => (
-          <Grid key={i} size={{ xs: 6, sm: 4, md: 3, lg: 2 }}>
-            <Skeleton variant="rectangular" sx={{ paddingTop: "100%", borderRadius: 2 }} />
-          </Grid>
-        ))}
-      </Grid>
-    );
-  }
-
-  if (items.length === 0) {
-    return <EmptyState icon={<IconHeart size={56} stroke={1.2} />} title="No adoptables yet" />;
-  }
-
-  return (
-    <>
-      <Grid container spacing={1.5}>
-        {items.map((item, index) => {
-          const blurred = !showNsfw && isAdoptableNsfw(item);
-          return (
-            <Grid key={item.id} size={{ xs: 6, sm: 4, md: 3, lg: 2 }}>
-              <Box
-                onClick={() => { setLightboxIndex(index); setLightboxOpen(true); }}
-                sx={{
-                  position: "relative",
-                  paddingTop: "100%",
-                  borderRadius: 2,
-                  overflow: "hidden",
-                  cursor: "pointer",
-                  "&:hover .overlay": { opacity: 1 },
-                  "&:hover img": { transform: blurred ? "scale(1.15)" : "scale(1.05)" },
-                }}
-              >
-                <Box
-                  component="img"
-                  src={item.imageUrl}
-                  alt={`Adoptable #${item.number}`}
-                  sx={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    filter: blurred ? "blur(12px)" : undefined,
-                    transform: blurred ? "scale(1.1)" : "scale(1)",
-                    transition: "transform 0.25s ease",
-                  }}
-                />
-                <Box
-                  className="overlay"
-                  sx={{
-                    position: "absolute",
-                    inset: 0,
-                    bgcolor: "rgba(0,0,0,0.45)",
-                    opacity: 0,
-                    transition: "opacity 0.2s",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-end",
-                    p: 1,
-                  }}
-                >
-                  <Typography variant="caption" sx={{ color: "#fff", fontWeight: 700, lineHeight: 1.3 }}>
-                    #{item.number}
-                  </Typography>
-                  {item.price != null && (
-                    <Typography variant="caption" sx={{ color: "#fff", opacity: 0.85 }}>
-                      ${item.price}
-                    </Typography>
-                  )}
-                </Box>
-                <BaseChip
-                  preset={item.status}
-                  size="small"
-                  sx={{ position: "absolute", top: 6, left: 6, fontWeight: 700, zIndex: 1 }}
-                />
-              </Box>
-            </Grid>
-          );
-        })}
-      </Grid>
-      {hasMore && <Box ref={loadMoreRef} sx={{ height: 1, mt: 2 }} />}
-      {hasMore && (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-          <Button
-            variant="outlined"
-            onClick={() => setSize(size + 1)}
-            disabled={isValidating}
-            sx={{ textTransform: "none", borderRadius: 3 }}
-          >
-            {isValidating ? "Loading..." : "Load more"}
-          </Button>
-        </Box>
-      )}
-      <BaseLightBox
-        open={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-        items={lightboxItems}
-        currentIndex={lightboxIndex}
-        onChangeIndex={setLightboxIndex}
-      />
-    </>
-  );
-};
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
@@ -499,55 +317,10 @@ const ProfilePageContent = ({ username }: { username: string }) => {
 
         {/* ── Tab content ── */}
         <Box sx={{ mt: 4 }}>
-
-          {activeTab === "Gallery" && (
-            <EmptyState
-              icon={<IconPhoto size={56} stroke={1.2} />}
-              title="No artworks yet"
-              subtitle="Gallery coming soon"
-            />
-          )}
-
-          {activeTab === "Adoptable" && (
-            <AdoptableTab username={username} />
-          )}
-
-          {activeTab === "Commission" && (
-            <EmptyState
-              icon={<IconBrush size={56} stroke={1.2} />}
-              title="No commissions available"
-            />
-          )}
-
-          {(activeTab === "Followers" || activeTab === "Following") && (
-            <Grid container spacing={2}>
-              {MOCK_USERS.map((u) => (
-                <Grid key={u.username} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={1.5}
-                    onClick={() => router.push(`/profile/${u.username}`)}
-                    sx={{
-                      p: 2,
-                      borderRadius: 3,
-                      border: `1px solid ${theme.palette.divider}`,
-                      cursor: "pointer",
-                      transition: "background 0.15s",
-                      "&:hover": { bgcolor: alpha(theme.palette.primary.main, 0.05) },
-                    }}
-                  >
-                    <Avatar sx={{ width: 44, height: 44 }}>{u.displayName[0]}</Avatar>
-                    <Box>
-                      <Typography fontWeight={600} variant="body2">{u.displayName}</Typography>
-                      <Typography variant="caption" color="text.secondary">@{u.username}</Typography>
-                    </Box>
-                  </Stack>
-                </Grid>
-              ))}
-            </Grid>
-          )}
-
+          {activeTab === "Gallery"    && <GalleryTab />}
+          {activeTab === "Adoptable"  && <AdoptableTab username={username} />}
+          {activeTab === "Commission" && <CommissionTab />}
+          {(activeTab === "Followers" || activeTab === "Following") && <UserListTab />}
         </Box>
       </Container>
     </Box>
