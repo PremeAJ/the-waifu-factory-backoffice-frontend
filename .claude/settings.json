@@ -9,7 +9,10 @@
       "Bash(layout\")",
       "Bash(powershell -Command \"Copy-Item 'c:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-frontend\\\\src\\\\app\\\\dashboard\\\\EventData.ts' 'c:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-backoffice-frontend\\\\src\\\\app\\\\dashboard\\\\EventData.ts'; Write-Host 'Done'\")",
       "Bash(powershell -Command \"Copy-Item 'c:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-frontend\\\\src\\\\common\\\\components\\\\shared\\\\NotificationBell.tsx' 'c:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-backoffice-frontend\\\\src\\\\common\\\\components\\\\shared\\\\NotificationBell.tsx' -Force; Write-Host 'Done'\")",
-      "Bash(findstr \".d.ts\")"
+      "Bash(findstr \".d.ts\")",
+      "Bash(measure -line)",
+      "Bash(node -e \"const p=require\\('./node_modules/@tabler/icons-react/package.json'\\); console.log\\('version:', p.version, 'types:', p.types, 'exports:', JSON.stringify\\(Object.keys\\(p.exports||{}\\)\\).slice\\(0,200\\)\\)\")",
+      "Bash(node -e \"const p=require\\('./node_modules/@tabler/icons-react/package.json'\\); console.log\\(JSON.stringify\\({types:p.types,main:p.main,module:p.module,exports:p.exports},null,2\\)\\)\")"
     ]
   }
 }
