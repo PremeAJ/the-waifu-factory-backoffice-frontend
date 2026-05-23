@@ -1,10 +1,12 @@
 "use client";
-import { getFetcher } from "@/app/api/globalFetcher";
+import { getFetcher, patchFetcher } from "@/app/api/globalFetcher";
 import PageContainer from "@/components/container/PageContainer";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
+import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
+import Select from "@mui/material/Select";
 import Skeleton from "@mui/material/Skeleton";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,6 +15,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import { useState } from "react";
 import useSWR from "swr";
 
 const STATUS_COLOR: Record<string, "default" | "warning" | "info" | "success" | "error"> = {
@@ -23,53 +26,42 @@ const STATUS_COLOR: Record<string, "default" | "warning" | "info" | "success" | 
   cancelled: "error",
 };
 
-function QueueTable({ slotId }: { slotId: string }) {
-  const { data, isLoading } = useSWR(
-    `/api/commission/open/${slotId}/queue`,
-    getFetcher,
-    { revalidateOnFocus: false }
-  );
-  const items: any[] = data?.data ?? [];
-  if (isLoading) return <Skeleton width={80} />;
-  if (items.length === 0) return <Typography variant="body2" color="text.secondary">—</Typography>;
-  return (
-    <Box display="flex" flexDirection="column" gap={0.5}>
-      {items.map((q: any) => (
-        <Box key={q.id} display="flex" alignItems="center" gap={1}>
-          <Avatar src={q.client?.profilePictureUrl} sx={{ width: 24, height: 24 }} />
-          <Typography variant="body2">{q.client?.displayName ?? q.client?.username ?? "—"}</Typography>
-          <Chip label={q.status} color={STATUS_COLOR[q.status] ?? "default"} size="small" />
-        </Box>
-      ))}
-    </Box>
-  );
-}
+const QUEUE_STATUSES = ["pending", "accepted", "in_progress", "done", "cancelled"];
 
 export default function CommissionsQueuePage() {
-  const { data, isLoading, error } = useSWR(
-    ["/api/commission/open", { limit: 50 }],
+  const [loading, setLoading] = useState(false);
+
+  const { data, isLoading, error, mutate } = useSWR(
+    ["/api/admin/commission/queue", { limit: 50 }],
     getFetcher,
     { revalidateOnFocus: false }
   );
 
-  const slots: any[] = data?.data ?? [];
+  const items: any[] = data?.data ?? [];
+
+  const handleStatusChange = async (id: string, newStatus: string) => {
+    setLoading(true);
+    await patchFetcher(`/api/commission/queue/${id}`, { status: newStatus });
+    await mutate();
+    setLoading(false);
+  };
 
   return (
-    <PageContainer title="Commission Queue" description="Queue per commission slot">
+    <PageContainer title="Commission Queue" description="All commission queue entries">
       <Typography variant="h4" mb={3}>Commission Queue</Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Artist</TableCell>
-              <TableCell>Slots</TableCell>
-              <TableCell>Queue</TableCell>
-              <TableCell>Created</TableCell>
+              <TableCell>Client</TableCell>
+              <TableCell>Slot / Artist</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Queued</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {isLoading
-              ? Array.from({ length: 6 }).map((_, i) => (
+              ? Array.from({ length: 8 }).map((_, i) => (
                   <TableRow key={i}>
                     {Array.from({ length: 4 }).map((__, j) => (
                       <TableCell key={j}><Skeleton /></TableCell>
@@ -82,27 +74,49 @@ export default function CommissionsQueuePage() {
                   <TableCell colSpan={4}><Typography color="error">Failed to load data</Typography></TableCell>
                 </TableRow>
               )
-              : slots.length === 0
+              : items.length === 0
               ? (
                 <TableRow>
-                  <TableCell colSpan={4}><Typography color="text.secondary">No open slots found</Typography></TableCell>
+                  <TableCell colSpan={4}><Typography color="text.secondary">No queue entries found</Typography></TableCell>
                 </TableRow>
               )
-              : slots.map((slot) => (
-                <TableRow key={slot.id} hover>
+              : items.map((item) => (
+                <TableRow key={item.id} hover>
                   <TableCell>
                     <Box display="flex" alignItems="center" gap={1}>
-                      <Avatar src={slot.artist?.profilePictureUrl} sx={{ width: 32, height: 32 }} />
-                      {slot.artist?.displayName ?? slot.artist?.username ?? "—"}
+                      <Avatar src={item.client?.profilePictureUrl} sx={{ width: 32, height: 32 }} />
+                      <Box>
+                        <Typography variant="body2">{item.client?.displayName ?? "—"}</Typography>
+                        <Typography variant="caption" color="text.secondary">@{item.client?.username}</Typography>
+                      </Box>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    <Chip label={`${slot.slotCount ?? 0} slots`} size="small" color="primary" />
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Avatar src={item.commissionOpen?.artist?.profilePictureUrl} sx={{ width: 24, height: 24 }} />
+                      <Box>
+                        <Typography variant="body2">{item.commissionOpen?.title ?? "—"}</Typography>
+                        <Typography variant="caption" color="text.secondary">@{item.commissionOpen?.artist?.username}</Typography>
+                      </Box>
+                    </Box>
                   </TableCell>
                   <TableCell>
-                    <QueueTable slotId={slot.id} />
+                    <Select
+                      size="small"
+                      value={item.status}
+                      disabled={loading}
+                      onChange={(e) => handleStatusChange(item.id, e.target.value)}
+                      renderValue={(v) => <Chip label={v} color={STATUS_COLOR[v] ?? "default"} size="small" />}
+                      sx={{ minWidth: 140 }}
+                    >
+                      {QUEUE_STATUSES.map((s) => (
+                        <MenuItem key={s} value={s}>
+                          <Chip label={s} color={STATUS_COLOR[s] ?? "default"} size="small" />
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </TableCell>
-                  <TableCell>{slot.createdAt ? new Date(slot.createdAt).toLocaleDateString() : "—"}</TableCell>
+                  <TableCell>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"}</TableCell>
                 </TableRow>
               ))}
           </TableBody>
