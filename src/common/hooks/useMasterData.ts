@@ -35,6 +35,13 @@ export interface ArtistMaster {
   profilePictureUrl: string | null;
 }
 
+export const useUsers = (search?: string) => {
+  const params: Record<string, any> = { limit: 20 };
+  if (search) params.search = search;
+  const { data, isLoading } = useSWR(["/api/master/user-list", params], getFetcher, SWR_OPTIONS);
+  return { users: (data?.data ?? []) as ArtistMaster[], isLoading };
+};
+
 export const useArtists = (search?: string) => {
   const params: Record<string, any> = { limit: 50 };
   if (search) params.search = search;

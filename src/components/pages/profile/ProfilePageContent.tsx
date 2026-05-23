@@ -387,7 +387,7 @@ const ProfilePageContent = ({
         {/* ── Tab content ── */}
         <Box sx={{ mt: 4 }}>
           {activeTab === "Gallery"    && <GalleryTab username={username} />}
-          {activeTab === "Adoptable"  && <AdoptableTab username={username} type={adoptableType} onTypeChange={(t) => navigate("Adoptable", t)} />}
+          {activeTab === "Adoptable"  && <AdoptableTab username={username} type={adoptableType} onTypeChange={(t) => navigate("Adoptable", t)} isOwnProfile={isOwnProfile} />}
           {activeTab === "Commission" && <CommissionTab username={username} />}
           {activeTab === "Followers" && <UserListTab username={username} type="followers" />}
           {activeTab === "Following" && <UserListTab username={username} type="following" />}

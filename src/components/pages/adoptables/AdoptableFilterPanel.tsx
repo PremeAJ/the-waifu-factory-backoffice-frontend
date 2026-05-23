@@ -66,7 +66,6 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
   activeFilterCount,
   onClearAll,
   allArtists,
-  adoptableTags,
   visibleTagCategories,
 }) => {
   const theme = useTheme();
@@ -250,74 +249,87 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
         </>
       )}
 
-      {/* Categories */}
-      {adoptableTags.length > 0 && (
-        <>
-          <Divider sx={{ mb: 2 }} />
-          <Typography variant="subtitle2" fontWeight={700} mb={1}>
-            Category
-          </Typography>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8, mb: 3 }}>
-            {adoptableTags.map((cat) => {
-              const active = categoryFilter.includes(cat.name);
-              return (
-                <BaseChip
-                  key={cat.id}
-                  label={cat.name}
-                  onClick={() => toggleChip(categoryFilter, onCategoryFilterChange, cat.name)}
-                  variant={active ? "filled" : "outlined"}
-                  sx={{
-                    cursor: "pointer",
-                    fontWeight: 600,
-                    ...(active && { bgcolor: "primary.main", color: "primary.contrastText" }),
-                  }}
-                />
-              );
-            })}
-          </Box>
-        </>
-      )}
-
-      {/* Tags */}
+      {/* Tags grouped by category */}
       {visibleTagCategories.some((c) => c.tags.length > 0) && (
         <>
           <Divider sx={{ mb: 2 }} />
-          <Typography variant="subtitle2" fontWeight={700} mb={1}>
+          <Typography variant="subtitle2" fontWeight={700} mb={1.5}>
             Tags
           </Typography>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8 }}>
-            {visibleTagCategories.flatMap((cat) =>
-              cat.tags.map((tag) => {
-                const active = tagFilter.includes(tag.name);
-                const color = tag.color ?? cat.color ?? "#888";
-                return (
-                  <BaseChip
-                    key={tag.id}
-                    label={tag.name}
-                    title={cat.name}
-                    onClick={(event) => {
-                      event.currentTarget.blur();
-                      toggleChip(tagFilter, onTagFilterChange, tag.name);
-                    }}
-                    disableRipple
-                    variant={active ? "filled" : "outlined"}
+          {visibleTagCategories.filter((c) => c.tags.length > 0).map((cat, idx, arr) => {
+            const catActive = categoryFilter.includes(cat.name);
+            return (
+              <Box key={cat.id}>
+                {/* Category header — clickable to toggle whole category */}
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
+                  mb={1}
+                  onClick={() => toggleChip(categoryFilter, onCategoryFilterChange, cat.name)}
+                  sx={{ cursor: "pointer", userSelect: "none", width: "fit-content" }}
+                >
+                  <Typography
+                    variant="caption"
+                    fontWeight={700}
+                    textTransform="uppercase"
+                    letterSpacing={0.8}
                     sx={{
-                      cursor: "pointer",
-                      touchAction: "manipulation",
-                      WebkitTapHighlightColor: "transparent",
-                      bgcolor: active ? color : "transparent",
-                      color: active ? "#fff" : "text.primary",
-                      border: `1.5px solid ${color}`,
-                      transition: "background-color 120ms ease, color 120ms ease",
-                      "&:hover": { bgcolor: color, color: "#fff" },
-                      "&:focus": { boxShadow: "none", bgcolor: active ? color : "transparent" },
-                      "&.Mui-focusVisible": { boxShadow: "none", bgcolor: active ? color : "transparent" },
+                      color: catActive ? "primary.main" : "text.secondary",
+                      transition: "color 120ms",
                     }}
-                  />
-                );
-              })
-            )}
-          </Box>
+                  >
+                    {cat.name}
+                  </Typography>
+                  {catActive && (
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        bgcolor: "primary.main",
+                        flexShrink: 0,
+                      }}
+                    />
+                  )}
+                </Stack>
+
+                {/* Tags in this category */}
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8, mb: idx < arr.length - 1 ? 2 : 0 }}>
+                  {cat.tags.map((tag) => {
+                    const active = tagFilter.includes(tag.name);
+                    const color = tag.color ?? cat.color ?? "#888";
+                    return (
+                      <BaseChip
+                        key={tag.id}
+                        label={tag.name}
+                        onClick={(event) => {
+                          event.currentTarget.blur();
+                          toggleChip(tagFilter, onTagFilterChange, tag.name);
+                        }}
+                        disableRipple
+                        variant={active ? "filled" : "outlined"}
+                        sx={{
+                          cursor: "pointer",
+                          touchAction: "manipulation",
+                          WebkitTapHighlightColor: "transparent",
+                          bgcolor: active ? color : "transparent",
+                          color: active ? "#fff" : "text.primary",
+                          border: `1.5px solid ${color}`,
+                          transition: "background-color 120ms ease, color 120ms ease",
+                          "&:hover": { bgcolor: color, color: "#fff" },
+                          "&:focus": { boxShadow: "none", bgcolor: active ? color : "transparent" },
+                          "&.Mui-focusVisible": { boxShadow: "none", bgcolor: active ? color : "transparent" },
+                        }}
+                      />
+                    );
+                  })}
+                </Box>
+
+                {idx < arr.length - 1 && <Divider sx={{ my: 2 }} />}
+              </Box>
+            );
+          })}
         </>
       )}
       </Box>

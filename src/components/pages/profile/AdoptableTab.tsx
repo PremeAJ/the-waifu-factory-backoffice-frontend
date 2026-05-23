@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 import { getFetcher } from "@/app/api/globalFetcher";
 import Box from "@mui/material/Box";
@@ -10,9 +10,11 @@ import Stack from "@mui/material/Stack";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
+import { BaseButton } from "@/common/components/base";
 import { useInfiniteScroll } from "@/common/components/base/BaseTable/hooks";
 import AdoptableCard, { AdoptableListItem } from "@/components/pages/adoptables/AdoptableCard";
-import { IconHeart } from "@tabler/icons-react";
+import AddAdoptableDialog from "./AddAdoptableDialog";
+import { IconHeart, IconPlus } from "@tabler/icons-react";
 
 type AdoptableType = "all" | "created" | "owned";
 
@@ -26,11 +28,14 @@ const AdoptableTab = ({
   username,
   type,
   onTypeChange,
+  isOwnProfile = false,
 }: {
   username: string;
   type: AdoptableType;
   onTypeChange: (type: AdoptableType) => void;
+  isOwnProfile?: boolean;
 }) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const getKey = (pageIndex: number, previousPageData: any) => {
     if (pageIndex > 0 && !previousPageData) return null;
@@ -87,8 +92,8 @@ const AdoptableTab = ({
 
   return (
     <>
-      {/* Type filter */}
-      <Box sx={{ mb: 2.5 }}>
+      {/* Type filter + Add button */}
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2.5}>
         <ToggleButtonGroup
           value={type}
           exclusive
@@ -100,7 +105,24 @@ const AdoptableTab = ({
             <ToggleButton key={value} value={value}>{label}</ToggleButton>
           ))}
         </ToggleButtonGroup>
-      </Box>
+
+        {isOwnProfile && (
+          <BaseButton
+            variant="contained"
+            size="small"
+            label="Add"
+            startIcon={<IconPlus size={16} />}
+            onClick={() => setDialogOpen(true)}
+            fullWidth={false}
+          />
+        )}
+      </Stack>
+
+      <AddAdoptableDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSuccess={() => { setSize(1); }}
+      />
 
       {isLoading ? skeletonGrid : items.length === 0 ? (
         <Box sx={{ textAlign: "center", py: 12, color: "text.secondary" }}>

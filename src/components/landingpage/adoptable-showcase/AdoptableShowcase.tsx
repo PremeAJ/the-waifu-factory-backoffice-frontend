@@ -254,7 +254,7 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
               <AdoptableCard
                 item={item}
                 showViewPost={false}
-                sx={{ width: 260, mx: 1, my: 4, flexShrink: 0 }}
+                sx={{ width: { xs: 200, sm: 240, md: 260 }, mx: 1, my: { xs: 2, md: 4 }, flexShrink: 0 }}
               />
             </div>
           ))}
@@ -267,8 +267,8 @@ const Row = memo(function Row({ items, direction, offset = 0 }: RowProps) {
 const SkeletonRow = () => (
   <Box sx={{ display: "flex", gap: 2, px: 1, overflow: "hidden", my: 1 }}>
     {Array.from({ length: 6 }).map((_, i) => (
-      <Box key={i} sx={{ flexShrink: 0, width: 260, mx: 1, my: 3 }}>
-        <Skeleton variant="rectangular" width={260} height={260} sx={{ borderRadius: 3 }} />
+      <Box key={i} sx={{ flexShrink: 0, width: { xs: 200, sm: 240, md: 260 }, mx: 1, my: { xs: 2, md: 3 } }}>
+        <Skeleton variant="rectangular" sx={{ width: "100%", height: { xs: 200, sm: 240, md: 260 }, borderRadius: 3 }} />
         <Box sx={{ pt: 1.5, px: 0.5 }}>
           <Skeleton variant="text" width="70%" height={18} />
           <Skeleton variant="text" width="45%" height={14} sx={{ mt: 0.5 }} />
@@ -296,16 +296,18 @@ const AdoptableShowcase = () => {
   return (
     <Box sx={{ py: 8, overflow: "hidden" }}>
       <Container maxWidth="lg" sx={{ mb: 4 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          justifyContent="space-between"
+          gap={{ xs: 2, sm: 0 }}
+        >
           <Box>
             <Typography variant="h3" fontWeight={700}>
-              Adoptables 
+              Adoptables
             </Typography>
             <Typography variant="body1" color="text.secondary" mt={0.5}>
               All adoptables are hand-drawn by our artists. Click on any card to see detail
-            </Typography>
-            <Typography fontSize={10} color="info" mt={0.5}>
-              (in this demo i showing closed adoptables too because i don't have many open adoptables in demo data, but in real app you will only see open adoptables here)
             </Typography>
           </Box>
           <BaseButton
