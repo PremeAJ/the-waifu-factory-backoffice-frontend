@@ -34,6 +34,7 @@ export interface AdoptableListItem {
   id: string;
   number: number;
   imageUrl: string;
+  thumbnailUrl?: string | null;
   postUrl?: string;
   artist: AdoptableUser;
   owner: AdoptableUser;
@@ -138,7 +139,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
       <Box sx={{ position: "relative", width: "100%", paddingTop: "120%", flexShrink: 0 }}>
         {/* NSFW blur — applied directly on image (cheaper than backdropFilter) */}
         <Image
-          src={item.imageUrl}
+          src={item.thumbnailUrl ?? item.imageUrl}
           alt={`Adoptable #${item.number}`}
           fill
           loading="eager"

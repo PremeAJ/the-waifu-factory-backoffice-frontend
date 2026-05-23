@@ -43,7 +43,7 @@ const TYPE_LABEL: Record<string, string> = {
 function getTargetUrl(n: Notification): string | null {
   switch (n.type) {
     case "new_follower":
-      return `/profile/${n.actor.username}`;
+      return n.actor ? `/profile/${n.actor.username}` : null;
     case "like_adoptable":
     case "new_adoptable":
       return n.targetId ? `/adoptable/${n.targetId}` : null;
@@ -78,7 +78,7 @@ const NotificationBell = () => {
     ([url]) => getFetcher(url),
     { refreshInterval: 30000 }
   );
-  const unread: number = countData?.data ?? countData ?? 0;
+  const unread: number = countData?.count ?? countData?.data?.count ?? 0;
 
   const getKey = (pageIndex: number, prev: any) => {
     if (!open) return null;
@@ -190,14 +190,14 @@ const NotificationBell = () => {
                   }}
                 >
                   <Avatar
-                    src={n.actor.profilePictureUrl ?? undefined}
+                    src={n.actor?.profilePictureUrl ?? undefined}
                     sx={{ width: 38, height: 38, flexShrink: 0, mt: 0.25 }}
                   >
-                    {n.actor.displayName[0]}
+                    {n.actor?.displayName[0] ?? "?"}
                   </Avatar>
                   <Box minWidth={0} flex={1}>
                     <Typography variant="body2" lineHeight={1.4}>
-                      <Box component="span" fontWeight={700}>{n.actor.displayName}</Box>
+                      <Box component="span" fontWeight={700}>{n.actor?.displayName ?? "Someone"}</Box>
                       {" "}{TYPE_LABEL[n.type] ?? n.type}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">{timeAgo(n.createdAt)}</Typography>

@@ -70,7 +70,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({ item, sx }) => {
       {/* ── Image ── */}
       <Box sx={{ position: "relative", width: "100%", paddingTop: "120%", flexShrink: 0 }}>
         <Image
-          src={item.imageUrl}
+          src={item.thumbnailUrl ?? item.imageUrl}
           alt={`Auction #${item.number}`}
           fill
           loading="eager"

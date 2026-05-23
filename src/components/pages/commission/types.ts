@@ -13,6 +13,7 @@ export interface CommissionTag {
 export interface CommissionPost {
   id: string;
   imageUrl: string;
+  thumbnailUrl?: string | null;
   title: string;
   description?: string;
   postUrl?: string;

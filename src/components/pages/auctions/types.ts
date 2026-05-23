@@ -14,6 +14,7 @@ export interface AuctionItem {
   id: string;
   number: number;
   imageUrl: string;
+  thumbnailUrl?: string | null;
   postUrl?: string;
   status: "open" | "closed" | "sold";
   isNSFW?: boolean;

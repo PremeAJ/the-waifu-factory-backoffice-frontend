@@ -69,7 +69,7 @@ const CommissionCard: React.FC<CommissionCardProps> = ({ item, sx }) => {
       <Box sx={{ position: "relative", width: "100%", paddingTop: "100%", flexShrink: 0 }}>
         <Box
           component="img"
-          src={item.imageUrl}
+          src={item.thumbnailUrl ?? item.imageUrl}
           alt={item.title}
           sx={{
             position: "absolute",
