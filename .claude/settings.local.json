@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:golf-antsy-impish.ngrok-free.dev)"
+      "WebFetch(domain:golf-antsy-impish.ngrok-free.dev)",
+      "Bash(rm -rf \"c:/Users/nekiz/OneDrive/Desktop/Code/the-waifu-factory-frontend/src/app/\\(main-page\\)/profile/[username]/[[...slug]]\" && ls \"c:/Users/nekiz/OneDrive/Desktop/Code/the-waifu-factory-frontend/src/app/\\(main-page\\)/profile/[username]/\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\nekiz\\OneDrive\\Desktop\\Code\\the-waifu-factory-frontend\\src\\app\\(main-page)\\profile\\[username]\\[[...slug]]"
     ]
   }
 }

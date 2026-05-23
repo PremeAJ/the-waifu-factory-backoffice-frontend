@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../../components/Header";
 import Footer from "@/components/layout/footer/MainFooter";
 import ProfilePageContent from "@/components/pages/profile/ProfilePageContent";
@@ -13,7 +12,7 @@ export default async function UserProfilePage({
   return (
     <>
       <Header />
-      <ProfilePageContent username={username} />
+      <ProfilePageContent username={username} tab="" subTab="" />
       <Footer />
     </>
   );

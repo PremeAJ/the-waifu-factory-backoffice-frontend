@@ -26,7 +26,6 @@ import {
   IconBrandTwitch,
   IconLink,
   IconPencil,
-  IconUserCheck,
   IconUserMinus,
   IconUserPlus,
 } from "@tabler/icons-react";
@@ -77,6 +76,25 @@ const SocialIcon = ({ sm }: { sm: { name: string; iconUrl: string } }) => {
 const TABS = ["Gallery", "Adoptable", "Commission", "Followers", "Following"] as const;
 type TabKey = (typeof TABS)[number];
 
+const TAB_URL: Record<TabKey, string> = {
+  Gallery: "gallery",
+  Adoptable: "adoptable",
+  Commission: "commission",
+  Followers: "followers",
+  Following: "following",
+};
+
+const URL_TAB: Record<string, TabKey> = {
+  "": "Gallery",
+  gallery: "Gallery",
+  adoptable: "Adoptable",
+  commission: "Commission",
+  followers: "Followers",
+  following: "Following",
+};
+
+type AdoptableType = "all" | "created" | "owned";
+
 // ── Stat chip ─────────────────────────────────────────────────────────────────
 
 const Stat = ({
@@ -104,12 +122,28 @@ const Stat = ({
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-const ProfilePageContent = ({ username }: { username: string }) => {
+const ProfilePageContent = ({
+  username,
+  tab = "",
+  subTab = "",
+}: {
+  username: string;
+  tab?: string;
+  subTab?: string;
+}) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const { user: currentUser } = useCurrentUser();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabKey>("Gallery");
+
+  const activeTab: TabKey = URL_TAB[tab.toLowerCase()] ?? "Gallery";
+  const adoptableType: AdoptableType =
+    (["all", "created", "owned"].includes(subTab.toLowerCase()) ? subTab.toLowerCase() : "all") as AdoptableType;
+
+  const navigate = (newTab: TabKey, newSubTab?: string) => {
+    const base = `/profile/${username}/${TAB_URL[newTab]}`;
+    router.push(newSubTab && newSubTab !== "all" ? `${base}/${newSubTab}` : base, { scroll: false });
+  };
 
   const isOwnProfile = !!currentUser && currentUser.username === username;
 
@@ -254,8 +288,8 @@ const ProfilePageContent = ({ username }: { username: string }) => {
 
             {/* Stats */}
             <Stack direction="row" spacing={4} pb={0.5} flexShrink={0}>
-              <Stat value={followerCount} label="Followers" onClick={() => setActiveTab("Followers")} />
-              <Stat value={profile.followingCount ?? 0} label="Following" onClick={() => setActiveTab("Following")} />
+              <Stat value={followerCount} label="Followers" onClick={() => navigate("Followers")} />
+              <Stat value={profile.followingCount ?? 0} label="Following" onClick={() => navigate("Following")} />
             </Stack>
           </Stack>
 
@@ -333,7 +367,7 @@ const ProfilePageContent = ({ username }: { username: string }) => {
         {/* ── Tabs ── */}
         <Tabs
           value={activeTab}
-          onChange={(_, v: TabKey) => setActiveTab(v)}
+          onChange={(_, v: TabKey) => navigate(v)}
           indicatorColor="primary"
           textColor="primary"
           variant="scrollable"
@@ -353,7 +387,7 @@ const ProfilePageContent = ({ username }: { username: string }) => {
         {/* ── Tab content ── */}
         <Box sx={{ mt: 4 }}>
           {activeTab === "Gallery"    && <GalleryTab username={username} />}
-          {activeTab === "Adoptable"  && <AdoptableTab username={username} />}
+          {activeTab === "Adoptable"  && <AdoptableTab username={username} type={adoptableType} onTypeChange={(t) => navigate("Adoptable", t)} />}
           {activeTab === "Commission" && <CommissionTab username={username} />}
           {activeTab === "Followers" && <UserListTab username={username} type="followers" />}
           {activeTab === "Following" && <UserListTab username={username} type="following" />}

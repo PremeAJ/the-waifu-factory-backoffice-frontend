@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import useSWRInfinite from "swr/infinite";
 import { getFetcher } from "@/app/api/globalFetcher";
 import Box from "@mui/material/Box";
@@ -22,8 +22,15 @@ const TYPE_LABELS: { value: AdoptableType; label: string }[] = [
   { value: "owned",   label: "Owned" },
 ];
 
-const AdoptableTab = ({ username }: { username: string }) => {
-  const [type, setType] = useState<AdoptableType>("all");
+const AdoptableTab = ({
+  username,
+  type,
+  onTypeChange,
+}: {
+  username: string;
+  type: AdoptableType;
+  onTypeChange: (type: AdoptableType) => void;
+}) => {
 
   const getKey = (pageIndex: number, previousPageData: any) => {
     if (pageIndex > 0 && !previousPageData) return null;
@@ -51,11 +58,12 @@ const AdoptableTab = ({ username }: { username: string }) => {
 
   const { ref: loadMoreRef } = useInfiniteScroll(handleLoadMore);
 
+  useEffect(() => {
+    setSize(1);
+  }, [type]);
+
   const handleTypeChange = (_: React.MouseEvent, value: AdoptableType | null) => {
-    if (value) {
-      setType(value);
-      setSize(1);
-    }
+    if (value) onTypeChange(value);
   };
 
   const skeletonGrid = (
