@@ -4,7 +4,7 @@ import { Chip, ChipProps, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 interface BaseChipProps extends Omit<ChipProps, "color"> {
-  preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary" | "deleted" | "all" | "open" | "close" | "resell";
+  preset?: "active" | "inactive" | "success" | "error" | "warning" | "info" | "primary" | "secondary" | "deleted" | "all" | "open" | "close" | "closed" | "resell" | "pending" | "rejected";
   customColor?: string;
   customBgColor?: string;
   disableRipple?: boolean;
@@ -46,22 +46,17 @@ const BaseChip: React.FC<BaseChipProps> = ({
       case "active":
         return {
           color: "success" as const,
-          label: label || "เปิดใช้งาน",
+          label: label || "Active",
         };
       case "inactive":
         return {
           color: "error" as const,
-          label: label || "ปิดใช้งาน",
-        };
-      case "deleted":
-        return {
-          color: "warning" as const,
-          label: label || "ถูกลบ",
+          label: label || "Inactive",
         };
       case "all":
         return {
           color: "info" as const,
-          label: label || "ทั้งหมด",
+          label: label || "All",
         };
       case "success":
         return {
@@ -93,14 +88,30 @@ const BaseChip: React.FC<BaseChipProps> = ({
           label: label || "Open",
         };
       case "close":
+      case "closed":
         return {
           color: "error" as const,
-          label: label || "Close",
+          label: label || "Closed",
+        };
+      case "deleted":
+        return {
+          color: "error" as const,
+          label: label || "Deleted",
         };
       case "resell":
         return {
           color: "warning" as const,
           label: label || "Resell",
+        };
+      case "pending":
+        return {
+          color: "warning" as const,
+          label: label || "Pending",
+        };
+      case "rejected":
+        return {
+          color: "error" as const,
+          label: label || "Rejected",
         };
       default:
         return {};

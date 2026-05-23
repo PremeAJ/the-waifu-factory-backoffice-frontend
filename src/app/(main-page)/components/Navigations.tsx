@@ -64,7 +64,7 @@ const Navigations = () => {
   const menuItems = [
     { label: "Home",       href: "/",           authOnly: false },
     { label: "Adoptables", href: "/adoptables", authOnly: false },
-    { label: "Auctions",   href: "/auctions",   authOnly: false },
+    { label: "Auctions 🛠️🚧",   href: "/auctions",   authOnly: false },
     { label: "Commission", href: "/commission", authOnly: false },
     { label: "Member",     href: "/member",     authOnly: true  },
   ].filter((item) => !item.authOnly || !!waifuUser);

@@ -14,12 +14,14 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { alpha, useTheme } from "@mui/material/styles";
-import { IconExternalLink, IconEye, IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import { IconBrandDiscord, IconExternalLink, IconEye, IconHeart, IconHeartFilled, IconPencil } from "@tabler/icons-react";
 import Image from "next/image";
 import { BaseChip } from "@/common/components/base";
 import { useNsfw } from "@/common/contexts/NsfwContext";
+import { useCurrentUser } from "@/common/hooks/useCurrentUser";
 import { AdoptableListItem, AdoptableTag, isAdoptableNsfw } from "./AdoptableCard";
 import ArtistLink from "@/common/components/shared/ArtistLink";
+import EditAdoptableDialog from "./EditAdoptableDialog";
 
 const GLASS = 260; // magnifier diameter px
 const ZOOM  = 2.5; // zoom level
@@ -30,12 +32,16 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
   const tagTextColor = isDark ? "#fff" : "#555";
 
   const { showNsfw } = useNsfw();
+  const { user: currentUser } = useCurrentUser();
 
-  const { data, isLoading } = useSWR(`/api/adoptable/${id}`, getFetcher, {
+  const { data, isLoading, mutate } = useSWR(`/api/adoptable/${id}`, getFetcher, {
     revalidateOnFocus: false,
   });
 
-  const item: AdoptableListItem | undefined = data?.data;
+  const [editOpen, setEditOpen] = useState(false);
+  const [localItem, setLocalItem] = useState<AdoptableListItem | null>(null);
+
+  const item: AdoptableListItem | undefined = localItem ?? data?.data;
   const blurred = item ? !showNsfw && isAdoptableNsfw(item) : false;
 
   const [liked, setLiked] = useState(false);
@@ -48,6 +54,25 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
       setLikeCount(item.likeCount ?? 0);
     }
   }, [item?.id]);
+
+  const handlePostClick = () => {
+    const url = item?.postUrl;
+    if (!url) return;
+    const isDiscord = /discord\.com/.test(url);
+    if (isDiscord) {
+      const appUrl = url.replace(/^https?:\/\/discord\.com/, "discord://discord.com");
+      let appOpened = false;
+      const onBlur = () => { appOpened = true; window.removeEventListener("blur", onBlur); };
+      window.addEventListener("blur", onBlur);
+      window.location.href = appUrl;
+      setTimeout(() => {
+        window.removeEventListener("blur", onBlur);
+        if (!appOpened) window.open(url, "_blank");
+      }, 1500);
+    } else {
+      window.open(url, "_blank");
+    }
+  };
 
   const handleLike = async () => {
     if (liking) return;
@@ -120,11 +145,10 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
   }
 
   const statusBg =
-    item.status === "open"
-      ? alpha(theme.palette.success.main, 0.1)
-      : item.status === "resell"
-      ? alpha(theme.palette.warning.main, 0.1)
-      : alpha(theme.palette.error.main, 0.08);
+    item.status === "open"     ? alpha(theme.palette.success.main, 0.1)
+    : item.status === "resell"   ? alpha(theme.palette.warning.main, 0.1)
+    : item.status === "pending"  ? alpha(theme.palette.info.main, 0.1)
+    : alpha(theme.palette.error.main, 0.08); // closed | rejected | deleted
 
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
@@ -228,7 +252,20 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
                   justifyContent: "space-between",
                 }}
               >
-                <BaseChip preset={item.status} sx={{ fontWeight: 700, textTransform: "capitalize" }} />
+                <Stack direction="row" alignItems="center" spacing={1.5}>
+                  <BaseChip preset={item.status} sx={{ fontWeight: 700, textTransform: "capitalize" }} />
+                  {currentUser?.username === item.artist.username && (
+                    <Button
+                      size="small"
+                      variant="contained"
+                      startIcon={<IconPencil size={14} />}
+                      onClick={() => setEditOpen(true)}
+                      sx={{ textTransform: "none", fontWeight: 700, borderRadius: 2, px: 1.5, py: 0.4, fontSize: 12 }}
+                    >
+                      Edit
+                    </Button>
+                  )}
+                </Stack>
                 <Stack direction="row" alignItems="center" spacing={1.5}>
                   <Stack direction="row" alignItems="center" spacing={0.5}>
                     <IconEye size={15} style={{ opacity: 0.5 }} />
@@ -307,6 +344,42 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
                   sx={{ mt: 1.25 }}
                 />
 
+                {/* Reviewer */}
+                {item.reviewer && (
+                  <>
+                    <Divider sx={{ my: 3 }} />
+                    <Typography variant="overline" color="text.secondary" fontWeight={700} letterSpacing={1.5}>
+                      Reviewed by
+                    </Typography>
+                    <ArtistLink
+                      username={item.reviewer.username}
+                      displayName={item.reviewer.displayName}
+                      profilePictureUrl={item.reviewer.profilePictureUrl}
+                      avatarSize={36}
+                      showUsername
+                      sx={{ mt: 1.25 }}
+                    />
+                  </>
+                )}
+
+                {/* Reject reason */}
+                {item.rejectReason && (
+                  <Box
+                    sx={{
+                      mt: 2,
+                      p: 1.5,
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.error.main, 0.08),
+                      border: `1px solid ${alpha(theme.palette.error.main, 0.2)}`,
+                    }}
+                  >
+                    <Typography variant="caption" fontWeight={700} color="error.main" display="block" mb={0.5}>
+                      Rejection reason
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">{item.rejectReason}</Typography>
+                  </Box>
+                )}
+
                 {/* Tags */}
                 {item.tags.length > 0 && (
                   <>
@@ -334,13 +407,22 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
                     variant="contained"
                     size="large"
                     fullWidth
-                    href={item.postUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    endIcon={<IconExternalLink size={18} />}
-                    sx={{ mt: 3.5, textTransform: "none", borderRadius: 2, py: 1.5, fontWeight: 700, fontSize: 15 }}
+                    onClick={handlePostClick}
+                    startIcon={<IconBrandDiscord size={22} />}
+                    endIcon={<IconExternalLink size={16} />}
+                    sx={{
+                      mt: 3.5,
+                      textTransform: "none",
+                      borderRadius: 2,
+                      py: 1.5,
+                      fontWeight: 700,
+                      fontSize: 15,
+                      bgcolor: "#5865F2",
+                      "&:hover": { bgcolor: "#4752C4" },
+                      "&:active": { bgcolor: "#3c45a5" },
+                    }}
                   >
-                    View Original Post
+                    View on Discord
                   </Button>
                 )}
 
@@ -381,6 +463,18 @@ const AdoptableDetailPageContent = ({ id }: { id: string }) => {
         </Grid>
 
       </Grid>
+
+    {editOpen && (
+      <EditAdoptableDialog
+        open={editOpen}
+        item={item}
+        onClose={() => setEditOpen(false)}
+        onSuccess={(updated) => {
+          setLocalItem(updated);
+          mutate();
+        }}
+      />
+    )}
     </Container>
   );
 };

@@ -184,7 +184,7 @@ const AdoptableFilterPanel: React.FC<AdoptableFilterPanelProps> = ({
         Status
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8, mb: 3 }}>
-        {(["open", "resell", "close"] as const).map((s) => (
+        {(["open", "resell", "closed", "pending", "rejected", "deleted"] as const).map((s) => (
           <BaseChip
             key={s}
             preset={s}

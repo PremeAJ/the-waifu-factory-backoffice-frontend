@@ -188,25 +188,23 @@ const AdoptablesPageContent = () => {
           {/* Sort bar */}
           <AdoptableSortBar sortBy={sortBy} onSortChange={setSortBy} />
           {isLoading ? (
-            <Grid container spacing={2.5}>
+            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)", xl: "repeat(5, 1fr)" }, gap: 2.5 }}>
               {Array.from({ length: 12 }).map((_, i) => (
-                <Grid key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                  <Box sx={{ borderRadius: 3, overflow: "hidden" }}>
-                    <Skeleton variant="rectangular" width="100%" sx={{ paddingTop: "120%" }} />
-                    <Box sx={{ p: 1.5 }}>
-                      <Stack direction="row" alignItems="center" spacing={0.8} mb={0.8}>
-                        <Skeleton variant="circular" width={24} height={24} />
-                        <Skeleton variant="text" width="60%" height={16} />
-                      </Stack>
-                      <Stack direction="row" spacing={0.5}>
-                        <Skeleton variant="rounded" width={48} height={20} />
-                        <Skeleton variant="rounded" width={48} height={20} />
-                      </Stack>
-                    </Box>
+                <Box key={i} sx={{ borderRadius: 3, overflow: "hidden" }}>
+                  <Skeleton variant="rectangular" width="100%" sx={{ paddingTop: "120%" }} />
+                  <Box sx={{ p: 1.5 }}>
+                    <Stack direction="row" alignItems="center" spacing={0.8} mb={0.8}>
+                      <Skeleton variant="circular" width={24} height={24} />
+                      <Skeleton variant="text" width="60%" height={16} />
+                    </Stack>
+                    <Stack direction="row" spacing={0.5}>
+                      <Skeleton variant="rounded" width={48} height={20} />
+                      <Skeleton variant="rounded" width={48} height={20} />
+                    </Stack>
                   </Box>
-                </Grid>
+                </Box>
               ))}
-            </Grid>
+            </Box>
           ) : items.length === 0 ? (
             <Box
               sx={{
@@ -227,17 +225,16 @@ const AdoptablesPageContent = () => {
             </Box>
           ) : (
             <>
-              <Grid container spacing={2.5}>
+              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)", xl: "repeat(5, 1fr)" }, gap: 2.5 }}>
                 {items.map((item) => (
-                  <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                    <AdoptableCard
-                      item={item}
-                      sx={{ height: "100%" }}
-                      sfw={!showNsfw}
-                    />
-                  </Grid>
+                  <AdoptableCard
+                    key={item.id}
+                    item={item}
+                    sx={{ height: "100%" }}
+                    sfw={!showNsfw}
+                  />
                 ))}
-              </Grid>
+              </Box>
               {hasMore && <Box ref={loadMoreRef} sx={{ height: 1, width: "100%" }} />}
               {hasMore && (
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>

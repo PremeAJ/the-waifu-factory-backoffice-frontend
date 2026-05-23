@@ -1,8 +1,7 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { postFetcher } from "@/app/api/globalFetcher";
-import { useAdoptableTags, useArtists, useUsers, type ArtistMaster } from "@/common/hooks/useMasterData";
-import { useCurrentUser } from "@/common/hooks/useCurrentUser";
+import React, { useEffect, useRef, useState } from "react";
+import { putFetcher } from "@/app/api/globalFetcher";
+import { useAdoptableTags, useUsers, type ArtistMaster } from "@/common/hooks/useMasterData";
 import Alert from "@mui/material/Alert";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
@@ -25,6 +24,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { alpha, useTheme } from "@mui/material/styles";
 import { IconCloudUpload, IconX } from "@tabler/icons-react";
+import type { AdoptableListItem } from "./AdoptableCard";
 
 const STATUS_COLOR: Record<string, string> = {
   open: "#2e7d32",
@@ -42,88 +42,45 @@ const StatusDot = ({ status }: { status: string }) => (
   />
 );
 
-const ArtistAutocomplete = ({
-  label,
-  options,
-  value,
-  onChange,
-  placeholder,
-}: {
-  label: string;
-  options: ArtistMaster[];
-  value: ArtistMaster | null;
-  onChange: (v: ArtistMaster | null) => void;
-  placeholder?: string;
-}) => (
-  <Autocomplete
-    options={options}
-    value={value}
-    onChange={(_, v) => onChange(v)}
-    getOptionLabel={(o) => o.displayName}
-    isOptionEqualToValue={(a, b) => a.id === b.id}
-    size="small"
-    sx={{ flex: 1 }}
-    renderOption={({ key, ...props }, option) => (
-      <Box key={key} component="li" {...props} sx={{ gap: 1 }}>
-        <Avatar src={option.profilePictureUrl ?? undefined} sx={{ width: 24, height: 24, fontSize: 11, flexShrink: 0 }}>
-          {option.displayName[0]}
-        </Avatar>
-        <Typography variant="body2" noWrap>{option.displayName}</Typography>
-      </Box>
-    )}
-    renderInput={(params) => {
-      if (value) {
-        params.InputProps.startAdornment = (
-          <>
-            <InputAdornment position="start" sx={{ ml: 0.5 }}>
-              <Avatar src={value.profilePictureUrl ?? undefined} sx={{ width: 22, height: 22, fontSize: 10 }}>
-                {value.displayName[0]}
-              </Avatar>
-            </InputAdornment>
-            {params.InputProps.startAdornment}
-          </>
-        );
-      }
-      return (
-        <TextField {...params} label={label} placeholder={placeholder} sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }} />
-      );
-    }}
-  />
-);
-
 interface Props {
   open: boolean;
+  item: AdoptableListItem;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (updated: AdoptableListItem) => void;
 }
 
-const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
+const EditAdoptableDialog = ({ open, item, onClose, onSuccess }: Props) => {
   const theme = useTheme();
-  const { user } = useCurrentUser();
   const { adoptableTags } = useAdoptableTags();
-  const { artists } = useArtists();
-  const [ownerSearch, setOwnerSearch] = useState("");
-  const { users, isLoading: usersLoading } = useUsers(ownerSearch);
-
-  const selfArtist: ArtistMaster | null = user
-    ? { id: user.id, username: user.username, displayName: user.displayName, profilePictureUrl: user.profilePictureUrl }
-    : null;
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [number, setNumber] = useState("");
-  const [status, setStatus] = useState<"open" | "closed" | "resell" | "pending">("pending");
-  const [price, setPrice] = useState("");
-  const [isNsfw, setIsNsfw] = useState(false);
-  const [postUrl, setPostUrl] = useState("");
-  const [artist, setArtist] = useState<ArtistMaster | null>(null);
-  const [owner, setOwner] = useState<ArtistMaster | null>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [status, setStatus] = useState(item.status);
+  const [price, setPrice] = useState(item.price != null ? String(item.price) : "");
+  const [isNsfw, setIsNsfw] = useState(item.isNSFW ?? false);
+  const [postUrl, setPostUrl] = useState(item.postUrl ?? "");
+  const [selectedTags, setSelectedTags] = useState<string[]>(item.tags.map((t) => t.name));
+  const [owner, setOwner] = useState<ArtistMaster | null>(item.owner as unknown as ArtistMaster);
+  const [ownerSearch, setOwnerSearch] = useState("");
+  const { users, isLoading: usersLoading } = useUsers(ownerSearch);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync when item changes (e.g. dialog reopened for different item)
+  useEffect(() => {
+    setStatus(item.status);
+    setPrice(item.price != null ? String(item.price) : "");
+    setIsNsfw(item.isNSFW ?? false);
+    setPostUrl(item.postUrl ?? "");
+    setSelectedTags(item.tags.map((t) => t.name));
+    setFile(null);
+    setPreview(null);
+    setOwner(item.owner as unknown as ArtistMaster);
+    setError("");
+  }, [item.id]);
 
   const applyFile = (f: File) => {
     setFile(f);
@@ -141,16 +98,10 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
     setSelectedTags((prev) => (prev.includes(name) ? prev.filter((t) => t !== name) : [...prev, name]));
 
   const handleSubmit = async () => {
-    if (!file || !user) return;
     setSubmitting(true);
     setError("");
 
-    const resolvedArtist = artist ?? selfArtist;
-    if (!resolvedArtist) return;
-
     const parsedPrice = price !== "" ? parseFloat(price) : undefined;
-    const parsedNumber = number !== "" ? parseInt(number, 10) : undefined;
-
     if (parsedPrice !== undefined && (isNaN(parsedPrice) || parsedPrice < 0)) {
       setError("Price must be a non-negative number");
       setSubmitting(false);
@@ -158,27 +109,25 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
     }
 
     const form = new FormData();
-    form.append("file", file);
-    form.append("artistId", resolvedArtist.id);
-    if (owner) form.append("ownerId", owner.id);
+    if (file) form.append("file", file);
+    if (owner && owner.id !== item.owner.id) form.append("ownerId", owner.id);
     form.append("status", status);
     form.append("isNSFW", String(isNsfw));
-    if (parsedNumber !== undefined) form.append("number", String(parsedNumber));
     if (parsedPrice !== undefined) form.append("price", String(parsedPrice));
     if (postUrl) form.append("postUrl", postUrl);
     selectedTags.forEach((t) => form.append("tagNames", t));
 
     try {
-      const res = await postFetcher("/api/adoptable", form);
+      const res = await putFetcher(`/api/adoptable/${item.id}`, form);
       if (res?.isSuccess || res?.data) {
-        onSuccess();
-        handleClose();
+        onSuccess(res.data ?? item);
+        onClose();
       } else {
         const msg = res?.message;
         setError(Array.isArray(msg) ? msg.join(", ") : (msg ?? "Something went wrong"));
       }
     } catch {
-      setError("Failed to create adoptable");
+      setError("Failed to update adoptable");
     } finally {
       setSubmitting(false);
     }
@@ -186,25 +135,13 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
 
   const handleClose = () => {
     if (submitting) return;
-    setFile(null);
-    setPreview(null);
-    setNumber("");
-    setStatus("open");
-    setPrice("");
-    setIsNsfw(false);
-    setPostUrl("");
-    setArtist(null);
-    setOwner(null);
-    setOwnerSearch("");
-    setSelectedTags([]);
-    setError("");
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 700, pr: 6 }}>
-        Add Adoptable
+        Edit Adoptable #{item.number}
         <IconButton onClick={handleClose} size="small" sx={{ position: "absolute", right: 12, top: 12 }}>
           <IconX size={18} />
         </IconButton>
@@ -212,11 +149,9 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
 
       <DialogContent dividers sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
 
-        {/* Image upload */}
+        {/* Image upload (optional) */}
         <Box>
-          <Typography variant="subtitle2" fontWeight={700} mb={1}>
-            Image <Typography component="span" color="error">*</Typography>
-          </Typography>
+          <Typography variant="subtitle2" fontWeight={700} mb={1}>Image (optional — leave blank to keep current)</Typography>
           <input
             ref={fileInputRef}
             type="file"
@@ -225,12 +160,12 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
             onChange={(e) => e.target.files?.[0] && applyFile(e.target.files[0])}
           />
           {preview ? (
-            <Box sx={{ position: "relative", display: "inline-block" }}>
+            <Box sx={{ position: "relative", display: "inline-block", width: "100%" }}>
               <Box
                 component="img"
                 src={preview}
                 alt="preview"
-                sx={{ width: "100%", maxHeight: 280, objectFit: "contain", borderRadius: 2, border: `1px solid ${theme.palette.divider}` }}
+                sx={{ width: "100%", maxHeight: 240, objectFit: "contain", borderRadius: 2, border: `1px solid ${theme.palette.divider}` }}
               />
               <IconButton
                 size="small"
@@ -241,42 +176,39 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
               </IconButton>
             </Box>
           ) : (
-            <Box
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={handleDrop}
-              sx={{
-                border: `2px dashed ${isDragging ? theme.palette.primary.main : theme.palette.divider}`,
-                borderRadius: 2,
-                p: 4,
-                textAlign: "center",
-                cursor: "pointer",
-                bgcolor: isDragging ? alpha(theme.palette.primary.main, 0.06) : "transparent",
-                transition: "all 150ms",
-                "&:hover": { borderColor: theme.palette.primary.main, bgcolor: alpha(theme.palette.primary.main, 0.04) },
-              }}
-            >
-              <IconCloudUpload size={36} stroke={1.2} color={theme.palette.text.secondary} />
-              <Typography variant="body2" color="text.secondary" mt={1}>
-                Click or drag & drop an image here
-              </Typography>
-              <Typography variant="caption" color="text.disabled">PNG, JPG, WEBP · max 10MB</Typography>
-            </Box>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Box
+                component="img"
+                src={item.imageUrl}
+                alt="current"
+                sx={{ width: 72, height: 72, objectFit: "cover", borderRadius: 2, border: `1px solid ${theme.palette.divider}`, flexShrink: 0 }}
+              />
+              <Box
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={handleDrop}
+                sx={{
+                  flex: 1,
+                  border: `2px dashed ${isDragging ? theme.palette.primary.main : theme.palette.divider}`,
+                  borderRadius: 2,
+                  p: 2.5,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  bgcolor: isDragging ? alpha(theme.palette.primary.main, 0.06) : "transparent",
+                  transition: "all 150ms",
+                  "&:hover": { borderColor: theme.palette.primary.main, bgcolor: alpha(theme.palette.primary.main, 0.04) },
+                }}
+              >
+                <IconCloudUpload size={28} stroke={1.2} color={theme.palette.text.secondary} />
+                <Typography variant="body2" color="text.secondary" mt={0.5}>Click or drag to replace</Typography>
+              </Box>
+            </Stack>
           )}
         </Box>
 
-        {/* Number + Status */}
-        <Stack direction="row" spacing={2}>
-          <TextField
-            label="Number"
-            type="number"
-            size="small"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            sx={{ width: 120 }}
-            slotProps={{ htmlInput: { min: 0 } }}
-          />
+        {/* Status + Price */}
+        <Stack direction="row" spacing={2} alignItems="center">
           <TextField
             label="Status"
             select
@@ -295,17 +227,13 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
               },
             }}
           >
-            {(["pending", "open", "closed", "resell"] as const).map((s) => (
+            {(["open", "closed", "resell"] as const).map((s) => (
               <MenuItem key={s} value={s} sx={{ display: "flex", alignItems: "center" }}>
                 <StatusDot status={s} />
                 {s.charAt(0).toUpperCase() + s.slice(1)}
               </MenuItem>
             ))}
           </TextField>
-        </Stack>
-
-        {/* Price + NSFW */}
-        <Stack direction="row" spacing={2} alignItems="center">
           <TextField
             label="Price ($)"
             type="number"
@@ -332,64 +260,54 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
           helperText="Link to the original post on Discord"
         />
 
-        {/* Artist + Owner */}
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-          <ArtistAutocomplete
-            label="Artist"
-            options={artists}
-            value={artist ?? selfArtist}
-            onChange={setArtist}
-            placeholder="Search artist..."
-          />
-          <Autocomplete
-            options={users}
-            value={owner}
-            onChange={(_, v) => setOwner(v)}
-            getOptionLabel={(o) => o.displayName}
-            isOptionEqualToValue={(a, b) => a.id === b.id}
-            loading={usersLoading}
-            filterOptions={(x) => x}
-            onInputChange={(_, v) => setOwnerSearch(v)}
-            size="small"
-            sx={{ flex: 1 }}
-            renderOption={({ key: _key, ...props }, option) => (
-              <Box key={option.id} component="li" {...props} sx={{ gap: 1 }}>
-                <Avatar src={option.profilePictureUrl ?? undefined} sx={{ width: 24, height: 24, fontSize: 11, flexShrink: 0 }}>
-                  {option.displayName[0]}
-                </Avatar>
-                <Box minWidth={0}>
-                  <Typography variant="body2" noWrap>{option.displayName}</Typography>
-                  <Typography variant="caption" color="text.secondary" noWrap>@{option.username}</Typography>
-                </Box>
+        {/* Owner */}
+        <Autocomplete
+          options={users}
+          value={owner}
+          onChange={(_, v) => setOwner(v)}
+          getOptionLabel={(o) => o.displayName}
+          isOptionEqualToValue={(a, b) => a.id === b.id}
+          loading={usersLoading}
+          filterOptions={(x) => x}
+          onInputChange={(_, v) => setOwnerSearch(v)}
+          size="small"
+          renderOption={({ key: _key, ...props }, option) => (
+            <Box key={option.id} component="li" {...props} sx={{ gap: 1 }}>
+              <Avatar src={option.profilePictureUrl ?? undefined} sx={{ width: 24, height: 24, fontSize: 11, flexShrink: 0 }}>
+                {option.displayName[0]}
+              </Avatar>
+              <Box minWidth={0}>
+                <Typography variant="body2" noWrap>{option.displayName}</Typography>
+                <Typography variant="caption" color="text.secondary" noWrap>@{option.username}</Typography>
               </Box>
-            )}
-            renderInput={(params) => {
-              if (owner) {
-                params.InputProps.startAdornment = (
-                  <>
-                    <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                      <Avatar
-                        src={owner.profilePictureUrl ?? undefined}
-                        sx={{ width: 22, height: 22, fontSize: 10 }}
-                      >
-                        {owner.displayName[0]}
-                      </Avatar>
-                    </InputAdornment>
-                    {params.InputProps.startAdornment}
-                  </>
-                );
-              }
-              return (
-                <TextField
-                  {...params}
-                  label="Owner (optional)"
-                  placeholder="Search user..."
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                />
+            </Box>
+          )}
+          renderInput={(params) => {
+            if (owner) {
+              params.InputProps.startAdornment = (
+                <>
+                  <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                    <Avatar
+                      src={(owner as any).profilePictureUrl ?? undefined}
+                      sx={{ width: 22, height: 22, fontSize: 10 }}
+                    >
+                      {owner.displayName[0]}
+                    </Avatar>
+                  </InputAdornment>
+                  {params.InputProps.startAdornment}
+                </>
               );
-            }}
-          />
-        </Stack>
+            }
+            return (
+              <TextField
+                {...params}
+                label="Owner"
+                placeholder="Search to change owner..."
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+              />
+            );
+          }}
+        />
 
         {/* Tags */}
         {adoptableTags.length > 0 && (
@@ -446,15 +364,15 @@ const AddAdoptableDialog = ({ open, onClose, onSuccess }: Props) => {
         <Button
           variant="contained"
           onClick={handleSubmit}
-          disabled={!file || submitting}
+          disabled={submitting}
           startIcon={submitting ? <CircularProgress size={16} color="inherit" /> : null}
           sx={{ textTransform: "none", fontWeight: 700, borderRadius: 2, px: 3 }}
         >
-          {submitting ? "Uploading..." : "Add Adoptable"}
+          {submitting ? "Saving..." : "Save Changes"}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default AddAdoptableDialog;
+export default EditAdoptableDialog;

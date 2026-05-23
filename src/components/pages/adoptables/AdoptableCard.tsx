@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { alpha, useTheme } from "@mui/material/styles";
-import { IconExternalLink, IconEye, IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import { IconBrandDiscord, IconExternalLink, IconEye, IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import Image from "next/image";
 import { BaseCard, BaseChip } from "@/common/components/base";
 import ArtistLink from "@/common/components/shared/ArtistLink";
@@ -37,15 +37,16 @@ export interface AdoptableListItem {
   postUrl?: string;
   artist: AdoptableUser;
   owner: AdoptableUser;
-  status: "open" | "close" | "resell";
+  status: "open" | "closed" | "resell" | "pending" | "rejected" | "deleted";
   price?: number;
   createdAt: string;
   tags: AdoptableTag[];
-  /** Explicit NSFW flag from API — also auto-detected from tags named "nsfw" */
   isNSFW?: boolean;
   viewCount?: number;
   likeCount?: number;
   isLiked?: boolean;
+  reviewer?: AdoptableUser | null;
+  rejectReason?: string | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -73,9 +74,25 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
   const { showNsfw } = useNsfw();
   const blurred = !showNsfw && isAdoptableNsfw(item);
 
+  const [hovered, setHovered] = useState(false);
   const [liked, setLiked] = useState(item.isLiked ?? false);
   const [likeCount, setLikeCount] = useState(item.likeCount ?? 0);
   const [liking, setLiking] = useState(false);
+
+  const handleDiscordClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = item.postUrl;
+    if (!url) return;
+    const appUrl = url.replace(/^https?:\/\/discord\.com/, "discord://discord.com");
+    let appOpened = false;
+    const onBlur = () => { appOpened = true; window.removeEventListener("blur", onBlur); };
+    window.addEventListener("blur", onBlur);
+    window.location.href = appUrl;
+    setTimeout(() => {
+      window.removeEventListener("blur", onBlur);
+      if (!appOpened) window.open(url, "_blank");
+    }, 1500);
+  };
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -113,6 +130,8 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
         "@media (hover: hover)": { "&:hover": { transform: "translateY(-6px)", boxShadow: "0px 0px 20px 6px rgba(0,0,0,0.15), 0px 8px 16px 0px rgba(0,0,0,0.14)" } },
         ...sx,
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       onClick={() => router.push(`/adoptables/${item.id}`)}
     >
       {/* ── Image ── */}
@@ -142,6 +161,42 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
             <Typography variant="caption" fontWeight={700} sx={{ color: "#fff", bgcolor: alpha("#000", 0.45), px: 1.5, py: 0.5, borderRadius: 2 }}>
               🔞NSFW
             </Typography>
+          </Box>
+        )}
+
+        {/* Discord floating button */}
+        {showViewPost && item.postUrl && (
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: 10,
+              left: "50%",
+              transform: hovered ? "translateX(-50%) translateY(0)" : "translateX(-50%) translateY(10px)",
+              opacity: hovered ? 1 : 0,
+              transition: "opacity 200ms ease, transform 200ms ease",
+              pointerEvents: hovered ? "auto" : "none",
+              zIndex: 10,
+              "@media (hover: none)": { opacity: 1, transform: "translateX(-50%) translateY(0)", pointerEvents: "auto" },
+            }}
+          >
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<IconBrandDiscord size={15} />}
+              onClick={handleDiscordClick}
+              sx={{
+                borderRadius: 99,
+                textTransform: "none",
+                fontSize: 12,
+                fontWeight: 700,
+                bgcolor: "#5865F2",
+                whiteSpace: "nowrap",
+                boxShadow: "0 4px 12px rgba(88,101,242,0.5)",
+                "&:hover": { bgcolor: "#4752C4" },
+              }}
+            >
+              View on Discord
+            </Button>
           </Box>
         )}
 
@@ -239,24 +294,6 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
           </Stack>
         </Stack>
 
-        {/* View post button */}
-        {showViewPost && item.postUrl && (
-          <Box pt={0.5}>
-            <Button
-              fullWidth
-              variant="outlined"
-              size="small"
-              endIcon={<IconExternalLink size={14} />}
-              href={item.postUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              sx={{ borderRadius: 2, textTransform: "none", fontSize: 12 }}
-            >
-              View post
-            </Button>
-          </Box>
-        )}
       </Box>
     </BaseCard>
   );
