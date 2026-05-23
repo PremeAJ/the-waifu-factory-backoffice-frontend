@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const icons = require\\('@tabler/icons-react'\\); const names = ['IconPhoto','IconPalette','IconUsers','IconLockAccess','IconTag','IconBrandDiscord','IconCreditCard','IconListCheck','IconClockHour4','IconChartBar']; names.forEach\\(n => console.log\\(n, !!icons[n]\\)\\)\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-frontend\" -Recurse -ErrorAction SilentlyContinue)",
+      "Bash(grep -r '/api/[^\"]*\\\\${' ./src --include=\"*.tsx\" --include=\"*.ts\" -h)",
+      "Bash(grep -rE '/api/[^\"]*\\\\$\\\\{|postFetcher.*api|putFetcher.*api|deleteFetcher.*api|patchFetcher.*api' ./src --include=\"*.tsx\" --include=\"*.ts\" -h)",
+      "Bash(grep -rE '\\\\`/api/user/[^\\\\`]*\\\\`|\"\\\\\\\\/api\\\\\\\\/user[^\"]*\"' ./src --include=\"*.tsx\" --include=\"*.ts\")"
+    ]
+  }
+}

@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:golf-antsy-impish.ngrok-free.dev)",
-      "Bash(rm -rf \"c:/Users/nekiz/OneDrive/Desktop/Code/the-waifu-factory-frontend/src/app/\\(main-page\\)/profile/[username]/[[...slug]]\" && ls \"c:/Users/nekiz/OneDrive/Desktop/Code/the-waifu-factory-frontend/src/app/\\(main-page\\)/profile/[username]/\")"
+      "Bash(rm -rf \"c:/Users/nekiz/OneDrive/Desktop/Code/the-waifu-factory-frontend/src/app/\\(main-page\\)/profile/[username]/[[...slug]]\" && ls \"c:/Users/nekiz/OneDrive/Desktop/Code/the-waifu-factory-frontend/src/app/\\(main-page\\)/profile/[username]/\")",
+      "Bash(ls \"C:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\")",
+      "Read(//c/Users/nekiz/OneDrive/Desktop/Code/**)",
+      "Bash(Get-ChildItem -Directory)",
+      "Bash(Select-Object -ExpandProperty Name)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-backend\" -Force)"
     ],
     "additionalDirectories": [
       "c:\\Users\\nekiz\\OneDrive\\Desktop\\Code\\the-waifu-factory-frontend\\src\\app\\(main-page)\\profile\\[username]\\[[...slug]]"
