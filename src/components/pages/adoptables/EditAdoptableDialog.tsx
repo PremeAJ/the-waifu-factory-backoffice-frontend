@@ -110,7 +110,7 @@ const EditAdoptableDialog = ({ open, item, onClose, onSuccess }: Props) => {
 
     const form = new FormData();
     if (file) form.append("file", file);
-    if (owner && owner.id !== item.owner.id) form.append("ownerId", owner.id);
+    if (owner && owner.username !== item.owner.username) form.append("ownerId", owner.id);
     form.append("status", status);
     form.append("isNSFW", String(isNsfw));
     if (parsedPrice !== undefined) form.append("price", String(parsedPrice));
