@@ -46,7 +46,7 @@ function getTargetUrl(n: Notification): string | null {
       return n.actor ? `/profile/${n.actor.username}` : null;
     case "like_adoptable":
     case "new_adoptable":
-      return n.targetId ? `/adoptable/${n.targetId}` : null;
+      return n.targetId ? `/adoptables/${n.targetId}` : null;
     case "like_commission":
       return n.targetId ? `/commission/${n.targetId}` : null;
     default:
