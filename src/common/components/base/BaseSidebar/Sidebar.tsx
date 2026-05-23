@@ -1,4 +1,3 @@
-import { CurrentCompany } from "./CurrentCompany";
 import { NavGroupType } from "./interface/sidebar";
 import { useProfile } from "@/common/contexts/ProfileContext";
 import { useSidebarState } from "@/common/contexts/SidebarStateContext";
@@ -89,7 +88,6 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, anch
             >
               <SidebarItems menuItems={menuItems} enableNavigation={enableNavigation} />
             </Box>
-            {!isVerticalAnchor && <CurrentCompany />}
           </Box>
         </Drawer>
       ) : (
@@ -140,8 +138,7 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, anch
               >
                 <SidebarItems menuItems={menuItems} enableNavigation={enableNavigation} />
               </BaseScrollbar>
-              {!isVerticalAnchor && <CurrentCompany />}
-            </Box>
+              </Box>
           </Drawer>
         </Box>
       )}

@@ -10,7 +10,6 @@ import {
   IconTag,
   IconBrandDiscord,
   IconCreditCard,
-  IconSettings,
   IconListCheck,
   IconClockHour4,
   IconChartBar,
@@ -138,16 +137,6 @@ const dashboardSidebarItem: NavGroupType[] = [
     href: PageUrl.MASTER_PAYMENT_METHODS,
   },
 
-  {
-    navlabel: true,
-    subheader: "System",
-  },
-  {
-    id: uniqueId(),
-    title: "Settings",
-    icon: IconSettings,
-    href: PageUrl.SETTING,
-  },
 ];
 
 export default dashboardSidebarItem;

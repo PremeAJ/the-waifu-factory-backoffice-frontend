@@ -22,7 +22,7 @@ import PageContainer from "@/components/container/PageContainer";
 import Breadcrumb from "@/components/shared/breadcrumb/Breadcrumb";
 import { IconCheck } from "@tabler/icons-react";
 import BlankCard from "@/components/shared/BlankCard";
-import Events, { EventType } from "@/app/dashboard/EventData";
+import Events, { EventType } from "@/app/(dashboard)/EventData";
 
 moment.locale("en-GB");
 const localizer = momentLocalizer(moment);

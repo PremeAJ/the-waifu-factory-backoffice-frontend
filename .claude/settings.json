@@ -5,7 +5,10 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-frontend\" -Recurse -ErrorAction SilentlyContinue)",
       "Bash(grep -r '/api/[^\"]*\\\\${' ./src --include=\"*.tsx\" --include=\"*.ts\" -h)",
       "Bash(grep -rE '/api/[^\"]*\\\\$\\\\{|postFetcher.*api|putFetcher.*api|deleteFetcher.*api|patchFetcher.*api' ./src --include=\"*.tsx\" --include=\"*.ts\" -h)",
-      "Bash(grep -rE '\\\\`/api/user/[^\\\\`]*\\\\`|\"\\\\\\\\/api\\\\\\\\/user[^\"]*\"' ./src --include=\"*.tsx\" --include=\"*.ts\")"
+      "Bash(grep -rE '\\\\`/api/user/[^\\\\`]*\\\\`|\"\\\\\\\\/api\\\\\\\\/user[^\"]*\"' ./src --include=\"*.tsx\" --include=\"*.ts\")",
+      "Bash(layout\")",
+      "Bash(powershell -Command \"Copy-Item 'c:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-frontend\\\\src\\\\app\\\\dashboard\\\\EventData.ts' 'c:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-backoffice-frontend\\\\src\\\\app\\\\dashboard\\\\EventData.ts'; Write-Host 'Done'\")",
+      "Bash(powershell -Command \"Copy-Item 'c:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-frontend\\\\src\\\\common\\\\components\\\\shared\\\\NotificationBell.tsx' 'c:\\\\Users\\\\nekiz\\\\OneDrive\\\\Desktop\\\\Code\\\\the-waifu-factory-backoffice-frontend\\\\src\\\\common\\\\components\\\\shared\\\\NotificationBell.tsx' -Force; Write-Host 'Done'\")"
     ]
   }
 }
