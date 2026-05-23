@@ -63,6 +63,12 @@ export default function NavCollapse({
     paddingLeft: hideMenu ? "10px" : level > 2 ? `${level * 15}px` : "10px",
     backgroundColor: open && level < 2 ? theme.palette.primary.main : "",
     whiteSpace: "nowrap",
+    "&.Mui-selected": {
+      backgroundColor: open && level < 2 ? theme.palette.primary.main : "",
+    },
+    "&.Mui-selected:hover": {
+      backgroundColor: theme.palette.primary.main,
+    },
     "&:hover": {
       backgroundColor: theme.palette.primary.main,
       color: (pathDirect.includes(menu.href || "") || open) ? "white" : theme.palette.primary.contrastText,

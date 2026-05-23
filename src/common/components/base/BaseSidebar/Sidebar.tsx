@@ -6,6 +6,7 @@ import BaseScrollbar from "@/common/components/base/BaseScrollBar";
 import Box from "@mui/material/Box";
 import config from "@/common/contexts/setting/config";
 import Drawer, { DrawerProps } from "@mui/material/Drawer";
+import Logo from "@/common/components/shared/Logo";
 import SidebarItems from "./SidebarItems";
 import useIsMobile from "@/common/utils/state/isMobile";
 
@@ -73,6 +74,11 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, anch
               flexDirection: isVerticalAnchor ? "row" : "column",
             }}
           >
+            {!isVerticalAnchor && (
+              <Box sx={{ display: "flex", justifyContent: "center", pt: 2, pb: 1, flexShrink: 0 }}>
+                <Logo size="small" />
+              </Box>
+            )}
             <Box
               sx={{
                 flex: 1,
@@ -80,7 +86,6 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, anch
                 WebkitOverflowScrolling: "touch",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
-                mt: isVerticalAnchor ? 0 : 8,
                 "&::-webkit-scrollbar": {
                   display: "none",
                 },
@@ -120,14 +125,18 @@ const Sidebar = ({ menuItems, open, onOpenChange, enableNavigation = false, anch
           >
             <Box
               sx={{
-                ...(isVerticalAnchor ? { width: "100%", height: "100%" } : { height: "100%" }),
-                mt: isVerticalAnchor ? 0 : 8,
+                ...(isVerticalAnchor ? { width: "100%", height: "100%" } : { height: "100%", display: "flex", flexDirection: "column" }),
                 overflow: "hidden",
               }}
             >
+              {!isVerticalAnchor && (
+                <Box sx={{ display: "flex", justifyContent: "center", pt: 2, pb: 1, flexShrink: 0 }}>
+                  <Logo size="small" />
+                </Box>
+              )}
               <BaseScrollbar
                 sx={{
-                  ...(isVerticalAnchor ? { width: "100%", height: "100%" } : { height: "calc(100% - 120px)" }),
+                  ...(isVerticalAnchor ? { width: "100%", height: "100%" } : { height: "calc(100% - 80px)" }),
                   "& .simplebar-content-wrapper": {
                     overflow: "hidden auto !important",
                   },

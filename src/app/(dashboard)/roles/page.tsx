@@ -58,9 +58,10 @@ export default function RolesPage() {
                   <TableCell><Typography fontWeight={600}>{role.name}</Typography></TableCell>
                   <TableCell>
                     <Stack direction="row" gap={0.5} flexWrap="wrap">
-                      {(role.permissions ?? []).map((p: string) => (
-                        <Chip key={p} label={p} size="small" color="primary" variant="outlined" />
-                      ))}
+                      {(role.permissions ?? []).map((p: any, i: number) => {
+                        const label = typeof p === "string" ? p : (p?.name ?? p?.action ?? p?.id ?? String(i));
+                        return <Chip key={`${role.id}-${label}-${i}`} label={label} size="small" color="primary" variant="outlined" />;
+                      })}
                     </Stack>
                   </TableCell>
                   <TableCell>{role._count?.users ?? 0}</TableCell>
