@@ -15,6 +15,7 @@ import Language from "@/common/components/shared/Language";
 import Logo from "@/common/components/shared/Logo";
 import MobileSidebar from "./MobileSidebar";
 import Navigations from "./Navigations";
+import NotificationBell from "@/common/components/shared/NotificationBell";
 import Profile from "@/common/components/shared/Profile";
 import React from "react";
 import Stack from "@mui/material/Stack";
@@ -58,7 +59,9 @@ const Header = () => {
       <AppBarStyled position="fixed" elevation={8} sx={{ zIndex: 1200 }}>
         <Container maxWidth="lg">
           <ToolbarStyled>
-            <Logo size="small" />
+            <Box sx={{ display: { xs: "none", sm: "block" } }}>
+              <Logo size="small" />
+            </Box>
             <Box flexGrow={1} />
             {isMobile ? (
               <IconButton color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
@@ -78,6 +81,7 @@ const Header = () => {
               <SeeNSFWContentToggle />
               <Language />
               <Profile />
+              <NotificationBell />
               {!waifuUser && (
                 <BaseButton
                   label="Login"
