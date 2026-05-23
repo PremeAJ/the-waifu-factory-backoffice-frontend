@@ -33,6 +33,9 @@ import GalleryTab from "./GalleryTab";
 import CommissionTab from "./CommissionTab";
 import UserListTab from "./UserListTab";
 import AdoptableTab from "./AdoptableTab";
+import ClientsTab from "./ClientsTab";
+import EditSocialMediaDialog from "./EditSocialMediaDialog";
+import EditPaymentMethodDialog from "./EditPaymentMethodDialog";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -73,13 +76,14 @@ const SocialIcon = ({ sm }: { sm: { name: string; iconUrl: string } }) => {
 
 // ── Tabs ───────────────────────────────────────────────────────────────────────
 
-const TABS = ["Gallery", "Adoptable", "Commission", "Followers", "Following"] as const;
+const TABS = ["Gallery", "Adoptable", "Commission", "Clients", "Followers", "Following"] as const;
 type TabKey = (typeof TABS)[number];
 
 const TAB_URL: Record<TabKey, string> = {
   Gallery: "gallery",
   Adoptable: "adoptable",
   Commission: "commission",
+  Clients: "clients",
   Followers: "followers",
   Following: "following",
 };
@@ -89,6 +93,7 @@ const URL_TAB: Record<string, TabKey> = {
   gallery: "Gallery",
   adoptable: "Adoptable",
   commission: "Commission",
+  clients: "Clients",
   followers: "Followers",
   following: "Following",
 };
@@ -147,7 +152,7 @@ const ProfilePageContent = ({
 
   const isOwnProfile = !!currentUser && currentUser.username === username;
 
-  const { data, isLoading } = useSWR(`/api/user/${username}`, getFetcher, {
+  const { data, isLoading, mutate: mutateProfile } = useSWR(`/api/user/${username}`, getFetcher, {
     revalidateOnFocus: false,
   });
 
@@ -157,6 +162,8 @@ const ProfilePageContent = ({
   const [following,      setFollowing]      = useState(false);
   const [followerCount,  setFollowerCount]  = useState(0);
   const [followLoading,  setFollowLoading]  = useState(false);
+  const [editSocialOpen,  setEditSocialOpen]  = useState(false);
+  const [editPaymentOpen, setEditPaymentOpen] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -317,35 +324,85 @@ const ProfilePageContent = ({
               </Tooltip>
             ))}
 
+            {/* Edit social media button (own profile) */}
+            {isOwnProfile && (
+              <Tooltip title="Edit social media" placement="top" arrow>
+                <IconButton
+                  size="small"
+                  onClick={() => setEditSocialOpen(true)}
+                  sx={{
+                    width: 34,
+                    height: 34,
+                    border: `1.5px dashed ${theme.palette.divider}`,
+                    color: "text.secondary",
+                    "&:hover": { borderColor: "primary.main", color: "primary.main", bgcolor: alpha(theme.palette.primary.main, 0.06) },
+                  }}
+                >
+                  <IconPencil size={15} />
+                </IconButton>
+              </Tooltip>
+            )}
+
             {profile.socialMedias.length > 0 && profile.paymentMethods.length > 0 && (
               <Divider orientation="vertical" flexItem sx={{ mx: 0.5, my: 0.5 }} />
             )}
 
             {/* Payment methods */}
-            {profile.paymentMethods.map((pm, i) => (
-              <Tooltip key={i} title={`${pm.name}: ${pm.accountValue}`} placement="top" arrow>
-                <Box
+            {profile.paymentMethods.map((pm, i) => {
+              const isUrl = /^https?:\/\//i.test(pm.accountValue);
+              return (
+                <Tooltip key={i} title={`${pm.name}: ${pm.accountValue}`} placement="top" arrow>
+                  <Box
+                    {...(isUrl ? { component: "a", href: pm.accountValue, target: "_blank", rel: "noopener noreferrer" } : {})}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: 1.5,
+                      border: `1px solid ${theme.palette.divider}`,
+                      bgcolor: isDark ? alpha("#fff", 0.04) : alpha("#000", 0.03),
+                      cursor: isUrl ? "pointer" : "default",
+                      height: 34,
+                      textDecoration: "none",
+                      transition: "border-color 150ms, background-color 150ms",
+                      ...(isUrl && {
+                        "&:hover": {
+                          borderColor: "primary.main",
+                          bgcolor: isDark ? alpha("#fff", 0.08) : alpha("#000", 0.07),
+                        },
+                      }),
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={pm.iconUrl}
+                      alt={pm.name}
+                      sx={{ height: 18, width: "auto", objectFit: "contain", display: "block" }}
+                    />
+                  </Box>
+                </Tooltip>
+              );
+            })}
+
+            {/* Edit payment methods button (own profile) */}
+            {isOwnProfile && (
+              <Tooltip title="Edit payment methods" placement="top" arrow>
+                <IconButton
+                  size="small"
+                  onClick={() => setEditPaymentOpen(true)}
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    px: 1,
-                    py: 0.5,
-                    borderRadius: 1.5,
-                    border: `1px solid ${theme.palette.divider}`,
-                    bgcolor: isDark ? alpha("#fff", 0.04) : alpha("#000", 0.03),
-                    cursor: "default",
+                    width: 34,
                     height: 34,
+                    border: `1.5px dashed ${theme.palette.divider}`,
+                    color: "text.secondary",
+                    "&:hover": { borderColor: "primary.main", color: "primary.main", bgcolor: alpha(theme.palette.primary.main, 0.06) },
                   }}
                 >
-                  <Box
-                    component="img"
-                    src={pm.iconUrl}
-                    alt={pm.name}
-                    sx={{ height: 18, width: "auto", objectFit: "contain", display: "block" }}
-                  />
-                </Box>
+                  <IconPencil size={15} />
+                </IconButton>
               </Tooltip>
-            ))}
+            )}
 
             {/* Follow button (non-own profiles) */}
             {!isOwnProfile && (
@@ -389,10 +446,28 @@ const ProfilePageContent = ({
           {activeTab === "Gallery"    && <GalleryTab username={username} />}
           {activeTab === "Adoptable"  && <AdoptableTab username={username} type={adoptableType} onTypeChange={(t) => navigate("Adoptable", t)} isOwnProfile={isOwnProfile} />}
           {activeTab === "Commission" && <CommissionTab username={username} />}
-          {activeTab === "Followers" && <UserListTab username={username} type="followers" />}
-          {activeTab === "Following" && <UserListTab username={username} type="following" />}
+          {activeTab === "Clients"    && <ClientsTab username={username} />}
+          {activeTab === "Followers"  && <UserListTab username={username} type="followers" />}
+          {activeTab === "Following"  && <UserListTab username={username} type="following" />}
         </Box>
       </Container>
+
+      {isOwnProfile && profile && (
+        <EditSocialMediaDialog
+          open={editSocialOpen}
+          onClose={() => setEditSocialOpen(false)}
+          currentSocialMedias={profile.socialMedias}
+          onMutate={() => mutateProfile()}
+        />
+      )}
+      {isOwnProfile && profile && (
+        <EditPaymentMethodDialog
+          open={editPaymentOpen}
+          onClose={() => setEditPaymentOpen(false)}
+          currentPaymentMethods={profile.paymentMethods}
+          onMutate={() => mutateProfile()}
+        />
+      )}
     </Box>
   );
 };
