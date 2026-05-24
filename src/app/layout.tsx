@@ -7,7 +7,6 @@ import { NsfwProvider } from "@/common/contexts/NsfwContext";
 import { ThemeAwareTopLoader } from "@/common/components/main/ThemeAwareComponents";
 import Head from "./head";
 import MyApp from "./app";
-import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 import React from "react";
 import ScrollToTopButton from "../common/components/FAB/scrollToTopButton/ScrollToTopButton";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
