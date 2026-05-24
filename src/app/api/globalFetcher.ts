@@ -59,7 +59,7 @@ const baseFetcher = async (
   if (typeof fullUrl === "string" && fullUrl.startsWith("/")) {
     if (typeof window !== "undefined") {
       // Go directly to backend so browser includes the session cookie (cross-domain cookie can't be forwarded by Next.js proxy)
-      fullUrl = (process.env.NEXT_PUBLIC_API_URL ?? window.location.origin) + fullUrl;
+      fullUrl = (process.env.NEXT_PUBLIC_API_URL ?? window.location.origin).replace(/\/$/, "") + fullUrl;
     } else {
       fullUrl = (process.env.NEXT_PUBLIC_DOMAIN || `http://localhost:${process.env.PORT || 3000}`) + fullUrl;
     }

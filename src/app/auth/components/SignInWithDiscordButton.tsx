@@ -5,7 +5,8 @@ import { IconBrandDiscord } from "@tabler/icons-react";
 
 const SignInWithDiscordButton = () => {
   const onClick = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/discord/backoffice`;
+    const base = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+    window.location.href = `${base}/api/auth/discord/backoffice`;
   };
   return (
     <Stack direction="row" justifyContent="center" mt={3}>
