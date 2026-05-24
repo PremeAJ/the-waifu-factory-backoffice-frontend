@@ -14,6 +14,10 @@ import useIsSubMenu from "@/common/utils/state/isSubMenu";
 import BaseSidebar from "@/common/components/base/BaseSidebar/BaseSidebar";
 import dashboardSidebarItem from "@/common/components/base/BaseSidebar/item/dashboardSidebarItem";
 import BarcodeDialog from "@/common/components/dialogs/BarcodeDialog";
+import { usePendingAdoptablesCount } from "@/common/hooks/usePendingAdoptablesCount";
+import { NavGroupType } from "@/common/components/base/BaseSidebar/interface/sidebar";
+import { PageUrl } from "@/common/constants/pageUrl";
+import { useMemo } from "react";
 
 const MainWrapper = styled("div")(() => ({
   width: "100%",
@@ -31,10 +35,20 @@ const PageWrapper = styled("div")(() => ({
   backgroundColor: "transparent",
 }));
 
+function injectBadges(items: NavGroupType[], pendingCount: number): NavGroupType[] {
+  return items.map((item) => {
+    if (item.href === PageUrl.ADOPTABLES_PENDING) return { ...item, badge: pendingCount };
+    if (item.children) return { ...item, children: injectBadges(item.children, pendingCount) };
+    return item;
+  });
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const { isLayout } = useProfile().appearance;
   const { isCollapse } = useProfile().appearance;
   const { appearance } = useProfile();
+  const pendingCount = usePendingAdoptablesCount();
+  const sidebarItems = useMemo(() => injectBadges(dashboardSidebarItem, pendingCount), [pendingCount]);
   const { activeMode } = appearance || {};
   const theme = useTheme();
   const isMobile = useIsMobile();
@@ -45,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <SessionGuard>
       <DashboardGuard>
         <MainWrapper className={activeMode === "dark" ? "darkbg mainwrapper" : "mainwrapper"}>
-          <BaseSidebar menuItems={dashboardSidebarItem} open={isMobileSidebar} />
+          <BaseSidebar menuItems={sidebarItems} open={isMobileSidebar} />
           <PageWrapper
             className="page-wrapper"
             sx={{

@@ -64,11 +64,15 @@ export interface AdoptableCardProps {
   sx?: SxProps<Theme>;
   /** Whether to show the "View post" button at the bottom. Default: true */
   showViewPost?: boolean;
+  /** Override the default card click — use to open external URL or disable navigation */
+  onCardClick?: () => void;
+  /** Override artist name/avatar click — receives username */
+  onArtistClick?: (username: string) => void;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, showViewPost = true }) => {
+const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, showViewPost = true, onCardClick, onArtistClick }) => {
   const router = useRouter();
   const theme = useTheme();
   const tagTextColor = theme.palette.mode === "dark" ? "#fff" : "#555";
@@ -133,7 +137,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => router.push(`/adoptables/${item.id}`)}
+      onClick={() => onCardClick ? onCardClick() : router.push(`/adoptables/${item.id}`)}
     >
       {/* ── Image ── */}
       <Box sx={{ position: "relative", width: "100%", paddingTop: "120%", flexShrink: 0 }}>
@@ -231,6 +235,7 @@ const AdoptableCard: React.FC<AdoptableCardProps> = ({ item, sfw = true, sx, sho
           displayName={item.artist.displayName}
           profilePictureUrl={item.artist.profilePictureUrl}
           avatarSize={24}
+          onArtistClick={onArtistClick}
           endSlot={
             item.price != null ? (
               <Typography variant="caption" fontSize={18} fontWeight={800} color="primary.main" flexShrink={0}>

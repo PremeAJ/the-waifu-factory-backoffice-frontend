@@ -19,6 +19,8 @@ interface ArtistLinkProps {
   /** Extra element rendered at the right end (e.g. price, payment icons) */
   endSlot?: React.ReactNode;
   sx?: SxProps<Theme>;
+  /** Override click — receives username, use to open external URL */
+  onArtistClick?: (username: string) => void;
 }
 
 const ArtistLink = ({
@@ -29,6 +31,7 @@ const ArtistLink = ({
   showUsername = false,
   endSlot,
   sx,
+  onArtistClick,
 }: ArtistLinkProps) => {
   const router = useRouter();
   const theme = useTheme();
@@ -39,7 +42,11 @@ const ArtistLink = ({
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    router.push(`/profile/${username}`);
+    if (onArtistClick) {
+      onArtistClick(username);
+    } else {
+      router.push(`/profile/${username}`);
+    }
   };
 
   return (

@@ -17,7 +17,7 @@ import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { IconEdit, IconPlus, IconTag, IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useSWR from "swr";
 
 interface TagItem {
@@ -48,6 +48,8 @@ export default function AdoptableTagsPage() {
   const [name, setName] = useState("");
   const [color, setColor] = useState("");
   const [loading, setLoading] = useState(false);
+  const swatchRef = useRef<HTMLElement>(null);
+  const pickerRef = useRef<HTMLInputElement>(null);
 
   const openDialog = (mode: DialogMode) => {
     setDialog(mode);
@@ -210,7 +212,7 @@ export default function AdoptableTagsPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder={dialog?.type?.includes("category") ? "e.g. Species" : "e.g. Kitsune"}
             />
-            <Stack direction="row" alignItems="center" gap={2}>
+            <Stack direction="row" alignItems="center" gap={1.5}>
               <TextField
                 label="Color (optional)"
                 value={color}
@@ -218,9 +220,45 @@ export default function AdoptableTagsPage() {
                 placeholder="#FF6B6B"
                 sx={{ flex: 1 }}
               />
-              {color && (
-                <Box sx={{ width: 36, height: 36, borderRadius: 1, bgcolor: color, border: "1px solid", borderColor: "divider" }} />
-              )}
+              <Box
+                ref={swatchRef}
+                component="label"
+                title="Pick color"
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 1,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  bgcolor: color || "background.paper",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  overflow: "hidden",
+                  position: "relative",
+                  "&:hover": { opacity: 0.85 },
+                }}
+              >
+                <input
+                  ref={pickerRef}
+                  type="color"
+                  key={color}
+                  defaultValue={color || "#ffffff"}
+                  onChange={(e) => {
+                    if (swatchRef.current) swatchRef.current.style.backgroundColor = e.target.value;
+                  }}
+                  onBlur={(e) => setColor(e.target.value.toUpperCase())}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    cursor: "pointer",
+                    border: "none",
+                    padding: 0,
+                  }}
+                />
+              </Box>
             </Stack>
           </Stack>
         </DialogContent>

@@ -12,6 +12,7 @@ export type NavGroupType = {
   children?: NavGroupType[];
   chip?: string;
   chipColor?: string;
+  badge?: number;
   variant?: string;
   external?: boolean;
   level?: number;

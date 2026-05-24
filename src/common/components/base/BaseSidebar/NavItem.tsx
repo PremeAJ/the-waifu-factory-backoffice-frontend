@@ -1,4 +1,4 @@
-import { ListItemIcon, styled, useTheme } from "@mui/material";
+import { Chip, ListItemIcon, styled, useTheme } from "@mui/material";
 import Link from "next/link";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
@@ -91,6 +91,14 @@ const NavItem = ({ item, level = 1, pathDirect, onClick, hideMenu }: NavItemProp
             <ListItemText sx={{ display: lgDown ? "none" : "block" }}>
               {hideMenu ? "" : <>{t(`${item?.title}`)}</>}
             </ListItemText>
+            {!hideMenu && item.badge != null && item.badge > 0 && (
+              <Chip
+                label={item.badge}
+                color="error"
+                size="small"
+                sx={{ height: 18, fontSize: "0.65rem", ml: 1, "& .MuiChip-label": { px: "6px" } }}
+              />
+            )}
           </ListItemStyled>
         </Link>
       )}
