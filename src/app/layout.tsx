@@ -11,7 +11,6 @@ import NextAuthProvider from "@/common/components/provider/NextAuthProvider";
 import React from "react";
 import ScrollToTopButton from "../common/components/FAB/scrollToTopButton/ScrollToTopButton";
 import { SidebarStateProvider } from "@/common/contexts/SidebarStateContext";
-// import ActionButton from "@/common/components/FAB/ActionButton/ActionButton";
 
 export const metadata: Metadata = {
   keywords: "The Waifu Factory, Art Commission, Adoptable, Digital Art",
