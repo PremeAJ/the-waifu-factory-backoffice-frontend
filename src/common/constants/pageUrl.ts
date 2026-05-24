@@ -25,4 +25,7 @@ export enum PageUrl {
   MASTER_ADOPTABLE_TAGS = "/master/adoptable-tags",
   MASTER_SOCIAL_MEDIA = "/master/social-media",
   MASTER_PAYMENT_METHODS = "/master/payment-methods",
+
+  // Audit Log
+  AUDIT_LOG = "/audit-log",
 }

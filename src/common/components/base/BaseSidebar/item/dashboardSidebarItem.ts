@@ -7,6 +7,7 @@ import {
   IconTag,
   IconBrandDiscord,
   IconCreditCard,
+  IconClipboardList,
 } from "@tabler/icons-react";
 import { PageUrl } from "@/common/constants/pageUrl";
 import { NavGroupType } from "../interface/sidebar";
@@ -81,6 +82,17 @@ const dashboardSidebarItem: NavGroupType[] = [
     title: "Payment Methods",
     icon: IconCreditCard,
     href: PageUrl.MASTER_PAYMENT_METHODS,
+  },
+
+  {
+    navlabel: true,
+    subheader: "System",
+  },
+  {
+    id: uniqueId(),
+    title: "Audit Log",
+    icon: IconClipboardList,
+    href: PageUrl.AUDIT_LOG,
   },
 
 ];
