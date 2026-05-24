@@ -58,7 +58,8 @@ const baseFetcher = async (
   }
   if (typeof fullUrl === "string" && fullUrl.startsWith("/")) {
     if (typeof window !== "undefined") {
-      fullUrl = window.location.origin + fullUrl;
+      // Go directly to backend so browser includes the session cookie (cross-domain cookie can't be forwarded by Next.js proxy)
+      fullUrl = (process.env.NEXT_PUBLIC_API_URL ?? window.location.origin) + fullUrl;
     } else {
       fullUrl = (process.env.NEXT_PUBLIC_DOMAIN || `http://localhost:${process.env.PORT || 3000}`) + fullUrl;
     }
@@ -82,6 +83,7 @@ const baseFetcher = async (
   const fetchOptions: RequestInit = {
     method,
     cache: "no-store",
+    credentials: "include",
     headers: fetchHeaders,
     ...(body && method !== Method.GET && method !== Method.HEAD
       ? { body: isFormBody ? (body as any) : JSON.stringify(body) }

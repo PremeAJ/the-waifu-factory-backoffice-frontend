@@ -29,9 +29,14 @@ export interface WaifuUser {
 
 // ---- Hook ----
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+
 /** Fetcher that treats 401 as "not logged in" instead of redirecting to sign-in */
-const authFetcher = async (url: string) => {
-  const res = await fetch(url);
+const authFetcher = async (_url: string) => {
+  const res = await fetch(`${API_URL}/api/auth/me`, {
+    credentials: "include",
+    cache: "no-store",
+  });
   if (res.status === 401) return null;
   if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
   return res.json();
@@ -45,7 +50,7 @@ export const useCurrentUser = () => {
   );
 
   const signOut = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch(`${API_URL}/api/auth/logout`, { method: "POST", credentials: "include" });
     await mutate(null);
   };
 
