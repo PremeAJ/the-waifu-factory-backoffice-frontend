@@ -53,6 +53,17 @@ const ACTION_COLORS: Record<string, "success" | "error" | "primary" | "warning" 
 
 const ACTIONS: AuditAction[] = ["create", "update", "delete", "approve", "reject", "ban", "unban"];
 
+const ENTITY_TYPES = [
+  "adoptable",
+  "commission",
+  "profile",
+  "user",
+  "tag",
+  "tag_category",
+  "payment_method",
+  "social_media",
+];
+
 export default function AuditLogPage() {
   const [action, setAction] = useState<AuditAction>("");
   const [entityType, setEntityType] = useState("");
@@ -113,14 +124,19 @@ export default function AuditLogPage() {
           </Select>
         </FormControl>
 
-        <TextField
-          size="small"
-          label="Entity Type"
-          placeholder="adoptable, user, tag…"
-          value={entityType}
-          onChange={(e) => { setEntityType(e.target.value); handleFilterChange(); }}
-          sx={{ width: 180 }}
-        />
+        <FormControl size="small" sx={{ minWidth: 180 }}>
+          <InputLabel>Entity Type</InputLabel>
+          <Select
+            label="Entity Type"
+            value={entityType}
+            onChange={(e) => { setEntityType(e.target.value); handleFilterChange(); }}
+          >
+            <MenuItem value="">All</MenuItem>
+            {ENTITY_TYPES.map((t) => (
+              <MenuItem key={t} value={t}>{t.replace(/_/g, " ")}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <TextField
           size="small"
